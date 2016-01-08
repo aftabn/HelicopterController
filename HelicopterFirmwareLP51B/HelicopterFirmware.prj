@@ -1,17 +1,57 @@
 <PRJ>
-     `HelicopterFirmware.prj` `C:\Users\Aftab\Dropbox\School\Third Year\ELEC 391\HelicopterFirmware.prj`
+     `HelicopterFirmware.prj` `C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterFirmwareLP51B\HelicopterFirmware.prj`
      `c:\crosside\examples\sdccsmall.bat` `ld "%pathne%" %obj%`
-     `` ``
-     `` ``
+     `C:\CrossIDE\Call51\Bin\c51.exe` ``
+     `C:\CrossIDE\Call51\Bin\a51.exe` ``
      29555
 </PRJ>
 
 Source Files
 <C>
+`commandHandlers.c` `C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterFirmwareLP51B\src\commandHandlers.c`
+   `` ``
+   `` ``
+   `` ``
+   0
+`controller.c` `C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterFirmwareLP51B\src\controller.c`
+   `` ``
+   `` ``
+   `` ``
+   0
+`globals.c` `C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterFirmwareLP51B\src\globals.c`
+   `` ``
+   `` ``
+   `` ``
+   0
+`main.c` `C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterFirmwareLP51B\src\main.c`
+   `` ``
+   `` ``
+   `` ``
+   0
 </C>
 
 Header Files
 <H>
+`at89lp51rd2.h` `C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterFirmwareLP51B\src\at89lp51rd2.h`
+   `` ``
+   `` ``
+   `` ``
+   0
+`commandHandlers.h` `C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterFirmwareLP51B\src\commandHandlers.h`
+   `` ``
+   `` ``
+   `` ``
+   0
+`controller.h` `C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterFirmwareLP51B\src\controller.h`
+   `` ``
+   `` ``
+   `` ``
+   0
+`globals.h` `C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterFirmwareLP51B\src\globals.h`
+   `` ``
+   `` ``
+   `` ``
+   0
 </H>
 
 Resource Files

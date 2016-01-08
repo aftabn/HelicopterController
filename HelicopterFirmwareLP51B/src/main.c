@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <at89lp51rd2.h>
+#include <controller.h>
 
 #define CLK 22118400L
 #define BAUD 115200L
@@ -21,5 +22,5 @@ unsigned char _c51_external_startup(void)
 
 void main (void)
 {
-    printf( "Hello, world you suck!\r\n" );
+	scanUSBPort();
 }
