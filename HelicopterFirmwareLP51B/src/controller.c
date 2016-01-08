@@ -1,5 +1,6 @@
 #include <controller.h>
 #include <commandHandlers.h>
+#include <util.h>
 #include <globals.h>
 
 void processCommand(char *command)
@@ -82,18 +83,13 @@ void processLine(char *line)
 	}
 }
 
-void pulseStatusLed()
-{
-
-}
-
 void scanUSBPort()
 {
 	char tmpstr[256];
 	
 	while (true)
 	{
-		pulseStatusLed();
+		//pulseStatusLed();
 		scanf("> %s", tmpstr);
 		send(tmpstr);
 		processLine(tmpstr);
