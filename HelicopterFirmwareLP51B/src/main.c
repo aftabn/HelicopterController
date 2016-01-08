@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <at89lp51rd2.h>
-#include <controller.h>
+#include "at89lp51rd2.h"
+#include "controller.h"
 
 #define CLK 22118400L
 #define BAUD 115200L

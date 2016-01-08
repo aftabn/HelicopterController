@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include <globals.h>
-#include <commandHandlers.h>
 #include <string.h>
-#include <util.h>
+#include "globals.h"
+#include "commandHandlers.h"
+#include "util.h"
 
 void onCommandIdentity()
 {
