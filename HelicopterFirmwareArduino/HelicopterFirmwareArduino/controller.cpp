@@ -2,10 +2,22 @@
 //
 //
 
+#include "Arduino.h"
 #include "globals.h"
 #include "util.h"
 #include "controller.h"
 #include "commandHandlers.h"
+
+void initController()
+{
+	Serial.begin(115200);
+	pinMode(HEARTBEAT_LED, OUTPUT);
+}
+
+void toggleHeartbeatLED()
+{
+	digitalWrite(HEARTBEAT_LED, !digitalRead(HEARTBEAT_LED));
+}
 
 void processCommand(char *command)
 {
@@ -99,9 +111,10 @@ void scanUSBPort()
 		// Use this to toggle heartbeat LED when not receiving characters
 		while (Serial.available() <= 0)
 		{
-			if (++heartBeatTimer >= 1000000)
+			if (++heartBeatTimer >= 250000)
 			{
 				heartBeatTimer = 0;
+				toggleHeartbeatLED();
 			}
 		}
 
