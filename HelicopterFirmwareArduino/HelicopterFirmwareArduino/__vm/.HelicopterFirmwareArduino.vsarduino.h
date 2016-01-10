@@ -85,4 +85,12 @@ extern "C" void __cxa_pure_virtual() {;}
 #define portInputRegister(P)
 #define portModeRegister(P)
 #include <..\HelicopterFirmwareArduino\HelicopterFirmwareArduino.ino>
+#include <..\HelicopterFirmwareArduino\commandHandlers.cpp>
+#include <..\HelicopterFirmwareArduino\commandHandlers.h>
+#include <..\HelicopterFirmwareArduino\controller.cpp>
+#include <..\HelicopterFirmwareArduino\controller.h>
+#include <..\HelicopterFirmwareArduino\globals.cpp>
+#include <..\HelicopterFirmwareArduino\globals.h>
+#include <..\HelicopterFirmwareArduino\util.cpp>
+#include <..\HelicopterFirmwareArduino\util.h>
 #endif

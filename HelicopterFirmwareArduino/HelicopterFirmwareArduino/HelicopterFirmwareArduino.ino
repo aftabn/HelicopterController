@@ -4,6 +4,10 @@
  Author:	Aftab
 */
 
+#include <stdio.h>
+#include "util.h"
+#include "controller.h"
+
 int incomingByte;
 
 // the setup function runs once when you press reset or power the board
@@ -15,12 +19,5 @@ void setup()
 // the loop function runs over and over again until power down or reset
 void loop()
 {
-	if (Serial.available() > 0) {
-		// read the incoming byte:
-		incomingByte = Serial.read();
-
-		// say what you got:
-		Serial.print("I received: ");
-		Serial.println(incomingByte, DEC);
-	}
+	scanUSBPort();
 }
