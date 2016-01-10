@@ -1,7 +1,7 @@
-#include <controller.h>
-#include <commandHandlers.h>
-#include <util.h>
-#include <globals.h>
+#include "controller.h"
+#include "commandHandlers.h"
+#include "util.h"
+#include "globals.h"
 
 void processCommand(char *command)
 {
