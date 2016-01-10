@@ -35,10 +35,14 @@ void sendInt(int num)
 	send(tmpstr);
 }
 
-void sendDouble(double num)
+// Using dtostrf instead of sprintf as it works better on embedded systems and doesn't
+// require the full version of stdlib
+// Source: http://blog.protoneer.co.nz/arduino-float-to-string-that-actually-works/
+
+void sendDouble(double num, int numDecimals)
 {
 	char tmpstr[20];
-	sprintf(tmpstr, "%g", num);
+	dtostrf(num, MIN_NUMBER_FLOAT_CHARS, numDecimals, tmpstr);
 	send(tmpstr);
 }
 

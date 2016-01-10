@@ -29,13 +29,21 @@ void onCommandSystem()
 {
 	if (0 == stricmp(gParameters[0], "VER"))
 	{
-		sendDouble(FIRMWARE_VERSION);
+		sendDouble(FIRMWARE_VERSION, DEFAULT_NUM_DECIMALS);
 		sendAck();
 	}
 	else
 	{
 		sendSyntaxError();
 	}
+}
+
+void onCommandTest()
+{
+	double a = 15.0;
+	double b = 1.5;
+
+	sendDouble(a / b, DEFAULT_NUM_DECIMALS);
 }
 
 void onCommandHelp()

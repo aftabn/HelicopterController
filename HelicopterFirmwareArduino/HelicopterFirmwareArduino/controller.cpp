@@ -33,6 +33,10 @@ void processCommand(char *command)
 	{
 		onCommandSystem();
 	}
+	else if (0 == strcmp(command, "TEST"))
+	{
+		onCommandTest();
+	}
 	else if (0 == strcmp(command, "HELP"))
 	{
 		onCommandHelp();
