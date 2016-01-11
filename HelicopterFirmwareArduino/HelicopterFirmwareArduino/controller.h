@@ -3,11 +3,7 @@
 #ifndef _CONTROLLER_h
 #define _CONTROLLER_h
 
-#include "arduino.h"
-
-#define HEARTBEAT_LED	13
-
-void initController(void);
+void initializeController(void);
 void toggleHeartbeatLED(void);
 
 void clearParameters(void);

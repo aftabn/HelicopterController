@@ -4,12 +4,14 @@
  Author:	Aftab
 */
 
-#include "util.h"
 #include "controller.h"
+#include "pidControl.h"
 
 void setup()
 {
-	initController();
+	initializeController();
+	initializePwm();
+	initializePid();
 }
 
 void loop()

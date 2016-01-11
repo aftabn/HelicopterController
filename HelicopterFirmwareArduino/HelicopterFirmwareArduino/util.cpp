@@ -2,11 +2,12 @@
 //
 //
 
+#include "globals.h"
 #include "util.h"
 
 void send(char* str)
 {
-	char tmpStr[128];
+	char tmpStr[256];
 	sprintf(tmpStr, "%s\r\n", str);
 
 	Serial.write(tmpStr);
@@ -46,6 +47,40 @@ void sendDouble(double num, int numDecimals)
 	send(tmpstr);
 }
 
+void sendOnOffStatus(bool isOn)
+{
+	char tmpstr[5];
+	sprintf(tmpstr, "%s", isOn ? "ON" : "OFF");
+	send(tmpstr);
+}
+
+void sendOneOrZeroStatus(bool isHigh)
+{
+	char tmpstr[3];
+	sprintf(tmpstr, "%d", isHigh ? 1 : 0);
+	send(tmpstr);
+}
+
+void sendIntRangeError(int lowerLimit, int upperLimit, char* unit)
+{
+	char tmpstr[50];
+	sprintf(tmpstr, "Value must be between %d%s and %d%s", lowerLimit, unit, upperLimit, unit);
+	sendError(tmpstr);
+}
+
+void sendDoubleRangeError(double lowerLimit, double upperLimit, char* unit)
+{
+	char lowerLimitStr[10];
+	char upperLimitStr[10];
+	char tmpstr[50];
+
+	dtostrf(lowerLimit, MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, lowerLimitStr);
+	dtostrf(upperLimit, MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, upperLimitStr);
+	sprintf(tmpstr, "Value must be between %s%s and %s%s", lowerLimitStr, unit, upperLimitStr, unit);
+
+	sendError(tmpstr);
+}
+
 void sendSyntaxError()
 {
 	sendError("Check syntax");
@@ -54,6 +89,28 @@ void sendSyntaxError()
 void sendReadOnlyError()
 {
 	sendError("Read only commands have no additional arguments");
+}
+
+void sendOnOffError()
+{
+	sendError("Value must be ON or OFF");
+}
+
+void sendOneOrZeroError()
+{
+	sendError("Value must be 0 or 1");
+}
+
+bool isOnCommandArg(char* arg)
+{
+	upperCaseString(arg);
+	return (0 == stricmp(arg, "ON") || 0 == stricmp(arg, "1"));
+}
+
+bool isOffCommandArg(char* arg)
+{
+	upperCaseString(arg);
+	return (0 == stricmp(arg, "OFF") || 0 == stricmp(arg, "0"));
 }
 
 bool isReadCommand(char* arg)
@@ -96,4 +153,13 @@ int stricmp(const char *p1, const char *p2)
 	} while (c1 == c2);
 
 	return c1 - c2;
+}
+
+int convertToInt(char *str)
+{
+	char *ptr;
+	long num;
+
+	num = strtol(str, &ptr, 10);
+	return (int)num;
 }

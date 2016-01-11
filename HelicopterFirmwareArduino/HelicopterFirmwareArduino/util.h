@@ -14,14 +14,25 @@ void sendAck(void);
 void sendError(char* str);
 void sendInt(int num);
 void sendDouble(double num, int numDecimals);
+void sendOnOffStatus(bool isOn);
+void sendOneOrZeroStatus(bool isHigh);
+void sendIntRangeError(int lowerLimit, int upperLimit, char* unit);
+void sendDoubleRangeError(double lowerLimit, double upperLimit, char* unit);
 void sendSyntaxError(void);
 void sendReadOnlyError(void);
+void sendOnOffError(void);
+void sendOneOrZeroError(void);
+void sendChannelError();
 
+bool isOnCommandArg(char* arg);
+bool isOffCommandArg(char* arg);
+bool isChannelCorrect(char* channelArg);
 bool isReadCommand(char* arg);
 bool isIntWithinRange(int number, int lowerLimit, int upperLimit);
 bool isDoubleWithinRange(double number, double lowerLimit, double upperLimit);
 
 void upperCaseString(char *str);
 int stricmp(const char *p1, const char *p2);
+int convertToInt(char *str);
 
 #endif

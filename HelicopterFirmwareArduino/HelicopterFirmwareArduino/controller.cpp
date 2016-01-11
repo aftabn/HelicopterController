@@ -8,7 +8,7 @@
 #include "controller.h"
 #include "commandHandlers.h"
 
-void initController()
+void initializeController()
 {
 	Serial.begin(115200);
 	pinMode(HEARTBEAT_LED, OUTPUT);
@@ -32,6 +32,42 @@ void processCommand(char *command)
 	else if (0 == strcmp(command, "SYS"))
 	{
 		onCommandSystem();
+	}
+	else if (0 == strcmp(command, "DUTY"))
+	{
+		onCommandDuty();
+	}
+	else if (0 == strcmp(command, "MAXDUTY"))
+	{
+		onCommandMaxDuty();
+	}
+	else if (0 == strcmp(command, "P"))
+	{
+		onCommandProportionalGain();
+	}
+	else if (0 == strcmp(command, "I"))
+	{
+		onCommandIntegralGain();
+	}
+	else if (0 == strcmp(command, "D"))
+	{
+		onCommandDerivativeGain();
+	}
+	else if (0 == strcmp(command, "INTERVAL"))
+	{
+		onCommandLoopInterval();
+	}
+	else if (0 == strcmp(command, "SP"))
+	{
+		onCommandSetPoint();
+	}
+	else if (0 == strcmp(command, "DEBUG"))
+	{
+		onCommandDebug();
+	}
+	else if (0 == strcmp(command, "PID"))
+	{
+		onCommandPidLoopControl();
 	}
 	else if (0 == strcmp(command, "TEST"))
 	{
