@@ -68,7 +68,7 @@ void onCommandProportionalGain()
 
 	if (isReadCommand(gParameters[0]))
 	{
-		sendDouble(newPGain, DEFAULT_NUM_DECIMALS);
+		sendDouble(pGain, DEFAULT_NUM_DECIMALS);
 		sendAck();
 	}
 	else if (isDoubleWithinRange(newPGain, P_GAIN_MIN, P_GAIN_MAX))
@@ -88,7 +88,7 @@ void onCommandIntegralGain()
 
 	if (isReadCommand(gParameters[0]))
 	{
-		sendDouble(newIGain, DEFAULT_NUM_DECIMALS);
+		sendDouble(iGain, DEFAULT_NUM_DECIMALS);
 		sendAck();
 	}
 	else if (isDoubleWithinRange(newIGain, I_GAIN_MIN, I_GAIN_MAX))
@@ -108,7 +108,7 @@ void onCommandDerivativeGain()
 
 	if (isReadCommand(gParameters[0]))
 	{
-		sendDouble(newDGain, DEFAULT_NUM_DECIMALS);
+		sendDouble(dGain, DEFAULT_NUM_DECIMALS);
 		sendAck();
 	}
 	else if (isDoubleWithinRange(newDGain, D_GAIN_MIN, D_GAIN_MAX))
@@ -124,16 +124,16 @@ void onCommandDerivativeGain()
 
 void onCommandLoopInterval()
 {
-	int loopInterval = convertToInt(gParameters[0]);
+	int newLoopInterval = convertToInt(gParameters[0]);
 
 	if (isReadCommand(gParameters[0]))
 	{
 		sendInt(loopInterval);
 		sendAck();
 	}
-	else if (isIntWithinRange(loopInterval, PID_INTERVAL_SEC_MIN, PID_INTERVAL_SEC_MAX))
+	else if (isIntWithinRange(newLoopInterval, PID_INTERVAL_SEC_MIN, PID_INTERVAL_SEC_MAX))
 	{
-		loopInterval = loopInterval;
+		loopInterval = newLoopInterval;
 		sendAck();
 	}
 	else
@@ -144,16 +144,16 @@ void onCommandLoopInterval()
 
 void onCommandSetPoint()
 {
-	double setPoint = atof(gParameters[0]);
+	double newSetPoint = atof(gParameters[0]);
 
 	if (isReadCommand(gParameters[0]))
 	{
 		sendDouble(setPoint, DEFAULT_NUM_DECIMALS);
 		sendAck();
 	}
-	else if (isDoubleWithinRange(setPoint, SET_POINT_MIN, SET_POINT_MAX))
+	else if (isDoubleWithinRange(newSetPoint, SET_POINT_MIN, SET_POINT_MAX))
 	{
-		setPoint = setPoint;
+		setPoint = newSetPoint;
 		sendAck();
 	}
 	else
@@ -250,10 +250,11 @@ void onCommandHelp()
 	send("Command: ECHO \r\nArg: Any string \r\nDescription: Returns entered string\r\n");
 	send("Command: P \r\nArg: None or Value\r\nDescription: Gets or sets PGain for selected channel's PID control loop\r\n");
 	send("Command: I \r\nArg: None or Value\r\nDescription: Gets or sets IGain for selected channel's PID control loop\r\n");
+	send("Command: D \r\nArg: None or Value\r\nDescription: Gets or sets DGain for selected channel's PID control loop\r\n");
 	send("Command: INTERVAL \r\nArg: None or Value in milliseconds\r\nDescription: Gets or sets interval for selected channel's PID control loop\r\n");
 	send("Command: DUTY \r\nArg: None or Value (0 or 1)\r\nDescription: Gets or sets the value for the selected channel's duty cycle\r\n");
 	send("Command: MAXDUTY \r\nArg1: None or Value (0 to 100)\r\nDescription: Gets or sets the maximum duty cycle\r\n");
-	send("Command: SP \r\nArg: None or Value in degrees Celcius\r\nDescription: Gets or sets the set point temperature for the designated heater\r\n");
+	send("Command: SP \r\nArg: None or Value in degrees\r\nDescription: Gets or sets the set point temperature for the designated heater\r\n");
 	send("Command: PID \r\nArg: ON or OFF \r\nDescription: Enables or disables PID loop control\r\n");
 	send("Command: DEBUG \r\nArg: ON or OFF \r\nDescription: Enables or disables additional debugging info\r\n");
 }

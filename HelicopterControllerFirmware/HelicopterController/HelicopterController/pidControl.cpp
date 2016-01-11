@@ -17,7 +17,6 @@ volatile uint8_t currentDutyCycle;
 
 void initializePwm(void)
 {
-	send("PWM init not implemented");
 }
 
 void initializePid(void)
