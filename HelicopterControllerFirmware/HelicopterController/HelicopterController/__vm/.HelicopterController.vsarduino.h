@@ -83,15 +83,15 @@ extern "C" void __cxa_pure_virtual() {;}
 #define portOutputRegister(P)
 #define portInputRegister(P)
 #define portModeRegister(P)
-#include <..\HelicopterFirmwareArduino\HelicopterFirmwareArduino.ino>
-#include <..\HelicopterFirmwareArduino\commandHandlers.cpp>
-#include <..\HelicopterFirmwareArduino\commandHandlers.h>
-#include <..\HelicopterFirmwareArduino\controller.cpp>
-#include <..\HelicopterFirmwareArduino\controller.h>
-#include <..\HelicopterFirmwareArduino\globals.cpp>
-#include <..\HelicopterFirmwareArduino\globals.h>
-#include <..\HelicopterFirmwareArduino\pidControl.cpp>
-#include <..\HelicopterFirmwareArduino\pidControl.h>
-#include <..\HelicopterFirmwareArduino\util.cpp>
-#include <..\HelicopterFirmwareArduino\util.h>
+#include <..\HelicopterController\HelicopterController.ino>
+#include <..\HelicopterController\commandHandlers.cpp>
+#include <..\HelicopterController\commandHandlers.h>
+#include <..\HelicopterController\controller.cpp>
+#include <..\HelicopterController\controller.h>
+#include <..\HelicopterController\globals.cpp>
+#include <..\HelicopterController\globals.h>
+#include <..\HelicopterController\pidControl.cpp>
+#include <..\HelicopterController\pidControl.h>
+#include <..\HelicopterController\util.cpp>
+#include <..\HelicopterController\util.h>
 #endif
