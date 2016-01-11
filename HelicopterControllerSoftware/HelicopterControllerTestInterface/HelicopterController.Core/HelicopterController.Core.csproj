@@ -46,9 +46,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArduinoMicrocontroller.cs" />
+    <Compile Include="BrushlessDCMotor.cs" />
     <Compile Include="ControllerState.cs" />
     <Compile Include="Microcontroller.cs" />
     <Compile Include="MicrocontrollerCommunicationsManager.cs" />
+    <Compile Include="Motor.cs" />
     <Compile Include="Packet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VirtualMicrocontroller.cs" />

@@ -138,7 +138,7 @@ void processLine(char *line)
 	}
 }
 
-void scanUSBPort()
+void scanSerialPort()
 {
 	char incomingChar;
 	uint16_t linePointer = 0;
@@ -162,7 +162,7 @@ void scanUSBPort()
 
 		if (incomingChar)
 		{
-			if (incomingChar == 13)  // \r
+			if (incomingChar == '\r')  // 13 \r
 			{
 				lineBuffer[linePointer] = 0;
 				linePointer = 0;
@@ -171,7 +171,7 @@ void scanUSBPort()
 				send(tmpstr);
 				processLine(lineBuffer);
 			}
-			else if (incomingChar == 10) // \n
+			else if (incomingChar == '\n') // 10 \n
 			{
 			}
 			else

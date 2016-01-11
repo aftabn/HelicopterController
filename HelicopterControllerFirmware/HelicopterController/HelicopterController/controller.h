@@ -12,6 +12,6 @@ void processCommand(char *command);
 void processLine(char *str);
 void processParameters(char *remainingString);
 
-void scanUSBPort(void);
+void scanSerialPort(void);
 
 #endif
