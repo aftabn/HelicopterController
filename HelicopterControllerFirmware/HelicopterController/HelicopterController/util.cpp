@@ -81,6 +81,11 @@ void sendDoubleRangeError(double lowerLimit, double upperLimit, char* unit)
 	sendError(tmpstr);
 }
 
+void sendChannelError()
+{
+	sendError("Invalid channel");
+}
+
 void sendSyntaxError()
 {
 	sendError("Check syntax");
@@ -126,6 +131,22 @@ bool isIntWithinRange(int number, int lowerLimit, int upperLimit)
 bool isDoubleWithinRange(double number, double lowerLimit, double upperLimit)
 {
 	return (number >= lowerLimit && number <= upperLimit);
+}
+
+bool isChannelCorrect(char* channelArg)
+{
+	char channelStr[3];
+
+	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
+	{
+		sprintf(channelStr, "%d", channel);
+		if (0 == stricmp(channelArg, channelStr))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void upperCaseString(char *str)

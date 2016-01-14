@@ -18,6 +18,7 @@ void sendOnOffStatus(bool isOn);
 void sendOneOrZeroStatus(bool isHigh);
 void sendIntRangeError(int lowerLimit, int upperLimit, char* unit);
 void sendDoubleRangeError(double lowerLimit, double upperLimit, char* unit);
+void sendChannelError(void);
 void sendSyntaxError(void);
 void sendReadOnlyError(void);
 void sendOnOffError(void);

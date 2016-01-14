@@ -4,6 +4,7 @@
 #define _PIDCONTROL_h
 
 #include "arduino.h"
+#include "globals.h"
 
 #define P_GAIN_MIN					0.01
 #define P_GAIN_MAX					10.0
@@ -36,20 +37,22 @@
 extern volatile bool isPidEnabled;
 extern volatile bool isDebugMode;
 
-extern volatile double pGain;
-extern volatile double iGain;
-extern volatile double dGain;
-extern volatile int loopInterval;
-extern volatile double setPoint;
-extern volatile uint8_t currentDutyCycle;
+extern volatile double pGains[MAX_NUM_CHANNELS];
+extern volatile double iGains[MAX_NUM_CHANNELS];
+extern volatile double dGains[MAX_NUM_CHANNELS];
+extern volatile double loopIntervals[MAX_NUM_CHANNELS];
+extern volatile double setPoints[MAX_NUM_CHANNELS];
+extern volatile uint8_t currentDuties[MAX_NUM_CHANNELS];
 
-int getNewPidDutyCycle(void);
+int getNewPidDutyCycle(int channel);
 int adjustDutyToAllowableValue(int duty);
 void setPwmDutyCycle(int duty);
 
-void initializePwm(void);
+double getAngle(int channel);
 
+void initializePwm(void);
 void initializePid(void);
+
 void enablePid(void);
 void disablePid(void);
 

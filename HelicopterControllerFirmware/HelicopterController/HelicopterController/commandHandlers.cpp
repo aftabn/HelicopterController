@@ -64,101 +64,141 @@ void onCommandDebug()
 
 void onCommandProportionalGain()
 {
-	double newPGain = atof(gParameters[0]);
+	if (isChannelCorrect(gParameters[0]))
+	{
+		int channel = convertToInt(gParameters[0]);
+		double pGain = atof(gParameters[1]);
 
-	if (isReadCommand(gParameters[0]))
-	{
-		sendDouble(pGain, DEFAULT_NUM_DECIMALS);
-		sendAck();
-	}
-	else if (isDoubleWithinRange(newPGain, P_GAIN_MIN, P_GAIN_MAX))
-	{
-		pGain = newPGain;
-		sendAck();
+		if (isReadCommand(gParameters[1]))
+		{
+			sendDouble(pGains[channel], DEFAULT_NUM_DECIMALS);
+			sendAck();
+		}
+		else if (isDoubleWithinRange(pGain, P_GAIN_MIN, P_GAIN_MAX))
+		{
+			pGains[channel] = pGain;
+			sendAck();
+		}
+		else
+		{
+			sendDoubleRangeError(P_GAIN_MIN, P_GAIN_MAX, NO_UNIT);
+		}
 	}
 	else
 	{
-		sendDoubleRangeError(P_GAIN_MIN, P_GAIN_MAX, NO_UNIT);
+		sendChannelError();
 	}
 }
 
 void onCommandIntegralGain()
 {
-	double newIGain = atof(gParameters[0]);
+	if (isChannelCorrect(gParameters[0]))
+	{
+		int channel = convertToInt(gParameters[0]);
+		double iGain = atof(gParameters[1]);
 
-	if (isReadCommand(gParameters[0]))
-	{
-		sendDouble(iGain, DEFAULT_NUM_DECIMALS);
-		sendAck();
-	}
-	else if (isDoubleWithinRange(newIGain, I_GAIN_MIN, I_GAIN_MAX))
-	{
-		iGain = newIGain;
-		sendAck();
+		if (isReadCommand(gParameters[1]))
+		{
+			sendDouble(iGains[channel], DEFAULT_NUM_DECIMALS);
+			sendAck();
+		}
+		else if (isDoubleWithinRange(iGain, I_GAIN_MIN, P_GAIN_MAX))
+		{
+			iGains[channel] = iGain;
+			sendAck();
+		}
+		else
+		{
+			sendDoubleRangeError(I_GAIN_MIN, I_GAIN_MAX, NO_UNIT);
+		}
 	}
 	else
 	{
-		sendDoubleRangeError(I_GAIN_MIN, I_GAIN_MAX, NO_UNIT);
+		sendChannelError();
 	}
 }
 
 void onCommandDerivativeGain()
 {
-	double newDGain = atof(gParameters[0]);
+	if (isChannelCorrect(gParameters[0]))
+	{
+		int channel = convertToInt(gParameters[0]);
+		double dGain = atof(gParameters[1]);
 
-	if (isReadCommand(gParameters[0]))
-	{
-		sendDouble(dGain, DEFAULT_NUM_DECIMALS);
-		sendAck();
-	}
-	else if (isDoubleWithinRange(newDGain, D_GAIN_MIN, D_GAIN_MAX))
-	{
-		dGain = newDGain;
-		sendAck();
+		if (isReadCommand(gParameters[1]))
+		{
+			sendDouble(dGains[channel], DEFAULT_NUM_DECIMALS);
+			sendAck();
+		}
+		else if (isDoubleWithinRange(dGain, D_GAIN_MIN, D_GAIN_MAX))
+		{
+			dGains[channel] = dGain;
+			sendAck();
+		}
+		else
+		{
+			sendDoubleRangeError(D_GAIN_MIN, D_GAIN_MAX, NO_UNIT);
+		}
 	}
 	else
 	{
-		sendDoubleRangeError(D_GAIN_MIN, D_GAIN_MAX, NO_UNIT);
+		sendChannelError();
 	}
 }
 
 void onCommandLoopInterval()
 {
-	int newLoopInterval = convertToInt(gParameters[0]);
+	if (isChannelCorrect(gParameters[0]))
+	{
+		int channel = convertToInt(gParameters[0]);
+		int loopInterval = convertToInt(gParameters[1]);
 
-	if (isReadCommand(gParameters[0]))
-	{
-		sendInt(loopInterval);
-		sendAck();
-	}
-	else if (isIntWithinRange(newLoopInterval, PID_INTERVAL_SEC_MIN, PID_INTERVAL_SEC_MAX))
-	{
-		loopInterval = newLoopInterval;
-		sendAck();
+		if (isReadCommand(gParameters[1]))
+		{
+			sendInt(loopIntervals[channel]);
+			sendAck();
+		}
+		else if (isIntWithinRange(loopInterval, PID_INTERVAL_SEC_MIN, PID_INTERVAL_SEC_MAX))
+		{
+			loopIntervals[channel] = loopInterval;
+			sendAck();
+		}
+		else
+		{
+			sendIntRangeError(PID_INTERVAL_SEC_MIN, PID_INTERVAL_SEC_MAX, MILLISECONDS_UNIT);
+		}
 	}
 	else
 	{
-		sendIntRangeError(PID_INTERVAL_SEC_MIN, PID_INTERVAL_SEC_MAX, MILLISECONDS_UNIT);
+		sendChannelError();
 	}
 }
 
 void onCommandSetPoint()
 {
-	double newSetPoint = atof(gParameters[0]);
+	if (isChannelCorrect(gParameters[0]))
+	{
+		int channel = convertToInt(gParameters[0]);
+		double setPoint = atof(gParameters[1]);
 
-	if (isReadCommand(gParameters[0]))
-	{
-		sendDouble(setPoint, DEFAULT_NUM_DECIMALS);
-		sendAck();
-	}
-	else if (isDoubleWithinRange(newSetPoint, SET_POINT_MIN, SET_POINT_MAX))
-	{
-		setPoint = newSetPoint;
-		sendAck();
+		if (isReadCommand(gParameters[1]))
+		{
+			sendDouble(setPoints[channel], DEFAULT_NUM_DECIMALS);
+			sendAck();
+		}
+		else if (isDoubleWithinRange(setPoint, SET_POINT_MIN, SET_POINT_MAX))
+		{
+			setPoints[channel] = setPoint;
+			sendAck();
+		}
+		else
+		{
+			sendDoubleRangeError(SET_POINT_MIN, SET_POINT_MAX, DEGREES_UNIT);
+		}
 	}
 	else
 	{
-		sendDoubleRangeError(SET_POINT_MIN, SET_POINT_MAX, DEGREES_UNIT);
+		sendChannelError();
 	}
 }
 
@@ -210,28 +250,36 @@ void onCommandMaxDuty()
 
 void onCommandDuty()
 {
-	int duty = convertToInt(gParameters[0]);
+	if (isChannelCorrect(gParameters[0]))
+	{
+		int channel = convertToInt(gParameters[0]);
+		int duty = convertToInt(gParameters[1]);
 
-	if (isReadCommand(gParameters[0]))
-	{
-		sendInt(currentDutyCycle);
-		sendAck();
-	}
-	else if (!isPidEnabled)
-	{
-		if (isIntWithinRange(duty, PWM_DUTY_MIN, PWM_DUTY_MAX))
+		if (isReadCommand(gParameters[1]))
 		{
-			setPwmDutyCycle(duty);
+			sendInt(currentDuties[channel]);
 			sendAck();
+		}
+		else if (!isPidEnabled)
+		{
+			if (isIntWithinRange(duty, PWM_DUTY_MIN, PWM_DUTY_MAX))
+			{
+				currentDuties[channel] = duty;
+				sendAck();
+			}
+			else
+			{
+				sendIntRangeError(PWM_DUTY_MIN, PWM_DUTY_MAX, NO_UNIT);
+			}
 		}
 		else
 		{
-			sendIntRangeError(PWM_DUTY_MIN, PWM_DUTY_MAX, NO_UNIT);
+			sendError("Cannot change duty value while PID control is on.");
 		}
 	}
 	else
 	{
-		sendError("Cannot change duty value while PID control is on.");
+		sendChannelError();
 	}
 }
 
