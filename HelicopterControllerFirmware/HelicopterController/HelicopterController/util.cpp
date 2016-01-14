@@ -5,12 +5,12 @@
 #include "globals.h"
 #include "util.h"
 
-void send(char* str)
+void send(const char* str)
 {
 	char tmpStr[256];
 	sprintf(tmpStr, "%s\r\n", str);
 
-	Serial.write(tmpStr);
+	Serial.print(tmpStr);
 }
 
 void sendNack()

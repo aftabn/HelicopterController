@@ -237,26 +237,18 @@ void onCommandDuty()
 
 void onCommandTest()
 {
-	double a = 15.0;
-	double b = 1.5;
+	double analogVoltage = atof(gParameters[0]);
 
-	sendDouble(a / b, DEFAULT_NUM_DECIMALS);
-}
-
-void onCommandHelp()
-{
-	send("Command: *IDN? \r\nDescription: Returns the identity of the controller\r\n");
-	send("Command: SYS \r\nArg: VER \r\nDescription: Gets information about jig or the controller\r\n");
-	send("Command: ECHO \r\nArg: Any string \r\nDescription: Returns entered string\r\n");
-	send("Command: P \r\nArg: None or Value\r\nDescription: Gets or sets PGain for selected channel's PID control loop\r\n");
-	send("Command: I \r\nArg: None or Value\r\nDescription: Gets or sets IGain for selected channel's PID control loop\r\n");
-	send("Command: D \r\nArg: None or Value\r\nDescription: Gets or sets DGain for selected channel's PID control loop\r\n");
-	send("Command: INTERVAL \r\nArg: None or Value in milliseconds\r\nDescription: Gets or sets interval for selected channel's PID control loop\r\n");
-	send("Command: DUTY \r\nArg: None or Value (0 or 1)\r\nDescription: Gets or sets the value for the selected channel's duty cycle\r\n");
-	send("Command: MAXDUTY \r\nArg1: None or Value (0 to 100)\r\nDescription: Gets or sets the maximum duty cycle\r\n");
-	send("Command: SP \r\nArg: None or Value in degrees\r\nDescription: Gets or sets the set point temperature for the designated heater\r\n");
-	send("Command: PID \r\nArg: ON or OFF \r\nDescription: Enables or disables PID loop control\r\n");
-	send("Command: DEBUG \r\nArg: ON or OFF \r\nDescription: Enables or disables additional debugging info\r\n");
+	if (isDoubleWithinRange(analogVoltage, 0, 5))
+	{
+		int voltage = (int)(analogVoltage / 5.0 * 255);
+		analogWrite(9, voltage);
+		sendAck();
+	}
+	else
+	{
+		sendDoubleRangeError(0, 5, VOLTAGE_UNIT);
+	}
 }
 
 void handleCommandUnknown(char* command)

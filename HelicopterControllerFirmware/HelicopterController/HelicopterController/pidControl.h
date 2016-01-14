@@ -21,11 +21,11 @@
 #define PWM_DUTY_MIN				0
 #define PWM_DUTY_MAX				100
 
-#define SET_POINT_MIN				15.0
-#define SET_POINT_MAX				140.0
+#define SET_POINT_MIN				0.0
+#define SET_POINT_MAX				360.0
 
-#define PID_INTERVAL_SEC_MIN		1
-#define PID_INTERVAL_SEC_MAX		10
+#define PID_INTERVAL_SEC_MIN		0.1
+#define PID_INTERVAL_SEC_MAX		5.0
 
 #define DEFAULT_P_GAIN				P_GAIN_MIN
 #define DEFAULT_I_GAIN				I_GAIN_MIN

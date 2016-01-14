@@ -8,15 +8,14 @@
 #include "controller.h"
 #include "commandHandlers.h"
 
+char lineBuffer[INT_LINE_SIZE_MAX + 1];
+
 void initializeController()
 {
 	Serial.begin(115200);
-	pinMode(HEARTBEAT_LED, OUTPUT);
-}
 
-void toggleHeartbeatLED()
-{
-	digitalWrite(HEARTBEAT_LED, !digitalRead(HEARTBEAT_LED));
+	//pinMode(9, OUTPUT);
+	pinMode(HEARTBEAT_LED, OUTPUT);
 }
 
 void processCommand(char *command)
@@ -72,10 +71,6 @@ void processCommand(char *command)
 	else if (0 == strcmp(command, "TEST"))
 	{
 		onCommandTest();
-	}
-	else if (0 == strcmp(command, "HELP"))
-	{
-		onCommandHelp();
 	}
 	else
 	{
@@ -154,15 +149,15 @@ void scanSerialPort()
 			if (++heartBeatTimer >= 250000)
 			{
 				heartBeatTimer = 0;
-				toggleHeartbeatLED();
+				digitalWrite(HEARTBEAT_LED, !digitalRead(HEARTBEAT_LED));
 			}
 		}
 
-		incomingChar = Serial.read();
+		incomingChar = (char)Serial.read();
 
 		if (incomingChar)
 		{
-			if (incomingChar == '\r')  // 13 \r
+			if (incomingChar == '\n')  // 13 = \r
 			{
 				lineBuffer[linePointer] = 0;
 				linePointer = 0;
@@ -171,7 +166,7 @@ void scanSerialPort()
 				send(tmpstr);
 				processLine(lineBuffer);
 			}
-			else if (incomingChar == '\n') // 10 \n
+			else if (incomingChar == '\r') // 10 = \n
 			{
 			}
 			else

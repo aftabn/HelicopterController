@@ -51,3 +51,13 @@ void disablePid(void)
 {
 	isPidEnabled = false;
 }
+
+void enableDebug(void)
+{
+	isDebugMode = true;
+}
+
+void disableDebug(void)
+{
+	isDebugMode = false;
+}

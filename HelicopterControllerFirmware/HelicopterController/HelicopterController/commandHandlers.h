@@ -6,6 +6,7 @@
 #define NO_UNIT				""
 #define MILLISECONDS_UNIT	"ms"
 #define DEGREES_UNIT		"degs"
+#define VOLTAGE_UNIT		"V"
 
 void onCommandEcho(void);
 void onCommandIdentity(void);

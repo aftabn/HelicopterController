@@ -8,7 +8,7 @@
 #define DEFAULT_NUM_DECIMALS	2
 #define MIN_NUMBER_FLOAT_CHARS	4
 
-void send(char *str);
+void send(const char *str);
 void sendNack(void);
 void sendAck(void);
 void sendError(char* str);
