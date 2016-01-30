@@ -1,0 +1,28 @@
+long currentPosition = 0;
+int previousEncoderA, previousEncoderB;
+int currentEncoderA, currentEncoderB;
+
+void setup()
+{
+  Serial.begin(115200);
+  pinMode(13, OUTPUT);
+  pinMode(4, INPUT); 
+  pinMode(5, INPUT); 
+  previousEncoderA = digitalRead(4);
+  previousEncoderB = digitalRead(5);
+  attachInterrupt(0, blink, RISING);
+}
+
+void loop()
+{
+  
+}
+
+void blink()
+{
+  currentEncoderA = digitalRead(4);
+  currentEncoderB = digitalRead(5);
+  
+  if (
+  ++currentPosition;
+}
