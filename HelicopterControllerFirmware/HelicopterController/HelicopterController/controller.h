@@ -1,4 +1,8 @@
-// controller.h
+/*
+Name: controller.h
+Created: 1/10/2016 1:09:10 PM
+Author:	Aftab
+*/
 
 #ifndef _CONTROLLER_h
 #define _CONTROLLER_h

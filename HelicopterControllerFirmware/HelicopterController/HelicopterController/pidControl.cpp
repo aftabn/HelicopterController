@@ -1,7 +1,10 @@
-//
-//
-//
+/*
+Name: pidControl.cpp
+Created: 1/10/2016 1:09:10 PM
+Author:	Aftab
+*/
 
+#include <SPI\SPI.h>
 #include "util.h"
 #include "pidControl.h"
 
@@ -20,8 +23,11 @@ double angleErrors[MAX_NUM_CHANNELS];
 double integratedAngleErrors[MAX_NUM_CHANNELS];
 double derivativeAnglesErrors[MAX_NUM_CHANNELS];
 
-void initializePwm(void)
+void initializeSPI(void)
 {
+	pinMode(DAC_SLAVE_SELECT, OUTPUT);
+
+	SPI.begin();
 }
 
 void initializePid(void)

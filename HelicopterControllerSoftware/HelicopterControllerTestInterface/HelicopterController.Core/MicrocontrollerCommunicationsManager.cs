@@ -16,7 +16,7 @@ namespace HelicopterController.Core
     public class MicrocontrollerCommunicationsManager : INotifyPropertyChanged, IDisposable
     {
         private const double DBL_DefaultTimeoutSeconds = 0.25;
-        private const string STR_DeviceName = "Arduino Mega";
+        private const string STR_DeviceName = "Arduino";
 
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly List<string> receivedPackets = new List<string>();

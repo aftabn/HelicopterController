@@ -1,4 +1,8 @@
-// commandHandlers.h
+/*
+Name: commandHandlers.h
+Created: 1/10/2016 1:09:10 PM
+Author:	Aftab
+*/
 
 #ifndef _COMMANDHANDLERS_h
 #define _COMMANDHANDLERS_h
@@ -19,7 +23,6 @@ void onCommandDerivativeGain(void);
 void onCommandLoopInterval(void);
 void onCommandSetPoint(void);
 void onCommandDuty(void);
-void onCommandMaxDuty(void);
 void onCommandStatus(void);
 void onCommandTest(void);
 void onCommandHelp(void);

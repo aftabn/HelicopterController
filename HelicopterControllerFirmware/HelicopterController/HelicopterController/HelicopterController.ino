@@ -10,8 +10,10 @@ Author:	Aftab
 void setup()
 {
 	initializeController();
-	initializePwm();
+	//initializePwm();
 	initializePid();
+	initializeSPI();
+	initializeDac();
 }
 
 void loop()

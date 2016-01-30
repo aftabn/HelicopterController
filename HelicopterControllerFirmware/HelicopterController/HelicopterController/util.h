@@ -1,4 +1,8 @@
-// util.h
+/*
+Name: util.h
+Created: 1/10/2016 1:09:10 PM
+Author:	Aftab
+*/
 
 #ifndef _UTIL_h
 #define _UTIL_h

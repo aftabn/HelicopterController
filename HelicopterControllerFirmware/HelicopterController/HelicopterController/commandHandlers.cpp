@@ -1,6 +1,8 @@
-//
-//
-//
+/*
+Name: commandHandlers.cpp
+Created: 1/10/2016 1:09:10 PM
+Author:	Aftab
+*/
 
 #include "globals.h"
 #include "util.h"
@@ -222,29 +224,6 @@ void onCommandPidLoopControl()
 	else
 	{
 		sendOnOffError();
-	}
-}
-
-void onCommandMaxDuty()
-{
-	if (isReadCommand(gParameters[0]))
-	{
-		sendInt(gMaximumDutyCycle);
-		sendAck();
-	}
-	else
-	{
-		int newMaximumDutyCycle = convertToInt(gParameters[0]);
-
-		if (isIntWithinRange(newMaximumDutyCycle, PWM_DUTY_MIN, PWM_DUTY_MAX))
-		{
-			gMaximumDutyCycle = newMaximumDutyCycle;
-			sendAck();
-		}
-		else
-		{
-			sendIntRangeError(PWM_DUTY_MIN, PWM_DUTY_MAX, NO_UNIT);
-		}
 	}
 }
 

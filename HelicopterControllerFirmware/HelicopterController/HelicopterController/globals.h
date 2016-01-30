@@ -1,4 +1,8 @@
-// globals.h
+/*
+Name: globals.h
+Created: 1/10/2016 1:09:10 PM
+Author:	Aftab
+*/
 
 #ifndef _GLOBALS_h
 #define _GLOBALS_h
@@ -14,8 +18,9 @@
 #define INT_DESCRIPTION_MAX			60
 
 #define HEARTBEAT_LED				13
+#define ENCODER_1A					4
+#define ENCODER_1B					5
 
 extern char gParameters[INT_PARAMETER_COUNT_MAX][INT_PARAMETER_LENGTH_MAX + 1];
-extern int gMaximumDutyCycle;
 
 #endif

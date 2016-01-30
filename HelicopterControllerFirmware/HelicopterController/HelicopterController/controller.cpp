@@ -1,6 +1,8 @@
-//
-//
-//
+/*
+Name: controller.cpp
+Created: 1/10/2016 1:09:10 PM
+Author:	Aftab
+*/
 
 #include "Arduino.h"
 #include "globals.h"
@@ -35,10 +37,6 @@ void processCommand(char *command)
 	else if (0 == strcmp(command, "DUTY"))
 	{
 		onCommandDuty();
-	}
-	else if (0 == strcmp(command, "MAXDUTY"))
-	{
-		onCommandMaxDuty();
 	}
 	else if (0 == strcmp(command, "P"))
 	{
