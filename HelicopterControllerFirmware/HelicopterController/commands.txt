@@ -1,0 +1,47 @@
+Command List for Helicopter Controller:
+
+*IDN?		
+Arg: None
+Description: Returns identity of controller
+
+ECHO		
+Arg: Any string 
+Description: Returns entered string
+
+SYS		
+Arg: VER 
+Description: Returns firmware version
+
+P
+Arg: None or Value
+Description: Gets or sets PGain for selected channel's PID control loop
+I
+Arg: None or Value
+Description: Gets or sets IGain for selected channel's PID control loop
+D
+Arg: None or Value
+Description: Gets or sets DGain for selected channel's PID control loop
+
+INTERVAL
+Arg: None or Value in milliseconds
+Description: Gets or sets interval for selected channel's PID control loop
+
+DUTY
+Arg: None or Value (0 or 1)
+Description: Gets or sets the value for the selected channel's duty cycle
+
+MAXDUTY
+Arg1: None or Value (0 to 100)
+Description: Gets or sets the maximum duty cycle
+
+SP
+Arg: None or Value in degrees Celcius
+Description: Gets or sets the set point temperature for the designated heater
+
+PID
+Arg: ON or OFF
+Description: Enables or disables PID loop control
+
+DEBUG
+Arg: ON or OFF
+Description: Enables or disables additional debugging info
