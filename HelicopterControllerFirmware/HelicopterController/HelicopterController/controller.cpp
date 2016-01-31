@@ -34,9 +34,9 @@ void processCommand(char *command)
 	{
 		onCommandSystem();
 	}
-	else if (0 == strcmp(command, "DUTY"))
+	else if (0 == strcmp(command, "OUTPUT"))
 	{
-		onCommandDuty();
+		onCommandOutput();
 	}
 	else if (0 == strcmp(command, "P"))
 	{

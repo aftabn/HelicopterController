@@ -227,7 +227,7 @@ void onCommandPidLoopControl()
 	}
 }
 
-void onCommandDuty()
+void onCommandOutput()
 {
 	if (isChannelCorrect(gParameters[0]))
 	{
@@ -236,24 +236,24 @@ void onCommandDuty()
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendInt(currentDuties[channel]);
+			sendInt(currentOutputs[channel]);
 			sendAck();
 		}
 		else if (!isPidEnabled)
 		{
-			if (isIntWithinRange(duty, PWM_DUTY_MIN, PWM_DUTY_MAX))
+			if (isIntWithinRange(duty, PID_OUTPUT_MIN, PID_OUTPUT_MAX))
 			{
-				currentDuties[channel] = duty;
+				currentOutputs[channel] = duty;
 				sendAck();
 			}
 			else
 			{
-				sendIntRangeError(PWM_DUTY_MIN, PWM_DUTY_MAX, NO_UNIT);
+				sendIntRangeError(PID_OUTPUT_MIN, PID_OUTPUT_MAX, PERCENTAGE_UNIT);
 			}
 		}
 		else
 		{
-			sendError("Cannot change duty value while PID control is on.");
+			sendError("Cannot change percentage output while PID control is on.");
 		}
 	}
 	else

@@ -8,6 +8,7 @@ Author:	Aftab
 #define _COMMANDHANDLERS_h
 
 #define NO_UNIT				""
+#define PERCENTAGE_UNIT		"%"
 #define MILLISECONDS_UNIT	"ms"
 #define DEGREES_UNIT		"degs"
 #define VOLTAGE_UNIT		"V"
@@ -22,7 +23,7 @@ void onCommandIntegralGain(void);
 void onCommandDerivativeGain(void);
 void onCommandLoopInterval(void);
 void onCommandSetPoint(void);
-void onCommandDuty(void);
+void onCommandOutput(void);
 void onCommandStatus(void);
 void onCommandTest(void);
 void onCommandHelp(void);
