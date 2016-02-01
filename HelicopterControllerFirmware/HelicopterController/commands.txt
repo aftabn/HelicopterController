@@ -30,10 +30,6 @@ DUTY
 Arg: None or Value (0 or 1)
 Description: Gets or sets the value for the selected channel's duty cycle
 
-MAXDUTY
-Arg1: None or Value (0 to 100)
-Description: Gets or sets the maximum duty cycle
-
 SP
 Arg: None or Value in degrees Celcius
 Description: Gets or sets the set point temperature for the designated heater
