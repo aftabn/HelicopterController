@@ -10,11 +10,13 @@ Author:	Aftab
 
 volatile bool isPidEnabled;
 volatile bool isDebugMode;
+volatile bool isSafetyOn;
+
+volatile int pidLoopInterval;
 
 volatile double pGains[MAX_NUM_CHANNELS];
 volatile double iGains[MAX_NUM_CHANNELS];
 volatile double dGains[MAX_NUM_CHANNELS];
-volatile double loopIntervals[MAX_NUM_CHANNELS];
 volatile double setPoints[MAX_NUM_CHANNELS];
 volatile MotorDriverType motorDriverTypes[MAX_NUM_CHANNELS];
 volatile double currentAngles[MAX_NUM_CHANNELS];
@@ -59,19 +61,21 @@ void initializeSPI(void)
 	SPI.begin();
 	SPI.setBitOrder(MSBFIRST);
 	SPI.setDataMode(SPI_MODE0);
-	SPI.begin();
 }
 
 void initializePid(void)
 {
+	pidLoopInterval = DEFAULT_PID_INTERVAL_MS;
+	isSafetyOn = true;
+
 	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
 	{
 		pGains[channel] = DEFAULT_P_GAIN;
 		iGains[channel] = DEFAULT_I_GAIN;
 		dGains[channel] = DEFAULT_D_GAIN;
-		loopIntervals[channel] = PID_INTERVAL_SEC_MIN;
 		setPoints[channel] = DEFAULT_SET_POINT;
 		directions[channel] = (Direction)DEFAULT_DIRECTION;
+		motorDriverTypes[channel] = (MotorDriverType)DEFAULT_MOTOR_DRIVER_TYPE;
 	}
 }
 
@@ -111,8 +115,8 @@ void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOut
 	double currentAngle = currentAngles[channel];
 
 	angleErrors[channel] = setPoints[channel] - currentAngles[channel];
-	integratedAngleErrors[channel] = (abs(angleErrors[channel] < I_GAIN_THRESHHOLD_ERROR) ? integratedAngleErrors[channel] + angleErrors[channel] * loopIntervals[channel] : 0);
-	derivativeAnglesErrors[channel] = (currentAngles[channel] - previousAngles[channel]) / loopIntervals[channel];
+	integratedAngleErrors[channel] = (abs(angleErrors[channel] < I_GAIN_THRESHHOLD_ERROR) ? integratedAngleErrors[channel] + angleErrors[channel] * pidLoopInterval : 0);
+	derivativeAnglesErrors[channel] = (currentAngles[channel] - previousAngles[channel]) / pidLoopInterval;
 
 	previousAngles[channel] = currentAngle;
 

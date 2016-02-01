@@ -4,30 +4,28 @@ Created: 1/10/2016 1:09:10 PM
 Author:	Aftab
 */
 
+#include <avr\pgmspace.h>
 #include "globals.h"
 #include "util.h"
 
-void send(const char* str)
-{
-	char tmpStr[256];
-	sprintf(tmpStr, "%s\r\n", str);
-
-	Serial.print(tmpStr);
-}
+// Implementation of sending had to change due to arduino storing string literals in dynamic memory
+// Used F() to force storage of literals in PROGMEM, which requires directly using Serial.println() to send
+// This is because Serial.print has the proper overload to handle [const PROGMEM char *] conversion
+// Source: https://www.arduino.cc/en/Reference/PROGMEM
 
 void sendNack()
 {
-	send("ERROR");
+	Serial.println(F("ERROR"));
 }
 
 void sendAck()
 {
-	send("OK");
+	Serial.println(F("OK"));
 }
 
-void sendError(char* str)
+void sendError(const char* str)
 {
-	send(str);
+	Serial.println(str);
 	sendNack();
 }
 
@@ -35,32 +33,54 @@ void sendInt(int num)
 {
 	char tmpstr[20];
 	sprintf(tmpstr, "%d", num);
-	send(tmpstr);
+	Serial.println(tmpstr);
 }
 
 // Using dtostrf instead of sprintf as it works better on embedded systems and doesn't
 // require the full version of stdlib
 // Source: http://blog.protoneer.co.nz/arduino-float-to-string-that-actually-works/
-
 void sendDouble(double num, int numDecimals)
 {
 	char tmpstr[20];
 	dtostrf(num, MIN_NUMBER_FLOAT_CHARS, numDecimals, tmpstr);
-	send(tmpstr);
+	Serial.println(tmpstr);
 }
 
 void sendOnOffStatus(bool isOn)
 {
 	char tmpstr[5];
 	sprintf(tmpstr, "%s", isOn ? "ON" : "OFF");
-	send(tmpstr);
+	Serial.println(tmpstr);
 }
 
 void sendOneOrZeroStatus(bool isHigh)
 {
 	char tmpstr[3];
 	sprintf(tmpstr, "%d", isHigh ? 1 : 0);
-	send(tmpstr);
+	Serial.println(tmpstr);
+}
+
+void sendDirectionStatus(Direction direction)
+{
+	char tmpstr[17];
+	sprintf(tmpstr, "%s", direction == Clockwise ? "Clockwise" : "CounterClockwise");
+	Serial.println(tmpstr);
+}
+
+void sendMotorDriverStatus(MotorDriverType motorDriverType)
+{
+	char tmpstr[17];
+
+	if (motorDriverType == AnalogVoltage)
+	{
+		sprintf(tmpstr, "%s", "AnalogVoltage");
+	}
+	else if (motorDriverType == Frequency)
+	{
+		sprintf(tmpstr, "%s", "Frequency");
+	}
+
+	Serial.println(tmpstr);
 }
 
 void sendIntRangeError(int lowerLimit, int upperLimit, char* unit)
@@ -85,27 +105,44 @@ void sendDoubleRangeError(double lowerLimit, double upperLimit, char* unit)
 
 void sendChannelError()
 {
-	sendError("Invalid channel");
+	Serial.println(F("Invalid channel"));
+	sendNack();
 }
 
 void sendSyntaxError()
 {
-	sendError("Check syntax");
+	Serial.println(F("Check syntax"));
+	sendNack();
 }
 
 void sendReadOnlyError()
 {
-	sendError("Read only commands have no additional arguments");
+	Serial.println(F("Read only commands have no additional arguments"));
+	sendNack();
 }
 
 void sendOnOffError()
 {
-	sendError("Value must be ON or OFF");
+	Serial.println(F("Value must be ON or OFF"));
+	sendNack();
 }
 
 void sendOneOrZeroError()
 {
-	sendError("Value must be 0 or 1");
+	Serial.println(F("Value must be 0 or 1"));
+	sendNack();
+}
+
+void sendDirectionError()
+{
+	Serial.println(F("Value must be CW or CCW"));
+	sendNack();
+}
+
+void sendMotorDriverError()
+{
+	Serial.println(F("Value must be ANALOG or FREQUENCY"));
+	sendNack();
 }
 
 bool isOnCommandArg(char* arg)
@@ -118,6 +155,30 @@ bool isOffCommandArg(char* arg)
 {
 	upperCaseString(arg);
 	return (0 == stricmp(arg, "OFF") || 0 == stricmp(arg, "0"));
+}
+
+bool isClockwiseCommandArg(char* arg)
+{
+	upperCaseString(arg);
+	return (0 == stricmp(arg, "CW") || 0 == stricmp(arg, "0"));
+}
+
+bool isCounterClockwiseCommandArg(char* arg)
+{
+	upperCaseString(arg);
+	return (0 == stricmp(arg, "CCW") || 0 == stricmp(arg, "1"));
+}
+
+bool isAnalogVoltageCommandArg(char* arg)
+{
+	upperCaseString(arg);
+	return (0 == stricmp(arg, "ANALOG") || 0 == stricmp(arg, "0"));
+}
+
+bool isFrequencyCommandArg(char* arg)
+{
+	upperCaseString(arg);
+	return (0 == stricmp(arg, "FREQUENCY") || 0 == stricmp(arg, "1"));
 }
 
 bool isReadCommand(char* arg)

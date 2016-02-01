@@ -10,21 +10,27 @@ Author:	Aftab
 #define NO_UNIT				""
 #define PERCENTAGE_UNIT		"%"
 #define MILLISECONDS_UNIT	"ms"
+#define HERTZ_UNIT			"Hz"
 #define DEGREES_UNIT		"degs"
 #define VOLTAGE_UNIT		"V"
 
-void onCommandEcho(void);
 void onCommandIdentity(void);
 void onCommandSystem(void);
-void onCommandDebug(void);
+void onCommandEcho(void);
 void onCommandPidLoopControl(void);
+void onCommandDebug(void);
+void onCommandSafety(void);
+void onCommandOutput(void);
+void onCommandDirection(void);
+void onCommandMotorDriver(void);
 void onCommandProportionalGain(void);
 void onCommandIntegralGain(void);
 void onCommandDerivativeGain(void);
 void onCommandLoopInterval(void);
 void onCommandSetPoint(void);
-void onCommandOutput(void);
-void onCommandStatus(void);
+void onCommandDacVoltage(void);
+void onCommandFrequencyOutput(void);
+void onCommandState(void);
 void onCommandTest(void);
 void onCommandHelp(void);
 void handleCommandUnknown(char *command);

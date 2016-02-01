@@ -34,9 +34,29 @@ void processCommand(char *command)
 	{
 		onCommandSystem();
 	}
+	else if (0 == strcmp(command, "PID"))
+	{
+		onCommandPidLoopControl();
+	}
+	else if (0 == strcmp(command, "DEBUG"))
+	{
+		onCommandDebug();
+	}
+	else if (0 == strcmp(command, "SAFETY"))
+	{
+		onCommandSafety();
+	}
 	else if (0 == strcmp(command, "OUTPUT"))
 	{
 		onCommandOutput();
+	}
+	else if (0 == strcmp(command, "DIRECTION"))
+	{
+		onCommandDirection();
+	}
+	else if (0 == strcmp(command, "DRIVER"))
+	{
+		onCommandMotorDriver();
 	}
 	else if (0 == strcmp(command, "P"))
 	{
@@ -58,17 +78,25 @@ void processCommand(char *command)
 	{
 		onCommandSetPoint();
 	}
-	else if (0 == strcmp(command, "DEBUG"))
+	else if (0 == strcmp(command, "VOLTAGE"))
 	{
-		onCommandDebug();
+		onCommandDacVoltage();
 	}
-	else if (0 == strcmp(command, "PID"))
+	else if (0 == strcmp(command, "FREQUENCY"))
 	{
-		onCommandPidLoopControl();
+		onCommandFrequencyOutput();
+	}
+	else if (0 == strcmp(command, "STATE"))
+	{
+		onCommandState();
 	}
 	else if (0 == strcmp(command, "TEST"))
 	{
 		onCommandTest();
+	}
+	else if (0 == strcmp(command, "HELP"))
+	{
+		onCommandHelp();
 	}
 	else
 	{
@@ -161,7 +189,7 @@ void scanSerialPort()
 				linePointer = 0;
 
 				sprintf(tmpstr, "> %s", lineBuffer);
-				send(tmpstr);
+				Serial.println(tmpstr);
 				processLine(lineBuffer);
 			}
 			else if (incomingChar == '\r') // 10 = \n

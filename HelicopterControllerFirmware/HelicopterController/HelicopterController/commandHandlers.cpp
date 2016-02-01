@@ -4,6 +4,7 @@ Created: 1/10/2016 1:09:10 PM
 Author:	Aftab
 */
 
+#include <avr\pgmspace.h>
 #include "globals.h"
 #include "util.h"
 #include "commandHandlers.h"
@@ -11,7 +12,7 @@ Author:	Aftab
 
 void onCommandIdentity()
 {
-	send(CONTROLLER_NAME);
+	Serial.println(CONTROLLER_NAME);
 	sendAck();
 }
 
@@ -19,7 +20,7 @@ void onCommandEcho()
 {
 	if (gParameters[0] != NULL)
 	{
-		send(gParameters[0]);
+		Serial.println(gParameters[0]);
 		sendAck();
 	}
 	else
@@ -38,6 +39,29 @@ void onCommandSystem()
 	else
 	{
 		sendSyntaxError();
+	}
+}
+
+void onCommandPidLoopControl()
+{
+	if (isReadCommand(gParameters[0]))
+	{
+		sendOnOffStatus(isPidEnabled);
+		sendAck();
+	}
+	else if (isOnCommandArg(gParameters[0]))
+	{
+		enablePid();
+		sendAck();
+	}
+	else if (isOffCommandArg(gParameters[0]))
+	{
+		disablePid();
+		sendAck();
+	}
+	else
+	{
+		sendOnOffError();
 	}
 }
 
@@ -61,6 +85,145 @@ void onCommandDebug()
 	else
 	{
 		sendOnOffError();
+	}
+}
+
+void onCommandSafety()
+{
+	if (isReadCommand(gParameters[0]))
+	{
+		sendOnOffStatus(isSafetyOn);
+		sendAck();
+	}
+	else if (isOnCommandArg(gParameters[0]))
+	{
+		isSafetyOn = true;
+		sendAck();
+	}
+	else if (isOffCommandArg(gParameters[0]))
+	{
+		isSafetyOn = false;
+		sendAck();
+	}
+	else
+	{
+		sendOnOffError();
+	}
+}
+
+void onCommandOutput()
+{
+	if (isChannelCorrect(gParameters[0]))
+	{
+		int channel = convertToInt(gParameters[0]);
+		int output = convertToInt(gParameters[1]);
+
+		if (isReadCommand(gParameters[1]))
+		{
+			sendInt(currentOutputs[channel]);
+			sendAck();
+		}
+		else if (!isPidEnabled)
+		{
+			if (isIntWithinRange(output, PID_OUTPUT_MIN, PID_OUTPUT_MAX))
+			{
+				currentOutputs[channel] = output;
+				sendAck();
+			}
+			else
+			{
+				sendIntRangeError(PID_OUTPUT_MIN, PID_OUTPUT_MAX, PERCENTAGE_UNIT);
+			}
+		}
+		else
+		{
+			Serial.println(F("Cannot change percentage output while PID control is on."));
+			sendNack();
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
+void onCommandDirection()
+{
+	if (isChannelCorrect(gParameters[0]))
+	{
+		int channel = convertToInt(gParameters[0]);
+
+		if (isReadCommand(gParameters[1]))
+		{
+			sendDirectionStatus(directions[channel]);
+			sendAck();
+		}
+		else if (!isPidEnabled)
+		{
+			if (isClockwiseCommandArg(gParameters[1]))
+			{
+				directions[channel] = Clockwise;
+				sendAck();
+			}
+			else if (isCounterClockwiseCommandArg(gParameters[1]))
+			{
+				directions[channel] = CounterClockwise;
+				sendAck();
+			}
+			else
+			{
+				sendDirectionError();
+			}
+		}
+		else
+		{
+			Serial.println(F("Cannot change direction while PID control is on."));
+			sendNack();
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
+void onCommandMotorDriver()
+{
+	if (isChannelCorrect(gParameters[0]))
+	{
+		int channel = convertToInt(gParameters[0]);
+
+		if (isReadCommand(gParameters[1]))
+		{
+			sendMotorDriverStatus(motorDriverTypes[channel]);
+			sendAck();
+		}
+		else if (!isPidEnabled)
+		{
+			if (isAnalogVoltageCommandArg(gParameters[1]))
+			{
+				motorDriverTypes[channel] = AnalogVoltage;
+				sendAck();
+			}
+			else if (isFrequencyCommandArg(gParameters[1]))
+			{
+				motorDriverTypes[channel] = Frequency;
+				sendAck();
+			}
+			else
+			{
+				sendMotorDriverError();
+			}
+		}
+		else
+		{
+			Serial.println(F("Cannot change driver type while PID control is on."));
+			sendNack();
+		}
+	}
+	else
+	{
+		sendChannelError();
 	}
 }
 
@@ -148,34 +311,6 @@ void onCommandDerivativeGain()
 	}
 }
 
-void onCommandLoopInterval()
-{
-	if (isChannelCorrect(gParameters[0]))
-	{
-		int channel = convertToInt(gParameters[0]);
-		int loopInterval = convertToInt(gParameters[1]);
-
-		if (isReadCommand(gParameters[1]))
-		{
-			sendInt(loopIntervals[channel]);
-			sendAck();
-		}
-		else if (isIntWithinRange(loopInterval, PID_INTERVAL_SEC_MIN, PID_INTERVAL_SEC_MAX))
-		{
-			loopIntervals[channel] = loopInterval;
-			sendAck();
-		}
-		else
-		{
-			sendIntRangeError(PID_INTERVAL_SEC_MIN, PID_INTERVAL_SEC_MAX, MILLISECONDS_UNIT);
-		}
-	}
-	else
-	{
-		sendChannelError();
-	}
-}
-
 void onCommandSetPoint()
 {
 	if (isChannelCorrect(gParameters[0]))
@@ -204,56 +339,54 @@ void onCommandSetPoint()
 	}
 }
 
-void onCommandPidLoopControl()
+void onCommandLoopInterval()
 {
+	int loopInterval = convertToInt(gParameters[0]);
+
 	if (isReadCommand(gParameters[0]))
 	{
-		sendOnOffStatus(isPidEnabled);
+		sendInt(pidLoopInterval);
 		sendAck();
 	}
-	else if (isOnCommandArg(gParameters[0]))
+	else if (isIntWithinRange(loopInterval, PID_INTERVAL_MS_MIN, PID_INTERVAL_MS_MAX))
 	{
-		enablePid();
-		sendAck();
-	}
-	else if (isOffCommandArg(gParameters[0]))
-	{
-		disablePid();
+		pidLoopInterval = loopInterval;
 		sendAck();
 	}
 	else
 	{
-		sendOnOffError();
+		sendIntRangeError(PID_INTERVAL_MS_MIN, PID_INTERVAL_MS_MAX, MILLISECONDS_UNIT);
 	}
 }
 
-void onCommandOutput()
+void onCommandDacVoltage()
 {
 	if (isChannelCorrect(gParameters[0]))
 	{
-		int channel = convertToInt(gParameters[0]);
-		int duty = convertToInt(gParameters[1]);
+		if (!isSafetyOn)
+		{
+			int channel = convertToInt(gParameters[0]);
+			double voltage = atof(gParameters[1]);
 
-		if (isReadCommand(gParameters[1]))
-		{
-			sendInt(currentOutputs[channel]);
-			sendAck();
-		}
-		else if (!isPidEnabled)
-		{
-			if (isIntWithinRange(duty, PID_OUTPUT_MIN, PID_OUTPUT_MAX))
+			if (isReadCommand(gParameters[1]))
 			{
-				currentOutputs[channel] = duty;
+				Serial.println(F("Reading of voltage is not implemented"));
+				sendNack();
+			}
+			else if (isDoubleWithinRange(voltage, MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE))
+			{
+				setDacVoltage(channel, voltage);
 				sendAck();
 			}
 			else
 			{
-				sendIntRangeError(PID_OUTPUT_MIN, PID_OUTPUT_MAX, PERCENTAGE_UNIT);
+				sendDoubleRangeError(MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE, VOLTAGE_UNIT);
 			}
 		}
 		else
 		{
-			sendError("Cannot change percentage output while PID control is on.");
+			Serial.println(F("Cannot change DAC voltage while safety is on."));
+			sendNack();
 		}
 	}
 	else
@@ -262,20 +395,89 @@ void onCommandOutput()
 	}
 }
 
-void onCommandTest()
+void onCommandFrequencyOutput()
 {
-	double analogVoltage = atof(gParameters[0]);
+	int frequency = convertToInt(gParameters[0]);
 
-	if (isDoubleWithinRange(analogVoltage, 0, 5))
+	if (!isSafetyOn)
 	{
-		int voltage = (int)(analogVoltage / 5.0 * 255);
-		analogWrite(9, voltage);
-		sendAck();
+		if (isReadCommand(gParameters[0]))
+		{
+			Serial.println(F("Reading of frequency is not implemented"));
+			sendNack();
+		}
+		else if (isIntWithinRange(frequency, MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY))
+		{
+			setFrequency(frequency);
+			sendAck();
+		}
+		else
+		{
+			sendIntRangeError(MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY, HERTZ_UNIT);
+		}
 	}
 	else
 	{
-		sendDoubleRangeError(0, 5, VOLTAGE_UNIT);
+		Serial.println(F("Cannot change frequency output while safety is on."));
+		sendNack();
 	}
+}
+
+void onCommandTest()
+{
+}
+
+// TODO: Update this
+void onCommandState()
+{
+	char tmpstr[50];
+	Serial.println(F("|===============================|"));
+	Serial.println(F("| Channel\t0\t1\t|"));
+	Serial.println(F("|-------------------------------|"));
+	sprintf(tmpstr, "| Output\t%d\t%d\t|", currentOutputs[0], currentOutputs[1]);
+	Serial.println(tmpstr);
+	sprintf(tmpstr, "| Angles\t%.2f\t%.2f\t|", currentAngles[0], currentAngles[1]);
+	Serial.println(tmpstr);
+	sprintf(tmpstr, "| P-Gain\t%.2f\t%.2f\t|", pGains[0], pGains[1]);
+	Serial.println(tmpstr);
+	sprintf(tmpstr, "| I-Gain\t%.2f\t%.2f\t|", iGains[0], iGains[1]);
+	Serial.println(tmpstr);
+	sprintf(tmpstr, "| D-Gain\t%.2f\t%.2f\t|", dGains[0], dGains[1]);
+	Serial.println(tmpstr);
+	sprintf(tmpstr, "| Set Points\t%.2f\t%.2f\t|", setPoints[0], setPoints[1]);
+	Serial.println(tmpstr);
+	sprintf(tmpstr, "| PID Interval\t%d ms\t\t|", pidLoopInterval);
+	Serial.println(tmpstr);
+	sprintf(tmpstr, "| PID Control\t%s\t\t|", isPidEnabled ? "On" : "Off");
+	Serial.println(tmpstr);
+	sprintf(tmpstr, "| Safety\t%s\t\t|", isSafetyOn ? "On" : "Off");
+	Serial.println(tmpstr);
+	sprintf(tmpstr, "| Debug\t\t%s\t\t|", isDebugMode ? "On" : "Off");
+	Serial.println(tmpstr);
+	Serial.println("|===============================|");
+}
+
+void onCommandHelp()
+{
+	Serial.println(F("Command: *IDN? \r\nDescription: Returns xxx-xxxxxA-B (Kardium Part Number)\r\n"));
+	Serial.println(F("Command: SYS \r\nArg: VER \r\nDescription: Gets information about jig or the controller\r\n"));
+	Serial.println(F("Command: ECHO \r\nArg: Any string \r\nDescription: Returns entered string\r\n"));
+	Serial.println(F("Command: P \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value\r\nDescription: Gets or sets PGain for selected channel's PID control loop\r\n"));
+	Serial.println(F("Command: I \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value\r\nDescription: Gets or sets IGain for selected channel's PID control loop\r\n"));
+	Serial.println(F("Command: D \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value\r\nDescription: Gets or sets DGain for selected channel's PID control loop\r\n"));
+	Serial.println(F("Command: INTERVAL \r\nArg: None or Value in milliseconds\r\nDescription: Gets or sets interval for PID control loop\r\n"));
+
+	Serial.println(F("Command: OUTPUT \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value in percent\r\nDescription: Gets or sets the percentage motor output for the selected channel\r\n"));
+	Serial.println(F("Command: SP \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value in degrees\r\nDescription: Gets or sets the set point angle for the designated motor\r\n"));
+	Serial.println(F("Command: DIRECTION \r\nArg1: Channel (0 or 1) \r\nArg2: None, or Value (CW, CCW)\r\nDescription: Gets or sets the motor direction for the selected channel\r\n"));
+	Serial.println(F("Command: DRIVER \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value (Analog, Frequency)\r\nDescription: Gets or sets the motor driver type for the selected channel\r\n"));
+	Serial.println(F("Command: VOLTAGE \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value in volts\r\nDescription: Gets or sets the DAC voltage for selected channel\r\n"));
+	Serial.println(F("Command: FREQUENCY \r\nArg: None or Value in Hertz\r\nDescription: Gets or sets the frequency output\r\n"));
+
+	Serial.println(F("Command: PID \r\nArg: ON or OFF \r\nDescription: Enables or disables PID loop control\r\n"));
+	Serial.println(F("Command: SAFETY \r\nArg: ON, OFF \r\nDescription: Enables or disables direct changing of motor control outputs\r\n"));
+	Serial.println(F("Command: STATUS \r\nArg: None \r\nDescription: Returns debugging info regarding controller variables\r\n"));
+	Serial.println(F("Command: DEBUG \r\nArg: ON or OFF \r\nDescription: Enables or disables additional debugging info\r\n"));
 }
 
 void handleCommandUnknown(char* command)
@@ -293,6 +495,6 @@ void handleCommandUnknown(char* command)
 		}
 	}
 
-	send(tmpstr);
+	Serial.println(tmpstr);
 	sendNack();
 }

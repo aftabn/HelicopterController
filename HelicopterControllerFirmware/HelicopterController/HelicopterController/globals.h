@@ -17,7 +17,11 @@ Author:	Aftab
 #define INT_PARAMETER_LENGTH_MAX	20
 #define INT_DESCRIPTION_MAX			60
 
-#define HEARTBEAT_LED				13
+// TODO: This needs to be changed once hardware is finalized
+// Can't use pin 13 (on-board LED) since it's tied to SPI SCK
+// Source: http://playground.arduino.cc/Code/Spi
+#define HEARTBEAT_LED				6
+
 #define ENCODER_1A					4
 #define ENCODER_1B					5
 

@@ -24,10 +24,10 @@ Author:	Aftab
 #define MOTOR_MAX_VOLTAGE			5.0		// Full CW rotation
 #define MOTOR_MIN_VOLTAGE			0.0		// Full CCW rotation
 
-#define MOTOR_FREQUENCY_RANGE		5000	// Frequency range for each direction (i.e. 5000Hz range for each direction)
-#define MOTOR_IDLE_FREQUENCY		25000	// Idle frequency
+#define MOTOR_FREQUENCY_RANGE		15000	// Frequency range for each direction (i.e. 5000Hz range for each direction)
+#define MOTOR_IDLE_FREQUENCY		15000	// Idle frequency
 #define MOTOR_MAX_FREQUENCY			30000	// Full CW rotation
-#define MOTOR_MIN_FREQUENCY			20000	// Full CCW rotation
+#define MOTOR_MIN_FREQUENCY			0	// Full CCW rotation
 
 #define P_GAIN_MIN					0.01
 #define P_GAIN_MAX					10.0
@@ -45,35 +45,39 @@ Author:	Aftab
 #define SET_POINT_MIN				0.0
 #define SET_POINT_MAX				360.0
 
-#define PID_INTERVAL_SEC_MIN		0.01
-#define PID_INTERVAL_SEC_MAX		1.00
+#define PID_INTERVAL_MS_MIN			1		// Minimum timer 1 overflow is 1 ms
+#define PID_INTERVAL_MS_MAX			260		// Maximum timer 1 overflow is ~260 ms
 
 #define DEFAULT_DIRECTION			0		// Corresponds to Clockwise
+#define DEFAULT_MOTOR_DRIVER_TYPE	0		// Corresponds to AnalogVoltage
 #define DEFAULT_P_GAIN				P_GAIN_MIN
 #define DEFAULT_I_GAIN				I_GAIN_MIN
 #define DEFAULT_D_GAIN				D_GAIN_MIN
 #define DEFAULT_SET_POINT			SET_POINT_MIN
-#define DEFAULT_PID_INTERVAL_SEC	PID_INTERVAL_SEC_MIN
+#define DEFAULT_PID_INTERVAL_MS		PID_INTERVAL_MS_MIN
 
 enum Direction { Clockwise, CounterClockwise };
 enum MotorDriverType { AnalogVoltage, Frequency };
 
 extern volatile bool isPidEnabled;
 extern volatile bool isDebugMode;
+extern volatile bool isSafetyOn;
+
+extern volatile int pidLoopInterval;
 
 extern volatile double pGains[MAX_NUM_CHANNELS];
 extern volatile double iGains[MAX_NUM_CHANNELS];
 extern volatile double dGains[MAX_NUM_CHANNELS];
-extern volatile double loopIntervals[MAX_NUM_CHANNELS];
 extern volatile double setPoints[MAX_NUM_CHANNELS];
-extern volatile MotorDriverType motorDriverTypes[MAX_NUM_CHANNELS];
 extern volatile double currentAngles[MAX_NUM_CHANNELS];
 extern volatile double previousAngles[MAX_NUM_CHANNELS];
 extern volatile int currentOutputs[MAX_NUM_CHANNELS];
 extern volatile Direction directions[MAX_NUM_CHANNELS];
+extern volatile MotorDriverType motorDriverTypes[MAX_NUM_CHANNELS];
 
 void initializeSPI(void);
 void initializePid(void);
+void initializePidTimer(void);
 void initializeFrequencyOutput(void);
 void initializeDac(void);
 
