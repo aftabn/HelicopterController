@@ -36,7 +36,7 @@ void processCommand(char *command)
 	}
 	else if (0 == strcmp(command, "PID"))
 	{
-		onCommandPidLoopControl();
+		onCommandPidControl();
 	}
 	else if (0 == strcmp(command, "DEBUG"))
 	{

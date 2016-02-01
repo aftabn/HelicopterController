@@ -17,7 +17,7 @@ Author:	Aftab
 void onCommandIdentity(void);
 void onCommandSystem(void);
 void onCommandEcho(void);
-void onCommandPidLoopControl(void);
+void onCommandPidControl(void);
 void onCommandDebug(void);
 void onCommandSafety(void);
 void onCommandOutput(void);

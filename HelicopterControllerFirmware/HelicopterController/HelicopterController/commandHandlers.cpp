@@ -42,7 +42,7 @@ void onCommandSystem()
 	}
 }
 
-void onCommandPidLoopControl()
+void onCommandPidControl()
 {
 	if (isReadCommand(gParameters[0]))
 	{

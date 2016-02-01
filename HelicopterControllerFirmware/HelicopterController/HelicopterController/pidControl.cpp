@@ -18,18 +18,18 @@ volatile double pGains[MAX_NUM_CHANNELS];
 volatile double iGains[MAX_NUM_CHANNELS];
 volatile double dGains[MAX_NUM_CHANNELS];
 volatile double setPoints[MAX_NUM_CHANNELS];
-volatile MotorDriverType motorDriverTypes[MAX_NUM_CHANNELS];
 volatile double currentAngles[MAX_NUM_CHANNELS];
 volatile double previousAngles[MAX_NUM_CHANNELS];
 volatile int currentOutputs[MAX_NUM_CHANNELS];
 volatile Direction directions[MAX_NUM_CHANNELS];
+volatile MotorDriverType motorDriverTypes[MAX_NUM_CHANNELS];
 
 double angleErrors[MAX_NUM_CHANNELS];
 double integratedAngleErrors[MAX_NUM_CHANNELS];
 double derivativeAnglesErrors[MAX_NUM_CHANNELS];
 
 // This is the ISR that runs the PID algorithm and
-static void pidISR(void)
+ISR(TIMER1_OVF_vect)
 {
 	char tmpstr[100];
 
@@ -51,6 +51,14 @@ static void pidISR(void)
 			{
 				int frequency = adjustOutputToFrequency(direction, percentageOutput);
 				setFrequency(frequency);
+			}
+
+			if (isDebugMode)
+			{
+				sprintf(tmpstr, "[CH%d] SP: %.1f deg, Output: %d %%, Angle: %03.1f deg",
+					channel, setPoints[channel], currentOutputs[channel], currentAngles[channel]);
+
+				Serial.println(tmpstr);
 			}
 		}
 	}
@@ -104,9 +112,8 @@ void initializePidTimer(int numMilliseconds)
 	TCCR1B = 0;								// same for TCCR1B
 	TCNT1 = 0;								// initialize counter value to 0
 	OCR1A = 250 * numMilliseconds - 1;		// compare match register (16MHz/64/1000 = 250) * numMilliseconds - 1
-	TCCR1B |= (1 << WGM12);					// enable CTC mode
 	TCCR1B |= (1 << CS11) | (1 << CS10);	// 64 prescaler
-	TIMSK1 |= (1 << OCIE1A);				// enable timer compare interrupt
+	TIMSK1 |= (1 << TOIE1);					// enable timer overflow interrupt
 	interrupts();							// enable all interrupts
 }
 
@@ -187,6 +194,7 @@ void setFrequency(int frequency)
 
 void enablePid(void)
 {
+	initializePidTimer(pidLoopInterval);
 	isPidEnabled = true;
 }
 
