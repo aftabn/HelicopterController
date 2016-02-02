@@ -459,7 +459,7 @@ void onCommandState()
 
 void onCommandHelp()
 {
-	Serial.println(F("Command: *IDN? \r\nDescription: Returns xxx-xxxxxA-B (Kardium Part Number)\r\n"));
+	Serial.println(F("Command: *IDN? \r\nDescription: Returns the identity of the controller\r\n"));
 	Serial.println(F("Command: SYS \r\nArg: VER \r\nDescription: Gets information about jig or the controller\r\n"));
 	Serial.println(F("Command: ECHO \r\nArg: Any string \r\nDescription: Returns entered string\r\n"));
 	Serial.println(F("Command: P \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value\r\nDescription: Gets or sets PGain for selected channel's PID control loop\r\n"));

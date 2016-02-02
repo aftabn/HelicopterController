@@ -28,7 +28,7 @@ double angleErrors[MAX_NUM_CHANNELS];
 double integratedAngleErrors[MAX_NUM_CHANNELS];
 double derivativeAnglesErrors[MAX_NUM_CHANNELS];
 
-// This is the ISR that runs the PID algorithm and
+// This is the ISR that runs the PID algorithm
 ISR(TIMER1_OVF_vect)
 {
 	char tmpstr[100];
