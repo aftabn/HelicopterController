@@ -16,8 +16,7 @@ void initializeController()
 {
 	Serial.begin(115200);
 
-	pinMode(9, OUTPUT); // This is used for the test command of setting a pin to analog voltage
-	pinMode(HEARTBEAT_LED, OUTPUT);
+	pinMode(HEARTBEAT_LED_PIN, OUTPUT);
 }
 
 void processCommand(char *command)
@@ -179,7 +178,7 @@ void scanSerialPort()
 			if (++heartBeatTimer >= 250000)
 			{
 				heartBeatTimer = 0;
-				digitalWrite(HEARTBEAT_LED, !digitalRead(HEARTBEAT_LED));
+				digitalWrite(HEARTBEAT_LED_PIN, !digitalRead(HEARTBEAT_LED_PIN));
 			}
 		}
 

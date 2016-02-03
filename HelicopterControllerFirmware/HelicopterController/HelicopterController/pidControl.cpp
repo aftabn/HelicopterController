@@ -16,6 +16,8 @@ volatile bool isSafetyOn;
 
 volatile int pidLoopInterval;
 
+volatile bool previousEncoderA, previousEncoderB;
+
 volatile double pGains[MAX_NUM_CHANNELS];
 volatile double iGains[MAX_NUM_CHANNELS];
 volatile double dGains[MAX_NUM_CHANNELS];
@@ -68,7 +70,40 @@ ISR(TIMER1_OVF_vect)
 	}
 }
 
-void initializeSPI(void)
+static void quadratureDecoderISR(void)
+{
+	bool currentEncoderA, currentEncoderB;
+	bool isForward, isError;
+
+	currentEncoderA = (bool)digitalRead(ENCODER_CHA_PIN);
+	currentEncoderB = (bool)digitalRead(ENCODER_CHB_PIN);
+
+	if (!previousEncoderA && !previousEncoderB) {
+		isForward = currentEncoderA;
+	}
+	else if (previousEncoderA && !previousEncoderB) {
+		isForward = currentEncoderB;
+	}
+	else if (previousEncoderA && previousEncoderB) {
+		isForward = !currentEncoderA;
+	}
+	else if (!previousEncoderA && previousEncoderB) {
+		isForward = !currentEncoderB;
+	}
+	else {
+		isError = true;
+	}
+
+	if (!isError)
+	{
+		currentAngles[ENCODER_CHANNEL] += isForward ? 1 : -1;
+	}
+
+	previousEncoderA = currentEncoderA;
+	previousEncoderB = currentEncoderB;
+}
+
+void initializeSpi(void)
 {
 	SPI.begin();
 	SPI.setBitOrder(MSBFIRST);
@@ -99,18 +134,29 @@ void initializeFrequencyOutput(void)
 	setFrequency(dummyChannel, MOTOR_MIN_FREQUENCY);
 }
 
+void initializeQuadratureDecoder(void)
+{
+	pinMode(ENCODER_CHA_PIN, INPUT);
+	pinMode(ENCODER_CHB_PIN, INPUT);
+	previousEncoderA = (bool)digitalRead(ENCODER_CHA_PIN);
+	previousEncoderB = (bool)digitalRead(ENCODER_CHB_PIN);
+
+	// Sets ISR for external interrupt on pin 2
+	attachInterrupt(0, quadratureDecoderISR, RISING);
+}
+
 void initializeAdc(void)
 {
-	pinMode(ADC_SLAVE_SELECT_PIN, OUTPUT);
-	digitalWrite(ADC_SLAVE_SELECT_PIN, LOW);
-	digitalWrite(ADC_SLAVE_SELECT_PIN, HIGH);
+	pinMode(ADC_CHIP_SELECT_PIN, OUTPUT);
+	digitalWrite(ADC_CHIP_SELECT_PIN, LOW);
+	digitalWrite(ADC_CHIP_SELECT_PIN, HIGH);
 }
 
 void initializeDac(void)
 {
-	pinMode(DAC_SLAVE_SELECT_PIN, OUTPUT);
-	digitalWrite(DAC_SLAVE_SELECT_PIN, LOW);
-	digitalWrite(DAC_SLAVE_SELECT_PIN, HIGH);
+	pinMode(DAC_CHIP_SELECT_PIN, OUTPUT);
+	digitalWrite(DAC_CHIP_SELECT_PIN, LOW);
+	digitalWrite(DAC_CHIP_SELECT_PIN, HIGH);
 
 	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
 	{
@@ -161,7 +207,7 @@ int adjustOutputToFrequency(int percentageOutput)
 	return frequency;
 }
 
-static int convertVoltageToDacValue(double voltage)
+int convertVoltageToDacValue(double voltage)
 {
 	int value = (int)(voltage / DAC_REFERENCE_VOLTAGE * DAC_RESOLUTION);
 	return value;
@@ -191,10 +237,10 @@ void setDacVoltage(int channel, double voltage)
 	// Not sure if disabling interrupts is necessary as yet
 
 	//noInterrupts();
-	digitalWrite(DAC_SLAVE_SELECT_PIN, LOW);
+	digitalWrite(DAC_CHIP_SELECT_PIN, LOW);
 	SPI.transfer(primaryByte);
 	SPI.transfer(secondaryByte);
-	digitalWrite(DAC_SLAVE_SELECT_PIN, HIGH);
+	digitalWrite(DAC_CHIP_SELECT_PIN, HIGH);
 	//interrupts();
 }
 
@@ -207,7 +253,7 @@ void setFrequency(int channel, int frequency)
 // Unlike the other functions, the MCP3008 ADC has 8 channels, which means
 // the input parameter can be between 0 and 7
 // Source for code: https://rheingoldheavy.com/mcp3008-tutorial-02-sampling-dc-voltage/
-static int getAdcValue(int channel)
+int getAdcValue(int channel)
 {
 	SPISettings MCP3008(2000000, MSBFIRST, SPI_MODE0);
 
@@ -217,11 +263,11 @@ static int getAdcValue(int channel)
 	byte JUNK = 0x00;
 
 	SPI.beginTransaction(MCP3008);
-	digitalWrite(ADC_SLAVE_SELECT_PIN, LOW);
+	digitalWrite(ADC_CHIP_SELECT_PIN, LOW);
 	SPI.transfer(0x01);									// Start Bit
 	dataMSB = SPI.transfer(readAddress << 4) & 0x03;	// Send readAddress and receive MSB data, masked to two bits
 	dataLSB = SPI.transfer(JUNK);						// Push junk data and get LSB byte return
-	digitalWrite(ADC_SLAVE_SELECT_PIN, HIGH);
+	digitalWrite(ADC_CHIP_SELECT_PIN, HIGH);
 	SPI.endTransaction();
 
 	int adcValue = dataMSB << 8 | dataLSB;				// Storing in variable first for debugging
@@ -229,7 +275,7 @@ static int getAdcValue(int channel)
 	return adcValue;
 }
 
-static double convertAdcValueToVoltage(int adcValue)
+double convertAdcValueToVoltage(int adcValue)
 {
 	double voltage = (double)adcValue / ADC_RESOLUTION * ADC_REFERENCE_VOLTAGE;
 	return voltage;

@@ -11,10 +11,11 @@ Author:	Aftab
 void setup()
 {
 	initializeController();
-	initializeSPI();
+	initializeSpi();
 	initializeAdc(); // Must be initialized after SPI
 	initializeDac(); // Must be initialized after SPI
 	initializeFrequencyOutput();
+	initializeQuadratureDecoder();
 	initializePid();
 }
 

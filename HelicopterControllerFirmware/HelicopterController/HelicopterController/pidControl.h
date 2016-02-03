@@ -10,6 +10,10 @@ Author:	Aftab
 #include "arduino.h"
 #include "globals.h"
 
+// For this project, channel 0 is measured using an encoder and channel 1 with a pot
+#define ENCODER_CHANNEL				0
+#define POTENTIOMETER_CHANNEL		1
+
 #define ADC_VOLTS_PER_BIT			0.0048876
 #define ADC_RESOLUTION				1023
 #define ADC_REFERENCE_VOLTAGE		5.0
@@ -68,6 +72,9 @@ extern volatile bool isSafetyOn;
 
 extern volatile int pidLoopInterval;
 
+extern volatile bool previousEncoderA, previousEncoderB;
+extern volatile bool currentEncoderA, currentEncoderB;
+
 extern volatile double pGains[MAX_NUM_CHANNELS];
 extern volatile double iGains[MAX_NUM_CHANNELS];
 extern volatile double dGains[MAX_NUM_CHANNELS];
@@ -78,12 +85,13 @@ extern volatile int currentOutputs[MAX_NUM_CHANNELS];
 extern volatile Direction directions[MAX_NUM_CHANNELS];
 extern volatile MotorDriverType motorDriverTypes[MAX_NUM_CHANNELS];
 
-void initializeSPI(void);
-void initializePid(void);
-void initializePidTimer(void);
-void initializeFrequencyOutput(void);
+void initializeSpi(void);
 void initializeAdc(void);
 void initializeDac(void);
+void initializeQuadratureDecoder(void);
+void initializeFrequencyOutput(void);
+void initializePid(void);
+void initializePidTimer(void);
 
 void enablePid(void);
 void disablePid(void);
@@ -93,10 +101,10 @@ int adjustOutputToVoltage(Direction direction, int percentageOutput);
 int adjustOutputToFrequency(int percentageOutput);
 
 double getAdcVoltage(int channel);
-static int getAdcValue(int channel);
-static double convertAdcValueToVoltage(int adcValue);
+int getAdcValue(int channel);
+double convertAdcValueToVoltage(int adcValue);
 
-static int convertVoltageToDacValue(double voltage);
+int convertVoltageToDacValue(double voltage);
 void setDacVoltage(int channel, double voltage);
 
 // For this project, ONLY ONE MOTOR can use frequency control as the current implementation only has enough
