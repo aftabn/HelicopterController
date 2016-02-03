@@ -366,7 +366,7 @@ void onCommandAdc()
 	if (isIntWithinRange(adcChannel, ADC_CHANNEL_MIN, ADC_CHANNEL_MAX))
 	{
 		double voltage = getAdcVoltage(adcChannel);
-		sendDouble(voltage, DEFAULT_NUM_DECIMALS);
+		sendDouble(voltage, THREE_DECIMALS);
 		sendAck();
 	}
 	else
