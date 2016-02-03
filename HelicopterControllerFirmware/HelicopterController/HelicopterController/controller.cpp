@@ -46,11 +46,11 @@ void processCommand(char *command)
 	{
 		onCommandSafety();
 	}
-	else if (0 == strcmp(command, "OUTPUT"))
+	else if (0 == strcmp(command, "OUT"))
 	{
 		onCommandOutput();
 	}
-	else if (0 == strcmp(command, "DIRECTION"))
+	else if (0 == strcmp(command, "DIR"))
 	{
 		onCommandDirection();
 	}
@@ -70,7 +70,7 @@ void processCommand(char *command)
 	{
 		onCommandDerivativeGain();
 	}
-	else if (0 == strcmp(command, "INTERVAL"))
+	else if (0 == strcmp(command, "LOOP"))
 	{
 		onCommandLoopInterval();
 	}
@@ -82,11 +82,11 @@ void processCommand(char *command)
 	{
 		onCommandAdc();
 	}
-	else if (0 == strcmp(command, "VOLTAGE"))
+	else if (0 == strcmp(command, "DAC"))
 	{
 		onCommandDacVoltage();
 	}
-	else if (0 == strcmp(command, "FREQUENCY"))
+	else if (0 == strcmp(command, "FREQ"))
 	{
 		onCommandFrequencyOutput();
 	}
