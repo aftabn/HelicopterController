@@ -359,6 +359,22 @@ void onCommandLoopInterval()
 	}
 }
 
+void onCommandAdc()
+{
+	int adcChannel = convertToInt(gParameters[0]);
+
+	if (isIntWithinRange(adcChannel, ADC_CHANNEL_MIN, ADC_CHANNEL_MAX))
+	{
+		double voltage = getAdcVoltage(adcChannel);
+		sendDouble(voltage, DEFAULT_NUM_DECIMALS);
+		sendAck();
+	}
+	else
+	{
+		sendIntRangeError(ADC_CHANNEL_MIN, ADC_CHANNEL_MAX, NO_UNIT);
+	}
+}
+
 void onCommandDacVoltage()
 {
 	if (isChannelCorrect(gParameters[0]))
@@ -397,29 +413,37 @@ void onCommandDacVoltage()
 
 void onCommandFrequencyOutput()
 {
-	int frequency = convertToInt(gParameters[0]);
-
-	if (!isSafetyOn)
+	if (isChannelCorrect(gParameters[0]))
 	{
-		if (isReadCommand(gParameters[0]))
+		if (!isSafetyOn)
 		{
-			Serial.println(F("Reading of frequency is not implemented"));
-			sendNack();
-		}
-		else if (isIntWithinRange(frequency, MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY))
-		{
-			setFrequency(frequency);
-			sendAck();
+			int channel = convertToInt(gParameters[0]);
+			int frequency = convertToInt(gParameters[1]);
+
+			if (isReadCommand(gParameters[1]))
+			{
+				Serial.println(F("Reading of frequency is not implemented"));
+				sendNack();
+			}
+			else if (isIntWithinRange(frequency, MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY))
+			{
+				setFrequency(channel, frequency);
+				sendAck();
+			}
+			else
+			{
+				sendIntRangeError(MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY, HERTZ_UNIT);
+			}
 		}
 		else
 		{
-			sendIntRangeError(MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY, HERTZ_UNIT);
+			Serial.println(F("Cannot change frequency output while safety is on."));
+			sendNack();
 		}
 	}
 	else
 	{
-		Serial.println(F("Cannot change frequency output while safety is on."));
-		sendNack();
+		sendChannelError();
 	}
 }
 
@@ -473,6 +497,7 @@ void onCommandHelp()
 	Serial.println(F("Command: DRIVER \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value (Analog, Frequency)\r\nDescription: Gets or sets the motor driver type for the selected channel\r\n"));
 	Serial.println(F("Command: VOLTAGE \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value in volts\r\nDescription: Gets or sets the DAC voltage for selected channel\r\n"));
 	Serial.println(F("Command: FREQUENCY \r\nArg: None or Value in Hertz\r\nDescription: Gets or sets the frequency output\r\n"));
+	Serial.println(F("Command: ADC \r\nArg: Channel (0 to 7) \r\nDescription: Reads the voltage from the selected ADC channel\r\n"));
 
 	Serial.println(F("Command: PID \r\nArg: ON or OFF \r\nDescription: Enables or disables PID loop control\r\n"));
 	Serial.println(F("Command: SAFETY \r\nArg: ON, OFF \r\nDescription: Enables or disables direct changing of motor control outputs\r\n"));

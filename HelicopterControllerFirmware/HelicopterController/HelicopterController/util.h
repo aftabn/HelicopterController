@@ -10,7 +10,7 @@ Author:	Aftab
 #include "arduino.h"
 #include "pidControl.h"
 
-#define DEFAULT_NUM_DECIMALS	2
+#define DEFAULT_NUM_DECIMALS	3
 #define MIN_NUMBER_FLOAT_CHARS	4
 
 void sendNack(void);

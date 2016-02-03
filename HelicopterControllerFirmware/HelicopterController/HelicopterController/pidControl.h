@@ -10,13 +10,15 @@ Author:	Aftab
 #include "arduino.h"
 #include "globals.h"
 
-#define DAC_SLAVE_SELECT_PIN		10
+#define ADC_VOLTS_PER_BIT			0.0048876
+#define ADC_RESOLUTION				1023
+#define ADC_REFERENCE_VOLTAGE		5.0
+#define ADC_CHANNEL_MIN				0
+#define ADC_CHANNEL_MAX				7
+
 #define DAC_VOLTS_PER_BIT			0.0048876
 #define DAC_RESOLUTION				1023
 #define DAC_REFERENCE_VOLTAGE		5.0
-
-// TODO: Change this
-#define FREQUENCY_OUTPUT_PIN		7
 
 // For the current driver:
 #define MOTOR_VOLTAGE_RANGE			2.5		// Voltage range for each direction (i.e. 2.5V range for each direction)
@@ -24,11 +26,10 @@ Author:	Aftab
 #define MOTOR_MAX_VOLTAGE			5.0		// Full CW rotation
 #define MOTOR_MIN_VOLTAGE			0.0		// Full CCW rotation
 
-#define MOTOR_FREQUENCY_RANGE		15000	// Frequency range for each direction (i.e. 5000Hz range for each direction)
-#define MOTOR_IDLE_FREQUENCY		15000	// Idle frequency
-#define MOTOR_MAX_FREQUENCY			30000	// Full CW rotation
-#define MOTOR_MIN_FREQUENCY			0	// Full CCW rotation
-
+#define MOTOR_MAX_FREQUENCY			30000	// Corresponds to 30000 RPM
+#define MOTOR_MIN_FREQUENCY			0		// Corresponds to 0 RPM
+#define MOTOR_FREQUENCY_RANGE		30000	// Frequency range for each direction (This is the full
+											//		range since direction is controlled by the direction pin)
 #define P_GAIN_MIN					0.01
 #define P_GAIN_MAX					10.0
 
@@ -54,10 +55,12 @@ Author:	Aftab
 #define DEFAULT_I_GAIN				I_GAIN_MIN
 #define DEFAULT_D_GAIN				D_GAIN_MIN
 #define DEFAULT_SET_POINT			SET_POINT_MIN
-#define DEFAULT_PID_INTERVAL_MS		PID_INTERVAL_MS_MIN
+#define DEFAULT_PID_INTERVAL_MS		10
 
 enum Direction { Clockwise, CounterClockwise };
 enum MotorDriverType { AnalogVoltage, Frequency };
+
+extern const byte adc_read_channels[8];
 
 extern volatile bool isPidEnabled;
 extern volatile bool isDebugMode;
@@ -79,19 +82,26 @@ void initializeSPI(void);
 void initializePid(void);
 void initializePidTimer(void);
 void initializeFrequencyOutput(void);
+void initializeAdc(void);
 void initializeDac(void);
 
 void enablePid(void);
 void disablePid(void);
 
 void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOutput);
-static int adjustOutputToVoltage(Direction direction, int percentageOutput);
-static int adjustOutputToFrequency(Direction direction, int percentageOutput);
+int adjustOutputToVoltage(Direction direction, int percentageOutput);
+int adjustOutputToFrequency(int percentageOutput);
+
+double getAdcVoltage(int channel);
+static int getAdcValue(int channel);
+static double convertAdcValueToVoltage(int adcValue);
 
 static int convertVoltageToDacValue(double voltage);
 void setDacVoltage(int channel, double voltage);
 
-// For now there is no channel because there will only be one output for frequency control
-void setFrequency(int frequency);
+// For this project, ONLY ONE MOTOR can use frequency control as the current implementation only has enough
+//	 hardware to control one motor.
+// Channel is only used to determine which motor is the frequency motor
+void setFrequency(int channel, int frequency);
 
 #endif

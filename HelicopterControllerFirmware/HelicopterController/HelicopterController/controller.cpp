@@ -78,6 +78,10 @@ void processCommand(char *command)
 	{
 		onCommandSetPoint();
 	}
+	else if (0 == strcmp(command, "ADC"))
+	{
+		onCommandAdc();
+	}
 	else if (0 == strcmp(command, "VOLTAGE"))
 	{
 		onCommandDacVoltage();

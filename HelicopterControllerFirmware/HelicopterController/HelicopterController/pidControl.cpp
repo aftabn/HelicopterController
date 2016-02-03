@@ -8,6 +8,8 @@ Author:	Aftab
 #include "util.h"
 #include "pidControl.h"
 
+const byte adc_read_channels[8] = { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+
 volatile bool isPidEnabled;
 volatile bool isDebugMode;
 volatile bool isSafetyOn;
@@ -40,8 +42,10 @@ ISR(TIMER1_OVF_vect)
 			int percentageOutput;
 			Direction direction;
 
+			// Updates the direction and the output
 			updatePidMotorOutputs(channel, &direction, &percentageOutput);
 
+			// Makes the necessary hardware output changes based on driver type
 			if (motorDriverTypes[channel] == AnalogVoltage)
 			{
 				int voltage = adjustOutputToVoltage(direction, percentageOutput);
@@ -49,8 +53,8 @@ ISR(TIMER1_OVF_vect)
 			}
 			else if (motorDriverTypes[channel] == Frequency)
 			{
-				int frequency = adjustOutputToFrequency(direction, percentageOutput);
-				setFrequency(frequency);
+				int frequency = adjustOutputToFrequency(percentageOutput);
+				setFrequency(channel, frequency);
 			}
 
 			if (isDebugMode)
@@ -89,13 +93,23 @@ void initializePid(void)
 
 void initializeFrequencyOutput(void)
 {
+	const int dummyChannel = 0; // Only one frequency output so channel doesn't matter during initialization
+
 	pinMode(FREQUENCY_OUTPUT_PIN, OUTPUT);
-	setFrequency(MOTOR_IDLE_FREQUENCY);
+	setFrequency(dummyChannel, MOTOR_MIN_FREQUENCY);
+}
+
+void initializeAdc(void)
+{
+	pinMode(ADC_SLAVE_SELECT_PIN, OUTPUT);
+	digitalWrite(ADC_SLAVE_SELECT_PIN, LOW);
+	digitalWrite(ADC_SLAVE_SELECT_PIN, HIGH);
 }
 
 void initializeDac(void)
 {
 	pinMode(DAC_SLAVE_SELECT_PIN, OUTPUT);
+	digitalWrite(DAC_SLAVE_SELECT_PIN, LOW);
 	digitalWrite(DAC_SLAVE_SELECT_PIN, HIGH);
 
 	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
@@ -132,7 +146,7 @@ void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOut
 	*direction = angleErrors[channel] > 0 ? Clockwise : CounterClockwise;
 }
 
-static int adjustOutputToVoltage(Direction direction, int percentageOutput)
+int adjustOutputToVoltage(Direction direction, int percentageOutput)
 {
 	int voltage = MOTOR_IDLE_VOLTAGE;
 
@@ -141,12 +155,9 @@ static int adjustOutputToVoltage(Direction direction, int percentageOutput)
 	return voltage;
 }
 
-static int adjustOutputToFrequency(Direction direction, int percentageOutput)
+int adjustOutputToFrequency(int percentageOutput)
 {
-	int frequency = MOTOR_IDLE_FREQUENCY;
-
-	frequency += direction == Clockwise ? MOTOR_MAX_FREQUENCY * percentageOutput / 100.0 : -1 * MOTOR_VOLTAGE_RANGE * percentageOutput / 100.0;
-
+	int frequency = MOTOR_FREQUENCY_RANGE * percentageOutput / 100.0;
 	return frequency;
 }
 
@@ -187,9 +198,48 @@ void setDacVoltage(int channel, double voltage)
 	//interrupts();
 }
 
-void setFrequency(int frequency)
+void setFrequency(int channel, int frequency)
 {
 	tone(FREQUENCY_OUTPUT_PIN, frequency);
+	digitalWrite(FREQUENCY_DIRECTION_PIN, directions[channel] == Clockwise ? HIGH : LOW);
+}
+
+// Unlike the other functions, the MCP3008 ADC has 8 channels, which means
+// the input parameter can be between 0 and 7
+// Source for code: https://rheingoldheavy.com/mcp3008-tutorial-02-sampling-dc-voltage/
+static int getAdcValue(int channel)
+{
+	SPISettings MCP3008(2000000, MSBFIRST, SPI_MODE0);
+
+	byte readAddress = adc_read_channels[channel];
+	byte dataMSB = 0;
+	byte dataLSB = 0;
+	byte JUNK = 0x00;
+
+	SPI.beginTransaction(MCP3008);
+	digitalWrite(ADC_SLAVE_SELECT_PIN, LOW);
+	SPI.transfer(0x01);									// Start Bit
+	dataMSB = SPI.transfer(readAddress << 4) & 0x03;	// Send readAddress and receive MSB data, masked to two bits
+	dataLSB = SPI.transfer(JUNK);						// Push junk data and get LSB byte return
+	digitalWrite(ADC_SLAVE_SELECT_PIN, HIGH);
+	SPI.endTransaction();
+
+	int adcValue = dataMSB << 8 | dataLSB;				// Storing in variable first for debugging
+
+	return adcValue;
+}
+
+static double convertAdcValueToVoltage(int adcValue)
+{
+	double voltage = (double)adcValue / ADC_RESOLUTION * ADC_REFERENCE_VOLTAGE;
+	return voltage;
+}
+
+double getAdcVoltage(int channel)
+{
+	int adcValue = getAdcValue(channel);
+	double voltage = convertAdcValueToVoltage(adcValue);
+	return voltage;
 }
 
 void enablePid(void)

@@ -28,6 +28,7 @@ void onCommandIntegralGain(void);
 void onCommandDerivativeGain(void);
 void onCommandLoopInterval(void);
 void onCommandSetPoint(void);
+void onCommandAdc(void);
 void onCommandDacVoltage(void);
 void onCommandFrequencyOutput(void);
 void onCommandState(void);

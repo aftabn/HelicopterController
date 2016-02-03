@@ -12,6 +12,7 @@ void setup()
 {
 	initializeController();
 	initializeSPI();
+	initializeAdc(); // Must be initialized after SPI
 	initializeDac(); // Must be initialized after SPI
 	initializeFrequencyOutput();
 	initializePid();
