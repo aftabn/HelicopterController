@@ -93,6 +93,8 @@ void initializeFrequencyOutput(void);
 void initializePid(void);
 void initializePidTimer(void);
 
+void disableMotors(void);
+
 void enablePid(void);
 void disablePid(void);
 

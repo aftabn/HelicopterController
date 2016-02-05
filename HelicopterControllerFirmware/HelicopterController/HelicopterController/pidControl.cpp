@@ -35,7 +35,7 @@ double derivativeAnglesErrors[MAX_NUM_CHANNELS];
 // This is the ISR that runs the PID algorithm
 ISR(TIMER1_OVF_vect)
 {
-	char tmpstr[100];
+	char tmpstr[70];
 
 	if (isPidEnabled)
 	{
@@ -61,8 +61,12 @@ ISR(TIMER1_OVF_vect)
 
 			if (isDebugMode)
 			{
-				sprintf(tmpstr, "[CH%d] SP: %.1f deg, Output: %d %%, Angle: %03.1f deg",
-					channel, setPoints[channel], currentOutputs[channel], currentAngles[channel]);
+				char setpoint[8];
+				dtostrf(setPoints[channel], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, setpoint);
+				char angle[8];
+				dtostrf(currentAngles[channel], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, angle);
+				sprintf(tmpstr, "[CH%d] SP: %s deg, Output: %d %%, Angle: %s deg",
+					channel, setpoint, currentOutputs[channel], angle);
 
 				Serial.println(tmpstr);
 			}
@@ -113,7 +117,7 @@ void initializeSpi(void)
 void initializePid(void)
 {
 	pidLoopInterval = DEFAULT_PID_INTERVAL_MS;
-	isSafetyOn = true;
+	isSafetyOn = false; // TODO: Change this later
 
 	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
 	{
@@ -121,6 +125,7 @@ void initializePid(void)
 		iGains[channel] = DEFAULT_I_GAIN;
 		dGains[channel] = DEFAULT_D_GAIN;
 		setPoints[channel] = DEFAULT_SET_POINT;
+		currentAngles[channel] = 0;
 		directions[channel] = (Direction)DEFAULT_DIRECTION;
 		motorDriverTypes[channel] = (MotorDriverType)DEFAULT_MOTOR_DRIVER_TYPE;
 	}
@@ -288,23 +293,39 @@ double getAdcVoltage(int channel)
 	return voltage;
 }
 
-void enablePid(void)
+void disableMotors()
+{
+	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
+	{
+		if (motorDriverTypes[channel] == AnalogVoltage)
+		{
+			setDacVoltage(channel, MOTOR_IDLE_VOLTAGE);
+		}
+		else if (motorDriverTypes[channel] == Frequency)
+		{
+			setFrequency(channel, MOTOR_MIN_FREQUENCY);
+		}
+	}
+}
+
+void enablePid()
 {
 	initializePidTimer(pidLoopInterval);
 	isPidEnabled = true;
 }
 
-void disablePid(void)
+void disablePid()
 {
 	isPidEnabled = false;
+	disableMotors();
 }
 
-void enableDebug(void)
+void enableDebug()
 {
 	isDebugMode = true;
 }
 
-void disableDebug(void)
+void disableDebug()
 {
 	isDebugMode = false;
 }

@@ -451,25 +451,102 @@ void onCommandTest()
 {
 }
 
-// TODO: Update this
 void onCommandState()
 {
-	char tmpstr[50];
+	char tmpstr[40];
+	char num1[8];
+	char num2[8];
+
 	Serial.println(F("|===============================|"));
 	Serial.println(F("| Channel\t0\t1\t|"));
 	Serial.println(F("|-------------------------------|"));
+
 	sprintf(tmpstr, "| Output\t%d\t%d\t|", currentOutputs[0], currentOutputs[1]);
 	Serial.println(tmpstr);
-	sprintf(tmpstr, "| Angles\t%.2f\t%.2f\t|", currentAngles[0], currentAngles[1]);
+
+	switch (directions[0])
+	{
+	case Clockwise:
+		strcpy(num1, "CW");
+		break;
+	case CounterClockwise:
+		strcpy(num1, "CCW");
+		break;
+	default:
+		strcpy(num1, "N/A");
+		break;
+	}
+
+	switch (directions[1])
+	{
+	case Clockwise:
+		strcpy(num2, "CW");
+		break;
+	case CounterClockwise:
+		strcpy(num2, "CCW");
+		break;
+	default:
+		strcpy(num2, "N/A");
+		break;
+	}
+
+	sprintf(tmpstr, "| Directions\t%s\t%s\t|", num1, num2);
 	Serial.println(tmpstr);
-	sprintf(tmpstr, "| P-Gain\t%.2f\t%.2f\t|", pGains[0], pGains[1]);
+
+	dtostrf(currentAngles[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
+	dtostrf(currentAngles[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
+	sprintf(tmpstr, "| Angles\t%s\t%s\t|", num1, num2);
 	Serial.println(tmpstr);
-	sprintf(tmpstr, "| I-Gain\t%.2f\t%.2f\t|", iGains[0], iGains[1]);
+
+	dtostrf(pGains[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
+	dtostrf(pGains[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
+	sprintf(tmpstr, "| P-Gain\t%s\t%s\t|", num1, num2);
 	Serial.println(tmpstr);
-	sprintf(tmpstr, "| D-Gain\t%.2f\t%.2f\t|", dGains[0], dGains[1]);
+
+	dtostrf(iGains[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
+	dtostrf(iGains[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
+	sprintf(tmpstr, "| I-Gain\t%s\t%s\t|", num1, num2);
 	Serial.println(tmpstr);
-	sprintf(tmpstr, "| Set Points\t%.2f\t%.2f\t|", setPoints[0], setPoints[1]);
+
+	dtostrf(dGains[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
+	dtostrf(dGains[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
+	sprintf(tmpstr, "| D-Gain\t%s\t%s\t|", num1, num2);
 	Serial.println(tmpstr);
+
+	dtostrf(setPoints[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
+	dtostrf(setPoints[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
+	sprintf(tmpstr, "| Set Points\t%s\t%s\t|", num1, num2);
+	Serial.println(tmpstr);
+
+	switch (motorDriverTypes[0])
+	{
+	case AnalogVoltage:
+		strcpy(num1, "A.V.");
+		break;
+	case Frequency:
+		strcpy(num1, "Freq.");
+		break;
+	default:
+		strcpy(num1, "N/A");
+		break;
+	}
+
+	switch (motorDriverTypes[1])
+	{
+	case AnalogVoltage:
+		strcpy(num2, "A.V.");
+		break;
+	case Frequency:
+		strcpy(num2, "Freq.");
+		break;
+	default:
+		strcpy(num2, "N/A");
+		break;
+	}
+
+	sprintf(tmpstr, "| Drivers\t%s\t%s\t|", num1, num2);
+	Serial.println(tmpstr);
+
 	sprintf(tmpstr, "| PID Interval\t%d ms\t\t|", pidLoopInterval);
 	Serial.println(tmpstr);
 	sprintf(tmpstr, "| PID Control\t%s\t\t|", isPidEnabled ? "On" : "Off");
