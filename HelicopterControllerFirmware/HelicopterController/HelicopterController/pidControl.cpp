@@ -15,6 +15,7 @@ volatile bool isDebugMode;
 volatile bool isSafetyOn;
 
 volatile int pidLoopInterval;
+volatile int currentFrequency;
 
 volatile bool previousEncoderA, previousEncoderB;
 
@@ -22,6 +23,7 @@ volatile double pGains[MAX_NUM_CHANNELS];
 volatile double iGains[MAX_NUM_CHANNELS];
 volatile double dGains[MAX_NUM_CHANNELS];
 volatile double setPoints[MAX_NUM_CHANNELS];
+volatile double currentVoltages[MAX_NUM_CHANNELS];
 volatile double currentAngles[MAX_NUM_CHANNELS];
 volatile double previousAngles[MAX_NUM_CHANNELS];
 volatile int currentOutputs[MAX_NUM_CHANNELS];
@@ -48,25 +50,17 @@ ISR(TIMER1_OVF_vect)
 			updatePidMotorOutputs(channel, &direction, &percentageOutput);
 
 			// Makes the necessary hardware output changes based on driver type
-			if (motorDriverTypes[channel] == AnalogVoltage)
-			{
-				int voltage = adjustOutputToVoltage(direction, percentageOutput);
-				setDacVoltage(channel, voltage);
-			}
-			else if (motorDriverTypes[channel] == Frequency)
-			{
-				int frequency = adjustOutputToFrequency(percentageOutput);
-				setFrequency(channel, frequency);
-			}
+			applyMotorOutputs(channel, direction, percentageOutput);
 
 			if (isDebugMode)
 			{
 				char setpoint[8];
-				dtostrf(setPoints[channel], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, setpoint);
 				char angle[8];
+
+				dtostrf(setPoints[channel], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, setpoint);
 				dtostrf(currentAngles[channel], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, angle);
-				sprintf(tmpstr, "[CH%d] SP: %s deg, Output: %d %%, Angle: %s deg",
-					channel, setpoint, currentOutputs[channel], angle);
+
+				sprintf(tmpstr, "[CH%d] SP: %s deg, Output: %d %%, Angle: %s deg", channel, setpoint, currentOutputs[channel], angle);
 
 				Serial.println(tmpstr);
 			}
@@ -169,7 +163,7 @@ void initializeDac(void)
 	}
 }
 
-// Reinitializes the PID Timer (Timer 1) with the appropriate interval in milliseconds
+// Initializes the PID Timer (Timer 1) with the appropriate interval in milliseconds
 void initializePidTimer(int numMilliseconds)
 {
 	noInterrupts();							// disable all interrupts
@@ -182,24 +176,54 @@ void initializePidTimer(int numMilliseconds)
 	interrupts();							// enable all interrupts
 }
 
+// Initializes the potentiometer timer (Timer 0 ) to fire about every 5 ms
+void initializePotentiometerTimer()
+{
+	//noInterrupts();							// disable all interrupts
+	//TCCR0A = 0;								// set entire TCCR0A register to 0
+	//TCCR0B = 0;								// same for TCCR0B
+	//TCNT0 = 0;								// initialize counter value to 0
+	//OCR0A = 77;								// compare match register (16MHz/1024/200 ~= 77)
+	//TCCR0B |= (1 << CS02) | (1 << CS00);	// 1024 prescaler
+	//TIMSK0 |= (1 << TOIE0);					// enable timer overflow interrupt
+	//interrupts();
+}
+
 void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOutput)
 {
 	double currentAngle = currentAngles[channel];
-
-	angleErrors[channel] = setPoints[channel] - currentAngles[channel];
-	integratedAngleErrors[channel] = (abs(angleErrors[channel] < I_GAIN_THRESHHOLD_ERROR) ? integratedAngleErrors[channel] + angleErrors[channel] * pidLoopInterval : 0);
-	derivativeAnglesErrors[channel] = (currentAngles[channel] - previousAngles[channel]) / pidLoopInterval;
-
 	previousAngles[channel] = currentAngle;
 
+	angleErrors[channel] = setPoints[channel] - currentAngles[channel];
+	integratedAngleErrors[channel] = (abs(angleErrors[channel] < I_GAIN_THRESHHOLD_ERROR) ? integratedAngleErrors[channel] + angleErrors[channel] * pidLoopInterval / 1000.0 : 0);
+	derivativeAnglesErrors[channel] = (currentAngles[channel] - previousAngles[channel]) / pidLoopInterval / 1000.0;
+
 	int output = (int)(pGains[channel] * angleErrors[channel] + iGains[channel] * integratedAngleErrors[channel] + dGains[channel] * derivativeAnglesErrors[channel]);
+
 	*percentageOutput = max(min(output, 100), 0);
 	*direction = angleErrors[channel] > 0 ? Clockwise : CounterClockwise;
 }
 
-int adjustOutputToVoltage(Direction direction, int percentageOutput)
+void applyMotorOutputs(int channel, Direction direction, int percentageOutput)
 {
-	int voltage = MOTOR_IDLE_VOLTAGE;
+	if (motorDriverTypes[channel] == AnalogVoltage)
+	{
+		double voltage = adjustOutputToVoltage(direction, percentageOutput);
+		setDacVoltage(channel, voltage);
+	}
+	else if (motorDriverTypes[channel] == Frequency)
+	{
+		int frequency = adjustOutputToFrequency(percentageOutput);
+		setFrequency(channel, frequency);
+	}
+
+	currentOutputs[channel] = percentageOutput;
+	directions[channel] = direction;
+}
+
+double adjustOutputToVoltage(Direction direction, int percentageOutput)
+{
+	double voltage = MOTOR_IDLE_VOLTAGE;
 
 	voltage += direction == Clockwise ? MOTOR_VOLTAGE_RANGE * percentageOutput / 100.0 : -1 * MOTOR_VOLTAGE_RANGE * percentageOutput / 100.0;
 
@@ -208,7 +232,7 @@ int adjustOutputToVoltage(Direction direction, int percentageOutput)
 
 int adjustOutputToFrequency(int percentageOutput)
 {
-	int frequency = MOTOR_FREQUENCY_RANGE * percentageOutput / 100.0;
+	int frequency = (MOTOR_MAX_FREQUENCY - MOTOR_MIN_FREQUENCY) * percentageOutput / 100.0;
 	return frequency;
 }
 
@@ -240,19 +264,22 @@ void setDacVoltage(int channel, double voltage)
 	}
 
 	// Not sure if disabling interrupts is necessary as yet
-
 	//noInterrupts();
 	digitalWrite(DAC_CHIP_SELECT_PIN, LOW);
 	SPI.transfer(primaryByte);
 	SPI.transfer(secondaryByte);
 	digitalWrite(DAC_CHIP_SELECT_PIN, HIGH);
 	//interrupts();
+
+	currentVoltages[channel] = voltage;
 }
 
 void setFrequency(int channel, int frequency)
 {
 	tone(FREQUENCY_OUTPUT_PIN, frequency);
 	digitalWrite(FREQUENCY_DIRECTION_PIN, directions[channel] == Clockwise ? HIGH : LOW);
+
+	currentFrequency = frequency;
 }
 
 // Unlike the other functions, the MCP3008 ADC has 8 channels, which means
@@ -280,17 +307,37 @@ int getAdcValue(int channel)
 	return adcValue;
 }
 
+double getAdcVoltage(int channel)
+{
+	int adcValue = getAdcValue(channel);
+	double voltage = convertAdcValueToVoltage(adcValue);
+	return voltage;
+}
+
 double convertAdcValueToVoltage(int adcValue)
 {
 	double voltage = (double)adcValue / ADC_RESOLUTION * ADC_REFERENCE_VOLTAGE;
 	return voltage;
 }
 
-double getAdcVoltage(int channel)
+double convertPotentiometerVoltageToAngle(double voltage)
 {
-	int adcValue = getAdcValue(channel);
-	double voltage = convertAdcValueToVoltage(adcValue);
-	return voltage;
+	double angle = (voltage - POT_IDLE_VOLTAGE) * POT_DEGREES_PER_VOLT;
+	return angle;
+}
+
+double getPotentiometerAngle(int channel)
+{
+	double voltage = getAdcVoltage(channel);
+	double angle = convertPotentiometerVoltageToAngle(voltage);
+
+	return angle;
+}
+
+void updatePotentiometerAngle(void)
+{
+	double angle = getPotentiometerAngle(POTENTIOMETER_CHANNEL);
+	currentAngles[POTENTIOMETER_CHANNEL] = angle;
 }
 
 void disableMotors()
@@ -310,6 +357,7 @@ void disableMotors()
 
 void enablePid()
 {
+	resetPidValues();
 	initializePidTimer(pidLoopInterval);
 	isPidEnabled = true;
 }
@@ -318,6 +366,16 @@ void disablePid()
 {
 	isPidEnabled = false;
 	disableMotors();
+}
+
+void resetPidValues()
+{
+	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
+	{
+		angleErrors[channel] = 0;
+		integratedAngleErrors[channel] = 0;
+		derivativeAnglesErrors[channel] = 0;
+	}
 }
 
 void enableDebug()

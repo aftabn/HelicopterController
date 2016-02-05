@@ -169,12 +169,19 @@ void scanSerialPort()
 	char tmpstr[256];
 
 	long heartBeatTimer = 0;
+	long refreshAngleTimer = 0;
 
 	while (true)
 	{
 		// Use this to toggle heartbeat LED when not receiving characters
 		while (Serial.available() <= 0)
 		{
+			if (++refreshAngleTimer >= 5000)
+			{
+				refreshAngleTimer = 0;
+				updatePotentiometerAngle();
+			}
+
 			if (++heartBeatTimer >= 250000)
 			{
 				heartBeatTimer = 0;

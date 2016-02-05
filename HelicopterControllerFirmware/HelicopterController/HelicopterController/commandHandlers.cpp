@@ -51,13 +51,29 @@ void onCommandPidControl()
 	}
 	else if (isOnCommandArg(gParameters[0]))
 	{
-		enablePid();
-		sendAck();
+		if (!isPidEnabled)
+		{
+			enablePid();
+			sendAck();
+		}
+		else
+		{
+			Serial.println(F("PID control is already on."));
+			sendNack();
+		}
 	}
 	else if (isOffCommandArg(gParameters[0]))
 	{
-		disablePid();
-		sendAck();
+		if (isPidEnabled)
+		{
+			disablePid();
+			sendAck();
+		}
+		else
+		{
+			Serial.println(F("PID control is already off."));
+			sendNack();
+		}
 	}
 	else
 	{
@@ -127,7 +143,9 @@ void onCommandOutput()
 		{
 			if (isIntWithinRange(output, PID_OUTPUT_MIN, PID_OUTPUT_MAX))
 			{
-				currentOutputs[channel] = output;
+				const Direction direction = directions[channel];
+
+				applyMotorOutputs(channel, direction, output);
 				sendAck();
 			}
 			else
@@ -160,14 +178,16 @@ void onCommandDirection()
 		}
 		else if (!isPidEnabled)
 		{
+			const int output = currentOutputs[channel];
+
 			if (isClockwiseCommandArg(gParameters[1]))
 			{
-				directions[channel] = Clockwise;
+				applyMotorOutputs(channel, Clockwise, output);
 				sendAck();
 			}
 			else if (isCounterClockwiseCommandArg(gParameters[1]))
 			{
-				directions[channel] = CounterClockwise;
+				applyMotorOutputs(channel, CounterClockwise, output);
 				sendAck();
 			}
 			else
@@ -350,8 +370,16 @@ void onCommandLoopInterval()
 	}
 	else if (isIntWithinRange(loopInterval, PID_INTERVAL_MS_MIN, PID_INTERVAL_MS_MAX))
 	{
-		pidLoopInterval = loopInterval;
-		sendAck();
+		if (!isPidEnabled)
+		{
+			pidLoopInterval = loopInterval;
+			sendAck();
+		}
+		else
+		{
+			Serial.println(F("Cannot change loop interval while PID control is on."));
+			sendNack();
+		}
 	}
 	else
 	{
@@ -386,8 +414,8 @@ void onCommandDacVoltage()
 
 			if (isReadCommand(gParameters[1]))
 			{
-				Serial.println(F("Reading of voltage is not implemented"));
-				sendNack();
+				sendDouble(currentVoltages[channel], DEFAULT_NUM_DECIMALS);
+				sendAck();
 			}
 			else if (isDoubleWithinRange(voltage, MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE))
 			{
@@ -422,8 +450,8 @@ void onCommandFrequencyOutput()
 
 			if (isReadCommand(gParameters[1]))
 			{
-				Serial.println(F("Reading of frequency is not implemented"));
-				sendNack();
+				sendInt(currentFrequency);
+				sendAck();
 			}
 			else if (isIntWithinRange(frequency, MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY))
 			{
@@ -453,109 +481,117 @@ void onCommandTest()
 
 void onCommandState()
 {
-	char tmpstr[40];
-	char num1[8];
-	char num2[8];
-
-	Serial.println(F("|===============================|"));
-	Serial.println(F("| Channel\t0\t1\t|"));
-	Serial.println(F("|-------------------------------|"));
-
-	sprintf(tmpstr, "| Output\t%d\t%d\t|", currentOutputs[0], currentOutputs[1]);
-	Serial.println(tmpstr);
-
-	switch (directions[0])
-	{
-	case Clockwise:
-		strcpy(num1, "CW");
-		break;
-	case CounterClockwise:
-		strcpy(num1, "CCW");
-		break;
-	default:
-		strcpy(num1, "N/A");
-		break;
-	}
-
-	switch (directions[1])
-	{
-	case Clockwise:
-		strcpy(num2, "CW");
-		break;
-	case CounterClockwise:
-		strcpy(num2, "CCW");
-		break;
-	default:
-		strcpy(num2, "N/A");
-		break;
-	}
-
-	sprintf(tmpstr, "| Directions\t%s\t%s\t|", num1, num2);
-	Serial.println(tmpstr);
-
-	dtostrf(currentAngles[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
-	dtostrf(currentAngles[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
-	sprintf(tmpstr, "| Angles\t%s\t%s\t|", num1, num2);
-	Serial.println(tmpstr);
-
-	dtostrf(pGains[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
-	dtostrf(pGains[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
-	sprintf(tmpstr, "| P-Gain\t%s\t%s\t|", num1, num2);
-	Serial.println(tmpstr);
-
-	dtostrf(iGains[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
-	dtostrf(iGains[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
-	sprintf(tmpstr, "| I-Gain\t%s\t%s\t|", num1, num2);
-	Serial.println(tmpstr);
-
-	dtostrf(dGains[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
-	dtostrf(dGains[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
-	sprintf(tmpstr, "| D-Gain\t%s\t%s\t|", num1, num2);
-	Serial.println(tmpstr);
-
-	dtostrf(setPoints[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
-	dtostrf(setPoints[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
-	sprintf(tmpstr, "| Set Points\t%s\t%s\t|", num1, num2);
-	Serial.println(tmpstr);
-
-	switch (motorDriverTypes[0])
-	{
-	case AnalogVoltage:
-		strcpy(num1, "A.V.");
-		break;
-	case Frequency:
-		strcpy(num1, "Freq.");
-		break;
-	default:
-		strcpy(num1, "N/A");
-		break;
-	}
-
-	switch (motorDriverTypes[1])
-	{
-	case AnalogVoltage:
-		strcpy(num2, "A.V.");
-		break;
-	case Frequency:
-		strcpy(num2, "Freq.");
-		break;
-	default:
-		strcpy(num2, "N/A");
-		break;
-	}
-
-	sprintf(tmpstr, "| Drivers\t%s\t%s\t|", num1, num2);
-	Serial.println(tmpstr);
-
-	sprintf(tmpstr, "| PID Interval\t%d ms\t\t|", pidLoopInterval);
-	Serial.println(tmpstr);
-	sprintf(tmpstr, "| PID Control\t%s\t\t|", isPidEnabled ? "On" : "Off");
-	Serial.println(tmpstr);
-	sprintf(tmpstr, "| Safety\t%s\t\t|", isSafetyOn ? "On" : "Off");
-	Serial.println(tmpstr);
-	sprintf(tmpstr, "| Debug\t\t%s\t\t|", isDebugMode ? "On" : "Off");
-	Serial.println(tmpstr);
-	Serial.println("|===============================|");
+	//char tmpstr[40];
+	//char num1[8];
+	//char num2[8];
+	//
+	//Serial.println(F("|===============================|"));
+	//Serial.println(F("| Channel\t0\t1\t|"));
+	//Serial.println(F("|-------------------------------|"));
+	//
+	//sprintf(tmpstr, "| Output\t%d\t%d\t|", currentOutputs[0], currentOutputs[1]);
+	//Serial.println(tmpstr);
+	//
+	//switch (directions[0])
+	//{
+	//case Clockwise:
+	//	strcpy(num1, "CW");
+	//	break;
+	//case CounterClockwise:
+	//	strcpy(num1, "CCW");
+	//	break;
+	//default:
+	//	strcpy(num1, "N/A");
+	//	break;
+	//}
+	//
+	//switch (directions[1])
+	//{
+	//case Clockwise:
+	//	strcpy(num2, "CW");
+	//	break;
+	//case CounterClockwise:
+	//	strcpy(num2, "CCW");
+	//	break;
+	//default:
+	//	strcpy(num2, "N/A");
+	//	break;
+	//}
+	//
+	//sprintf(tmpstr, "| Directions\t%s\t%s\t|", num1, num2);
+	//Serial.println(tmpstr);
+	//
+	//dtostrf(currentAngles[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
+	//dtostrf(currentAngles[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
+	//sprintf(tmpstr, "| Angles\t%s\t%s\t|", num1, num2);
+	//Serial.println(tmpstr);
+	//
+	//dtostrf(pGains[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
+	//dtostrf(pGains[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
+	//sprintf(tmpstr, "| P-Gain\t%s\t%s\t|", num1, num2);
+	//Serial.println(tmpstr);
+	//
+	//dtostrf(iGains[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
+	//dtostrf(iGains[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
+	//sprintf(tmpstr, "| I-Gain\t%s\t%s\t|", num1, num2);
+	//Serial.println(tmpstr);
+	//
+	//dtostrf(dGains[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
+	//dtostrf(dGains[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
+	//sprintf(tmpstr, "| D-Gain\t%s\t%s\t|", num1, num2);
+	//Serial.println(tmpstr);
+	//
+	//dtostrf(setPoints[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
+	//dtostrf(setPoints[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
+	//sprintf(tmpstr, "| Set Points\t%s\t%s\t|", num1, num2);
+	//Serial.println(tmpstr);
+	//
+	//switch (motorDriverTypes[0])
+	//{
+	//case AnalogVoltage:
+	//	strcpy(num1, "A.V.");
+	//	break;
+	//case Frequency:
+	//	strcpy(num1, "Freq.");
+	//	break;
+	//default:
+	//	strcpy(num1, "N/A");
+	//	break;
+	//}
+	//
+	//switch (motorDriverTypes[1])
+	//{
+	//case AnalogVoltage:
+	//	strcpy(num2, "A.V.");
+	//	break;
+	//case Frequency:
+	//	strcpy(num2, "Freq.");
+	//	break;
+	//default:
+	//	strcpy(num2, "N/A");
+	//	break;
+	//}
+	//
+	//sprintf(tmpstr, "| Drivers\t%s\t%s\t|", num1, num2);
+	//Serial.println(tmpstr);
+	//
+	//dtostrf(currentVoltages[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
+	//dtostrf(currentVoltages[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
+	//sprintf(tmpstr, "| DAC\t\t%sV\t%sV\t|", num1, num2);
+	//Serial.println(tmpstr);
+	//
+	//sprintf(tmpstr, "| Frequency\t%d Hz\t\t|", currentFrequency);
+	//Serial.println(tmpstr);
+	//
+	//sprintf(tmpstr, "| PID Interval\t%d ms\t\t|", pidLoopInterval);
+	//Serial.println(tmpstr);
+	//sprintf(tmpstr, "| PID Control\t%s\t\t|", isPidEnabled ? "On" : "Off");
+	//Serial.println(tmpstr);
+	//sprintf(tmpstr, "| Safety\t%s\t\t|", isSafetyOn ? "On" : "Off");
+	//Serial.println(tmpstr);
+	//sprintf(tmpstr, "| Debug\t\t%s\t\t|", isDebugMode ? "On" : "Off");
+	//Serial.println(tmpstr);
+	//Serial.println("|===============================|");
 }
 
 void onCommandHelp()
