@@ -387,6 +387,28 @@ void onCommandLoopInterval()
 	}
 }
 
+void onCommandAngle()
+{
+	if (isChannelCorrect(gParameters[0]))
+	{
+		int channel = convertToInt(gParameters[0]);
+
+		if (isReadCommand(gParameters[1]))
+		{
+			sendDouble(currentAngles[channel], DEFAULT_NUM_DECIMALS);
+			sendAck();
+		}
+		else
+		{
+			sendReadOnlyError();
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
 void onCommandAdc()
 {
 	int adcChannel = convertToInt(gParameters[0]);

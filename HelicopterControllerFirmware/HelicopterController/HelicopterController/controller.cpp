@@ -77,6 +77,10 @@ void processCommand(char *command)
 	{
 		onCommandSetPoint();
 	}
+	else if (0 == strcmp(command, "ANGLE"))
+	{
+		onCommandAngle();
+	}
 	else if (0 == strcmp(command, "ADC"))
 	{
 		onCommandAdc();
