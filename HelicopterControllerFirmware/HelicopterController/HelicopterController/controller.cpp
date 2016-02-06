@@ -41,9 +41,9 @@ void processCommand(char *command)
 	{
 		onCommandPidControl();
 	}
-	else if (0 == strcmp(command, "DEBUG"))
+	else if (0 == strcmp(command, "VERBOSE"))
 	{
-		onCommandDebug();
+		onCommandVerbose();
 	}
 	else if (0 == strcmp(command, "SAFETY"))
 	{

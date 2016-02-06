@@ -13,7 +13,7 @@ const int minMotorOutput[MAX_NUM_CHANNELS] = { YAW_OUTPUT_MIN, TILT_OUTPUT_MIN }
 const int maxMotorOutput[MAX_NUM_CHANNELS] = { YAW_OUTPUT_MAX, TILT_OUTPUT_MAX };
 
 volatile bool isPidEnabled;
-volatile bool isDebugMode;
+volatile bool isVerboseMode;
 volatile bool isSafetyOn;
 
 volatile int pidLoopInterval;
@@ -55,7 +55,7 @@ ISR(TIMER1_OVF_vect)
 			// Makes the necessary hardware output changes based on driver type
 			applyMotorOutputs(channel, direction, percentageOutput);
 
-			if (isDebugMode)
+			if (isVerboseMode)
 			{
 				char setpoint[8];
 				char angle[8];
@@ -398,14 +398,4 @@ void resetPidValues()
 		integratedAngleErrors[channel] = 0;
 		derivativeAnglesErrors[channel] = 0;
 	}
-}
-
-void enableDebug()
-{
-	isDebugMode = true;
-}
-
-void disableDebug()
-{
-	isDebugMode = false;
 }

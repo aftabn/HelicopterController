@@ -19,7 +19,7 @@ void onCommandVersion(void);
 void onCommandChangelog(void);
 void onCommandEcho(void);
 void onCommandPidControl(void);
-void onCommandDebug(void);
+void onCommandVerbose(void);
 void onCommandSafety(void);
 void onCommandOutput(void);
 void onCommandDirection(void);

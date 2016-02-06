@@ -33,7 +33,7 @@ void onCommandChangelog()
 {
 	if (isReadCommand(gParameters[0]))
 	{
-		Serial.println(F("Updated integral windup to two channels"));
+		Serial.println(F("Updated PID algorithm"));
 		sendAck();
 	}
 	else
@@ -94,21 +94,21 @@ void onCommandPidControl()
 	}
 }
 
-void onCommandDebug()
+void onCommandVerbose()
 {
 	if (isReadCommand(gParameters[0]))
 	{
-		sendOnOffStatus(isDebugMode);
+		sendOnOffStatus(isVerboseMode);
 		sendAck();
 	}
 	else if (isOnCommandArg(gParameters[0]))
 	{
-		isDebugMode = true;
+		isVerboseMode = true;
 		sendAck();
 	}
 	else if (isOffCommandArg(gParameters[0]))
 	{
-		isDebugMode = false;
+		isVerboseMode = false;
 		sendAck();
 	}
 	else
@@ -566,7 +566,7 @@ void onCommandHelp()
 
 	Serial.println(F("Command: PID \r\nArg: ON or OFF \r\nDescription: Enables or disables PID loop control\r\n"));
 	Serial.println(F("Command: SAFETY \r\nArg: ON, OFF \r\nDescription: Enables or disables direct changing of motor control outputs\r\n"));
-	Serial.println(F("Command: DEBUG \r\nArg: ON or OFF \r\nDescription: Enables or disables additional debugging info\r\n"));
+	Serial.println(F("Command: VERBOSE \r\nArg: ON or OFF \r\nDescription: Enables or disables additional debugging info\r\n"));
 }
 
 void handleCommandUnknown(char* command)

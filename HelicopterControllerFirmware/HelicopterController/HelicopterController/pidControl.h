@@ -88,7 +88,7 @@ extern const int minMotorOutput[MAX_NUM_CHANNELS];
 extern const int maxMotorOutput[MAX_NUM_CHANNELS];
 
 extern volatile bool isPidEnabled;
-extern volatile bool isDebugMode;
+extern volatile bool isVerboseMode;
 extern volatile bool isSafetyOn;
 
 extern volatile int pidLoopInterval;
