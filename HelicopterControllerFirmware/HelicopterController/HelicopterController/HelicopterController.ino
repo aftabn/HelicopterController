@@ -16,7 +16,6 @@ void setup()
 	initializeDac(); // Must be initialized after SPI
 	initializeFrequencyOutput();
 	initializeQuadratureDecoder();
-	initializePotentiometerTimer();
 	initializePid();
 }
 
