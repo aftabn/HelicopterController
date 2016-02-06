@@ -660,7 +660,7 @@ void onCommandState()
 void onCommandHelp()
 {
 	Serial.println(F("Command: *IDN? \r\nDescription: Returns the identity of the controller\r\n"));
-	Serial.println(F("Command: VER \r\nArg: VER \r\nDescription: Gets firmware version\r\n"));
+	Serial.println(F("Command: VER \r\nDescription: Gets firmware version\r\n"));
 	Serial.println(F("Command: CHANGELOG \r\nDescription: Gets most recent change\r\n"));
 	Serial.println(F("Command: ECHO \r\nArg: Any string \r\nDescription: Returns entered string\r\n"));
 

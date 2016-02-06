@@ -48,9 +48,14 @@ void sendDouble(double num, int numDecimals)
 
 void sendOnOffStatus(bool isOn)
 {
-	char tmpstr[5];
-	sprintf(tmpstr, "%s", isOn ? "ON" : "OFF");
-	Serial.println(tmpstr);
+	if (isOn)
+	{
+		Serial.println(F("ON"));
+	}
+	else
+	{
+		Serial.println(F("OFF"));
+	}
 }
 
 void sendOneOrZeroStatus(bool isHigh)
@@ -62,25 +67,26 @@ void sendOneOrZeroStatus(bool isHigh)
 
 void sendDirectionStatus(Direction direction)
 {
-	char tmpstr[17];
-	sprintf(tmpstr, "%s", direction == Clockwise ? "Clockwise" : "CounterClockwise");
-	Serial.println(tmpstr);
+	if (direction == Clockwise)
+	{
+		Serial.println(F("Clockwise"));
+	}
+	else if (direction == CounterClockwise)
+	{
+		Serial.println(F("CounterClockwise"));
+	}
 }
 
 void sendMotorDriverStatus(MotorDriverType motorDriverType)
 {
-	char tmpstr[17];
-
 	if (motorDriverType == AnalogVoltage)
 	{
-		sprintf(tmpstr, "%s", "AnalogVoltage");
+		Serial.println(F("AnalogVoltage"));
 	}
 	else if (motorDriverType == Frequency)
 	{
-		sprintf(tmpstr, "%s", "Frequency");
+		Serial.println(F("Frequency"));
 	}
-
-	Serial.println(tmpstr);
 }
 
 void sendIntRangeError(int lowerLimit, int upperLimit, char* unit)
@@ -160,13 +166,13 @@ bool isOffCommandArg(char* arg)
 bool isClockwiseCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "CW") || 0 == stricmp(arg, "0"));
+	return (0 == stricmp(arg, "CLOCKWISE") || 0 == stricmp(arg, "CW") || 0 == stricmp(arg, "0"));
 }
 
 bool isCounterClockwiseCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "CCW") || 0 == stricmp(arg, "1"));
+	return (0 == stricmp(arg, "COUNTERCLOCKWISE") || 0 == stricmp(arg, "CCW") || 0 == stricmp(arg, "1"));
 }
 
 bool isAnalogVoltageCommandArg(char* arg)
