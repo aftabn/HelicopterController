@@ -34,7 +34,6 @@ void onCommandAngle(void);
 void onCommandAdc(void);
 void onCommandDacVoltage(void);
 void onCommandFrequencyOutput(void);
-void onCommandState(void);
 void onCommandTest(void);
 void onCommandHelp(void);
 void handleCommandUnknown(char *command);

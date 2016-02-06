@@ -101,10 +101,6 @@ void processCommand(char *command)
 	{
 		onCommandFrequencyOutput();
 	}
-	else if (0 == strcmp(command, "STATE"))
-	{
-		onCommandState();
-	}
 	else if (0 == strcmp(command, "TEST"))
 	{
 		onCommandTest();

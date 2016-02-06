@@ -542,121 +542,6 @@ void onCommandTest()
 {
 }
 
-void onCommandState()
-{
-	//char tmpstr[40];
-	//char num1[8];
-	//char num2[8];
-	//
-	//Serial.println(F("|===============================|"));
-	//Serial.println(F("| Channel\t0\t1\t|"));
-	//Serial.println(F("|-------------------------------|"));
-	//
-	//sprintf(tmpstr, "| Output\t%d\t%d\t|", currentOutputs[0], currentOutputs[1]);
-	//Serial.println(tmpstr);
-	//
-	//switch (directions[0])
-	//{
-	//case Clockwise:
-	//	strcpy(num1, "CW");
-	//	break;
-	//case CounterClockwise:
-	//	strcpy(num1, "CCW");
-	//	break;
-	//default:
-	//	strcpy(num1, "N/A");
-	//	break;
-	//}
-	//
-	//switch (directions[1])
-	//{
-	//case Clockwise:
-	//	strcpy(num2, "CW");
-	//	break;
-	//case CounterClockwise:
-	//	strcpy(num2, "CCW");
-	//	break;
-	//default:
-	//	strcpy(num2, "N/A");
-	//	break;
-	//}
-	//
-	//sprintf(tmpstr, "| Directions\t%s\t%s\t|", num1, num2);
-	//Serial.println(tmpstr);
-	//
-	//dtostrf(currentAngles[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
-	//dtostrf(currentAngles[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
-	//sprintf(tmpstr, "| Angles\t%s\t%s\t|", num1, num2);
-	//Serial.println(tmpstr);
-	//
-	//dtostrf(pGains[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
-	//dtostrf(pGains[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
-	//sprintf(tmpstr, "| P-Gain\t%s\t%s\t|", num1, num2);
-	//Serial.println(tmpstr);
-	//
-	//dtostrf(iGains[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
-	//dtostrf(iGains[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
-	//sprintf(tmpstr, "| I-Gain\t%s\t%s\t|", num1, num2);
-	//Serial.println(tmpstr);
-	//
-	//dtostrf(dGains[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
-	//dtostrf(dGains[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
-	//sprintf(tmpstr, "| D-Gain\t%s\t%s\t|", num1, num2);
-	//Serial.println(tmpstr);
-	//
-	//dtostrf(setPoints[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
-	//dtostrf(setPoints[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
-	//sprintf(tmpstr, "| Set Points\t%s\t%s\t|", num1, num2);
-	//Serial.println(tmpstr);
-	//
-	//switch (motorDriverTypes[0])
-	//{
-	//case AnalogVoltage:
-	//	strcpy(num1, "A.V.");
-	//	break;
-	//case Frequency:
-	//	strcpy(num1, "Freq.");
-	//	break;
-	//default:
-	//	strcpy(num1, "N/A");
-	//	break;
-	//}
-	//
-	//switch (motorDriverTypes[1])
-	//{
-	//case AnalogVoltage:
-	//	strcpy(num2, "A.V.");
-	//	break;
-	//case Frequency:
-	//	strcpy(num2, "Freq.");
-	//	break;
-	//default:
-	//	strcpy(num2, "N/A");
-	//	break;
-	//}
-	//
-	//sprintf(tmpstr, "| Drivers\t%s\t%s\t|", num1, num2);
-	//Serial.println(tmpstr);
-	//
-	//dtostrf(currentVoltages[0], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num1);
-	//dtostrf(currentVoltages[1], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, num2);
-	//sprintf(tmpstr, "| DAC\t\t%sV\t%sV\t|", num1, num2);
-	//Serial.println(tmpstr);
-	//
-	//sprintf(tmpstr, "| Frequency\t%d Hz\t\t|", currentFrequency);
-	//Serial.println(tmpstr);
-	//
-	//sprintf(tmpstr, "| PID Interval\t%d ms\t\t|", pidLoopInterval);
-	//Serial.println(tmpstr);
-	//sprintf(tmpstr, "| PID Control\t%s\t\t|", isPidEnabled ? "On" : "Off");
-	//Serial.println(tmpstr);
-	//sprintf(tmpstr, "| Safety\t%s\t\t|", isSafetyOn ? "On" : "Off");
-	//Serial.println(tmpstr);
-	//sprintf(tmpstr, "| Debug\t\t%s\t\t|", isDebugMode ? "On" : "Off");
-	//Serial.println(tmpstr);
-	//Serial.println("|===============================|");
-}
-
 void onCommandHelp()
 {
 	Serial.println(F("Command: *IDN? \r\nDescription: Returns the identity of the controller\r\n"));
@@ -681,7 +566,6 @@ void onCommandHelp()
 
 	Serial.println(F("Command: PID \r\nArg: ON or OFF \r\nDescription: Enables or disables PID loop control\r\n"));
 	Serial.println(F("Command: SAFETY \r\nArg: ON, OFF \r\nDescription: Enables or disables direct changing of motor control outputs\r\n"));
-	Serial.println(F("Command: STATE \r\nArg: None \r\nDescription: Returns debugging info regarding controller variables\r\n"));
 	Serial.println(F("Command: DEBUG \r\nArg: ON or OFF \r\nDescription: Enables or disables additional debugging info\r\n"));
 }
 
