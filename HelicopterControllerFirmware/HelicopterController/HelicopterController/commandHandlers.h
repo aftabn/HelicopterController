@@ -15,7 +15,8 @@ Author:	Aftab
 #define VOLTAGE_UNIT		"V"
 
 void onCommandIdentity(void);
-void onCommandSystem(void);
+void onCommandVersion(void);
+void onCommandChangelog(void);
 void onCommandEcho(void);
 void onCommandPidControl(void);
 void onCommandDebug(void);
@@ -27,6 +28,7 @@ void onCommandProportionalGain(void);
 void onCommandIntegralGain(void);
 void onCommandDerivativeGain(void);
 void onCommandLoopInterval(void);
+void onCommandIntegralWindup(void);
 void onCommandSetPoint(void);
 void onCommandAngle(void);
 void onCommandAdc(void);

@@ -8,7 +8,7 @@ Author:	Aftab
 #define _GLOBALS_h
 
 #define CONTROLLER_NAME				"Arduino Helicopter Controller"
-#define FIRMWARE_VERSION			1.02
+#define FIRMWARE_VERSION			1.03
 
 #define MAX_NUM_CHANNELS			2
 

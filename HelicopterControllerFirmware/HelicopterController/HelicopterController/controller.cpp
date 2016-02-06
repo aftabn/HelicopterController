@@ -29,9 +29,13 @@ void processCommand(char *command)
 	{
 		onCommandEcho();
 	}
-	else if (0 == strcmp(command, "SYS"))
+	else if (0 == strcmp(command, "CHANGELOG"))
 	{
-		onCommandSystem();
+		onCommandChangelog();
+	}
+	else if (0 == strcmp(command, "VER"))
+	{
+		onCommandVersion();
 	}
 	else if (0 == strcmp(command, "PID"))
 	{
@@ -72,6 +76,10 @@ void processCommand(char *command)
 	else if (0 == strcmp(command, "LOOP"))
 	{
 		onCommandLoopInterval();
+	}
+	else if (0 == strcmp(command, "WINDUP"))
+	{
+		onCommandIntegralWindup();
 	}
 	else if (0 == strcmp(command, "SP"))
 	{

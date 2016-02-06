@@ -44,7 +44,9 @@ Author:	Aftab
 
 #define I_GAIN_MIN					0.0
 #define I_GAIN_MAX					10.0
-#define I_GAIN_THRESHHOLD_ERROR		10
+
+#define I_WINDUP_THRESH_MIN			0.0
+#define I_WINDUP_THRESH_MAX			100.0
 
 #define D_GAIN_MIN					0.0
 #define D_GAIN_MAX					10.0
@@ -64,6 +66,7 @@ Author:	Aftab
 #define DEFAULT_I_GAIN				I_GAIN_MIN
 #define DEFAULT_D_GAIN				D_GAIN_MIN
 #define DEFAULT_SET_POINT			SET_POINT_MIN
+#define DEFAULT_I_WINDUP_THRESH		30.0
 #define DEFAULT_PID_INTERVAL_MS		250
 
 enum Direction { Clockwise, CounterClockwise };
@@ -84,6 +87,7 @@ extern volatile bool currentEncoderA, currentEncoderB;
 extern volatile double pGains[MAX_NUM_CHANNELS];
 extern volatile double iGains[MAX_NUM_CHANNELS];
 extern volatile double dGains[MAX_NUM_CHANNELS];
+extern volatile double iWindupThresholds[MAX_NUM_CHANNELS];
 extern volatile double setPoints[MAX_NUM_CHANNELS];
 extern volatile double currentVoltages[MAX_NUM_CHANNELS];
 extern volatile double currentAngles[MAX_NUM_CHANNELS];

@@ -29,16 +29,29 @@ void onCommandEcho()
 	}
 }
 
-void onCommandSystem()
+void onCommandChangelog()
 {
-	if (0 == stricmp(gParameters[0], "VER"))
+	if (isReadCommand(gParameters[0]))
+	{
+		Serial.println(F("Updated integral windup to two channels"));
+		sendAck();
+	}
+	else
+	{
+		sendReadOnlyError();
+	}
+}
+
+void onCommandVersion()
+{
+	if (isReadCommand(gParameters[0]))
 	{
 		sendDouble(FIRMWARE_VERSION, DEFAULT_NUM_DECIMALS);
 		sendAck();
 	}
 	else
 	{
-		sendSyntaxError();
+		sendReadOnlyError();
 	}
 }
 
@@ -387,6 +400,34 @@ void onCommandLoopInterval()
 	}
 }
 
+void onCommandIntegralWindup()
+{
+	if (isChannelCorrect(gParameters[0]))
+	{
+		int channel = convertToInt(gParameters[0]);
+		double windup = atof(gParameters[1]);
+
+		if (isReadCommand(gParameters[1]))
+		{
+			sendDouble(iWindupThresholds[channel], DEFAULT_NUM_DECIMALS);
+			sendAck();
+		}
+		else if (isDoubleWithinRange(windup, I_WINDUP_THRESH_MIN, I_WINDUP_THRESH_MAX))
+		{
+			iWindupThresholds[channel] = windup;
+			sendAck();
+		}
+		else
+		{
+			sendDoubleRangeError(I_WINDUP_THRESH_MIN, I_WINDUP_THRESH_MAX, DEGREES_UNIT);
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
 void onCommandAngle()
 {
 	if (isChannelCorrect(gParameters[0]))
@@ -619,15 +660,19 @@ void onCommandState()
 void onCommandHelp()
 {
 	Serial.println(F("Command: *IDN? \r\nDescription: Returns the identity of the controller\r\n"));
-	Serial.println(F("Command: SYS \r\nArg: VER \r\nDescription: Gets information about jig or the controller\r\n"));
+	Serial.println(F("Command: VER \r\nArg: VER \r\nDescription: Gets firmware version\r\n"));
+	Serial.println(F("Command: CHANGELOG \r\nDescription: Gets most recent change\r\n"));
 	Serial.println(F("Command: ECHO \r\nArg: Any string \r\nDescription: Returns entered string\r\n"));
+
 	Serial.println(F("Command: P \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value\r\nDescription: Gets or sets PGain for selected channel's PID control loop\r\n"));
 	Serial.println(F("Command: I \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value\r\nDescription: Gets or sets IGain for selected channel's PID control loop\r\n"));
 	Serial.println(F("Command: D \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value\r\nDescription: Gets or sets DGain for selected channel's PID control loop\r\n"));
+	Serial.println(F("Command: WINDUP \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value\r\nDescription: Gets or sets integral windup for selected channel's PID control loop\r\n"));
 	Serial.println(F("Command: LOOP \r\nArg: None or Value in milliseconds\r\nDescription: Gets or sets interval for PID control loop\r\n"));
 
 	Serial.println(F("Command: OUT \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value in percent\r\nDescription: Gets or sets the percentage motor output for the selected channel\r\n"));
 	Serial.println(F("Command: SP \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value in degrees\r\nDescription: Gets or sets the set point angle for the designated motor\r\n"));
+	Serial.println(F("Command: ANGLE \r\nArg: Channel (0 or 1) \r\nDescription: Gets the angle for the selected channel\r\n"));
 	Serial.println(F("Command: DIR \r\nArg1: Channel (0 or 1) \r\nArg2: None, or Value (CW, CCW)\r\nDescription: Gets or sets the motor direction for the selected channel\r\n"));
 	Serial.println(F("Command: DRIVER \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value (Analog, Frequency)\r\nDescription: Gets or sets the motor driver type for the selected channel\r\n"));
 	Serial.println(F("Command: DAC \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value in volts\r\nDescription: Gets or sets the DAC voltage for selected channel\r\n"));

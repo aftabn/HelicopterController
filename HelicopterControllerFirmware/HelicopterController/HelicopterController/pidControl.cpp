@@ -22,6 +22,7 @@ volatile bool previousEncoderA, previousEncoderB;
 volatile double pGains[MAX_NUM_CHANNELS];
 volatile double iGains[MAX_NUM_CHANNELS];
 volatile double dGains[MAX_NUM_CHANNELS];
+volatile double iWindupThresholds[MAX_NUM_CHANNELS];
 volatile double setPoints[MAX_NUM_CHANNELS];
 volatile double currentVoltages[MAX_NUM_CHANNELS];
 volatile double currentAngles[MAX_NUM_CHANNELS];
@@ -118,6 +119,7 @@ void initializePid(void)
 		pGains[channel] = DEFAULT_P_GAIN;
 		iGains[channel] = DEFAULT_I_GAIN;
 		dGains[channel] = DEFAULT_D_GAIN;
+		iWindupThresholds[channel] = DEFAULT_I_WINDUP_THRESH;
 		setPoints[channel] = DEFAULT_SET_POINT;
 		currentAngles[channel] = 0;
 		directions[channel] = (Direction)DEFAULT_DIRECTION;
@@ -189,13 +191,17 @@ void initializePotentiometerTimer()
 	//interrupts();
 }
 
+// TODO: Update this function to allow for negative errors
 void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOutput)
 {
 	double currentAngle = currentAngles[channel];
 	previousAngles[channel] = currentAngle;
 
-	angleErrors[channel] = setPoints[channel] - currentAngles[channel];
-	integratedAngleErrors[channel] = (abs(angleErrors[channel] < I_GAIN_THRESHHOLD_ERROR) ? integratedAngleErrors[channel] + angleErrors[channel] * pidLoopInterval / 1000.0 : 0);
+	//  TODO: Figure this out once hardware is finalized
+	int directionSign = setPoints[channel] > currentAngles[channel] ? 1 : -1;
+
+	angleErrors[channel] = abs(setPoints[channel] - currentAngles[channel]);
+	integratedAngleErrors[channel] = (angleErrors[channel] < iWindupThresholds[channel] ? integratedAngleErrors[channel] + directionSign * angleErrors[channel] * pidLoopInterval / 1000.0 : 0);
 	derivativeAnglesErrors[channel] = (currentAngles[channel] - previousAngles[channel]) / pidLoopInterval / 1000.0;
 
 	int output = (int)(pGains[channel] * angleErrors[channel] + iGains[channel] * integratedAngleErrors[channel] + dGains[channel] * derivativeAnglesErrors[channel]);
