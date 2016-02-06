@@ -8,7 +8,9 @@ Author:	Aftab
 #include "util.h"
 #include "pidControl.h"
 
-const byte adc_read_channels[8] = { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+const byte adcChannelLookup[ADC_CHANNEL_MAX - ADC_CHANNEL_MIN + 1] = { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+const int minMotorOutput[MAX_NUM_CHANNELS] = { YAW_OUTPUT_MIN, TILT_OUTPUT_MIN };
+const int maxMotorOutput[MAX_NUM_CHANNELS] = { YAW_OUTPUT_MAX, TILT_OUTPUT_MAX };
 
 volatile bool isPidEnabled;
 volatile bool isDebugMode;
@@ -178,36 +180,49 @@ void initializePidTimer(int numMilliseconds)
 	interrupts();							// enable all interrupts
 }
 
-// Initializes the potentiometer timer (Timer 0 ) to fire about every 5 ms
-void initializePotentiometerTimer()
-{
-	//noInterrupts();							// disable all interrupts
-	//TCCR0A = 0;								// set entire TCCR0A register to 0
-	//TCCR0B = 0;								// same for TCCR0B
-	//TCNT0 = 0;								// initialize counter value to 0
-	//OCR0A = 77;								// compare match register (16MHz/1024/200 ~= 77)
-	//TCCR0B |= (1 << CS02) | (1 << CS00);	// 1024 prescaler
-	//TIMSK0 |= (1 << TOIE0);					// enable timer overflow interrupt
-	//interrupts();
-}
-
-// TODO: Update this function to allow for negative errors
 void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOutput)
 {
+	// Get output as a signed value from -100 to 100 based on direction for easier calculations
+	int currentOutput = directions[channel] == Clockwise ? currentOutputs[channel] : -1 * currentOutputs[channel];
 	double currentAngle = currentAngles[channel];
+
+	// P term
+	angleErrors[channel] = setPoints[channel] - currentAngle;
+
+	// I term
+	if (abs(angleErrors[channel]) < iWindupThresholds[channel])
+	{
+		integratedAngleErrors[channel] = integratedAngleErrors[channel] + angleErrors[channel] * pidLoopInterval / 1000.0;
+	}
+
+	// D term
+	derivativeAnglesErrors[channel] = (currentAngle - previousAngles[channel]) / pidLoopInterval / 1000.0;
+
+	// Update previous angle for next calculation
 	previousAngles[channel] = currentAngle;
 
-	//  TODO: Figure this out once hardware is finalized
-	int directionSign = setPoints[channel] > currentAngles[channel] ? 1 : -1;
+	// Get new signed output from PID algorithm
+	int newOutput = (int)(pGains[channel] * angleErrors[channel] + iGains[channel] * integratedAngleErrors[channel] + dGains[channel] * derivativeAnglesErrors[channel]);
 
-	angleErrors[channel] = abs(setPoints[channel] - currentAngles[channel]);
-	integratedAngleErrors[channel] = (angleErrors[channel] < iWindupThresholds[channel] ? integratedAngleErrors[channel] + directionSign * angleErrors[channel] * pidLoopInterval / 1000.0 : 0);
-	derivativeAnglesErrors[channel] = (currentAngles[channel] - previousAngles[channel]) / pidLoopInterval / 1000.0;
+	// Limit the amount the output can change by
+	if (abs(newOutput - currentOutput) > MAX_OUTPUT_CHANGE)
+	{
+		if (newOutput > currentOutput)
+		{
+			newOutput = currentOutput + MAX_OUTPUT_CHANGE;
+		}
+		else
+		{
+			newOutput = currentOutput - MAX_OUTPUT_CHANGE;
+		}
+	}
 
-	int output = (int)(pGains[channel] * angleErrors[channel] + iGains[channel] * integratedAngleErrors[channel] + dGains[channel] * derivativeAnglesErrors[channel]);
+	// Constrain the output between the upper and lower bounds
+	newOutput = max(min(newOutput, maxMotorOutput[channel]), minMotorOutput[channel]);
 
-	*percentageOutput = max(min(output, 100), 0);
-	*direction = angleErrors[channel] > 0 ? Clockwise : CounterClockwise;
+	// Apply the changes and switch output back to between 0 and 100 %
+	*percentageOutput = abs(newOutput);
+	*direction = newOutput > 0 ? Clockwise : CounterClockwise;
 }
 
 void applyMotorOutputs(int channel, Direction direction, int percentageOutput)
@@ -295,7 +310,7 @@ int getAdcValue(int channel)
 {
 	SPISettings MCP3008(2000000, MSBFIRST, SPI_MODE0);
 
-	byte readAddress = adc_read_channels[channel];
+	byte readAddress = adcChannelLookup[channel];
 	byte dataMSB = 0;
 	byte dataLSB = 0;
 	byte JUNK = 0x00;
@@ -378,6 +393,7 @@ void resetPidValues()
 {
 	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
 	{
+		previousAngles[channel] = 0;
 		angleErrors[channel] = 0;
 		integratedAngleErrors[channel] = 0;
 		derivativeAnglesErrors[channel] = 0;

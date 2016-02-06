@@ -12,9 +12,12 @@ Author:	Aftab
 
 #define ARDUINO_VSS					5.0
 
-// For this project, channel 0 is measured using an encoder and channel 1 with a pot
+// For this project, CH0 -> Yaw w/ Encoder, CH1 -> Tilt w/ Potentiometer
 #define ENCODER_CHANNEL				0
 #define POTENTIOMETER_CHANNEL		1
+
+#define YAW_CHANNEL					0
+#define TILT_CHANNEL				1
 
 #define POT_TOTAL_RANGE_DEGREES		330.0
 #define POT_DEGREES_PER_VOLT		POT_TOTAL_RANGE_DEGREES / ARDUINO_VSS
@@ -57,6 +60,14 @@ Author:	Aftab
 #define SET_POINT_MIN				0.00
 #define SET_POINT_MAX				360.0
 
+#define MAX_OUTPUT_CHANGE			10
+
+#define YAW_OUTPUT_MIN				-100
+#define YAW_OUTPUT_MAX				100
+
+#define TILT_OUTPUT_MIN				0
+#define TILT_OUTPUT_MAX				100
+
 #define PID_INTERVAL_MS_MIN			1		// Minimum timer 1 overflow is 1 ms
 #define PID_INTERVAL_MS_MAX			260		// Maximum timer 1 overflow is ~260 ms
 
@@ -72,7 +83,9 @@ Author:	Aftab
 enum Direction { Clockwise, CounterClockwise };
 enum MotorDriverType { AnalogVoltage, Frequency };
 
-extern const byte adc_read_channels[8];
+extern const byte adcChannelLookup[ADC_CHANNEL_MAX - ADC_CHANNEL_MIN + 1];
+extern const int minMotorOutput[MAX_NUM_CHANNELS];
+extern const int maxMotorOutput[MAX_NUM_CHANNELS];
 
 extern volatile bool isPidEnabled;
 extern volatile bool isDebugMode;
