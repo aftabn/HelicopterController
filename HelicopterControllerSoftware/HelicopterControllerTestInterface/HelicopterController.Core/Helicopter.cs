@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace HelicopterController.Core
 {
-    public enum ControllerState
+    public class Helicopter
     {
-        Idle, Lifting, Rotating, Aborted
     }
 }

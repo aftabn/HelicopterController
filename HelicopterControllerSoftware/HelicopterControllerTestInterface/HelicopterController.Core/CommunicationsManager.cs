@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 
 namespace HelicopterController.Core
 {
-    public class MicrocontrollerCommunicationsManager : INotifyPropertyChanged, IDisposable
+    public class CommunicationsManager : INotifyPropertyChanged, IDisposable
     {
-        private const double DBL_DefaultTimeoutSeconds = 0.25;
+        private const double DBL_DefaultTimeoutSeconds = 1;
         private const string STR_DeviceName = "Arduino";
 
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -28,51 +28,14 @@ namespace HelicopterController.Core
         private SerialPort serialPort;
         private string serialPortBuffer;
         private string comPort = String.Empty;
-        private bool isEngMode;
-        private bool isVirtual;
         private bool isConnected;
 
-        public MicrocontrollerCommunicationsManager(bool isEngMode)
+        public CommunicationsManager(bool isDeveloperMode)
         {
             serialPortBuffer = String.Empty;
-            IsEngMode = isEngMode;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public bool IsEngMode
-        {
-            get
-            {
-                return isEngMode;
-            }
-
-            private set
-            {
-                if (value != isEngMode)
-                {
-                    isEngMode = value;
-                    RaisePropertyChanged("IsEngMode");
-                }
-            }
-        }
-
-        public bool IsVirtual
-        {
-            get
-            {
-                return isVirtual;
-            }
-
-            private set
-            {
-                if (value != isVirtual)
-                {
-                    isVirtual = value;
-                    RaisePropertyChanged("IsVirtual");
-                }
-            }
-        }
 
         public bool IsConnected
         {
@@ -160,11 +123,6 @@ namespace HelicopterController.Core
                 Thread.Sleep(500);
                 ClearBuffer();
             }
-            else if (IsEngMode)
-            {
-                IsConnected = true;
-                IsVirtual = true;
-            }
             else
             {
                 throw new Exception(String.Format("Device \"{0}\" is not listed on the COM ports", STR_DeviceName));
@@ -177,12 +135,9 @@ namespace HelicopterController.Core
 
             if (IsConnected)
             {
-                if (!IsVirtual)
-                {
-                    serialPort.DataReceived -= OnDataReceived;
-                    serialPort.Close();
-                    serialPort.Dispose();
-                }
+                serialPort.DataReceived -= OnDataReceived;
+                serialPort.Close();
+                serialPort.Dispose();
 
                 IsConnected = false;
             }
@@ -197,7 +152,7 @@ namespace HelicopterController.Core
 
         public Packet Write(string input)
         {
-            return !IsVirtual ? Write(input, DBL_DefaultTimeoutSeconds) : null;
+            return Write(input, DBL_DefaultTimeoutSeconds);
         }
 
         public Packet Write(string input, double timeoutSeconds)

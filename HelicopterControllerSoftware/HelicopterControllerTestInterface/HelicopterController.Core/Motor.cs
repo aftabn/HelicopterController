@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HelicopterController.Core
 {
-    public abstract class Motor
+    public class Motor
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
     }

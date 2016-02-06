@@ -8,166 +8,35 @@ using System.Threading.Tasks;
 
 namespace HelicopterController.Core
 {
-    public abstract class Microcontroller : INotifyPropertyChanged, IDisposable
+    public class Microcontroller : INotifyPropertyChanged, IDisposable
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        protected MicrocontrollerCommunicationsManager microcontrollerCommunicationsManager;
-        private bool isEngMode;
-        private bool isConnected;
+        protected CommunicationsManager communicationsManager;
         protected bool isDebugEnabled;
         protected bool isPidEnabled;
-        private double proportionalGain;
-        private double integralGain;
-        private double derivativeGain;
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private double angleSetPoint;
-        private int pidLoopInterval;
+        private double derivativeGain;
         private int dutyCycle;
+        private double integralGain;
+        private bool isConnected;
+        private bool isDeveloperMode;
         private int maximumDutyCycle;
+        private int pidLoopInterval;
+        private double proportionalGain;
 
-        public Microcontroller(bool isEngMode)
+        public Microcontroller(bool isDeveloperMode)
         {
-            this.isEngMode = isEngMode;
-            microcontrollerCommunicationsManager = new MicrocontrollerCommunicationsManager(isEngMode);
+            this.isDeveloperMode = isDeveloperMode;
+            communicationsManager = new CommunicationsManager(isDeveloperMode);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public bool IsVirtual
-        {
-            get
-            {
-                return microcontrollerCommunicationsManager != null ? microcontrollerCommunicationsManager.IsVirtual : false;
-            }
-        }
 
         public bool IsConnected
         {
             get
             {
-                return microcontrollerCommunicationsManager != null ? microcontrollerCommunicationsManager.IsConnected : false;
-            }
-        }
-
-        public bool IsEngineeringMode { get { return isEngMode; } }
-
-        public ControllerState ControllerState { get; set; }
-
-        public double ProportionalGain
-        {
-            get
-            {
-                return proportionalGain;
-            }
-
-            set
-            {
-                if (value != proportionalGain)
-                {
-                    proportionalGain = value;
-                    RaisePropertyChanged("ProportionalGain");
-                }
-            }
-        }
-
-        public double IntegralGain
-        {
-            get
-            {
-                return integralGain;
-            }
-
-            set
-            {
-                if (value != integralGain)
-                {
-                    integralGain = value;
-                    RaisePropertyChanged("IntegralGain");
-                }
-            }
-        }
-
-        public double DerivativeGain
-        {
-            get
-            {
-                return derivativeGain;
-            }
-
-            set
-            {
-                if (value != derivativeGain)
-                {
-                    derivativeGain = value;
-                    RaisePropertyChanged("DerivativeGain");
-                }
-            }
-        }
-
-        public double AngleSetPoint
-        {
-            get
-            {
-                return derivativeGain;
-            }
-
-            set
-            {
-                if (value != derivativeGain)
-                {
-                    derivativeGain = value;
-                    RaisePropertyChanged("DerivativeGain");
-                }
-            }
-        }
-
-        public int PidLoopInterval
-        {
-            get
-            {
-                return pidLoopInterval;
-            }
-
-            set
-            {
-                if (value != pidLoopInterval)
-                {
-                    pidLoopInterval = value;
-                    RaisePropertyChanged("PidLoopInterval");
-                }
-            }
-        }
-
-        public int DutyCycle
-        {
-            get
-            {
-                return dutyCycle;
-            }
-
-            set
-            {
-                if (value != dutyCycle)
-                {
-                    dutyCycle = value;
-                    RaisePropertyChanged("DutyCycle");
-                }
-            }
-        }
-
-        public int MaximumDutyCycle
-        {
-            get
-            {
-                return maximumDutyCycle;
-            }
-
-            set
-            {
-                if (value != maximumDutyCycle)
-                {
-                    maximumDutyCycle = value;
-                    RaisePropertyChanged("MaximumDutyCycle");
-                }
+                return communicationsManager != null ? communicationsManager.IsConnected : false;
             }
         }
 
@@ -179,11 +48,11 @@ namespace HelicopterController.Core
             }
         }
 
-        public bool IsPidEnabled
+        public bool IsDeveloperMode
         {
             get
             {
-                return isPidEnabled;
+                return isDeveloperMode;
             }
         }
 
@@ -191,7 +60,7 @@ namespace HelicopterController.Core
         {
             if (!IsConnected)
             {
-                microcontrollerCommunicationsManager.Connect();
+                communicationsManager.Connect();
                 InitializeMicrocontroller();
             }
             else
@@ -200,135 +69,135 @@ namespace HelicopterController.Core
             }
         }
 
-        private void InitializeMicrocontroller()
+        public void Disconnect()
         {
             DisablePid();
-            DisableDebugMode();
-            RefreshProportionalGain();
-            RefreshIntegralGain();
-            RefreshDerivativeGain();
-            RefreshAngleSetPoint();
-            RefreshPidLoopInterval();
-            RefreshDutyCycle();
-            RefreshMaximumDutyCycle();
+
+            if (IsConnected)
+            {
+                communicationsManager.Disconnect();
+            }
+            else
+            {
+                throw new Exception("Microcontroller is already disconnected.");
+            }
         }
 
         public void Dispose()
         {
-            microcontrollerCommunicationsManager.Disconnect();
-        }
-
-        public virtual void RefreshProportionalGain()
-        {
-            ProportionalGain = Convert.ToDouble(microcontrollerCommunicationsManager.Write("P").ReturnValue);
-        }
-
-        public virtual void RefreshIntegralGain()
-        {
-            IntegralGain = Convert.ToDouble(microcontrollerCommunicationsManager.Write("I").ReturnValue);
-        }
-
-        public virtual void RefreshDerivativeGain()
-        {
-            DerivativeGain = Convert.ToDouble(microcontrollerCommunicationsManager.Write("D").ReturnValue);
-        }
-
-        public virtual void RefreshAngleSetPoint()
-        {
-            AngleSetPoint = Convert.ToDouble(microcontrollerCommunicationsManager.Write("SP").ReturnValue);
-        }
-
-        public virtual void RefreshPidLoopInterval()
-        {
-            PidLoopInterval = Convert.ToInt32(microcontrollerCommunicationsManager.Write("INTERVAL").ReturnValue);
-        }
-
-        public virtual void RefreshDutyCycle()
-        {
-            DutyCycle = Convert.ToInt32(microcontrollerCommunicationsManager.Write("DUTY").ReturnValue);
-        }
-
-        public virtual void RefreshMaximumDutyCycle()
-        {
-            MaximumDutyCycle = Convert.ToInt32(microcontrollerCommunicationsManager.Write("MAXDUTY").ReturnValue);
-        }
-
-        public void SetProportionalGain(double pGain)
-        {
-            microcontrollerCommunicationsManager.Write(String.Format("P {0}", pGain));
-            ProportionalGain = pGain;
-        }
-
-        public void SetIntegralGain(double iGain)
-        {
-            microcontrollerCommunicationsManager.Write(String.Format("I {0}", iGain));
-            IntegralGain = iGain;
-        }
-
-        public void SetDerivativeGain(double dGain)
-        {
-            microcontrollerCommunicationsManager.Write(String.Format("D {0}", dGain));
-            DerivativeGain = dGain;
-        }
-
-        public void SetAngleSetPoint(double setPoint)
-        {
-            microcontrollerCommunicationsManager.Write(String.Format("SP {0}", setPoint));
-            AngleSetPoint = setPoint;
-        }
-
-        public void SetPidLoopInterval(int interval)
-        {
-            microcontrollerCommunicationsManager.Write(String.Format("INTERVAL {0}", interval));
-            PidLoopInterval = interval;
-        }
-
-        public void SetDutyCycle(int duty)
-        {
-            microcontrollerCommunicationsManager.Write(String.Format("DUTY {0}", duty));
-            DutyCycle = duty;
-        }
-
-        public void SetMaxmimumDutyCycle(int maxDuty)
-        {
-            microcontrollerCommunicationsManager.Write(String.Format("MAXDUTY {0}", maxDuty));
-            MaximumDutyCycle = maxDuty;
+            Disconnect();
         }
 
         public void EnableDebugMode()
         {
-            microcontrollerCommunicationsManager.Write("DEBUG ON");
+            communicationsManager.Write("DEBUG ON");
             isDebugEnabled = true;
             RaisePropertyChanged("IsDebugEnabled");
         }
 
         public void DisableDebugMode()
         {
-            microcontrollerCommunicationsManager.Write("DEBUG OFF");
+            communicationsManager.Write("DEBUG OFF");
             isDebugEnabled = false;
             RaisePropertyChanged("IsDebugEnabled");
         }
 
         public void EnablePid()
         {
-            microcontrollerCommunicationsManager.Write("PID ON");
+            communicationsManager.Write("PID ON");
             isPidEnabled = true;
             RaisePropertyChanged("IsPidEnabled");
         }
 
         public void DisablePid()
         {
-            microcontrollerCommunicationsManager.Write("PID OFF");
+            communicationsManager.Write("PID OFF");
             isPidEnabled = false;
             RaisePropertyChanged("IsPidEnabled");
         }
 
-        protected void OnComponentPropertyChanged(object sender, PropertyChangedEventArgs e)
+        public string GetControllerIdentity()
+        {
+            return communicationsManager.Write("*IDN?").ReturnValue;
+        }
+
+        public double GetFirmwareVersion()
+        {
+            return Convert.ToDouble(communicationsManager.Write("VER").ReturnValue);
+        }
+
+        public double GetAngleSetPoint(int channel)
+        {
+            return Convert.ToDouble(communicationsManager.Write("SP").ReturnValue);
+        }
+
+        public int GetCurrentOutput()
+        {
+            return Convert.ToInt32(communicationsManager.Write("DUTY").ReturnValue);
+        }
+
+        public double GetDerivativeGain(int channel)
+        {
+            return Convert.ToDouble(communicationsManager.Write("D").ReturnValue);
+        }
+
+        public double GetIntegralGain(int channel)
+        {
+            return Convert.ToDouble(communicationsManager.Write("I").ReturnValue);
+        }
+
+        public double GetPidLoopInterval()
+        {
+            return Convert.ToInt32(communicationsManager.Write("INTERVAL").ReturnValue);
+        }
+
+        public double GetProportionalGain(int channel)
+        {
+            return Convert.ToDouble(communicationsManager.Write("P").ReturnValue);
+        }
+
+        public void SetAngleSetPoint(int channel, double setPoint)
+        {
+            communicationsManager.Write(String.Format("SP {0}", setPoint));
+        }
+
+        public void SetDerivativeGain(int channel, double dGain)
+        {
+            communicationsManager.Write(String.Format("D {0}", dGain));
+        }
+
+        public void SetDutyCycle(int duty)
+        {
+            communicationsManager.Write(String.Format("DUTY {0}", duty));
+        }
+
+        public void SetIntegralGain(int channel, double iGain)
+        {
+            communicationsManager.Write(String.Format("I {0}", iGain));
+        }
+
+        public void SetPidLoopInterval(int interval)
+        {
+            communicationsManager.Write(String.Format("INTERVAL {0}", interval));
+        }
+
+        public void SetProportionalGain(double pGain)
+        {
+            communicationsManager.Write(String.Format("P {0}", pGain));
+        }
+
+        private void InitializeMicrocontroller()
+        {
+            DisablePid();
+            DisableDebugMode();
+        }
+
+        private void OnComponentPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             RaisePropertyChanged(e.PropertyName);
         }
 
-        protected void RaisePropertyChanged(string propertyName)
+        private void RaisePropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
             {
