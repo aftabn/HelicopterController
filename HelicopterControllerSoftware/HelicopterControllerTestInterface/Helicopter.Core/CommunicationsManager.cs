@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HelicopterController.Core
+namespace Helicopter.Core
 {
     public class CommunicationsManager : INotifyPropertyChanged, IDisposable
     {
@@ -30,7 +30,7 @@ namespace HelicopterController.Core
         private string comPort = String.Empty;
         private bool isConnected;
 
-        public CommunicationsManager(bool isDeveloperMode)
+        public CommunicationsManager()
         {
             serialPortBuffer = String.Empty;
         }

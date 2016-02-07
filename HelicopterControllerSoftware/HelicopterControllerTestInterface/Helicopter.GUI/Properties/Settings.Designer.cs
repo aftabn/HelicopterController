@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HelicopterControllerTestInterface.Properties
+namespace Helicopter.GUI.Properties
 {
 
 

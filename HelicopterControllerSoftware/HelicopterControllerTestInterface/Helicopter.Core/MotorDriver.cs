@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HelicopterController.Core
+namespace Helicopter.Core
 {
-    public class Helicopter
+    public enum MotorDriver
     {
+        AnalogVoltage, Frequency
     }
 }

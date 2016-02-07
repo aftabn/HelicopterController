@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HelicopterController.Core
+namespace Helicopter.Core
 {
-    public enum Direction
+    public enum MotorType
     {
-        Clockwise, CounterClockwise
+        Yaw = 0, Tilt = 1
     }
 }
