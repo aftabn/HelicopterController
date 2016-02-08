@@ -8,10 +8,11 @@ namespace Helicopter.Controller
 {
     public class TiltController : AngleController
     {
-        private const int INT_TiltChannel = 1;
+        private const MotorType motorType = MotorType.Tilt;
 
-        public TiltController() : base(INT_TiltChannel)
+        public TiltController() : base((int)motorType)
         {
+            MotorType = motorType;
         }
     }
 }

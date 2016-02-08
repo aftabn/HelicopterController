@@ -20,7 +20,7 @@ namespace Helicopter.Controller
         private double integralGain;
         private double derivativeGain;
         private double integralWindupThreshold;
-        private double angleSetPoint;
+        private double setPoint;
         private double currentAngle;
         private int outputPercentage;
 
@@ -31,6 +31,8 @@ namespace Helicopter.Controller
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public MotorType MotorType { get; protected set; }
 
         public double ProportionalGain
         {
@@ -104,20 +106,20 @@ namespace Helicopter.Controller
             }
         }
 
-        public double AngleSetPoint
+        public double SetPoint
         {
             get
             {
-                return angleSetPoint;
+                return setPoint;
             }
 
             set
             {
-                if (value != angleSetPoint)
+                if (value != setPoint)
                 {
                     Microcontroller.SetAngleSetPoint(controllerChannel, value);
-                    angleSetPoint = value;
-                    RaisePropertyChanged("AngleSetPoint");
+                    setPoint = value;
+                    RaisePropertyChanged("SetPoint");
                 }
             }
         }
@@ -133,7 +135,6 @@ namespace Helicopter.Controller
             {
                 if (value != currentAngle)
                 {
-                    Microcontroller.GetCurrentAngle(controllerChannel);
                     currentAngle = value;
                     RaisePropertyChanged("CurrentAngle");
                 }
@@ -204,18 +205,36 @@ namespace Helicopter.Controller
 
         public void Initialize()
         {
-            ProportionalGain = Microcontroller.GetProportionalGain(controllerChannel);
-            IntegralGain = Microcontroller.GetIntegralGain(controllerChannel);
-            DerivativeGain = Microcontroller.GetDerivativeGain(controllerChannel);
-            IntegralWindupThreshold = Microcontroller.GetIntegralWindupThreshold(controllerChannel);
-            AngleSetPoint = Microcontroller.GetAngleSetPoint(controllerChannel);
-            CurrentAngle = Microcontroller.GetCurrentAngle(controllerChannel);
-            OutputPercentage = Microcontroller.GetMotorOutput(controllerChannel);
-            Direction = Microcontroller.GetMotorDirection(controllerChannel);
+            proportionalGain = Microcontroller.GetProportionalGain(controllerChannel);
+            integralGain = Microcontroller.GetIntegralGain(controllerChannel);
+            derivativeGain = Microcontroller.GetDerivativeGain(controllerChannel);
+            integralWindupThreshold = Microcontroller.GetIntegralWindupThreshold(controllerChannel);
+            setPoint = Microcontroller.GetAngleSetPoint(controllerChannel);
+            currentAngle = Microcontroller.GetCurrentAngle(controllerChannel);
+            outputPercentage = Microcontroller.GetMotorOutput(controllerChannel);
+            direction = Microcontroller.GetMotorDirection(controllerChannel);
+            motorDriver = Microcontroller.GetMotorDriver(controllerChannel);
+
+            RaisePropertyChanged("ProportionalGain");
+            RaisePropertyChanged("IntegralGain");
+            RaisePropertyChanged("DerivativeGain");
+            RaisePropertyChanged("IntegralWindupThreshold");
+            RaisePropertyChanged("SetPoint");
+            RaisePropertyChanged("CurrentAngle");
+            RaisePropertyChanged("OutputPercentage");
+            RaisePropertyChanged("Direction");
+            RaisePropertyChanged("MotorDriver");
         }
 
         public void Dispose()
         {
+        }
+
+        public void RefreshValues()
+        {
+            RefreshCurrentAngle();
+            RefreshOutputPercentage();
+            RefreshDirection();
         }
 
         public void RefreshCurrentAngle()
@@ -228,9 +247,9 @@ namespace Helicopter.Controller
             OutputPercentage = Microcontroller.GetMotorOutput(controllerChannel);
         }
 
-        private void OnComponentPropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void RefreshDirection()
         {
-            RaisePropertyChanged(e.PropertyName);
+            Direction = Microcontroller.GetMotorDirection(controllerChannel);
         }
 
         private void RaisePropertyChanged(string propertyName)

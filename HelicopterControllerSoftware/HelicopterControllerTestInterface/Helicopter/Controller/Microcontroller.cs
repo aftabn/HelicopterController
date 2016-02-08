@@ -75,13 +75,13 @@ namespace Helicopter.Controller
 
         public static void EnableSafety()
         {
-            string command = String.Format("{0} {1}", STR_PidControlCommand, STR_OnArg);
+            string command = String.Format("{0} {1}", STR_SafetyCommand, STR_OnArg);
             communicationsManager.Write(command);
         }
 
         public static void DisableSafety()
         {
-            string command = String.Format("{0} {1}", STR_PidControlCommand, STR_OffArg);
+            string command = String.Format("{0} {1}", STR_SafetyCommand, STR_OffArg);
             communicationsManager.Write(command);
         }
 
@@ -131,12 +131,13 @@ namespace Helicopter.Controller
 
         public static double GetAngleSetPoint(int channel)
         {
-            return Convert.ToDouble(communicationsManager.Write("SP").ReturnValue);
+            string command = String.Format("{0} {1}", STR_AngleSetPointCommand, channel);
+            return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
         }
 
         public static void SetAngleSetPoint(int channel, double setPoint)
         {
-            string command = String.Format("{0} {1} {2}", STR_PidLoopIntervalCommand, channel, setPoint);
+            string command = String.Format("{0} {1} {2}", STR_AngleSetPointCommand, channel, setPoint);
             communicationsManager.Write(command);
         }
 

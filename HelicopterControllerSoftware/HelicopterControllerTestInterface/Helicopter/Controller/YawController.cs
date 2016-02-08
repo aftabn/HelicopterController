@@ -8,10 +8,11 @@ namespace Helicopter.Controller
 {
     public class YawController : AngleController
     {
-        private const int INT_YawChannel = 0;
+        private const MotorType motorType = MotorType.Yaw;
 
-        public YawController() : base(INT_YawChannel)
+        public YawController() : base((int)motorType)
         {
+            MotorType = motorType;
         }
     }
 }

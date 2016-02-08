@@ -12,35 +12,25 @@ namespace Helicopter.Controller
     {
         private const int INT_PidIntervalMilliseconds = 250;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private YawController yawController;
-        private TiltController tiltController;
         private bool isSafetyEnabled;
-        private bool isDeveloperMode;
         private bool isPidEnabled;
         private string controllerIdentity;
         private double firmwareVersion;
         private string changelog;
         private int pidLoopInterval;
 
-        public HelicopterController(bool isDeveloperMode)
+        public HelicopterController()
         {
-            this.isDeveloperMode = isDeveloperMode;
-
             Microcontroller.Initialize();
 
-            yawController = new YawController();
-            tiltController = new TiltController();
+            Yaw = new YawController();
+            Tilt = new TiltController();
+
+            Yaw.PropertyChanged += OnAngleControllerPropertyChanged;
+            Tilt.PropertyChanged += OnAngleControllerPropertyChanged;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public bool IsDeveloperMode
-        {
-            get
-            {
-                return isDeveloperMode;
-            }
-        }
 
         public bool IsConnected
         {
@@ -152,47 +142,9 @@ namespace Helicopter.Controller
             }
         }
 
-        public double YawAngleSetPoint
-        {
-            get
-            {
-                return yawController.AngleSetPoint;
-            }
+        public YawController Yaw { get; private set; }
 
-            set
-            {
-                yawController.AngleSetPoint = value;
-            }
-        }
-
-        public double CurrentYawAngle
-        {
-            get
-            {
-                return yawController.CurrentAngle;
-            }
-        }
-
-        public double TiltAngleSetPoint
-        {
-            get
-            {
-                return tiltController.AngleSetPoint;
-            }
-
-            set
-            {
-                yawController.AngleSetPoint = value;
-            }
-        }
-
-        public double CurrentTiltAngle
-        {
-            get
-            {
-                return tiltController.AngleSetPoint;
-            }
-        }
+        public TiltController Tilt { get; private set; }
 
         public void Connect()
         {
@@ -228,15 +180,15 @@ namespace Helicopter.Controller
 
         private void InitializeController()
         {
-            Microcontroller.DisablePid();
-            Microcontroller.EnableSafety();
+            DisablePid();
+            EnableSafety();
 
             ControllerIdentity = Microcontroller.GetControllerIdentity();
             FirmwareVersion = Microcontroller.GetFirmwareVersion();
             Changelog = Microcontroller.GetChangelog();
 
-            yawController.Initialize();
-            tiltController.Initialize();
+            Yaw.Initialize();
+            Tilt.Initialize();
 
             if (PidLoopInterval != 0)
             {
@@ -244,9 +196,42 @@ namespace Helicopter.Controller
             }
         }
 
-        private void OnComponentPropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void EnablePid()
         {
-            RaisePropertyChanged(e.PropertyName);
+            Microcontroller.EnablePid();
+            IsPidEnabled = true;
+        }
+
+        public void DisablePid()
+        {
+            Microcontroller.DisablePid();
+            IsPidEnabled = false;
+        }
+
+        public void EnableSafety()
+        {
+            Microcontroller.EnableSafety();
+            IsSafetyEnabled = true;
+        }
+
+        public void DisableSafety()
+        {
+            Microcontroller.DisableSafety();
+            IsSafetyEnabled = false;
+        }
+
+        public void RefreshValues()
+        {
+            Yaw.RefreshValues();
+            Tilt.RefreshValues();
+        }
+
+        private void OnAngleControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var angleController = sender as AngleController;
+            string propertyChanged = String.Format("{0}{1}", angleController.MotorType, e.PropertyName);
+
+            RaisePropertyChanged(propertyChanged);
         }
 
         private void RaisePropertyChanged(string propertyName)

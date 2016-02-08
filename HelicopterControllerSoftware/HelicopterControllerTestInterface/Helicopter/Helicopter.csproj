@@ -62,6 +62,15 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Settings\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Libs.Utilities\Libs.Utilities.csproj">
+      <Project>{5c11855c-8094-4020-bbd5-841f2824172d}</Project>
+      <Name>Libs.Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

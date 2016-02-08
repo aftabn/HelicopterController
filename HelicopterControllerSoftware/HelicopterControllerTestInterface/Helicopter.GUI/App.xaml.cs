@@ -49,7 +49,7 @@ namespace Helicopter.GUI
             log.Debug(entryAssembly + " starting up.");
 
             startupOptions = new StartupOptions(startupEventArgs.Args);
-            var window = new MainWindow(startupOptions);
+            var window = new HelicopterControllerWindow(startupOptions);
             window.Show();
         }
 
