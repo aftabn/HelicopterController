@@ -7,7 +7,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.165"
+    ComputedModelVersion    "1.166"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -29,7 +29,7 @@ Model {
       $ObjectID		      2
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [-8.0, -8.0, 1616.0, 876.0]
+      Location		      [-7.0, 0.0, 814.0, 867.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		3
@@ -54,25 +54,25 @@ Model {
 	  IsActive		  [1]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "3"
-	  Extents		  [1566.0, 698.0]
-	  ZoomFactor		  [1.25]
-	  Offset		  [-358.52772192406229, -12.442276775229194]
+	  Extents		  [764.0, 689.0]
+	  ZoomFactor		  [0.8]
+	  Offset		  [264.10250322565787, 82.199160877227044]
 	}
 	Object {
 	  $ObjectID		  6
 	  IsActive		  [0]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "162"
-	  Extents		  [1566.0, 698.0]
+	  Extents		  [764.0, 689.0]
 	  ZoomFactor		  [1.5]
-	  Offset		  [-290.25213050378812, -46.000000000000028]
+	  Offset		  [87.159513932257241, -89.062356583220421]
 	}
 	Object {
 	  $ObjectID		  7
 	  IsActive		  [0]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "177"
-	  Extents		  [1566.0, 698.0]
+	  Extents		  [764.0, 689.0]
 	  ZoomFactor		  [1.5]
 	  Offset		  [0.0, 0.0]
 	}
@@ -81,7 +81,7 @@ Model {
 	  IsActive		  [0]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "197"
-	  Extents		  [1566.0, 698.0]
+	  Extents		  [764.0, 689.0]
 	  ZoomFactor		  [1.75]
 	  Offset		  [4.0, -93.193395321494748]
 	}
@@ -90,9 +90,9 @@ Model {
 	  IsActive		  [0]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "243"
-	  Extents		  [1566.0, 698.0]
-	  ZoomFactor		  [1.5]
-	  Offset		  [-482.43265968479932, -65.343136799086679]
+	  Extents		  [764.0, 689.0]
+	  ZoomFactor		  [1.75]
+	  Offset		  [-216.29327840453558, -9.5059688493809453]
 	}
 	PropName		"EditorsInfo"
       }
@@ -104,9 +104,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "Wyatt"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon Feb 08 12:30:14 2016"
-  RTWModifiedTimeStamp	  376835395
-  ModelVersionFormat	  "1.%<AutoIncrement:165>"
+  LastModifiedDate	  "Mon Feb 08 13:38:04 2016"
+  RTWModifiedTimeStamp	  376837277
+  ModelVersionFormat	  "1.%<AutoIncrement:166>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -1031,7 +1031,7 @@ Model {
   }
   System {
     Name		    "SystemModel"
-    Location		    [-8, -8, 1608, 868]
+    Location		    [-7, 0, 807, 867]
     Open		    off
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -1119,7 +1119,7 @@ Model {
       Variant		      off
       System {
 	Name			"Control System"
-	Location		[-8, -8, 1608, 868]
+	Location		[-7, 0, 807, 867]
 	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -1131,7 +1131,7 @@ Model {
 	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
 	TiledPageScale		1
 	ShowPageBoundaries	off
-	ZoomFactor		"125"
+	ZoomFactor		"80"
 	Block {
 	  BlockType		  Reference
 	  Name			  "Altitude ADC"
@@ -1176,7 +1176,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Altitude Control Computer"
-	    Location		    [-8, 0, 1608, 876]
+	    Location		    [-7, 0, 807, 867]
 	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1342,18 +1342,6 @@ Model {
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
-	      BlockType		      Gain
-	      Name		      "FB Gain"
-	      SID		      "5"
-	      Position		      [65, 150, 95, 180]
-	      ZOrder		      -2
-	      BackgroundColor	      "green"
-	      Gain		      "mFeedBack"
-	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
-	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-	      SaturateOnIntegerOverflow	off
-	    }
-	    Block {
 	      BlockType		      Saturate
 	      Name		      "Saturation"
 	      SID		      "103"
@@ -1395,10 +1383,10 @@ Model {
 	      DstPort		      1
 	    }
 	    Line {
-	      ZOrder		      96
-	      SrcBlock		      "FB Gain"
+	      ZOrder		      469
+	      SrcBlock		      "Sensor Feedback"
 	      SrcPort		      1
-	      Points		      [5, 0]
+	      Points		      [255, 0]
 	      DstBlock		      "Sum3"
 	      DstPort		      2
 	    }
@@ -1430,13 +1418,6 @@ Model {
 	      DstBlock		      "Motor Driver\nControl Signal"
 	      DstPort		      1
 	    }
-	    Line {
-	      ZOrder		      468
-	      SrcBlock		      "Sensor Feedback"
-	      SrcPort		      1
-	      DstBlock		      "FB Gain"
-	      DstPort		      1
-	    }
 	    Annotation {
 	      SID		      "112"
 	      Name		      "(deg)"
@@ -1462,7 +1443,7 @@ Model {
 	  Variant		  off
 	  System {
 	    Name		    "Altitude Motor"
-	    Location		    [-8, 0, 1608, 876]
+	    Location		    [-7, 0, 807, 867]
 	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1696,7 +1677,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Helicopter Dynamics\n(altitude)"
-	    Location		    [-8, 0, 1608, 876]
+	    Location		    [-7, 0, 807, 867]
 	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1708,7 +1689,7 @@ Model {
 	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
 	    TiledPageScale	    1
 	    ShowPageBoundaries	    off
-	    ZoomFactor		    "150"
+	    ZoomFactor		    "175"
 	    Block {
 	      BlockType		      Inport
 	      Name		      "RPM"
@@ -1973,7 +1954,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Motor Control\nBoard (Altitude)"
-	    Location		    [-8, 0, 1608, 876]
+	    Location		    [-7, 0, 807, 867]
 	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -2158,7 +2139,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Potentiometer\nfor angle measurement"
-	    Location		    [-8, -8, 1608, 868]
+	    Location		    [-7, 0, 807, 867]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -2187,7 +2168,7 @@ Model {
 	      Position		      [160, 110, 200, 140]
 	      ZOrder		      46
 	      BackgroundColor	      "yellow"
-	      Bias		      "0.0"
+	      Bias		      "potentiometerBias"
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
@@ -2197,6 +2178,7 @@ Model {
 	      Position		      [105, 110, 135, 140]
 	      ZOrder		      45
 	      BackgroundColor	      "yellow"
+	      Gain		      "potentiometerGain"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -2263,7 +2245,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Yaw Control Computer"
-	    Location		    [-8, 0, 1608, 876]
+	    Location		    [-7, 0, 807, 867]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
