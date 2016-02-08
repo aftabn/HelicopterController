@@ -33,7 +33,7 @@ void onCommandChangelog()
 {
 	if (isReadCommand(gParameters[0]))
 	{
-		Serial.println(F("Updated PID algorithm"));
+		Serial.println(F("Fixed motor driver command arguments"));
 		sendAck();
 	}
 	else
@@ -77,16 +77,8 @@ void onCommandPidControl()
 	}
 	else if (isOffCommandArg(gParameters[0]))
 	{
-		if (isPidEnabled)
-		{
-			disablePid();
-			sendAck();
-		}
-		else
-		{
-			Serial.println(F("PID control is already off."));
-			sendNack();
-		}
+		disablePid();
+		sendAck();
 	}
 	else
 	{

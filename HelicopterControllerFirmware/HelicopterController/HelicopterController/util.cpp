@@ -147,7 +147,7 @@ void sendDirectionError()
 
 void sendMotorDriverError()
 {
-	Serial.println(F("Value must be ANALOG or FREQUENCY"));
+	Serial.println(F("Value must be ANALOGVOLTAGE or FREQUENCY"));
 	sendNack();
 }
 
@@ -178,7 +178,7 @@ bool isCounterClockwiseCommandArg(char* arg)
 bool isAnalogVoltageCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "ANALOG") || 0 == stricmp(arg, "0"));
+	return (0 == stricmp(arg, "ANALOGVOLTAGE") || 0 == stricmp(arg, "0"));
 }
 
 bool isFrequencyCommandArg(char* arg)
