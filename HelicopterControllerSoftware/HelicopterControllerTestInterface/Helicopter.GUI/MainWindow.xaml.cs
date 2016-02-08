@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Helicopter;
+using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +22,35 @@ namespace Helicopter.GUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly StartupOptions startupOptions;
+
+        public MainWindow(StartupOptions startupOptions)
         {
+            this.startupOptions = startupOptions;
+            HelicopterViewModel = new HelicopterViewModel(startupOptions.IsDeveloperMode);
+
             InitializeComponent();
+
+            SetBindingForControls();
+        }
+
+        public HelicopterViewModel HelicopterViewModel { get; set; }
+
+        private void SetBindingForControls()
+        {
+            //controllerOutputPanel.DataContext = JigViewModel;
+            //optionsToolbar.DataContext = JigViewModel;
+            //jigStackPanel.DataContext = JigViewModel;
+            //jigStackPanel2.DataContext = JigViewModel;
+            //dynamixelStackPanel.DataContext = JigViewModel;
+            //dynamixelStackPanel2.DataContext = JigViewModel;
+            //menuHeader.DataContext = JigViewModel;
+            //var position = JigViewModel.Servos[0].Position;
+            //getPositionTextblock.DataContext = JigViewModel;
+            //Binding myBinding = new Binding("PositionProperty");
+            //myBinding.Source = JigViewModel.Servos[0].Position;
+            //BindingOperations.SetBinding(getPositionTextblock, TextBlock.TextProperty, myBinding);
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)

@@ -9,12 +9,6 @@
         Height="350" Width="525"
         MinHeight="700" MinWidth="600"
         Loaded="WindowLoaded">
-    <!--<Window.Resources>
-        <CollectionViewSource x:Key="jigViewModelViewSource" d:DesignSource="{d:DesignInstance {x:Type Core:JigViewModel}, CreateList=True}" />
-        <CollectionViewSource x:Key="jigViewModelControllersViewSource" Source="{Binding Controllers, Source={StaticResource jigViewModelViewSource}}" />
-        <CollectionViewSource x:Key="jigViewModelServosViewSource" Source="{Binding Servos, Source={StaticResource jigViewModelControllersViewSource}}" />
-        <CollectionViewSource x:Key="jigViewModelLoadCellsViewSource" Source="{Binding LoadCells, Source={StaticResource jigViewModelControllersViewSource}}" />
-    </Window.Resources>-->
     <DockPanel>
         <Menu x:Name="menuHeader" DockPanel.Dock="Top" Height="30" IsMainMenu="True">
             <MenuItem Header="File" Margin="5,5,5,5">

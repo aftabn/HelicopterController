@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Helicopter.Core
+namespace Helicopter.Controller
 {
     public class HelicopterController : INotifyPropertyChanged, IDisposable
     {

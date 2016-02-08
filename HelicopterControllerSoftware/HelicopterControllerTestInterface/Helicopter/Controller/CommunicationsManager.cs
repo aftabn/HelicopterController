@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Helicopter.Core
+namespace Helicopter.Controller
 {
     public class CommunicationsManager : INotifyPropertyChanged, IDisposable
     {

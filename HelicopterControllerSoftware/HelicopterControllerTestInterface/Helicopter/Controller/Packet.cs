@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Helicopter.Core
+namespace Helicopter.Controller
 {
     public class Packet
     {

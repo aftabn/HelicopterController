@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Helicopter.Core
+namespace Helicopter.Controller
 {
-    public enum Direction
+    public enum MotorDriver
     {
-        Clockwise, CounterClockwise
+        AnalogVoltage, Frequency
     }
 }
