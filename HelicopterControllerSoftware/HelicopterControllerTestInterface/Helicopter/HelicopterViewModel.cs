@@ -85,11 +85,15 @@ namespace Helicopter
                    },
                    x => IsConnected && IsSafetyEnabled);
 
-            GetYawAngleCommand = new RelayCommand(
-                   x => { AngleControllers[MotorType.Yaw].RefreshCurrentAngle(); },
+            RefreshValuesCommand = new RelayCommand(
+                   x =>
+                   {
+                       helicopterController.RefreshValues();
+                       UpdateOutputTextbox(String.Format("Refreshing all controller values"));
+                   },
                    x => IsConnected);
 
-            GetYawSetPointCommand = new RelayCommand(
+            GetYawAngleCommand = new RelayCommand(
                    x => { AngleControllers[MotorType.Yaw].RefreshCurrentAngle(); },
                    x => IsConnected);
 
@@ -105,7 +109,7 @@ namespace Helicopter
                    x =>
                    {
                        var pGain = Convert.ToDouble(x);
-                       YawSetPoint = pGain;
+                       YawProportionalGain = pGain;
                    },
                    x => IsConnected);
 
@@ -113,7 +117,7 @@ namespace Helicopter
                    x =>
                    {
                        var iGain = Convert.ToDouble(x);
-                       YawSetPoint = iGain;
+                       YawIntegralGain = iGain;
                    },
                    x => IsConnected);
 
@@ -121,7 +125,7 @@ namespace Helicopter
                    x =>
                    {
                        var dGain = Convert.ToDouble(x);
-                       YawSetPoint = dGain;
+                       YawDerivativeGain = dGain;
                    },
                    x => IsConnected);
 
@@ -129,7 +133,7 @@ namespace Helicopter
                    x =>
                    {
                        var iWindupThreshold = Convert.ToDouble(x);
-                       YawSetPoint = iWindupThreshold;
+                       YawIntegralWindupThreshold = iWindupThreshold;
                    },
                    x => IsConnected);
 
@@ -137,15 +141,11 @@ namespace Helicopter
                    x =>
                    {
                        var output = Convert.ToInt32(x);
-                       YawSetPoint = output;
+                       YawOutputPercentage = output;
                    },
                    x => IsConnected && !IsPidEnabled);
 
             GetTiltAngleCommand = new RelayCommand(
-                   x => { AngleControllers[MotorType.Tilt].RefreshCurrentAngle(); },
-                   x => IsConnected);
-
-            GetTiltSetPointCommand = new RelayCommand(
                    x => { AngleControllers[MotorType.Tilt].RefreshCurrentAngle(); },
                    x => IsConnected);
 
@@ -161,7 +161,7 @@ namespace Helicopter
                    x =>
                    {
                        var pGain = Convert.ToDouble(x);
-                       TiltSetPoint = pGain;
+                       TiltProportionalGain = pGain;
                    },
                    x => IsConnected);
 
@@ -169,7 +169,7 @@ namespace Helicopter
                    x =>
                    {
                        var iGain = Convert.ToDouble(x);
-                       TiltSetPoint = iGain;
+                       TiltIntegralGain = iGain;
                    },
                    x => IsConnected);
 
@@ -177,7 +177,7 @@ namespace Helicopter
                    x =>
                    {
                        var dGain = Convert.ToDouble(x);
-                       TiltSetPoint = dGain;
+                       TiltDerivativeGain = dGain;
                    },
                    x => IsConnected);
 
@@ -185,7 +185,7 @@ namespace Helicopter
                    x =>
                    {
                        var iWindupThreshold = Convert.ToDouble(x);
-                       TiltSetPoint = iWindupThreshold;
+                       TiltIntegralWindupThreshold = iWindupThreshold;
                    },
                    x => IsConnected);
 
@@ -193,7 +193,7 @@ namespace Helicopter
                    x =>
                    {
                        var output = Convert.ToInt32(x);
-                       TiltSetPoint = output;
+                       TiltOutputPercentage = output;
                    },
                    x => IsConnected && !IsPidEnabled);
 
@@ -347,38 +347,22 @@ namespace Helicopter
         public ICommand DisableSafetyCommand { get; private set; }
         public ICommand RefreshValuesCommand { get; private set; }
         public ICommand GetYawAngleCommand { get; private set; }
-        public ICommand GetYawSetPointCommand { get; private set; }
         public ICommand SetYawSetPointCommand { get; private set; }
-        public ICommand GetYawProportionalGainCommand { get; private set; }
         public ICommand SetYawProportionalGainCommand { get; private set; }
-        public ICommand GetYawIntegralGainCommand { get; private set; }
         public ICommand SetYawIntegralGainCommand { get; private set; }
-        public ICommand GetYawDerivativeGainCommand { get; private set; }
         public ICommand SetYawDerivativeGainCommand { get; private set; }
-        public ICommand GetYawIntegralWindupThresholdCommand { get; private set; }
         public ICommand SetYawIntegralWindupThresholdCommand { get; private set; }
         public ICommand SetYawOutputPercentageCommand { get; private set; }
-        public ICommand GetYawOutputPercentageCommand { get; private set; }
-        public ICommand GetYawDirectionCommand { get; private set; }
         public ICommand SetYawDirectionCommand { get; private set; }
-        public ICommand GetYawMotorDriverCommand { get; private set; }
         public ICommand SetYawMotorDriverCommand { get; private set; }
         public ICommand GetTiltAngleCommand { get; private set; }
-        public ICommand GetTiltSetPointCommand { get; private set; }
         public ICommand SetTiltSetPointCommand { get; private set; }
-        public ICommand GetTiltProportionalGainCommand { get; private set; }
         public ICommand SetTiltProportionalGainCommand { get; private set; }
-        public ICommand GetTiltIntegralGainCommand { get; private set; }
         public ICommand SetTiltIntegralGainCommand { get; private set; }
-        public ICommand GetTiltDerivativeGainCommand { get; private set; }
         public ICommand SetTiltDerivativeGainCommand { get; private set; }
-        public ICommand GetTiltIntegralWindupThresholdCommand { get; private set; }
         public ICommand SetTiltIntegralWindupThresholdCommand { get; private set; }
-        public ICommand GetTiltOutputPercentageCommand { get; private set; }
         public ICommand SetTiltOutputPercentageCommand { get; private set; }
-        public ICommand GetTiltDirectionCommand { get; private set; }
         public ICommand SetTiltDirectionCommand { get; private set; }
-        public ICommand GetTiltMotorDriverCommand { get; private set; }
         public ICommand SetTiltMotorDriverCommand { get; private set; }
 
         #endregion ICommand Declarations

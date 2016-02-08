@@ -16,7 +16,8 @@ namespace Helicopter.Controller
     public class CommunicationsManager : INotifyPropertyChanged, IDisposable
     {
         private const double DBL_DefaultTimeoutSeconds = 1;
-        private const string STR_DeviceName = "Arduino";
+        private const string STR_MainDeviceName = "Arduino";
+        private const string STR_BluetoothDeviceName = "COM10";
 
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly List<string> receivedPackets = new List<string>();
@@ -101,7 +102,7 @@ namespace Helicopter.Controller
             string comPort = String.Empty;
             foreach (string port in serialPorts)
             {
-                if (port.Contains(STR_DeviceName))
+                if (port.Contains(STR_BluetoothDeviceName) || port.Contains(STR_MainDeviceName))
                 {
                     potentialPort = port;
                     comPort = potentialPort.Substring(potentialPort.IndexOf("COM"));
@@ -125,7 +126,7 @@ namespace Helicopter.Controller
             }
             else
             {
-                throw new Exception(String.Format("Device \"{0}\" is not listed on the COM ports", STR_DeviceName));
+                throw new Exception(String.Format("Device \"{0}\" is not listed on the COM ports", STR_MainDeviceName));
             }
         }
 
