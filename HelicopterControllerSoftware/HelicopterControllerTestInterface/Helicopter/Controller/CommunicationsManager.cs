@@ -102,7 +102,7 @@ namespace Helicopter.Controller
             string comPort = String.Empty;
             foreach (string port in serialPorts)
             {
-                if (port.Contains(STR_BluetoothDeviceName) || port.Contains(STR_MainDeviceName))
+                if (port.Contains(STR_MainDeviceName))
                 {
                     potentialPort = port;
                     comPort = potentialPort.Substring(potentialPort.IndexOf("COM"));
@@ -117,12 +117,7 @@ namespace Helicopter.Controller
                 serialPort.Open();
                 IsConnected = true;
 
-                //TODO: Refactor this
-                // Flushing whatever input is in port
-                Thread.Sleep(500);
-                serialPort.Write("\r\n");
-                Thread.Sleep(500);
-                ClearBuffer();
+                InitializeArduino();
             }
             else
             {
@@ -149,6 +144,16 @@ namespace Helicopter.Controller
         public void Dispose()
         {
             Disconnect();
+        }
+
+        private void InitializeArduino()
+        {
+            // It apprears that there needs to be some delay after connecting to the Arduino
+            // probably due to serial port initialization on its end
+            Thread.Sleep(750);
+            serialPort.Write("\r\n"); // Flushes whatever characters are already in the comport
+            Thread.Sleep(750);
+            ClearBuffer();
         }
 
         public Packet Write(string input)
