@@ -207,12 +207,17 @@ namespace Helicopter
         public Dictionary<MotorType, AngleController> AngleControllers { get; set; }
 
         public bool IsDeveloperMode { get { return isDeveloperMode; } }
+
         public bool IsConnected { get { return helicopterController.IsConnected; } }
+
         public bool IsPidEnabled { get { return helicopterController.IsPidEnabled; } }
+
         public bool IsSafetyEnabled { get { return helicopterController.IsSafetyEnabled; } }
 
         public string ControllerIdentity { get { return helicopterController.ControllerIdentity; } }
+
         public double FirmwareVersion { get { return helicopterController.FirmwareVersion; } }
+
         public string Changelog { get { return helicopterController.Changelog; } }
 
         public double PidLoopInterval { get { return helicopterController.PidLoopInterval; } }
@@ -225,49 +230,49 @@ namespace Helicopter
         public double YawSetPoint
         {
             get { return AngleControllers[MotorType.Yaw].SetPoint; }
-            set { AngleControllers[MotorType.Yaw].SetPoint = value; }
+            set { AngleControllers[MotorType.Yaw].SetSetPoint(value); }
         }
 
         public double YawProportionalGain
         {
             get { return AngleControllers[MotorType.Yaw].ProportionalGain; }
-            set { AngleControllers[MotorType.Yaw].ProportionalGain = value; }
+            set { AngleControllers[MotorType.Yaw].SetProportionalGain(value); }
         }
 
         public double YawIntegralGain
         {
             get { return AngleControllers[MotorType.Yaw].IntegralGain; }
-            set { AngleControllers[MotorType.Yaw].IntegralGain = value; }
+            set { AngleControllers[MotorType.Yaw].SetIntegralGain(value); }
         }
 
         public double YawDerivativeGain
         {
             get { return AngleControllers[MotorType.Yaw].DerivativeGain; }
-            set { AngleControllers[MotorType.Yaw].DerivativeGain = value; }
+            set { AngleControllers[MotorType.Yaw].SetDerivativeGain(value); }
         }
 
         public double YawIntegralWindupThreshold
         {
             get { return AngleControllers[MotorType.Yaw].IntegralWindupThreshold; }
-            set { AngleControllers[MotorType.Yaw].IntegralWindupThreshold = value; }
+            set { AngleControllers[MotorType.Yaw].SetIntegralWindupThreshold(value); }
         }
 
         public int YawOutputPercentage
         {
             get { return AngleControllers[MotorType.Yaw].OutputPercentage; }
-            set { AngleControllers[MotorType.Yaw].OutputPercentage = value; }
+            set { AngleControllers[MotorType.Yaw].SetOutputPercentage(value); }
         }
 
         public Direction YawDirection
         {
             get { return AngleControllers[MotorType.Yaw].Direction; }
-            set { AngleControllers[MotorType.Yaw].Direction = value; }
+            set { AngleControllers[MotorType.Yaw].SetDirection(value); }
         }
 
         public MotorDriver YawMotorDriver
         {
             get { return AngleControllers[MotorType.Yaw].MotorDriver; }
-            set { AngleControllers[MotorType.Yaw].MotorDriver = value; }
+            set { AngleControllers[MotorType.Yaw].SetMotorDriver(value); }
         }
 
         public double TiltCurrentAngle
@@ -278,49 +283,49 @@ namespace Helicopter
         public double TiltSetPoint
         {
             get { return AngleControllers[MotorType.Tilt].SetPoint; }
-            set { AngleControllers[MotorType.Tilt].SetPoint = value; }
+            set { AngleControllers[MotorType.Tilt].SetSetPoint(value); }
         }
 
         public double TiltProportionalGain
         {
             get { return AngleControllers[MotorType.Tilt].ProportionalGain; }
-            set { AngleControllers[MotorType.Tilt].ProportionalGain = value; }
+            set { AngleControllers[MotorType.Tilt].SetProportionalGain(value); }
         }
 
         public double TiltIntegralGain
         {
             get { return AngleControllers[MotorType.Tilt].IntegralGain; }
-            set { AngleControllers[MotorType.Tilt].IntegralGain = value; }
+            set { AngleControllers[MotorType.Tilt].SetIntegralGain(value); }
         }
 
         public double TiltDerivativeGain
         {
             get { return AngleControllers[MotorType.Tilt].DerivativeGain; }
-            set { AngleControllers[MotorType.Tilt].DerivativeGain = value; }
+            set { AngleControllers[MotorType.Tilt].SetDerivativeGain(value); }
         }
 
         public double TiltIntegralWindupThreshold
         {
             get { return AngleControllers[MotorType.Tilt].IntegralWindupThreshold; }
-            set { AngleControllers[MotorType.Tilt].IntegralWindupThreshold = value; }
+            set { AngleControllers[MotorType.Tilt].SetIntegralWindupThreshold(value); }
         }
 
         public int TiltOutputPercentage
         {
             get { return AngleControllers[MotorType.Tilt].OutputPercentage; }
-            set { AngleControllers[MotorType.Tilt].OutputPercentage = value; }
+            set { AngleControllers[MotorType.Tilt].SetOutputPercentage(value); }
         }
 
         public Direction TiltDirection
         {
             get { return AngleControllers[MotorType.Tilt].Direction; }
-            set { AngleControllers[MotorType.Tilt].Direction = value; }
+            set { AngleControllers[MotorType.Tilt].SetDirection(value); }
         }
 
         public MotorDriver TiltMotorDriver
         {
             get { return AngleControllers[MotorType.Tilt].MotorDriver; }
-            set { AngleControllers[MotorType.Tilt].MotorDriver = value; }
+            set { AngleControllers[MotorType.Tilt].SetMotorDriver(value); }
         }
 
         public string OutputText

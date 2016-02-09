@@ -45,7 +45,6 @@ namespace Helicopter.Controller
             {
                 if (value != proportionalGain)
                 {
-                    Microcontroller.SetProportionalGain(controllerChannel, value);
                     proportionalGain = value;
                     RaisePropertyChanged("ProportionalGain");
                 }
@@ -63,7 +62,6 @@ namespace Helicopter.Controller
             {
                 if (value != integralGain)
                 {
-                    Microcontroller.SetIntegralGain(controllerChannel, value);
                     integralGain = value;
                     RaisePropertyChanged("IntegralGain");
                 }
@@ -81,7 +79,6 @@ namespace Helicopter.Controller
             {
                 if (value != derivativeGain)
                 {
-                    Microcontroller.SetDerivativeGain(controllerChannel, value);
                     derivativeGain = value;
                     RaisePropertyChanged("DerivativeGain");
                 }
@@ -99,7 +96,6 @@ namespace Helicopter.Controller
             {
                 if (value != integralWindupThreshold)
                 {
-                    Microcontroller.SetIntegralWindupThreshold(controllerChannel, value);
                     integralWindupThreshold = value;
                     RaisePropertyChanged("IntegralWindupThreshold");
                 }
@@ -117,7 +113,6 @@ namespace Helicopter.Controller
             {
                 if (value != setPoint)
                 {
-                    Microcontroller.SetAngleSetPoint(controllerChannel, value);
                     setPoint = value;
                     RaisePropertyChanged("SetPoint");
                 }
@@ -152,7 +147,6 @@ namespace Helicopter.Controller
             {
                 if (value != outputPercentage)
                 {
-                    Microcontroller.SetMotorOutput(controllerChannel, value);
                     outputPercentage = value;
                     RaisePropertyChanged("OutputPercentage");
                 }
@@ -170,7 +164,6 @@ namespace Helicopter.Controller
             {
                 if (value != direction)
                 {
-                    Microcontroller.SetMotorDirection(controllerChannel, value);
                     direction = value;
                     RaisePropertyChanged("Direction");
                 }
@@ -188,7 +181,6 @@ namespace Helicopter.Controller
             {
                 if (value != motorDriver)
                 {
-                    Microcontroller.SetMotorDriver(controllerChannel, value);
                     motorDriver = value;
                     RaisePropertyChanged("MotorDriver");
                 }
@@ -205,25 +197,15 @@ namespace Helicopter.Controller
 
         public void Initialize()
         {
-            proportionalGain = Microcontroller.GetProportionalGain(controllerChannel);
-            integralGain = Microcontroller.GetIntegralGain(controllerChannel);
-            derivativeGain = Microcontroller.GetDerivativeGain(controllerChannel);
-            integralWindupThreshold = Microcontroller.GetIntegralWindupThreshold(controllerChannel);
-            setPoint = Microcontroller.GetAngleSetPoint(controllerChannel);
-            currentAngle = Microcontroller.GetCurrentAngle(controllerChannel);
-            outputPercentage = Microcontroller.GetMotorOutput(controllerChannel);
-            direction = Microcontroller.GetMotorDirection(controllerChannel);
-            motorDriver = Microcontroller.GetMotorDriver(controllerChannel);
-
-            RaisePropertyChanged("ProportionalGain");
-            RaisePropertyChanged("IntegralGain");
-            RaisePropertyChanged("DerivativeGain");
-            RaisePropertyChanged("IntegralWindupThreshold");
-            RaisePropertyChanged("SetPoint");
-            RaisePropertyChanged("CurrentAngle");
-            RaisePropertyChanged("OutputPercentage");
-            RaisePropertyChanged("Direction");
-            RaisePropertyChanged("MotorDriver");
+            RefreshCurrentAngle();
+            RefreshOutputPercentage();
+            RefreshDirection();
+            RefreshProportionalGain();
+            RefreshIntegralGain();
+            RefreshDerivativeGain();
+            RefreshIntegralWindupThreshold();
+            RefreshSetPoint();
+            RefreshMotorDriver();
         }
 
         public void Dispose()
@@ -250,6 +232,84 @@ namespace Helicopter.Controller
         public void RefreshDirection()
         {
             Direction = Microcontroller.GetMotorDirection(controllerChannel);
+        }
+
+        public void RefreshProportionalGain()
+        {
+            ProportionalGain = Microcontroller.GetProportionalGain(controllerChannel);
+        }
+
+        public void RefreshIntegralGain()
+        {
+            IntegralGain = Microcontroller.GetIntegralGain(controllerChannel);
+        }
+
+        public void RefreshDerivativeGain()
+        {
+            DerivativeGain = Microcontroller.GetDerivativeGain(controllerChannel);
+        }
+
+        public void RefreshIntegralWindupThreshold()
+        {
+            IntegralWindupThreshold = Microcontroller.GetIntegralWindupThreshold(controllerChannel);
+        }
+
+        public void RefreshSetPoint()
+        {
+            SetPoint = Microcontroller.GetAngleSetPoint(controllerChannel);
+        }
+
+        public void RefreshMotorDriver()
+        {
+            MotorDriver = Microcontroller.GetMotorDriver(controllerChannel);
+        }
+
+        public void SetOutputPercentage(int output)
+        {
+            Microcontroller.SetMotorOutput(controllerChannel, output);
+            OutputPercentage = output;
+        }
+
+        public void SetDirection(Direction direction)
+        {
+            Microcontroller.SetMotorDirection(controllerChannel, direction);
+            Direction = direction;
+        }
+
+        public void SetProportionalGain(double pGain)
+        {
+            Microcontroller.SetProportionalGain(controllerChannel, pGain);
+            ProportionalGain = pGain;
+        }
+
+        public void SetIntegralGain(double iGain)
+        {
+            Microcontroller.SetIntegralGain(controllerChannel, iGain);
+            IntegralGain = iGain;
+        }
+
+        public void SetDerivativeGain(double dGain)
+        {
+            Microcontroller.SetDerivativeGain(controllerChannel, dGain);
+            DerivativeGain = dGain;
+        }
+
+        public void SetIntegralWindupThreshold(double iWindupThreshold)
+        {
+            Microcontroller.SetIntegralWindupThreshold(controllerChannel, iWindupThreshold);
+            IntegralWindupThreshold = iWindupThreshold;
+        }
+
+        public void SetSetPoint(double setPoint)
+        {
+            Microcontroller.SetAngleSetPoint(controllerChannel, setPoint);
+            SetPoint = setPoint;
+        }
+
+        public void SetMotorDriver(MotorDriver motorDriver)
+        {
+            Microcontroller.SetMotorDriver(controllerChannel, motorDriver);
+            MotorDriver = motorDriver;
         }
 
         private void RaisePropertyChanged(string propertyName)

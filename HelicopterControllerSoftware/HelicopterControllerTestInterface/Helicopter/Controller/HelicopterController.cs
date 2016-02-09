@@ -226,6 +226,17 @@ namespace Helicopter.Controller
             Tilt.RefreshValues();
         }
 
+        public void RefreshPidLoopInterval()
+        {
+            PidLoopInterval = Microcontroller.GetPidLoopInterval();
+        }
+
+        public void SetPidLoopInterval(int intervalMilliseconds)
+        {
+            Microcontroller.SetPidLoopInterval(intervalMilliseconds);
+            PidLoopInterval = intervalMilliseconds;
+        }
+
         private void OnAngleControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var angleController = sender as AngleController;
