@@ -25,7 +25,7 @@ tPID = [0.0088,0.00511,0.00997];
 CurrentDriverBias = Vss/2;
 
 % Current driver gain
-%Max voltage for the motor is 12V. The output of the computer is 0-5V where 2.5V
+% Max voltage for the motor is 12V. The output of the computer is 0-5V where 2.5V
 % is 0 velocity. So 2.5/12=4.8
 ControlDriverGain = 4.8;
 
@@ -37,11 +37,6 @@ MinHeight = -0.05;
 % Saturation
 mSat = Vss/2;
 tSat = Vss/2;
-
-% FB Gain
-% The altitude can be calculated by: height = length * sin(x) where x is the angle of the main arm
-% So the feedback gain for the main motor is just the length of the main arm 
-mFeedBack = mainArmLength;
 
 % =====
 % MOTOR
@@ -106,17 +101,18 @@ mHeliDynDen = [M B1 0];
 tHeliDynNum = [0 0 1]; 
 tHeliDynDen = [Jh B2h 0] * Kgm2Pergcm2;   % Rotational Inertia / Air R
 
-% Sensor Dynamics (vertical)
-mSenDynNum = [0 L3+L4 R3+R4]; 
-mSenDynDen = [0 L3    R3];
-
-% Sensor Dynamics (yaw)
-tSenDynNum = [0 L5+L6 R5+R6]; 
-tSenDynDen = [0 L5    R5];
-
 % =======
 % Sensors
 % =======
-%Altitude ADC:
+% Altitude ADC:
 ADC_bitwidth = 10;
 ground = 0;
+
+% Altitude Potentiometer
+angleRange = 165; % Potentiometer can turn +/- 165 degrees
+potentiometerGain = Vss/(2*angleRange);
+potentiometerBias = Vss/2; % It is mounted so that is outputs 2.5 V
+                           % when the angle is 0
+ 
+ % Yaw encoder
+ yawEncoderQuantization = 360/400; %360 degrees/400 pulses per revolution

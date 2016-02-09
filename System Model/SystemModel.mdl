@@ -7,7 +7,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.157"
+    ComputedModelVersion    "1.166"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -29,7 +29,7 @@ Model {
       $ObjectID		      2
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [-8.0, 246.0, 1612.0, 630.0]
+      Location		      [-7.0, 0.0, 814.0, 867.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		3
@@ -51,12 +51,12 @@ Model {
 	Dimension		5
 	Object {
 	  $ObjectID		  5
-	  IsActive		  [0]
+	  IsActive		  [1]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "3"
 	  Extents		  [764.0, 689.0]
-	  ZoomFactor		  [1.0]
-	  Offset		  [-184.26077937392824, -73.652486265992081]
+	  ZoomFactor		  [0.8]
+	  Offset		  [264.10250322565787, 82.199160877227044]
 	}
 	Object {
 	  $ObjectID		  6
@@ -64,8 +64,8 @@ Model {
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "162"
 	  Extents		  [764.0, 689.0]
-	  ZoomFactor		  [1.0]
-	  Offset		  [-251.51879717045463, -24.000000000000057]
+	  ZoomFactor		  [1.5]
+	  Offset		  [87.159513932257241, -89.062356583220421]
 	}
 	Object {
 	  $ObjectID		  7
@@ -83,16 +83,16 @@ Model {
 	  LoadSaveID		  "197"
 	  Extents		  [764.0, 689.0]
 	  ZoomFactor		  [1.75]
-	  Offset		  [52.948000519272966, -91.964843263260349]
+	  Offset		  [4.0, -93.193395321494748]
 	}
 	Object {
 	  $ObjectID		  9
-	  IsActive		  [1]
+	  IsActive		  [0]
 	  ViewObjType		  "SimulinkSubsys"
-	  LoadSaveID		  "236"
-	  Extents		  [1562.0, 452.0]
+	  LoadSaveID		  "243"
+	  Extents		  [764.0, 689.0]
 	  ZoomFactor		  [1.75]
-	  Offset		  [0.0, 0.0]
+	  Offset		  [-216.29327840453558, -9.5059688493809453]
 	}
 	PropName		"EditorsInfo"
       }
@@ -104,9 +104,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "Wyatt"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Sun Feb 07 22:39:23 2016"
-  RTWModifiedTimeStamp	  376773704
-  ModelVersionFormat	  "1.%<AutoIncrement:157>"
+  LastModifiedDate	  "Mon Feb 08 13:38:04 2016"
+  RTWModifiedTimeStamp	  376837277
+  ModelVersionFormat	  "1.%<AutoIncrement:166>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -917,6 +917,21 @@ Model {
       InitialOutput	      "[]"
     }
     Block {
+      BlockType		      Product
+      Inputs		      "2"
+      Multiplication	      "Element-wise(.*)"
+      CollapseMode	      "All dimensions"
+      CollapseDim	      "1"
+      InputSameDT	      on
+      OutMin		      "[]"
+      OutMax		      "[]"
+      OutDataTypeStr	      "Inherit: Same as first input"
+      LockScale		      off
+      RndMeth		      "Zero"
+      SaturateOnIntegerOverflow	on
+      SampleTime	      "-1"
+    }
+    Block {
       BlockType		      Quantizer
       QuantizationInterval    "0.5"
       LinearizeAsGain	      on
@@ -1005,6 +1020,14 @@ Model {
       ContinuousStateAttributes	"''"
       Realization	      "auto"
     }
+    Block {
+      BlockType		      Trigonometry
+      Operator		      "sin"
+      ApproximationMethod     "None"
+      NumberOfIterations      "11"
+      OutputSignalType	      "auto"
+      SampleTime	      "-1"
+    }
   }
   System {
     Name		    "SystemModel"
@@ -1022,7 +1045,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "105"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "241"
+    SIDHighWatermark	    "254"
     Block {
       BlockType		      Scope
       Name		      "Altitude"
@@ -1108,18 +1131,7 @@ Model {
 	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
 	TiledPageScale		1
 	ShowPageBoundaries	off
-	ZoomFactor		"100"
-	Block {
-	  BlockType		  Saturate
-	  Name			  "Alt > 0"
-	  SID			  "4"
-	  Ports			  [1, 1]
-	  Position		  [930, 110, 960, 140]
-	  ZOrder		  -1
-	  InputPortMap		  "u0"
-	  UpperLimit		  "MaxHeight"
-	  LowerLimit		  "MinHeight"
-	}
+	ZoomFactor		"80"
 	Block {
 	  BlockType		  Reference
 	  Name			  "Altitude ADC"
@@ -1176,7 +1188,7 @@ Model {
 	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
 	    TiledPageScale	    1
 	    ShowPageBoundaries	    off
-	    ZoomFactor		    "100"
+	    ZoomFactor		    "150"
 	    Block {
 	      BlockType		      Inport
 	      Name		      "Desired Value"
@@ -1330,18 +1342,6 @@ Model {
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
-	      BlockType		      Gain
-	      Name		      "FB Gain"
-	      SID		      "5"
-	      Position		      [65, 150, 95, 180]
-	      ZOrder		      -2
-	      BackgroundColor	      "green"
-	      Gain		      "mFeedBack"
-	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
-	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-	      SaturateOnIntegerOverflow	off
-	    }
-	    Block {
 	      BlockType		      Saturate
 	      Name		      "Saturation"
 	      SID		      "103"
@@ -1383,10 +1383,10 @@ Model {
 	      DstPort		      1
 	    }
 	    Line {
-	      ZOrder		      96
-	      SrcBlock		      "FB Gain"
+	      ZOrder		      469
+	      SrcBlock		      "Sensor Feedback"
 	      SrcPort		      1
-	      Points		      [5, 0]
+	      Points		      [255, 0]
 	      DstBlock		      "Sum3"
 	      DstPort		      2
 	    }
@@ -1418,17 +1418,10 @@ Model {
 	      DstBlock		      "Motor Driver\nControl Signal"
 	      DstPort		      1
 	    }
-	    Line {
-	      ZOrder		      468
-	      SrcBlock		      "Sensor Feedback"
-	      SrcPort		      1
-	      DstBlock		      "FB Gain"
-	      DstPort		      1
-	    }
 	    Annotation {
 	      SID		      "112"
-	      Name		      "(m)"
-	      Position		      [96, 22, 113, 37]
+	      Name		      "(deg)"
+	      Position		      [96, 22, 122, 37]
 	      InternalMargins	      [0, 0, 0, 0]
 	      FixedHeight	      off
 	      FixedWidth	      off
@@ -1443,7 +1436,7 @@ Model {
 	  Name			  "Altitude Motor"
 	  SID			  "197"
 	  Ports			  [1, 1]
-	  Position		  [440, 95, 595, 155]
+	  Position		  [430, 95, 585, 155]
 	  ZOrder		  -73
 	  BackgroundColor	  "cyan"
 	  RequestExecContextInheritance	off
@@ -1630,24 +1623,6 @@ Model {
 	}
 	Block {
 	  BlockType		  Reference
-	  Name			  "Band-Limited\nWhite Noise"
-	  SID			  "232"
-	  Ports			  [0, 1]
-	  Position		  [735, 340, 765, 370]
-	  ZOrder		  43
-	  BlockMirror		  on
-	  BackgroundColor	  "yellow"
-	  LibraryVersion	  "1.358"
-	  SourceBlock		  "simulink/Sources/Band-Limited\nWhite Noise"
-	  SourceType		  "Band-Limited White Noise."
-	  ContentPreviewEnabled	  off
-	  Cov			  "[0.1]"
-	  Ts			  "0.1"
-	  seed			  "[23341]"
-	  VectorParams1D	  on
-	}
-	Block {
-	  BlockType		  Reference
 	  Name			  "Desired\nAltitude"
 	  SID			  "7"
 	  Ports			  [0, 1]
@@ -1675,45 +1650,6 @@ Model {
 	  rep_seq_y		  "Yaw(1,:)"
 	}
 	Block {
-	  BlockType		  Constant
-	  Name			  "Gravity"
-	  SID			  "9"
-	  Position		  [775, 50, 805, 80]
-	  ZOrder		  -6
-	  BlockRotation		  270
-	  BlockMirror		  on
-	  BackgroundColor	  "yellow"
-	  Value			  "Grav"
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "Heli Lift"
-	  SID			  "118"
-	  Position		  [720, 110, 750, 140]
-	  ZOrder		  17
-	  BackgroundColor	  "red"
-	  Gain			  "mLift"
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	  Port {
-	    PortNumber		    1
-	    Name		    "(N)"
-	    RTWStorageClass	    "Auto"
-	    DataLoggingNameMode	    "SignalName"
-	  }
-	}
-	Block {
-	  BlockType		  TransferFcn
-	  Name			  "Helicopter\nDynamics\n(vertical)"
-	  SID			  "11"
-	  Position		  [835, 107, 895, 143]
-	  ZOrder		  -8
-	  BackgroundColor	  "yellow"
-	  Numerator		  "mHeliDynNum"
-	  Denominator		  "mHeliDynDen"
-	}
-	Block {
 	  BlockType		  TransferFcn
 	  Name			  "Helicopter\nDynamics\n(yaw)"
 	  SID			  "10"
@@ -1722,6 +1658,283 @@ Model {
 	  BackgroundColor	  "yellow"
 	  Numerator		  "tHeliDynNum"
 	  Denominator		  "tHeliDynDen"
+	}
+	Block {
+	  BlockType		  SubSystem
+	  Name			  "Helicopter Dynamics\n(altitude)"
+	  SID			  "243"
+	  Ports			  [1, 1]
+	  Position		  [745, 105, 825, 145]
+	  ZOrder		  -110
+	  BackgroundColor	  "yellow"
+	  RequestExecContextInheritance	off
+	  Variant		  off
+	  Port {
+	    PortNumber		    1
+	    Name		    "(deg)"
+	    RTWStorageClass	    "Auto"
+	    DataLoggingNameMode	    "SignalName"
+	  }
+	  System {
+	    Name		    "Helicopter Dynamics\n(altitude)"
+	    Location		    [-7, 0, 807, 867]
+	    Open		    on
+	    ModelBrowserVisibility  off
+	    ModelBrowserWidth	    200
+	    ScreenColor		    "white"
+	    PaperOrientation	    "landscape"
+	    PaperPositionMode	    "auto"
+	    PaperType		    "usletter"
+	    PaperUnits		    "inches"
+	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
+	    TiledPageScale	    1
+	    ShowPageBoundaries	    off
+	    ZoomFactor		    "175"
+	    Block {
+	      BlockType		      Inport
+	      Name		      "RPM"
+	      SID		      "244"
+	      Position		      [-220, 78, -190, 92]
+	      ZOrder		      50
+	      BackgroundColor	      "yellow"
+	      IconDisplay	      "Port number"
+	      Port {
+		PortNumber		1
+		Name			"(RPM)"
+		RTWStorageClass		"Auto"
+		DataLoggingNameMode	"SignalName"
+	      }
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Add"
+	      SID		      "254"
+	      Ports		      [3, 1]
+	      Position		      [90, 66, 120, 124]
+	      ZOrder		      60
+	      BackgroundColor	      "yellow"
+	      Inputs		      "++-"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "Alt Torque"
+	      SID		      "118"
+	      Position		      [-120, 70, -90, 100]
+	      ZOrder		      17
+	      BackgroundColor	      "yellow"
+	      Gain		      "mLift"
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	      Port {
+		PortNumber		1
+		Name			"(Nm)"
+		RTWStorageClass		"Auto"
+		DataLoggingNameMode	"SignalName"
+	      }
+	    }
+	    Block {
+	      BlockType		      TransferFcn
+	      Name		      "Helicopter\nDynamics\n(vertical)"
+	      SID		      "11"
+	      Position		      [170, 77, 230, 113]
+	      ZOrder		      -8
+	      BackgroundColor	      "yellow"
+	      Numerator		      "mHeliDynNum"
+	      Denominator	      "mHeliDynDen"
+	      Port {
+		PortNumber		1
+		Name			"(deg)"
+		RTWStorageClass		"Auto"
+		DataLoggingNameMode	"SignalName"
+	      }
+	    }
+	    Block {
+	      BlockType		      Constant
+	      Name		      "Torque from\nAltitude motor\nmass"
+	      SID		      "253"
+	      Position		      [-120, 145, -90, 175]
+	      ZOrder		      59
+	      BackgroundColor	      "yellow"
+	    }
+	    Block {
+	      BlockType		      Constant
+	      Name		      "Torque from\nTail Rotor mass\n"
+	      SID		      "250"
+	      Position		      [-120, -15, -90, 15]
+	      ZOrder		      56
+	      BackgroundColor	      "yellow"
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Trig Multiply 1"
+	      SID		      "251"
+	      Ports		      [2, 1]
+	      Position		      [-10, -8, 20, 23]
+	      ZOrder		      57
+	      BackgroundColor	      "yellow"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      RndMeth		      "Floor"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Trig Multiply 2"
+	      SID		      "248"
+	      Ports		      [2, 1]
+	      Position		      [-10, 77, 20, 108]
+	      ZOrder		      54
+	      BackgroundColor	      "yellow"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      RndMeth		      "Floor"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Trig Multiply 3"
+	      SID		      "252"
+	      Ports		      [2, 1]
+	      Position		      [-10, 152, 20, 183]
+	      ZOrder		      58
+	      BackgroundColor	      "yellow"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      RndMeth		      "Floor"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction"
+	      SID		      "242"
+	      Ports		      [1, 1]
+	      Position		      [-10, 230, 20, 260]
+	      ZOrder		      49
+	      BlockMirror	      on
+	      BackgroundColor	      "yellow"
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "Angle"
+	      SID		      "246"
+	      Position		      [345, 88, 375, 102]
+	      ZOrder		      52
+	      BackgroundColor	      "yellow"
+	      IconDisplay	      "Port number"
+	    }
+	    Line {
+	      Name		      "(RPM)"
+	      ZOrder		      596
+	      Labels		      [1, 1]
+	      SrcBlock		      "RPM"
+	      SrcPort		      1
+	      DstBlock		      "Alt Torque"
+	      DstPort		      1
+	    }
+	    Line {
+	      Name		      "(deg)"
+	      ZOrder		      598
+	      SrcBlock		      "Helicopter\nDynamics\n(vertical)"
+	      SrcPort		      1
+	      Points		      [48, 0]
+	      Branch {
+		ZOrder			620
+		Labels			[1, 1]
+		DstBlock		"Angle"
+		DstPort			1
+	      }
+	      Branch {
+		ZOrder			605
+		Points			[0, 150]
+		DstBlock		"Trigonometric\nFunction"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      Name		      "(Nm)"
+	      ZOrder		      603
+	      Labels		      [1, 1]
+	      SrcBlock		      "Alt Torque"
+	      SrcPort		      1
+	      DstBlock		      "Trig Multiply 2"
+	      DstPort		      1
+	    }
+	    Line {
+	      ZOrder		      606
+	      SrcBlock		      "Trigonometric\nFunction"
+	      SrcPort		      1
+	      Points		      [-19, 0; 0, -70]
+	      Branch {
+		ZOrder			630
+		DstBlock		"Trig Multiply 3"
+		DstPort			2
+	      }
+	      Branch {
+		ZOrder			629
+		Points			[0, -75]
+		Branch {
+		  ZOrder		  618
+		  DstBlock		  "Trig Multiply 2"
+		  DstPort		  2
+		}
+		Branch {
+		  ZOrder		  609
+		  Points		  [0, -85]
+		  DstBlock		  "Trig Multiply 1"
+		  DstPort		  2
+		}
+	      }
+	    }
+	    Line {
+	      ZOrder		      610
+	      SrcBlock		      "Torque from\nTail Rotor mass\n"
+	      SrcPort		      1
+	      DstBlock		      "Trig Multiply 1"
+	      DstPort		      1
+	    }
+	    Line {
+	      ZOrder		      621
+	      SrcBlock		      "Add"
+	      SrcPort		      1
+	      DstBlock		      "Helicopter\nDynamics\n(vertical)"
+	      DstPort		      1
+	    }
+	    Line {
+	      ZOrder		      622
+	      SrcBlock		      "Trig Multiply 2"
+	      SrcPort		      1
+	      DstBlock		      "Add"
+	      DstPort		      2
+	    }
+	    Line {
+	      ZOrder		      623
+	      SrcBlock		      "Trig Multiply 1"
+	      SrcPort		      1
+	      Points		      [36, 0; 0, 65]
+	      DstBlock		      "Add"
+	      DstPort		      1
+	    }
+	    Line {
+	      ZOrder		      631
+	      SrcBlock		      "Torque from\nAltitude motor\nmass"
+	      SrcPort		      1
+	      DstBlock		      "Trig Multiply 3"
+	      DstPort		      1
+	    }
+	    Line {
+	      ZOrder		      632
+	      SrcBlock		      "Trig Multiply 3"
+	      SrcPort		      1
+	      Points		      [36, 0; 0, -55]
+	      DstBlock		      "Add"
+	      DstPort		      3
+	    }
+	  }
 	}
 	Block {
 	  BlockType		  SubSystem
@@ -1833,7 +2046,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Motor Control\nBoard (Yaw)"
-	    Location		    [-8, -8, 1608, 868]
+	    Location		    [-8, 0, 1608, 876]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1909,7 +2122,7 @@ Model {
 	}
 	Block {
 	  BlockType		  SubSystem
-	  Name			  "Potentiometer"
+	  Name			  "Potentiometer\nfor angle measurement"
 	  SID			  "236"
 	  Ports			  [1, 1]
 	  Position		  [825, 232, 905, 268]
@@ -1918,10 +2131,16 @@ Model {
 	  BackgroundColor	  "yellow"
 	  RequestExecContextInheritance	off
 	  Variant		  off
+	  Port {
+	    PortNumber		    1
+	    Name		    "(V)"
+	    RTWStorageClass	    "Auto"
+	    DataLoggingNameMode	    "SignalName"
+	  }
 	  System {
-	    Name		    "Potentiometer"
-	    Location		    [-8, 246, 1604, 876]
-	    Open		    on
+	    Name		    "Potentiometer\nfor angle measurement"
+	    Location		    [-7, 0, 807, 867]
+	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
 	    ScreenColor		    "white"
@@ -1949,7 +2168,7 @@ Model {
 	      Position		      [160, 110, 200, 140]
 	      ZOrder		      46
 	      BackgroundColor	      "yellow"
-	      Bias		      "0.0"
+	      Bias		      "potentiometerBias"
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
@@ -1959,6 +2178,7 @@ Model {
 	      Position		      [105, 110, 135, 140]
 	      ZOrder		      45
 	      BackgroundColor	      "yellow"
+	      Gain		      "potentiometerGain"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -1996,50 +2216,6 @@ Model {
 	  }
 	}
 	Block {
-	  BlockType		  Scope
-	  Name			  "Scope"
-	  SID			  "241"
-	  Ports			  [1]
-	  Position		  [550, 304, 580, 336]
-	  ZOrder		  48
-	  ScopeSpecificationString "C++SS(StrPVP('SaveName','ScopeData1'))"
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Sum"
-	  SID			  "233"
-	  Ports			  [2, 1]
-	  Position		  [605, 240, 625, 260]
-	  ZOrder		  44
-	  BlockMirror		  on
-	  ShowName		  off
-	  IconShape		  "round"
-	  Inputs		  "|++"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	  Port {
-	    PortNumber		    1
-	    Name		    "(V)"
-	    RTWStorageClass	    "Auto"
-	    DataLoggingNameMode	    "SignalName"
-	  }
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Sum2"
-	  SID			  "23"
-	  Ports			  [2, 1]
-	  Position		  [780, 115, 800, 135]
-	  ZOrder		  -20
-	  ShowName		  off
-	  IconShape		  "round"
-	  Inputs		  "-+|"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
 	  BlockType		  Gain
 	  Name			  "Tail Torque"
 	  SID			  "119"
@@ -2069,7 +2245,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Yaw Control Computer"
-	    Location		    [-8, -8, 1608, 868]
+	    Location		    [-7, 0, 807, 867]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -2313,8 +2489,8 @@ Model {
 	    }
 	    Annotation {
 	      SID		      "209"
-	      Name		      "(m)"
-	      Position		      [96, 22, 113, 37]
+	      Name		      "(deg)"
+	      Position		      [96, 22, 122, 37]
 	      InternalMargins	      [0, 0, 0, 0]
 	      FixedHeight	      off
 	      FixedWidth	      off
@@ -2336,7 +2512,7 @@ Model {
 	  Variant		  off
 	  System {
 	    Name		    "Yaw Motor"
-	    Location		    [793, 0, 1607, 867]
+	    Location		    [-8, 0, 1608, 876]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -2510,7 +2686,7 @@ Model {
 	  BlockType		  Outport
 	  Name			  "Des Alt"
 	  SID			  "43"
-	  Position		  [-70, 38, -40, 52]
+	  Position		  [-55, 28, -25, 42]
 	  ZOrder		  -40
 	  IconDisplay		  "Port number"
 	}
@@ -2560,57 +2736,19 @@ Model {
 	  IconDisplay		  "Port number"
 	}
 	Line {
-	  ZOrder		  7
-	  SrcBlock		  "Gravity"
-	  SrcPort		  1
-	  DstBlock		  "Sum2"
-	  DstPort		  1
-	}
-	Line {
-	  ZOrder		  13
-	  SrcBlock		  "Sum2"
-	  SrcPort		  1
-	  DstBlock		  "Helicopter\nDynamics\n(vertical)"
-	  DstPort		  1
-	}
-	Line {
-	  ZOrder		  14
-	  SrcBlock		  "Helicopter\nDynamics\n(vertical)"
-	  SrcPort		  1
-	  DstBlock		  "Alt > 0"
-	  DstPort		  1
-	}
-	Line {
 	  ZOrder		  17
 	  SrcBlock		  "Desired\nAltitude"
 	  SrcPort		  1
-	  Points		  [25, 0]
+	  Points		  [29, 0]
 	  Branch {
-	    ZOrder		    471
-	    Points		    [0, -60]
-	    DstBlock		    "Des Alt"
-	    DstPort		    1
-	  }
-	  Branch {
-	    ZOrder		    464
+	    ZOrder		    612
 	    DstBlock		    "Altitude Control Computer"
 	    DstPort		    1
 	  }
-	}
-	Line {
-	  ZOrder		  21
-	  SrcBlock		  "Alt > 0"
-	  SrcPort		  1
-	  Points		  [23, 0]
 	  Branch {
-	    ZOrder		    564
-	    Points		    [0, 125]
-	    DstBlock		    "Potentiometer"
-	    DstPort		    1
-	  }
-	  Branch {
-	    ZOrder		    147
-	    DstBlock		    "Actual Alt"
+	    ZOrder		    471
+	    Points		    [0, -70]
+	    DstBlock		    "Des Alt"
 	    DstPort		    1
 	  }
 	}
@@ -2659,10 +2797,10 @@ Model {
 	  ZOrder		  504
 	  SrcBlock		  "Altitude Motor"
 	  SrcPort		  1
-	  Points		  [16, 0]
+	  Points		  [26, 0]
 	  Branch {
-	    ZOrder		    506
-	    DstBlock		    "Heli Lift"
+	    ZOrder		    596
+	    DstBlock		    "Helicopter Dynamics\n(altitude)"
 	    DstPort		    1
 	  }
 	  Branch {
@@ -2671,25 +2809,6 @@ Model {
 	    DstBlock		    "Main Rotor\nSpeed"
 	    DstPort		    1
 	  }
-	}
-	Line {
-	  Name			  "(N)"
-	  ZOrder		  249
-	  Labels		  [1, 1]
-	  SrcBlock		  "Heli Lift"
-	  SrcPort		  1
-	  DstBlock		  "Sum2"
-	  DstPort		  2
-	}
-	Line {
-	  Name			  "(V)"
-	  ZOrder		  573
-	  Labels		  [1, 0]
-	  SrcBlock		  "Sum"
-	  SrcPort		  1
-	  Points		  [-701, 0; 0, -110]
-	  DstBlock		  "Altitude Control Computer"
-	  DstPort		  2
 	}
 	Line {
 	  Name			  "(rad)"
@@ -2756,38 +2875,41 @@ Model {
 	}
 	Line {
 	  Name			  "(V)"
-	  ZOrder		  574
-	  Labels		  [0, 0]
+	  ZOrder		  589
+	  Labels		  [0, 0; 1, 0]
 	  SrcBlock		  "Altitude ADC"
 	  SrcPort		  1
-	  DstBlock		  "Sum"
-	  DstPort		  1
-	}
-	Line {
-	  ZOrder		  575
-	  SrcBlock		  "Band-Limited\nWhite Noise"
-	  SrcPort		  1
-	  Points		  [-115, 0]
-	  DstBlock		  "Sum"
+	  Points		  [-794, 0; 0, -110]
+	  DstBlock		  "Altitude Control Computer"
 	  DstPort		  2
 	}
 	Line {
+	  Name			  "(V)"
 	  ZOrder		  581
-	  SrcBlock		  "Potentiometer"
+	  Labels		  [1, 1]
+	  SrcBlock		  "Potentiometer\nfor angle measurement"
 	  SrcPort		  1
 	  DstBlock		  "Altitude ADC"
 	  DstPort		  1
 	}
-	Annotation {
-	  SID			  "121"
-	  Name			  "(N)"
-	  Position		  [781, 139, 796, 154]
-	  InternalMargins	  [0, 0, 0, 0]
-	  FixedHeight		  off
-	  FixedWidth		  off
-	  HorizontalAlignment	  "left"
-	  VerticalAlignment	  "top"
-	  ZOrder		  -1
+	Line {
+	  Name			  "(deg)"
+	  ZOrder		  598
+	  Labels		  [1, 1]
+	  SrcBlock		  "Helicopter Dynamics\n(altitude)"
+	  SrcPort		  1
+	  Points		  [148, 0]
+	  Branch {
+	    ZOrder		    613
+	    DstBlock		    "Actual Alt"
+	    DstPort		    1
+	  }
+	  Branch {
+	    ZOrder		    602
+	    Points		    [0, 125]
+	    DstBlock		    "Potentiometer\nfor angle measurement"
+	    DstPort		    1
+	  }
 	}
 	Annotation {
 	  SID			  "114"
@@ -2832,17 +2954,6 @@ Model {
 	  HorizontalAlignment	  "left"
 	  VerticalAlignment	  "top"
 	  ZOrder		  -3
-	}
-	Annotation {
-	  SID			  "123"
-	  Name			  "(deg)"
-	  Position		  [978, 107, 1004, 122]
-	  InternalMargins	  [0, 0, 0, 0]
-	  FixedHeight		  off
-	  FixedWidth		  off
-	  HorizontalAlignment	  "left"
-	  VerticalAlignment	  "top"
-	  ZOrder		  -4
 	}
 	Annotation {
 	  SID			  "124"
