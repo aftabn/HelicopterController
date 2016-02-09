@@ -70,18 +70,6 @@ mDrag = Fmr * Kgm2Pergcm2 / RPMPerw * Nmr;
 % Back EMF (V/RPM)
 mBackEMF = 1/Kbmm;
 tBackEMF = 1/Kbtm;
-
-% ============
-% GEAR & ROTOR
-% ============
-% Gear Ratio (Pure)
-mGear =   1/RRmg;
-
-% Heli Lift (N/RPM)
-mLift   = TPmr * G * Nmr;            % Kgm/s^2 / RPM  = N/RPM
-
-% Tail Torque (Nm/RPM)
-tTorque = TPtr*1e-6 * G * Lh*1e-2 * Ntr;  % Kgm/s^2 / RPM * m = Nm/RPM
           
 % ==========
 % HELICOPTER
@@ -94,9 +82,18 @@ Grav = M*G;
 % Air Resistance (Ns/m)
 B1 = B1h * 1e2;                           % Ns/m = N / (m/s)
 
-% Helicopter Dynamics
+% Altitude Helicopter Dynamics:
+% Heli Lift (Nm/RPM)
+mLiftTorque   = TPmr * G * mainArmLength; % Kgm^2/s^2 / RPM  = Nm/RPM
+torqueFromYawMotorMass = (tailBracketMass + Mtm) * G * yawArmLength;
+torqueFromAltMotorMass = (mainBracketMass + Mmm) * G * mainArmLength;
+
 mHeliDynNum = [0 0 1]; 
 mHeliDynDen = [M B1 0];
+
+% Yaw Helicopter Dynamics:
+% Tail Torque (Nm/RPM)
+tTorque = TPtr*1e-6 * G * Lh*1e-2 * Ntr;  % Kgm/s^2 / RPM * m = Nm/RPM
 
 tHeliDynNum = [0 0 1]; 
 tHeliDynDen = [Jh B2h 0] * Kgm2Pergcm2;   % Rotational Inertia / Air R
@@ -113,6 +110,5 @@ angleRange = 165; % Potentiometer can turn +/- 165 degrees
 potentiometerGain = Vss/(2*angleRange);
 potentiometerBias = Vss/2; % It is mounted so that is outputs 2.5 V
                            % when the angle is 0
- 
- % Yaw encoder
- yawEncoderQuantization = 360/400; %360 degrees/400 pulses per revolution
+% Yaw encoder
+yawEncoderQuantization = 360/400; %360 degrees/400 pulses per revolution

@@ -7,7 +7,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.166"
+    ComputedModelVersion    "1.168"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -29,7 +29,7 @@ Model {
       $ObjectID		      2
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [-7.0, 0.0, 814.0, 867.0]
+      Location		      [-8.0, 0.0, 1612.0, 876.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		3
@@ -51,12 +51,12 @@ Model {
 	Dimension		5
 	Object {
 	  $ObjectID		  5
-	  IsActive		  [1]
+	  IsActive		  [0]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "3"
 	  Extents		  [764.0, 689.0]
-	  ZoomFactor		  [0.8]
-	  Offset		  [264.10250322565787, 82.199160877227044]
+	  ZoomFactor		  [1.75]
+	  Offset		  [542.22573353648284, -0.34020561704625873]
 	}
 	Object {
 	  $ObjectID		  6
@@ -87,12 +87,12 @@ Model {
 	}
 	Object {
 	  $ObjectID		  9
-	  IsActive		  [0]
+	  IsActive		  [1]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "243"
-	  Extents		  [764.0, 689.0]
+	  Extents		  [1562.0, 698.0]
 	  ZoomFactor		  [1.75]
-	  Offset		  [-216.29327840453558, -9.5059688493809453]
+	  Offset		  [-139.39871278684552, -12.559920070463122]
 	}
 	PropName		"EditorsInfo"
       }
@@ -104,9 +104,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "Wyatt"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon Feb 08 13:38:04 2016"
-  RTWModifiedTimeStamp	  376837277
-  ModelVersionFormat	  "1.%<AutoIncrement:166>"
+  LastModifiedDate	  "Mon Feb 08 21:11:13 2016"
+  RTWModifiedTimeStamp	  376842266
+  ModelVersionFormat	  "1.%<AutoIncrement:168>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -1131,7 +1131,7 @@ Model {
 	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
 	TiledPageScale		1
 	ShowPageBoundaries	off
-	ZoomFactor		"80"
+	ZoomFactor		"175"
 	Block {
 	  BlockType		  Reference
 	  Name			  "Altitude ADC"
@@ -1677,7 +1677,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Helicopter Dynamics\n(altitude)"
-	    Location		    [-7, 0, 807, 867]
+	    Location		    [-8, 0, 1604, 876]
 	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1754,19 +1754,21 @@ Model {
 	    }
 	    Block {
 	      BlockType		      Constant
-	      Name		      "Torque from\nAltitude motor\nmass"
+	      Name		      "Torque from\nAltitude Motor\nMass"
 	      SID		      "253"
 	      Position		      [-120, 145, -90, 175]
 	      ZOrder		      59
 	      BackgroundColor	      "yellow"
+	      Value		      "torqueFromAltMotorMass"
 	    }
 	    Block {
 	      BlockType		      Constant
-	      Name		      "Torque from\nTail Rotor mass\n"
+	      Name		      "Torque from\nYaw Motor Mass\n"
 	      SID		      "250"
 	      Position		      [-120, -15, -90, 15]
 	      ZOrder		      56
 	      BackgroundColor	      "yellow"
+	      Value		      "torqueFromYawMotorMass"
 	    }
 	    Block {
 	      BlockType		      Product
@@ -1892,7 +1894,7 @@ Model {
 	    }
 	    Line {
 	      ZOrder		      610
-	      SrcBlock		      "Torque from\nTail Rotor mass\n"
+	      SrcBlock		      "Torque from\nYaw Motor Mass\n"
 	      SrcPort		      1
 	      DstBlock		      "Trig Multiply 1"
 	      DstPort		      1
@@ -1921,7 +1923,7 @@ Model {
 	    }
 	    Line {
 	      ZOrder		      631
-	      SrcBlock		      "Torque from\nAltitude motor\nmass"
+	      SrcBlock		      "Torque from\nAltitude Motor\nMass"
 	      SrcPort		      1
 	      DstBlock		      "Trig Multiply 3"
 	      DstPort		      1
