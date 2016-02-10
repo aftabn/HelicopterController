@@ -35,6 +35,7 @@ Ktmm = 60/(2*pi*Kbmm); % Torque Gain    (Nm/A)
 Jmm  = 0;           % Inertia        (kg m^2)
 Bmm  = 1;           % Friction       (kg m^2/s)
 Mmm  = 108E-3;      % Mass           (kg)
+mainBracketMass = 0;
 
 % Main Rotor
 Nmr  = 2;           % Number of Blades
@@ -51,13 +52,14 @@ Kbtm = Kbmm;           % Back EMF       (RPM/V)
 Jtm  = Jmm;           % Inertia        (gcm^2)
 Btm  = Bmm;           % Friction       (gcm^2/s)
 Mtm  = Mmm;           % Mass           (g)
+tailBracketMass = 0;
 
 % Tail Rotor
 Ntr  = 2;           % Number of Blades
-Ltr  = 1;           % Length         (cm)
-Mtr  = 1;           % Mass           (g)
-Ftr  = 1;           % Friction       (gcm^2/s)
-TPtr = 1;           % Thrust Axial   (mg/RPM)
+Ltr  = Lmr;           % Length         (cm)
+Mtr  = Mmr;           % Mass           (g)
+Ftr  = Fmr;           % Friction       (gcm^2/s)
+TPtr = TPmr;           % Thrust Axial   (mg/RPM)
 
 % Drone
 Mh  = 1;            % Mass           (g)
@@ -65,6 +67,7 @@ B1h = 0;            % Air R          (Ns/cm)
 Lh  = 1;            % Length         (cm)
 Jh  = 1;            % Mom of Inertia (gcm^2)
 B2h = 1;            % Rot Air R      (gcm^2/s)
+
 
 % Circuits
 Vss = 5;            % V
