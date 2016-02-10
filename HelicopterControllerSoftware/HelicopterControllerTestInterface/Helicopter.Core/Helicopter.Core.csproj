@@ -7,8 +7,8 @@
     <ProjectGuid>{31A262F1-213A-4C9C-B0F5-D0B74F20AD1B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Helicopter</RootNamespace>
-    <AssemblyName>Helicopter</AssemblyName>
+    <RootNamespace>Helicopter.Core</RootNamespace>
+    <AssemblyName>Helicopter.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -48,6 +48,7 @@
     <Compile Include="Controller\AngleController.cs" />
     <Compile Include="Controller\Direction.cs" />
     <Compile Include="Controller\HelicopterController.cs" />
+    <Compile Include="HelicopterManager.cs" />
     <Compile Include="HelicopterViewModel.cs" />
     <Compile Include="Controller\Microcontroller.cs" />
     <Compile Include="Controller\CommunicationsManager.cs" />
@@ -57,14 +58,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controller\TiltController.cs" />
     <Compile Include="Controller\YawController.cs" />
+    <Compile Include="Settings\AngleControllerSettings.cs" />
+    <Compile Include="Settings\HelicopterControllerSettings.cs" />
+    <Compile Include="Settings\HelicopterSettings.cs" />
+    <Compile Include="Settings\TiltControllerSettings.cs" />
+    <Compile Include="Settings\YawControllerSettings.cs" />
     <Compile Include="StartupOptions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Settings\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Libs.Utilities\Libs.Utilities.csproj">
       <Project>{5c11855c-8094-4020-bbd5-841f2824172d}</Project>

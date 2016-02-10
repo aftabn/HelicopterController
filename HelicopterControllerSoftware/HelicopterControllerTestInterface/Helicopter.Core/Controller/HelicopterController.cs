@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using Helicopter.Core.Settings;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Helicopter.Controller
+namespace Helicopter.Core.Controller
 {
     public class HelicopterController : INotifyPropertyChanged, IDisposable
     {
@@ -194,6 +195,22 @@ namespace Helicopter.Controller
             {
                 PidLoopInterval = Microcontroller.GetPidLoopInterval();
             }
+        }
+
+        public void LoadSettings(HelicopterControllerSettings settings)
+        {
+            if (settings.IsSafetyEnabled)
+            {
+                EnableSafety();
+            }
+            else
+            {
+                DisableSafety();
+            }
+
+            SetPidLoopInterval(settings.PidLoopInterval);
+            Yaw.LoadSettings(settings.YawControllerSettings);
+            Tilt.LoadSettings(settings.TiltControllerSettings);
         }
 
         public void EnablePid()

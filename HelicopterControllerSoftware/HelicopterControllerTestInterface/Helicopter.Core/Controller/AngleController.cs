@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using Helicopter.Core.Settings;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Helicopter.Controller
+namespace Helicopter.Core.Controller
 {
     public abstract class AngleController : INotifyPropertyChanged, IDisposable
     {
@@ -20,6 +21,7 @@ namespace Helicopter.Controller
         private double integralGain;
         private double derivativeGain;
         private double integralWindupThreshold;
+        private int outputRateLimit;
         private double setPoint;
         private double currentAngle;
         private int outputPercentage;
@@ -98,6 +100,23 @@ namespace Helicopter.Controller
                 {
                     integralWindupThreshold = value;
                     RaisePropertyChanged("IntegralWindupThreshold");
+                }
+            }
+        }
+
+        public int OutputRateLimit
+        {
+            get
+            {
+                return outputRateLimit;
+            }
+
+            set
+            {
+                if (value != outputRateLimit)
+                {
+                    outputRateLimit = value;
+                    RaisePropertyChanged("OutputRateLimit");
                 }
             }
         }
@@ -193,6 +212,15 @@ namespace Helicopter.Controller
             {
                 return isEnabled;
             }
+
+            set
+            {
+                if (value != isEnabled)
+                {
+                    isEnabled = value;
+                    RaisePropertyChanged("IsEnabled");
+                }
+            }
         }
 
         public void Initialize()
@@ -206,6 +234,17 @@ namespace Helicopter.Controller
             RefreshIntegralWindupThreshold();
             RefreshSetPoint();
             RefreshMotorDriver();
+        }
+
+        public void LoadSettings(AngleControllerSettings settings)
+        {
+            IsEnabled = settings.IsEnabled;
+            SetMotorDriver(settings.MotorDriver);
+            SetProportionalGain(settings.ProportionalGain);
+            SetIntegralGain(settings.IntegralGain);
+            SetDerivativeGain(settings.DerivativeGain);
+            SetIntegralWindupThreshold(settings.IntegralWindupThreshold);
+            SetOutputRateLimit(settings.OutputRateLimit);
         }
 
         public void Dispose()
@@ -254,6 +293,11 @@ namespace Helicopter.Controller
             IntegralWindupThreshold = Microcontroller.GetIntegralWindupThreshold(controllerChannel);
         }
 
+        public void RefreshOutputRateLimit()
+        {
+            OutputRateLimit = Microcontroller.GetOutputRateLimit(controllerChannel);
+        }
+
         public void RefreshSetPoint()
         {
             SetPoint = Microcontroller.GetAngleSetPoint(controllerChannel);
@@ -298,6 +342,12 @@ namespace Helicopter.Controller
         {
             Microcontroller.SetIntegralWindupThreshold(controllerChannel, iWindupThreshold);
             IntegralWindupThreshold = iWindupThreshold;
+        }
+
+        public void SetOutputRateLimit(int outputRateLimit)
+        {
+            Microcontroller.SetOutputRateLimit(controllerChannel, outputRateLimit);
+            OutputRateLimit = outputRateLimit;
         }
 
         public void SetSetPoint(double setPoint)

@@ -1,14 +1,11 @@
-﻿using Helicopter.Controller;
+﻿using Helicopter.Core.Controller;
 using Libs.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Helicopter
+namespace Helicopter.Core
 {
     public class HelicopterViewModel : INotifyPropertyChanged, IDisposable
     {

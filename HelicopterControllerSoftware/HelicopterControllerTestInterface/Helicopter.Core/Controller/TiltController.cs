@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Helicopter.Controller
+namespace Helicopter.Core.Controller
 {
     public class TiltController : AngleController
     {

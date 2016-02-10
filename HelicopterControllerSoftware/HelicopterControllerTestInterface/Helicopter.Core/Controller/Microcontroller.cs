@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Helicopter.Controller
+namespace Helicopter.Core.Controller
 {
     public static class Microcontroller
     {
@@ -17,6 +17,7 @@ namespace Helicopter.Controller
         private const string STR_IntegralGainCommand = "I";
         private const string STR_DerivativeGainCommand = "D";
         private const string STR_IntegralWindupCommand = "WINDUP";
+        private const string STR_OutputRateLimitCommand = "RATE";
         private const string STR_PidLoopIntervalCommand = "LOOP";
         private const string STR_MotorOutputCommand = "OUT";
         private const string STR_AngleSetPointCommand = "SP";
@@ -198,6 +199,18 @@ namespace Helicopter.Controller
         public static void SetIntegralWindupThreshold(int channel, double windup)
         {
             string command = String.Format("{0} {1} {2}", STR_IntegralWindupCommand, channel, windup);
+            communicationsManager.Write(command);
+        }
+
+        public static int GetOutputRateLimit(int channel)
+        {
+            string command = String.Format("{0} {1}", STR_OutputRateLimitCommand, channel);
+            return Convert.ToInt32(communicationsManager.Write(command).ReturnValue);
+        }
+
+        public static void SetOutputRateLimit(int channel, int outputRateLimit)
+        {
+            string command = String.Format("{0} {1} {2}", STR_OutputRateLimitCommand, channel, outputRateLimit);
             communicationsManager.Write(command);
         }
 

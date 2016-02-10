@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Helicopter.Controller
+namespace Helicopter.Core.Controller
 {
-    public enum MotorDriver
+    public enum MotorType
     {
-        AnalogVoltage, Frequency
+        Yaw = 0, Tilt = 1
     }
 }

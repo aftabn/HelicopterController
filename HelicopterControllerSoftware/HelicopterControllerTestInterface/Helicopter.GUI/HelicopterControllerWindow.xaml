@@ -4,12 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Helicopter.GUI"
-        xmlns:Core="clr-namespace:Helicopter;assembly=Helicopter"
-        xmlns:Controller="clr-namespace:Helicopter.Controller;assembly=Helicopter"
+        xmlns:Core="clr-namespace:Helicopter.Core;assembly=Helicopter.Core"
+        xmlns:Controller="clr-namespace:Helicopter.Core.Controller;assembly=Helicopter.Core"
         mc:Ignorable="d"
         Title="Helicopter Controller Software"
-        Height="650" Width="759.75"
-        MinHeight="700" MinWidth="600"
+        Height="600" Width="800"
+        MinHeight="500" MinWidth="600"
         Loaded="WindowLoaded">
     <Window.Resources>
         <CollectionViewSource x:Key="helicopterViewModelSource" d:DesignSource="{d:DesignInstance {x:Type Core:HelicopterViewModel}, CreateList=True}" />
@@ -22,8 +22,8 @@
             <MenuItem Header="Tools" Margin="5,5,5,5" />
         </Menu>
         <ToolBar x:Name="optionsToolbar" DockPanel.Dock="Top" Height="28" Background="WhiteSmoke">
-            <Button Margin="3,0,3,0" BorderThickness="1" BorderBrush="#A9A9A9" Padding="15,2,15,2" Content="Connect" Command="{Binding ConnectCommand}" />
-            <Button Margin="3,0,3,0" BorderThickness="1" BorderBrush="#A9A9A9" Padding="15,2,15,2" Content="Disconnect" Command="{Binding DisconnectCommand}" />
+            <Button Margin="3,0,3,0" BorderThickness="1" BorderBrush="DarkGray" Padding="15,2,15,2" Content="Connect" Command="{Binding ConnectCommand}" />
+            <Button Margin="3,0,3,0" BorderThickness="1" BorderBrush="DarkGray" Padding="15,2,15,2" Content="Disconnect" Command="{Binding DisconnectCommand}" />
         </ToolBar>
         <StatusBar x:Name="StatusBar" DockPanel.Dock="Bottom" Background="Firebrick" Foreground="White" Height="27">
             <StatusBarItem>

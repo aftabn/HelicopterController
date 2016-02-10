@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helicopter.GUI", "Helicopte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libs.Utilities", "Libs.Utilities\Libs.Utilities.csproj", "{5C11855C-8094-4020-BBD5-841F2824172D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helicopter", "Helicopter\Helicopter.csproj", "{31A262F1-213A-4C9C-B0F5-D0B74F20AD1B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helicopter.Core", "Helicopter.Core\Helicopter.Core.csproj", "{31A262F1-213A-4C9C-B0F5-D0B74F20AD1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

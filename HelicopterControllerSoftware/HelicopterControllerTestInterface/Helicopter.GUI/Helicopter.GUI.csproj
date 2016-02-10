@@ -104,14 +104,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Helicopter\Helicopter.csproj">
+    <ProjectReference Include="..\Helicopter.Core\Helicopter.Core.csproj">
       <Project>{31a262f1-213a-4c9c-b0f5-d0b74f20ad1b}</Project>
-      <Name>Helicopter</Name>
+      <Name>Helicopter.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libs.Utilities\Libs.Utilities.csproj">
       <Project>{5c11855c-8094-4020-bbd5-841f2824172d}</Project>
       <Name>Libs.Utilities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="HelicopterSettings.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
