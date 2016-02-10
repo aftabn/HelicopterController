@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Attribute Explanations:
+
+    Controller:
+      • IsSafetyEnabled is what allows direct controlling of the frequency or voltage outputs on the electronics
+      • PidLoopInterval is how often to execute PID loop
+
+    AngleControllers (i.e. Yaw and Tilt):
+      • IsEnabled is whether the angle controller is enabled (aka doing something) during the PID loop
+      • MotorDriver is the type of driver used to control the motor (e.g. AnalogVoltage or Frequency)
+      • IntegralWindupThreshold is how close the angle must be to the set point before integral gain kicks in
+      • OutputRateLimit is has the max rate at which the output can change per PID loop execution
+      • Proportional, Integral and Derivative gains are the PID constants used to tune the controller
+-->
+<Settings>
+  <Helicopter>
+    <Controller IsSafetyEnabled="true" PidLoopInterval="250">
+      <Yaw IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="1" IntegralGain="0.25"
+           DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="10" />
+      <Tilt IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="1" IntegralGain="0.25"
+           DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="10" />
+    </Controller>
+  </Helicopter>
+</Settings>
