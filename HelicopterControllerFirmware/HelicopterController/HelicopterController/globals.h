@@ -8,7 +8,7 @@ Author:	Aftab
 #define _GLOBALS_h
 
 #define CONTROLLER_NAME				"Arduino Helicopter Controller"
-#define FIRMWARE_VERSION			1.03
+#define FIRMWARE_VERSION			1.04
 
 #define MAX_NUM_CHANNELS			2
 
@@ -18,9 +18,9 @@ Author:	Aftab
 #define INT_DESCRIPTION_MAX			60
 
 // TODO: These need to be changed once hardware is finalized
-
 #define ENCODER_CHA_PIN				4
 #define ENCODER_CHB_PIN				5
+
 // Can't use pin 13 (on-board LED) since it's tied to SPI SCK
 // Source: http://playground.arduino.cc/Code/Spi
 #define HEARTBEAT_LED_PIN			6

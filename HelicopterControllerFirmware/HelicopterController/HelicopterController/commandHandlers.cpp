@@ -33,7 +33,7 @@ void onCommandChangelog()
 {
 	if (isReadCommand(gParameters[0]))
 	{
-		Serial.println(F("Fixed motor driver command arguments"));
+		Serial.println(F("Added rate limit command"));
 		sendAck();
 	}
 	else
