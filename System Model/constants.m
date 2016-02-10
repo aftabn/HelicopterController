@@ -56,10 +56,10 @@ tailBracketMass = 0;
 
 % Tail Rotor
 Ntr  = 2;           % Number of Blades
-Ltr  = 1;           % Length         (cm)
-Mtr  = 1;           % Mass           (g)
-Ftr  = 1;           % Friction       (gcm^2/s)
-TPtr = 1;           % Thrust Axial   (mg/RPM)
+Ltr  = Lmr;           % Length         (cm)
+Mtr  = Mmr;           % Mass           (g)
+Ftr  = Fmr;           % Friction       (gcm^2/s)
+TPtr = TPmr;           % Thrust Axial   (mg/RPM)
 
 % Drone
 Mh  = 1;            % Mass           (g)

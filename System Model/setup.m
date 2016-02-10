@@ -55,12 +55,12 @@ tTConst = Kttm;
 % Must compute rotor dynamics from available constants
 Jmr = 1/3 * Lmr^2 * Mmr * Nmr;
 Bmr = Fmr * Nmr;
-mMechDynNum = [RPMPerw / Kgm2Pergcm2];
+mMechDynNum = [RPMPerw];
 mMechDynDen = [Jmm+Jmr Bmm+Bmr];
 
 Jtr = 1/3 * Ltr^2 * Mtr * Ntr;
 Btr = Ftr;
-tMechDynNum = [RPMPerw / Kgm2Pergcm2];
+tMechDynNum = [RPMPerw];
 tMechDynDen = [Jtm+Jtr Btm+Btr];
 
 % Rotor Drag Torque (Nm/RPM)
@@ -88,12 +88,12 @@ mLiftTorque   = TPmr * G * mainArmLength; % Kgm^2/s^2 / RPM  = Nm/RPM
 torqueFromYawMotorMass = (tailBracketMass + Mtm) * G * yawArmLength;
 torqueFromAltMotorMass = (mainBracketMass + Mmm) * G * mainArmLength;
 
-mHeliDynNum = [0 0 1]; 
-mHeliDynDen = [M B1 0];
+mHeliDynNum = DegPerRad .* [0 0 1]; 
+mHeliDynDen = [Jh B2h 0];
 
 % Yaw Helicopter Dynamics:
 % Tail Torque (Nm/RPM)
-tTorque = TPtr*1e-6 * G * Lh*1e-2 * Ntr;  % Kgm/s^2 / RPM * m = Nm/RPM
+tTorque = TPtr * G * yawArmLength;  % Kgm/s^2 / RPM * m = Nm/RPM
 
 tHeliDynNum = [0 0 1]; 
 tHeliDynDen = [Jh B2h 0] * Kgm2Pergcm2;   % Rotational Inertia / Air R

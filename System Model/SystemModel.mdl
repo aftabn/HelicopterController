@@ -7,7 +7,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.168"
+    ComputedModelVersion    "1.171"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -29,7 +29,7 @@ Model {
       $ObjectID		      2
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [-8.0, 0.0, 1612.0, 876.0]
+      Location		      [-7.0, 0.0, 814.0, 867.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		3
@@ -48,15 +48,15 @@ Model {
       }
       Array {
 	Type			"Simulink.EditorInfo"
-	Dimension		5
+	Dimension		4
 	Object {
 	  $ObjectID		  5
-	  IsActive		  [0]
+	  IsActive		  [1]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "3"
 	  Extents		  [764.0, 689.0]
-	  ZoomFactor		  [1.75]
-	  Offset		  [542.22573353648284, -0.34020561704625873]
+	  ZoomFactor		  [1.0]
+	  Offset		  [199.22785849693173, 288.64893267177627]
 	}
 	Object {
 	  $ObjectID		  6
@@ -65,7 +65,7 @@ Model {
 	  LoadSaveID		  "162"
 	  Extents		  [764.0, 689.0]
 	  ZoomFactor		  [1.5]
-	  Offset		  [87.159513932257241, -89.062356583220421]
+	  Offset		  [87.159513932257227, -89.0623565832204]
 	}
 	Object {
 	  $ObjectID		  7
@@ -83,16 +83,7 @@ Model {
 	  LoadSaveID		  "197"
 	  Extents		  [764.0, 689.0]
 	  ZoomFactor		  [1.75]
-	  Offset		  [4.0, -93.193395321494748]
-	}
-	Object {
-	  $ObjectID		  9
-	  IsActive		  [1]
-	  ViewObjType		  "SimulinkSubsys"
-	  LoadSaveID		  "243"
-	  Extents		  [1562.0, 698.0]
-	  ZoomFactor		  [1.75]
-	  Offset		  [-139.39871278684552, -12.559920070463122]
+	  Offset		  [47.428571428571445, -88.621966750066193]
 	}
 	PropName		"EditorsInfo"
       }
@@ -104,9 +95,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "Wyatt"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon Feb 08 21:11:13 2016"
-  RTWModifiedTimeStamp	  376842266
-  ModelVersionFormat	  "1.%<AutoIncrement:168>"
+  LastModifiedDate	  "Tue Feb 09 14:52:21 2016"
+  RTWModifiedTimeStamp	  376930336
+  ModelVersionFormat	  "1.%<AutoIncrement:171>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -148,7 +139,7 @@ Model {
   TryForcingSFcnDF	  off
   Object {
     $PropName		    "DataLoggingOverride"
-    $ObjectID		    10
+    $ObjectID		    9
     $ClassName		    "Simulink.SimulationData.ModelLoggingInfo"
     model_		    "SystemModel"
     Array {
@@ -191,13 +182,13 @@ Model {
     Type		    "Handle"
     Dimension		    1
     Simulink.ConfigSet {
-      $ObjectID		      11
+      $ObjectID		      10
       Version		      "1.15.1"
       Array {
 	Type			"Handle"
 	Dimension		9
 	Simulink.SolverCC {
-	  $ObjectID		  12
+	  $ObjectID		  11
 	  Version		  "1.15.1"
 	  StartTime		  "0.0"
 	  StopTime		  "25"
@@ -234,7 +225,7 @@ Model {
 	  InsertRTBMode		  "Whenever possible"
 	}
 	Simulink.DataIOCC {
-	  $ObjectID		  13
+	  $ObjectID		  12
 	  Version		  "1.15.1"
 	  Decimation		  "1"
 	  ExternalInput		  "[t, u]"
@@ -270,7 +261,7 @@ Model {
 	  LoggingIntervals	  "[-inf, inf]"
 	}
 	Simulink.OptimizationCC {
-	  $ObjectID		  14
+	  $ObjectID		  13
 	  Version		  "1.15.1"
 	  Array {
 	    Type		    "Cell"
@@ -325,7 +316,7 @@ Model {
 	  AccelVerboseBuild	  off
 	}
 	Simulink.DebuggingCC {
-	  $ObjectID		  15
+	  $ObjectID		  14
 	  Version		  "1.15.1"
 	  RTPrefix		  "error"
 	  ConsistencyChecking	  "none"
@@ -415,7 +406,7 @@ Model {
 	  IntegerSaturationMsg	  "warning"
 	}
 	Simulink.HardwareCC {
-	  $ObjectID		  16
+	  $ObjectID		  15
 	  Version		  "1.15.1"
 	  ProdBitPerChar	  8
 	  ProdBitPerShort	  16
@@ -455,7 +446,7 @@ Model {
 	  ProdEqTarget		  on
 	}
 	Simulink.ModelReferenceCC {
-	  $ObjectID		  17
+	  $ObjectID		  16
 	  Version		  "1.15.1"
 	  UpdateModelReferenceTargets "IfOutOfDateOrStructuralChange"
 	  EnableRefExpFcnMdlSchedulingChecks on
@@ -471,7 +462,7 @@ Model {
 	  SupportModelReferenceSimTargetCustomCode off
 	}
 	Simulink.SFSimCC {
-	  $ObjectID		  18
+	  $ObjectID		  17
 	  Version		  "1.15.1"
 	  SFSimEcho		  on
 	  SimCtrlC		  on
@@ -483,7 +474,7 @@ Model {
 	}
 	Simulink.RTWCC {
 	  $BackupClass		  "Simulink.RTWCC"
-	  $ObjectID		  19
+	  $ObjectID		  18
 	  Version		  "1.15.1"
 	  Array {
 	    Type		    "Cell"
@@ -545,7 +536,7 @@ Model {
 	    Type		    "Handle"
 	    Dimension		    2
 	    Simulink.CodeAppCC {
-	      $ObjectID		      20
+	      $ObjectID		      19
 	      Version		      "1.15.1"
 	      Array {
 		Type			"Cell"
@@ -610,7 +601,7 @@ Model {
 	    }
 	    Simulink.GRTTargetCC {
 	      $BackupClass	      "Simulink.TargetCC"
-	      $ObjectID		      21
+	      $ObjectID		      20
 	      Version		      "1.15.1"
 	      Array {
 		Type			"Cell"
@@ -697,7 +688,7 @@ Model {
 	  }
 	}
 	SlCovCC.ConfigComp {
-	  $ObjectID		  22
+	  $ObjectID		  21
 	  Version		  "1.15.1"
 	  Description		  "Simulink Coverage Configuration Component"
 	  Name			  "Simulink Coverage"
@@ -733,11 +724,11 @@ Model {
   }
   Simulink.ConfigSet {
     $PropName		    "ActiveConfigurationSet"
-    $ObjectID		    11
+    $ObjectID		    10
   }
   Object {
     $PropName		    "DataTransfer"
-    $ObjectID		    23
+    $ObjectID		    22
     $ClassName		    "Simulink.GlobalDataTransfer"
     DefaultTransitionBetweenSyncTasks "Ensure deterministic transfer (maximum delay)"
     DefaultTransitionBetweenAsyncTasks "Ensure data integrity only"
@@ -1031,7 +1022,7 @@ Model {
   }
   System {
     Name		    "SystemModel"
-    Location		    [-7, 0, 807, 867]
+    Location		    [-8, 0, 1604, 876]
     Open		    off
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -1045,7 +1036,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "105"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "254"
+    SIDHighWatermark	    "257"
     Block {
       BlockType		      Scope
       Name		      "Altitude"
@@ -1131,7 +1122,7 @@ Model {
 	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
 	TiledPageScale		1
 	ShowPageBoundaries	off
-	ZoomFactor		"175"
+	ZoomFactor		"100"
 	Block {
 	  BlockType		  Reference
 	  Name			  "Altitude ADC"
@@ -1176,7 +1167,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Altitude Control Computer"
-	    Location		    [-7, 0, 807, 867]
+	    Location		    [-8, 0, 1604, 876]
 	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1677,8 +1668,8 @@ Model {
 	  }
 	  System {
 	    Name		    "Helicopter Dynamics\n(altitude)"
-	    Location		    [-8, 0, 1604, 876]
-	    Open		    on
+	    Location		    [-7, 0, 807, 867]
+	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
 	    ScreenColor		    "white"
@@ -1729,12 +1720,30 @@ Model {
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
-	      Port {
-		PortNumber		1
-		Name			"(Nm)"
-		RTWStorageClass		"Auto"
-		DataLoggingNameMode	"SignalName"
-	      }
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "Conver to\nradians"
+	      SID		      "257"
+	      Position		      [90, 230, 120, 260]
+	      ZOrder		      61
+	      BlockMirror	      on
+	      BackgroundColor	      "yellow"
+	      Gain		      "RadPerDeg"
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Get perpendicular\ncomponent of force"
+	      SID		      "242"
+	      Ports		      [1, 1]
+	      Position		      [-10, 230, 20, 260]
+	      ZOrder		      49
+	      BlockMirror	      on
+	      BackgroundColor	      "yellow"
+	      Operator		      "cos"
 	    }
 	    Block {
 	      BlockType		      TransferFcn
@@ -1795,6 +1804,12 @@ Model {
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      RndMeth		      "Floor"
 	      SaturateOnIntegerOverflow	off
+	      Port {
+		PortNumber		1
+		Name			"(Nm)"
+		RTWStorageClass		"Auto"
+		DataLoggingNameMode	"SignalName"
+	      }
 	    }
 	    Block {
 	      BlockType		      Product
@@ -1808,17 +1823,12 @@ Model {
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      RndMeth		      "Floor"
 	      SaturateOnIntegerOverflow	off
-	    }
-	    Block {
-	      BlockType		      Trigonometry
-	      Name		      "Trigonometric\nFunction"
-	      SID		      "242"
-	      Ports		      [1, 1]
-	      Position		      [-10, 230, 20, 260]
-	      ZOrder		      49
-	      BlockMirror	      on
-	      BackgroundColor	      "yellow"
-	      Operator		      "cos"
+	      Port {
+		PortNumber		1
+		Name			"(Nm)"
+		RTWStorageClass		"Auto"
+		DataLoggingNameMode	"SignalName"
+	      }
 	    }
 	    Block {
 	      BlockType		      Outport
@@ -1841,6 +1851,7 @@ Model {
 	    Line {
 	      Name		      "(deg)"
 	      ZOrder		      598
+	      Labels		      [1, 1]
 	      SrcBlock		      "Helicopter\nDynamics\n(vertical)"
 	      SrcPort		      1
 	      Points		      [48, 0]
@@ -1853,14 +1864,12 @@ Model {
 	      Branch {
 		ZOrder			605
 		Points			[0, 150]
-		DstBlock		"Trigonometric\nFunction"
+		DstBlock		"Conver to\nradians"
 		DstPort			1
 	      }
 	    }
 	    Line {
-	      Name		      "(Nm)"
 	      ZOrder		      603
-	      Labels		      [1, 1]
 	      SrcBlock		      "Alt Torque"
 	      SrcPort		      1
 	      DstBlock		      "Trig Multiply 2"
@@ -1868,7 +1877,7 @@ Model {
 	    }
 	    Line {
 	      ZOrder		      606
-	      SrcBlock		      "Trigonometric\nFunction"
+	      SrcBlock		      "Get perpendicular\ncomponent of force"
 	      SrcPort		      1
 	      Points		      [-19, 0; 0, -70]
 	      Branch {
@@ -1907,7 +1916,9 @@ Model {
 	      DstPort		      1
 	    }
 	    Line {
+	      Name		      "(Nm)"
 	      ZOrder		      622
+	      Labels		      [1, 1]
 	      SrcBlock		      "Trig Multiply 2"
 	      SrcPort		      1
 	      DstBlock		      "Add"
@@ -1929,12 +1940,41 @@ Model {
 	      DstPort		      1
 	    }
 	    Line {
+	      Name		      "(Nm)"
 	      ZOrder		      632
+	      Labels		      [2, 1]
 	      SrcBlock		      "Trig Multiply 3"
 	      SrcPort		      1
 	      Points		      [36, 0; 0, -55]
 	      DstBlock		      "Add"
 	      DstPort		      3
+	    }
+	    Line {
+	      ZOrder		      640
+	      SrcBlock		      "Conver to\nradians"
+	      SrcPort		      1
+	      DstBlock		      "Get perpendicular\ncomponent of force"
+	      DstPort		      1
+	    }
+	    Annotation {
+	      SID		      "256"
+	      Name		      "(Nm)"
+	      Position		      [135, 92, 164, 117]
+	      InternalMargins	      [0, 0, 0, 0]
+	      FixedHeight	      on
+	      FixedWidth	      on
+	      HorizontalAlignment     "left"
+	      VerticalAlignment	      "top"
+	    }
+	    Annotation {
+	      SID		      "255"
+	      Name		      "(Nm)"
+	      Position		      [57, 42, 81, 57]
+	      InternalMargins	      [0, 0, 0, 0]
+	      FixedHeight	      off
+	      FixedWidth	      off
+	      HorizontalAlignment     "left"
+	      VerticalAlignment	      "top"
 	    }
 	  }
 	}
@@ -1956,7 +1996,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Motor Control\nBoard (Altitude)"
-	    Location		    [-7, 0, 807, 867]
+	    Location		    [-8, 0, 1604, 876]
 	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -2514,7 +2554,7 @@ Model {
 	  Variant		  off
 	  System {
 	    Name		    "Yaw Motor"
-	    Location		    [-8, 0, 1608, 876]
+	    Location		    [-7, 0, 807, 867]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -2543,7 +2583,7 @@ Model {
 	      ZOrder		      -11
 	      BlockMirror	      on
 	      BackgroundColor	      "lightBlue"
-	      Gain		      "mBackEMF"
+	      Gain		      "tBackEMF"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -2555,8 +2595,8 @@ Model {
 	      Position		      [165, 37, 225, 73]
 	      ZOrder		      -12
 	      BackgroundColor	      "lightBlue"
-	      Numerator		      "mElecDynNum"
-	      Denominator	      "mElecDynDen"
+	      Numerator		      "tElecDynNum"
+	      Denominator	      "tElecDynDen"
 	    }
 	    Block {
 	      BlockType		      TransferFcn
@@ -2565,8 +2605,8 @@ Model {
 	      Position		      [345, 37, 405, 73]
 	      ZOrder		      8
 	      BackgroundColor	      "lightBlue"
-	      Numerator		      "mMechDynNum"
-	      Denominator	      "mMechDynDen"
+	      Numerator		      "tMechDynNum"
+	      Denominator	      "tMechDynDen"
 	    }
 	    Block {
 	      BlockType		      Sum
@@ -2589,7 +2629,7 @@ Model {
 	      Position		      [265, 40, 295, 70]
 	      ZOrder		      -13
 	      BackgroundColor	      "lightBlue"
-	      Gain		      "mTConst"
+	      Gain		      "tTConst"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
