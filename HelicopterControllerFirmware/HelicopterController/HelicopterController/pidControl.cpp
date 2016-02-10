@@ -25,6 +25,7 @@ volatile double pGains[MAX_NUM_CHANNELS];
 volatile double iGains[MAX_NUM_CHANNELS];
 volatile double dGains[MAX_NUM_CHANNELS];
 volatile double iWindupThresholds[MAX_NUM_CHANNELS];
+volatile int outputRateLimits[MAX_NUM_CHANNELS];
 volatile double setPoints[MAX_NUM_CHANNELS];
 volatile double currentVoltages[MAX_NUM_CHANNELS];
 volatile double currentAngles[MAX_NUM_CHANNELS];
@@ -122,6 +123,7 @@ void initializePid(void)
 		iGains[channel] = DEFAULT_I_GAIN;
 		dGains[channel] = DEFAULT_D_GAIN;
 		iWindupThresholds[channel] = DEFAULT_I_WINDUP_THRESH;
+		outputRateLimits[channel] = DEFAULT_OUTPUT_RATE_LIMIT;
 		setPoints[channel] = DEFAULT_SET_POINT;
 		currentAngles[channel] = 0;
 		directions[channel] = (Direction)DEFAULT_DIRECTION;
@@ -205,15 +207,15 @@ void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOut
 	int newOutput = (int)(pGains[channel] * angleErrors[channel] + iGains[channel] * integratedAngleErrors[channel] + dGains[channel] * derivativeAnglesErrors[channel]);
 
 	// Limit the amount the output can change by
-	if (abs(newOutput - currentOutput) > MAX_OUTPUT_CHANGE)
+	if (abs(newOutput - currentOutput) > outputRateLimits[channel])
 	{
 		if (newOutput > currentOutput)
 		{
-			newOutput = currentOutput + MAX_OUTPUT_CHANGE;
+			newOutput = currentOutput + outputRateLimits[channel];
 		}
 		else
 		{
-			newOutput = currentOutput - MAX_OUTPUT_CHANGE;
+			newOutput = currentOutput - outputRateLimits[channel];
 		}
 	}
 

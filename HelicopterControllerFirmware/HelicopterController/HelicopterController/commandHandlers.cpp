@@ -420,6 +420,34 @@ void onCommandIntegralWindup()
 	}
 }
 
+void onCommandRateLimit()
+{
+	if (isChannelCorrect(gParameters[0]))
+	{
+		int channel = convertToInt(gParameters[0]);
+		int rateLimit = convertToInt(gParameters[1]);
+
+		if (isReadCommand(gParameters[1]))
+		{
+			sendInt(outputRateLimits[channel]);
+			sendAck();
+		}
+		else if (isIntWithinRange(rateLimit, OUTPUT_RATE_LIMIT_MIN, OUTPUT_RATE_LIMIT_MAX))
+		{
+			outputRateLimits[channel] = rateLimit;
+			sendAck();
+		}
+		else
+		{
+			sendIntRangeError(OUTPUT_RATE_LIMIT_MIN, OUTPUT_RATE_LIMIT_MAX, DEGREES_UNIT);
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
 void onCommandAngle()
 {
 	if (isChannelCorrect(gParameters[0]))

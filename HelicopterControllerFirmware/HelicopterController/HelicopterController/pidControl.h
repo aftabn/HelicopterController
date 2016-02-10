@@ -51,6 +51,9 @@ Author:	Aftab
 #define I_WINDUP_THRESH_MIN			0.0
 #define I_WINDUP_THRESH_MAX			100.0
 
+#define OUTPUT_RATE_LIMIT_MIN		1
+#define OUTPUT_RATE_LIMIT_MAX		50
+
 #define D_GAIN_MIN					0.0
 #define D_GAIN_MAX					10.0
 
@@ -59,8 +62,6 @@ Author:	Aftab
 
 #define SET_POINT_MIN				0.00
 #define SET_POINT_MAX				360.0
-
-#define MAX_OUTPUT_CHANGE			10
 
 #define YAW_OUTPUT_MIN				-100
 #define YAW_OUTPUT_MAX				100
@@ -78,6 +79,7 @@ Author:	Aftab
 #define DEFAULT_D_GAIN				D_GAIN_MIN
 #define DEFAULT_SET_POINT			SET_POINT_MIN
 #define DEFAULT_I_WINDUP_THRESH		30.0
+#define DEFAULT_OUTPUT_RATE_LIMIT	5
 #define DEFAULT_PID_INTERVAL_MS		250
 
 enum Direction { Clockwise, CounterClockwise };
@@ -101,6 +103,7 @@ extern volatile double pGains[MAX_NUM_CHANNELS];
 extern volatile double iGains[MAX_NUM_CHANNELS];
 extern volatile double dGains[MAX_NUM_CHANNELS];
 extern volatile double iWindupThresholds[MAX_NUM_CHANNELS];
+extern volatile int outputRateLimits[MAX_NUM_CHANNELS];
 extern volatile double setPoints[MAX_NUM_CHANNELS];
 extern volatile double currentVoltages[MAX_NUM_CHANNELS];
 extern volatile double currentAngles[MAX_NUM_CHANNELS];

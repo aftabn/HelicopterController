@@ -81,6 +81,10 @@ void processCommand(char *command)
 	{
 		onCommandIntegralWindup();
 	}
+	else if (0 == strcmp(command, "RATE"))
+	{
+		onCommandIntegralWindup();
+	}
 	else if (0 == strcmp(command, "SP"))
 	{
 		onCommandSetPoint();

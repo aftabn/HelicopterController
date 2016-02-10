@@ -29,6 +29,7 @@ void onCommandIntegralGain(void);
 void onCommandDerivativeGain(void);
 void onCommandLoopInterval(void);
 void onCommandIntegralWindup(void);
+void onCommandRateLimit(void);
 void onCommandSetPoint(void);
 void onCommandAngle(void);
 void onCommandAdc(void);
