@@ -7,7 +7,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.171"
+    ComputedModelVersion    "1.172"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -55,8 +55,8 @@ Model {
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "3"
 	  Extents		  [764.0, 689.0]
-	  ZoomFactor		  [1.0]
-	  Offset		  [199.22785849693173, 288.64893267177627]
+	  ZoomFactor		  [0.49999999999999994]
+	  Offset		  [-347.13289880511843, -375.91706341839546]
 	}
 	Object {
 	  $ObjectID		  6
@@ -95,9 +95,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "Wyatt"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Tue Feb 09 14:52:21 2016"
-  RTWModifiedTimeStamp	  376930336
-  ModelVersionFormat	  "1.%<AutoIncrement:171>"
+  LastModifiedDate	  "Tue Feb 09 16:27:34 2016"
+  RTWModifiedTimeStamp	  376936051
+  ModelVersionFormat	  "1.%<AutoIncrement:172>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -1122,13 +1122,13 @@ Model {
 	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
 	TiledPageScale		1
 	ShowPageBoundaries	off
-	ZoomFactor		"100"
+	ZoomFactor		"50"
 	Block {
 	  BlockType		  Reference
 	  Name			  "Altitude ADC"
 	  SID			  "230"
 	  Ports			  [1, 1]
-	  Position		  [705, 225, 765, 275]
+	  Position		  [660, 225, 720, 275]
 	  ZOrder		  41
 	  BlockMirror		  on
 	  BackgroundColor	  "yellow"
@@ -2167,7 +2167,7 @@ Model {
 	  Name			  "Potentiometer\nfor angle measurement"
 	  SID			  "236"
 	  Ports			  [1, 1]
-	  Position		  [825, 232, 905, 268]
+	  Position		  [835, 232, 915, 268]
 	  ZOrder		  -95
 	  BlockMirror		  on
 	  BackgroundColor	  "yellow"
@@ -2921,7 +2921,7 @@ Model {
 	  Labels		  [0, 0; 1, 0]
 	  SrcBlock		  "Altitude ADC"
 	  SrcPort		  1
-	  Points		  [-794, 0; 0, -110]
+	  Points		  [-749, 0; 0, -110]
 	  DstBlock		  "Altitude Control Computer"
 	  DstPort		  2
 	}
