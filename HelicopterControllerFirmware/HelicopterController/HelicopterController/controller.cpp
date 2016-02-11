@@ -10,6 +10,7 @@ Author:	Aftab
 #include "controller.h"
 #include "commandHandlers.h"
 
+//char lastCommand[INT_LINE_SIZE_MAX + 1];
 char lineBuffer[INT_LINE_SIZE_MAX + 1];
 
 void initializeController()
@@ -109,6 +110,10 @@ void processCommand(char *command)
 	{
 		onCommandTest();
 	}
+	//else if (0 == strcmp(command, "'"))
+	//{
+	//	processLine(lastCommand);
+	//}
 	else if (0 == strcmp(command, "HELP"))
 	{
 		onCommandHelp();
@@ -117,6 +122,11 @@ void processCommand(char *command)
 	{
 		handleCommandUnknown(command);
 	}
+
+	//if (!(0 == strcmp(command, "'")))
+	//{
+	//	sprintf(lastCommand, "%s", lineBuffer);
+	//}
 }
 
 void clearParameters()

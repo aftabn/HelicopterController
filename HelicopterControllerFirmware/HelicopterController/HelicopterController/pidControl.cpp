@@ -41,8 +41,6 @@ double derivativeAnglesErrors[MAX_NUM_CHANNELS];
 // This is the ISR that runs the PID algorithm
 ISR(TIMER1_OVF_vect)
 {
-	char tmpstr[70];
-
 	if (isPidEnabled)
 	{
 		for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
@@ -58,6 +56,7 @@ ISR(TIMER1_OVF_vect)
 
 			if (isVerboseMode)
 			{
+				char tmpstr[70];
 				char setpoint[8];
 				char angle[8];
 
@@ -286,13 +285,12 @@ void setDacVoltage(int channel, double voltage)
 		primaryByte |= (1 << 7);
 	}
 
-	// Not sure if disabling interrupts is necessary as yet
-	//noInterrupts();
+	noInterrupts();
 	digitalWrite(DAC_CHIP_SELECT_PIN, LOW);
 	SPI.transfer(primaryByte);
 	SPI.transfer(secondaryByte);
 	digitalWrite(DAC_CHIP_SELECT_PIN, HIGH);
-	//interrupts();
+	interrupts();
 
 	currentVoltages[channel] = voltage;
 }
@@ -336,6 +334,7 @@ int getAdcValue(int channel)
 	byte dataLSB = 0;
 	byte JUNK = 0x00;
 
+	noInterrupts();
 	SPI.beginTransaction(MCP3008);
 	digitalWrite(ADC_CHIP_SELECT_PIN, LOW);
 	SPI.transfer(0x01);									// Start Bit
@@ -343,6 +342,7 @@ int getAdcValue(int channel)
 	dataLSB = SPI.transfer(JUNK);						// Push junk data and get LSB byte return
 	digitalWrite(ADC_CHIP_SELECT_PIN, HIGH);
 	SPI.endTransaction();
+	interrupts();
 
 	int adcValue = dataMSB << 8 | dataLSB;				// Storing in variable first for debugging
 
