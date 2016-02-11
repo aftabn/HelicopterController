@@ -7,9 +7,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Management;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Helicopter.Core.Controller
 {

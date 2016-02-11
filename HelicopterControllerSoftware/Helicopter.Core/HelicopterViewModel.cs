@@ -179,7 +179,7 @@ namespace Helicopter.Core
         public ICommand EnableSafetyCommand { get; private set; }
         public ICommand DisableSafetyCommand { get; private set; }
         public ICommand RefreshValuesCommand { get; private set; }
-        public ICommand DisableMotors { get; private set; }
+        public ICommand DisableMotorsCommand { get; private set; }
 
         public ICommand GetYawAngleCommand { get; private set; }
         public ICommand SetYawSetPointCommand { get; private set; }
@@ -285,7 +285,7 @@ namespace Helicopter.Core
                    },
                    x => IsConnected);
 
-            DisableMotors = new RelayCommand(
+            DisableMotorsCommand = new RelayCommand(
                    x =>
                    {
                        helicopterManager.DisableMotors();

@@ -43,6 +43,7 @@
                 <DockPanel x:Name="developerDockPanel">
                     <StackPanel DockPanel.Dock="Left"  Margin="5,10,5,5" Width="150">
                         <Button Margin="5,0,5,5" Content="Controller Info" Command="{Binding GetControllerInfoCommand}" />
+                        <Button Margin="5,0,5,5" Content="Disable Motors" Command="{Binding DisableMotorsCommand}" />
                         <Button Margin="5,0,5,5" Content="Refresh Values" Command="{Binding RefreshValuesCommand}" />
                         <Separator Margin="5,5,5,10" />
                         <Button Margin="5,0,5,5" Content="Enable PID" Command="{Binding EnablePidCommand}" />
@@ -233,8 +234,7 @@
             </TabItem>
         </TabControl>
         <Border x:Name="controllerOutputPanel" BorderBrush="Gray" BorderThickness="1" Margin="5">
-            <TextBox x:Name="controllerOutputTextbox" TextWrapping="WrapWithOverflow" Background="LightGray" Padding="5" Util:TextBoxBehaviour.ScrollOnTextChanged="True"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto" IsReadOnly="True" Text="{Binding OutputText}" />
+            <TextBox x:Name="controllerOutputTextbox" TextWrapping="WrapWithOverflow" Background="LightGray" Padding="5" IsReadOnly="True" Text="{Binding OutputText}" />
         </Border>
     </DockPanel>
 </Window>

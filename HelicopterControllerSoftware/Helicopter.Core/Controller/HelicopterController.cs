@@ -1,11 +1,7 @@
 ﻿using Helicopter.Core.Settings;
 using log4net;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Helicopter.Core.Controller
 {
@@ -247,6 +243,7 @@ namespace Helicopter.Core.Controller
 
         public void DisableMotors()
         {
+            DisablePid();
             Yaw.Disable();
             Tilt.Disable();
         }

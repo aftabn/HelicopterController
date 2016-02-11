@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\AngleController.cs" />
+    <Compile Include="Sessions\ControllerData.cs" />
     <Compile Include="Controller\Direction.cs" />
     <Compile Include="Controller\HelicopterController.cs" />
     <Compile Include="HelicopterManager.cs" />
@@ -58,6 +59,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controller\TiltController.cs" />
     <Compile Include="Controller\YawController.cs" />
+    <Compile Include="Sessions\AngleControllerData.cs" />
+    <Compile Include="Sessions\Session.cs" />
+    <Compile Include="Sessions\SessionData.cs" />
     <Compile Include="Settings\AngleControllerSettings.cs" />
     <Compile Include="Settings\HelicopterControllerSettings.cs" />
     <Compile Include="Settings\HelicopterSettings.cs" />
