@@ -42,13 +42,14 @@
             <TabItem x:Name="DeveloperTab" Header="Developer">
                 <DockPanel x:Name="developerDockPanel">
                     <StackPanel DockPanel.Dock="Left"  Margin="5,10,5,5" Width="150">
-                        <Button Margin="5,0,5,5" x:Name="refreshAllButton" Content="Refresh Values" Command="{Binding RefreshValuesCommand}" />
+                        <Button Margin="5,0,5,5" Content="Controller Info" Command="{Binding GetControllerInfoCommand}" />
+                        <Button Margin="5,0,5,5" Content="Refresh Values" Command="{Binding RefreshValuesCommand}" />
                         <Separator Margin="5,5,5,10" />
-                        <Button Margin="5,0,5,5" x:Name="enablePidButton" Content="Enable PID" Command="{Binding EnablePidCommand}" />
-                        <Button Margin="5,0,5,5" x:Name="disablePidButton" Content="Disable PID" Command="{Binding DisablePidCommand}" />
+                        <Button Margin="5,0,5,5" Content="Enable PID" Command="{Binding EnablePidCommand}" />
+                        <Button Margin="5,0,5,5" Content="Disable PID" Command="{Binding DisablePidCommand}" />
                         <Separator Margin="5,5,5,10" />
-                        <Button Margin="5,0,5,5" x:Name="enableSafetyButton" Content="Enable Safety" Command="{Binding EnableSafetyCommand}" />
-                        <Button Margin="5,0,5,5" x:Name="disableSafetyButton" Content="Disable Safety" Command="{Binding DisableSafetyCommand}" />
+                        <Button Margin="5,0,5,5" Content="Enable Safety" Command="{Binding EnableSafetyCommand}" />
+                        <Button Margin="5,0,5,5" Content="Disable Safety" Command="{Binding DisableSafetyCommand}" />
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Left" Margin="5,0,5,5" Width="150">
                         <TextBlock TextAlignment="Center" Margin="0,5,0,0"><Run Text="Yaw Controller" /></TextBlock>

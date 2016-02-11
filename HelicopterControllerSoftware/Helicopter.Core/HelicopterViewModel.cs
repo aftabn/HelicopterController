@@ -172,6 +172,8 @@ namespace Helicopter.Core
 
         public ICommand ConnectCommand { get; private set; }
         public ICommand DisconnectCommand { get; private set; }
+        public ICommand GetControllerInfoCommand { get; private set; }
+
         public ICommand EnablePidCommand { get; private set; }
         public ICommand DisablePidCommand { get; private set; }
         public ICommand EnableSafetyCommand { get; private set; }
@@ -198,15 +200,16 @@ namespace Helicopter.Core
         public ICommand SetTiltDirectionCommand { get; private set; }
         public ICommand SetTiltMotorDriverCommand { get; private set; }
 
+        public ICommand SetYawDacVoltageCommand { get; private set; }
+        public ICommand SetTiltDacVoltageCommand { get; private set; }
+        public ICommand SetFrequencyCommand { get; private set; }
+
         public void Connect()
         {
             helicopterManager.PropertyChanged += OnHelicopterManagerPropertyChanged;
             helicopterManager.Connect();
 
-            var text = String.Format("Connected to {0}{1}Firmware Version: {2}{3}Changelog: {4}",
-                helicopterController.ControllerIdentity, Environment.NewLine, helicopterController.FirmwareVersion,
-                Environment.NewLine, helicopterController.Changelog);
-
+            var text = String.Format("Connected to {0}", helicopterController.ControllerIdentity);
             UpdateOutputTextbox(text);
         }
 
@@ -229,6 +232,17 @@ namespace Helicopter.Core
 
             DisconnectCommand = new RelayCommand(
                    x => Disconnect(),
+                   x => IsConnected);
+
+            GetControllerInfoCommand = new RelayCommand(
+                   x =>
+                   {
+                       var text = String.Format("Controller: {0}{1}Firmware Version: {2}{3}Changelog: {4}{5}",
+                            helicopterController.ControllerIdentity, Environment.NewLine, helicopterController.FirmwareVersion,
+                            Environment.NewLine, helicopterController.Changelog, Environment.NewLine);
+
+                       UpdateOutputTextbox(text);
+                   },
                    x => IsConnected);
 
             EnablePidCommand = new RelayCommand(

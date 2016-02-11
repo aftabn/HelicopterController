@@ -84,6 +84,10 @@ namespace Helicopter.GUI
             {
                 UpdateStatusBar();
             }
+            else if (e.PropertyName == "OutputText")
+            {
+                controllerOutputTextbox.ScrollToEnd();
+            }
         }
     }
 }
