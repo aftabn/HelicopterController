@@ -33,7 +33,7 @@ void onCommandChangelog()
 {
 	if (isReadCommand(gParameters[0]))
 	{
-		Serial.println(F("Added rate limit command"));
+		Serial.println(F("Added ADC sampling to reduce noise"));
 		sendAck();
 	}
 	else
@@ -476,7 +476,7 @@ void onCommandAdc()
 
 	if (isIntWithinRange(adcChannel, ADC_CHANNEL_MIN, ADC_CHANNEL_MAX))
 	{
-		double voltage = getAdcVoltage(adcChannel);
+		double voltage = getSampledAdcVoltage(adcChannel);
 		sendDouble(voltage, THREE_DECIMALS);
 		sendAck();
 	}

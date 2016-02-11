@@ -28,6 +28,7 @@ Author:	Aftab
 #define ADC_VOLTS_PER_BIT			ADC_REFERENCE_VOLTAGE / ADC_RESOLUTION
 #define ADC_CHANNEL_MIN				0
 #define ADC_CHANNEL_MAX				7
+#define DEFAULT_NUM_ADC_SAMPLES		50
 
 #define DAC_REFERENCE_VOLTAGE		ARDUINO_VSS
 #define DAC_RESOLUTION				1023
@@ -133,6 +134,8 @@ void applyMotorOutputs(int channel, Direction direction, int percentageOutput);
 double adjustOutputToVoltage(Direction direction, int percentageOutput);
 int adjustOutputToFrequency(int percentageOutput);
 
+double getSampledAdcVoltage(int channel);
+double getSampledAdcVoltage(int channel, uint8_t numSamples);
 double getAdcVoltage(int channel);
 int getAdcValue(int channel);
 double convertAdcValueToVoltage(int adcValue);

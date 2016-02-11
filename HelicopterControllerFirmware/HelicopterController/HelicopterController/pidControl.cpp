@@ -305,6 +305,25 @@ void setFrequency(int channel, int frequency)
 	currentFrequency = frequency;
 }
 
+double getSampledAdcVoltage(int channel)
+{
+	return getSampledAdcVoltage(channel, DEFAULT_NUM_ADC_SAMPLES);
+}
+
+double getSampledAdcVoltage(int channel, uint8_t numSamples)
+{
+	double adcVoltage = 0;
+
+	for (int i = 0; i < numSamples; i++)
+	{
+		adcVoltage += getAdcVoltage(channel);
+	}
+
+	adcVoltage /= numSamples;
+
+	return adcVoltage;
+}
+
 // Unlike the other functions, the MCP3008 ADC has 8 channels, which means
 // the input parameter can be between 0 and 7
 // Source for code: https://rheingoldheavy.com/mcp3008-tutorial-02-sampling-dc-voltage/
@@ -351,7 +370,7 @@ double convertPotentiometerVoltageToAngle(double voltage)
 
 double getPotentiometerAngle(int channel)
 {
-	double voltage = getAdcVoltage(channel);
+	double voltage = getSampledAdcVoltage(channel);
 	double angle = convertPotentiometerVoltageToAngle(voltage);
 
 	return angle;
