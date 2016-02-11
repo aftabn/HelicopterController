@@ -30,7 +30,7 @@ yawArmLength = 0.15;
 % Main Motor
 Lmm  = 1.2E-3;      % Inductance     (H)
 Rmm  = 16;          % Resistance     (Ohms)
-Kbmm = 1;           % Back EMF       (RPM/V)
+Kbmm = 586;           % Back EMF       (RPM/V)
 Ktmm = 60/(2*pi*Kbmm); % Torque Gain    (Nm/A)
 Jmm  = 0;           % Inertia        (kg m^2)
 Bmm  = 1;           % Friction       (kg m^2/s)
@@ -39,10 +39,10 @@ mainBracketMass = 0;
 
 % Main Rotor
 Nmr  = 2;           % Number of Blades
-Lmr  = 1;           % Length         (cm)
-Mmr  = 1;           % Mass           (g)
+Lmr  = 1;           % Length         (m)
+Mmr  = 1;           % Mass           (kg)
 Fmr  = 1;           % Friction       (gcm^2/s)
-TPmr = 1;           % Thrust Axial   (mg/RPM)
+TPmr = 2.9E-6;           % Thrust Axial   (kg/RPM)
 
 % Tail Motor
 Ltm  = Lmm;           % Inductance     (H)
