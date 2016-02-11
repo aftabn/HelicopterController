@@ -12,7 +12,6 @@ namespace Helicopter.Core
         private HelicopterManager helicopterManager;
         private HelicopterController helicopterController;
         private bool isDeveloperMode;
-
         private string outputText;
 
         public HelicopterViewModel(bool isDeveloperMode)
@@ -28,186 +27,8 @@ namespace Helicopter.Core
 
             OutputText = String.Empty;
 
-            #region ICommand Definitions
-
-            ConnectCommand = new RelayCommand(
-                x =>
-                {
-                    helicopterManager.PropertyChanged += OnHelicopterManagerPropertyChanged;
-                    helicopterManager.Connect();
-
-                    var text = String.Format("Connected to {0}{1}Firmware Version: {2}{3}Changelog: {4}",
-                        helicopterController.ControllerIdentity, Environment.NewLine, helicopterController.FirmwareVersion,
-                        Environment.NewLine, helicopterController.Changelog);
-                    UpdateOutputTextbox(text);
-                },
-                x => !IsConnected);
-
-            DisconnectCommand = new RelayCommand(
-                   x =>
-                   {
-                       helicopterManager.Disconnect();
-                       helicopterManager.PropertyChanged -= OnHelicopterManagerPropertyChanged;
-                       UpdateOutputTextbox(String.Format("Disconnected from helicopter controller"));
-                   },
-                   x => IsConnected);
-
-            EnablePidCommand = new RelayCommand(
-                   x =>
-                   {
-                       helicopterController.EnablePid();
-                       UpdateOutputTextbox(String.Format("PID has been enabled"));
-                   },
-                   x => IsConnected && !IsPidEnabled);
-
-            DisablePidCommand = new RelayCommand(
-                   x =>
-                   {
-                       helicopterController.DisablePid();
-                       UpdateOutputTextbox(String.Format("PID has been disabled"));
-                   },
-                   x => IsConnected && IsPidEnabled);
-
-            EnableSafetyCommand = new RelayCommand(
-                   x =>
-                   {
-                       helicopterController.EnableSafety();
-                       UpdateOutputTextbox(String.Format("Safety has been enabled"));
-                   },
-                   x => IsConnected && !IsSafetyEnabled);
-
-            DisableSafetyCommand = new RelayCommand(
-                   x =>
-                   {
-                       helicopterController.DisableSafety();
-                       UpdateOutputTextbox(String.Format("Safety has been disabled"));
-                   },
-                   x => IsConnected && IsSafetyEnabled);
-
-            RefreshValuesCommand = new RelayCommand(
-                   x =>
-                   {
-                       helicopterController.RefreshValues();
-                       UpdateOutputTextbox(String.Format("Refreshed all controller values"));
-                   },
-                   x => IsConnected);
-
-            DisableMotors = new RelayCommand(
-                   x =>
-                   {
-                       helicopterManager.DisableMotors();
-                       UpdateOutputTextbox(String.Format("Disabled motors"));
-                   },
-                   x => IsConnected);
-
-            GetYawAngleCommand = new RelayCommand(
-                   x => { AngleControllers[MotorType.Yaw].RefreshCurrentAngle(); },
-                   x => IsConnected);
-
-            SetYawSetPointCommand = new RelayCommand(
-                   x =>
-                   {
-                       var setPoint = Convert.ToDouble(x);
-                       YawSetPoint = setPoint;
-                   },
-                   x => IsConnected);
-
-            SetYawProportionalGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var pGain = Convert.ToDouble(x);
-                       YawProportionalGain = pGain;
-                   },
-                   x => IsConnected);
-
-            SetYawIntegralGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var iGain = Convert.ToDouble(x);
-                       YawIntegralGain = iGain;
-                   },
-                   x => IsConnected);
-
-            SetYawDerivativeGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var dGain = Convert.ToDouble(x);
-                       YawDerivativeGain = dGain;
-                   },
-                   x => IsConnected);
-
-            SetYawIntegralWindupThresholdCommand = new RelayCommand(
-                   x =>
-                   {
-                       var iWindupThreshold = Convert.ToDouble(x);
-                       YawIntegralWindupThreshold = iWindupThreshold;
-                   },
-                   x => IsConnected);
-
-            SetYawOutputPercentageCommand = new RelayCommand(
-                   x =>
-                   {
-                       var output = Convert.ToInt32(x);
-                       YawOutputPercentage = output;
-                   },
-                   x => IsConnected && !IsPidEnabled);
-
-            GetTiltAngleCommand = new RelayCommand(
-                   x => { AngleControllers[MotorType.Tilt].RefreshCurrentAngle(); },
-                   x => IsConnected);
-
-            SetTiltSetPointCommand = new RelayCommand(
-                   x =>
-                   {
-                       var setPoint = Convert.ToDouble(x);
-                       TiltSetPoint = setPoint;
-                   },
-                   x => IsConnected);
-
-            SetTiltProportionalGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var pGain = Convert.ToDouble(x);
-                       TiltProportionalGain = pGain;
-                   },
-                   x => IsConnected);
-
-            SetTiltIntegralGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var iGain = Convert.ToDouble(x);
-                       TiltIntegralGain = iGain;
-                   },
-                   x => IsConnected);
-
-            SetTiltDerivativeGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var dGain = Convert.ToDouble(x);
-                       TiltDerivativeGain = dGain;
-                   },
-                   x => IsConnected);
-
-            SetTiltIntegralWindupThresholdCommand = new RelayCommand(
-                   x =>
-                   {
-                       var iWindupThreshold = Convert.ToDouble(x);
-                       TiltIntegralWindupThreshold = iWindupThreshold;
-                   },
-                   x => IsConnected);
-
-            SetTiltOutputPercentageCommand = new RelayCommand(
-                   x =>
-                   {
-                       var output = Convert.ToInt32(x);
-                       TiltOutputPercentage = output;
-                   },
-                   x => IsConnected && !IsPidEnabled);
-
-            #endregion ICommand Definitions
+            InitializeRelayCommands();
         }
-
-        #region Properties
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -349,8 +170,6 @@ namespace Helicopter.Core
             }
         }
 
-        #region ICommand Declarations
-
         public ICommand ConnectCommand { get; private set; }
         public ICommand DisconnectCommand { get; private set; }
         public ICommand EnablePidCommand { get; private set; }
@@ -379,12 +198,190 @@ namespace Helicopter.Core
         public ICommand SetTiltDirectionCommand { get; private set; }
         public ICommand SetTiltMotorDriverCommand { get; private set; }
 
-        #endregion ICommand Declarations
+        public void Connect()
+        {
+            helicopterManager.PropertyChanged += OnHelicopterManagerPropertyChanged;
+            helicopterManager.Connect();
 
-        #endregion Properties
+            var text = String.Format("Connected to {0}{1}Firmware Version: {2}{3}Changelog: {4}",
+                helicopterController.ControllerIdentity, Environment.NewLine, helicopterController.FirmwareVersion,
+                Environment.NewLine, helicopterController.Changelog);
+
+            UpdateOutputTextbox(text);
+        }
+
+        public void Disconnect()
+        {
+            helicopterManager.Disconnect();
+            helicopterManager.PropertyChanged -= OnHelicopterManagerPropertyChanged;
+            UpdateOutputTextbox(String.Format("Disconnected from helicopter controller"));
+        }
 
         public void Dispose()
         {
+        }
+
+        private void InitializeRelayCommands()
+        {
+            ConnectCommand = new RelayCommand(
+                    x => Connect(),
+                    x => !IsConnected);
+
+            DisconnectCommand = new RelayCommand(
+                   x => Disconnect(),
+                   x => IsConnected);
+
+            EnablePidCommand = new RelayCommand(
+                   x =>
+                   {
+                       helicopterController.EnablePid();
+                       UpdateOutputTextbox(String.Format("PID has been enabled"));
+                   },
+                   x => IsConnected && !IsPidEnabled);
+
+            DisablePidCommand = new RelayCommand(
+                   x =>
+                   {
+                       helicopterController.DisablePid();
+                       UpdateOutputTextbox(String.Format("PID has been disabled"));
+                   },
+                   x => IsConnected && IsPidEnabled);
+
+            EnableSafetyCommand = new RelayCommand(
+                   x =>
+                   {
+                       helicopterController.EnableSafety();
+                       UpdateOutputTextbox(String.Format("Safety has been enabled"));
+                   },
+                   x => IsConnected && !IsSafetyEnabled);
+
+            DisableSafetyCommand = new RelayCommand(
+                   x =>
+                   {
+                       helicopterController.DisableSafety();
+                       UpdateOutputTextbox(String.Format("Safety has been disabled"));
+                   },
+                   x => IsConnected && IsSafetyEnabled);
+
+            RefreshValuesCommand = new RelayCommand(
+                   x =>
+                   {
+                       helicopterController.RefreshValues();
+                       UpdateOutputTextbox(String.Format("Refreshed all controller values"));
+                   },
+                   x => IsConnected);
+
+            DisableMotors = new RelayCommand(
+                   x =>
+                   {
+                       helicopterManager.DisableMotors();
+                       UpdateOutputTextbox(String.Format("Disabled motors"));
+                   },
+                   x => IsConnected);
+
+            GetYawAngleCommand = new RelayCommand(
+                   x => AngleControllers[MotorType.Yaw].RefreshCurrentAngle(),
+                   x => IsConnected);
+
+            SetYawSetPointCommand = new RelayCommand(
+                   x =>
+                   {
+                       var setPoint = Convert.ToDouble(x);
+                       YawSetPoint = setPoint;
+                   },
+                   x => IsConnected);
+
+            SetYawProportionalGainCommand = new RelayCommand(
+                   x =>
+                   {
+                       var pGain = Convert.ToDouble(x);
+                       YawProportionalGain = pGain;
+                   },
+                   x => IsConnected);
+
+            SetYawIntegralGainCommand = new RelayCommand(
+                   x =>
+                   {
+                       var iGain = Convert.ToDouble(x);
+                       YawIntegralGain = iGain;
+                   },
+                   x => IsConnected);
+
+            SetYawDerivativeGainCommand = new RelayCommand(
+                   x =>
+                   {
+                       var dGain = Convert.ToDouble(x);
+                       YawDerivativeGain = dGain;
+                   },
+                   x => IsConnected);
+
+            SetYawIntegralWindupThresholdCommand = new RelayCommand(
+                   x =>
+                   {
+                       var iWindupThreshold = Convert.ToDouble(x);
+                       YawIntegralWindupThreshold = iWindupThreshold;
+                   },
+                   x => IsConnected);
+
+            SetYawOutputPercentageCommand = new RelayCommand(
+                   x =>
+                   {
+                       var output = Convert.ToInt32(x);
+                       YawOutputPercentage = output;
+                   },
+                   x => IsConnected && !IsPidEnabled);
+
+            GetTiltAngleCommand = new RelayCommand(
+                   x => AngleControllers[MotorType.Tilt].RefreshCurrentAngle(),
+                   x => IsConnected);
+
+            SetTiltSetPointCommand = new RelayCommand(
+                   x =>
+                   {
+                       var setPoint = Convert.ToDouble(x);
+                       TiltSetPoint = setPoint;
+                   },
+                   x => IsConnected);
+
+            SetTiltProportionalGainCommand = new RelayCommand(
+                   x =>
+                   {
+                       var pGain = Convert.ToDouble(x);
+                       TiltProportionalGain = pGain;
+                   },
+                   x => IsConnected);
+
+            SetTiltIntegralGainCommand = new RelayCommand(
+                   x =>
+                   {
+                       var iGain = Convert.ToDouble(x);
+                       TiltIntegralGain = iGain;
+                   },
+                   x => IsConnected);
+
+            SetTiltDerivativeGainCommand = new RelayCommand(
+                   x =>
+                   {
+                       var dGain = Convert.ToDouble(x);
+                       TiltDerivativeGain = dGain;
+                   },
+                   x => IsConnected);
+
+            SetTiltIntegralWindupThresholdCommand = new RelayCommand(
+                   x =>
+                   {
+                       var iWindupThreshold = Convert.ToDouble(x);
+                       TiltIntegralWindupThreshold = iWindupThreshold;
+                   },
+                   x => IsConnected);
+
+            SetTiltOutputPercentageCommand = new RelayCommand(
+                   x =>
+                   {
+                       var output = Convert.ToInt32(x);
+                       TiltOutputPercentage = output;
+                   },
+                   x => IsConnected && !IsPidEnabled);
         }
 
         private void UpdateOutputTextbox(string text)

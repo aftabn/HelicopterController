@@ -11,7 +11,8 @@
         Title="Helicopter Controller Software"
         Height="600" Width="800"
         MinHeight="500" MinWidth="600"
-        Loaded="WindowLoaded">
+        Loaded="WindowLoaded"
+	    Closing="OnWindowClosing">
     <Window.Resources>
         <CollectionViewSource x:Key="helicopterViewModelSource" d:DesignSource="{d:DesignInstance {x:Type Core:HelicopterViewModel}, CreateList=True}" />
     </Window.Resources>
@@ -26,9 +27,9 @@
             <Button Margin="3,0,3,0" BorderThickness="1" BorderBrush="DarkGray" Padding="15,2,15,2" Content="Connect" Command="{Binding ConnectCommand}" />
             <Button Margin="3,0,3,0" BorderThickness="1" BorderBrush="DarkGray" Padding="15,2,15,2" Content="Disconnect" Command="{Binding DisconnectCommand}" />
         </ToolBar>
-        <StatusBar x:Name="StatusBar" DockPanel.Dock="Bottom" Background="Firebrick" Foreground="White" Height="27">
+        <StatusBar x:Name="statusBar" DockPanel.Dock="Bottom" Background="Firebrick" Foreground="White" Height="27">
             <StatusBarItem>
-                <TextBlock x:Name="helicopterControllerTextbox" Padding="10,2,10,2"><Run Text="Helicopter Controller Status" /></TextBlock>
+                <TextBlock x:Name="helicopterControllerStatusTextbox" Padding="10,2,10,2"><Run Text="Helicopter Controller Status" /></TextBlock>
             </StatusBarItem>
         </StatusBar>
         <TabControl x:Name="controllerTabs">

@@ -74,6 +74,11 @@ namespace Helicopter.Core.Controller
             }
         }
 
+        public static CommunicationsManager GetInstanceOfCommunicationManager()
+        {
+            return communicationsManager != null ? communicationsManager : null;
+        }
+
         public static void EnableSafety()
         {
             string command = String.Format("{0} {1}", STR_SafetyCommand, STR_OnArg);

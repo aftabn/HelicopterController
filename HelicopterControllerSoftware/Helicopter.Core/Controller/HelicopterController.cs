@@ -12,6 +12,7 @@ namespace Helicopter.Core.Controller
     public class HelicopterController : INotifyPropertyChanged, IDisposable
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private CommunicationsManager communicationsManager;
         private bool isSafetyEnabled;
         private bool isPidEnabled;
         private string controllerIdentity;
@@ -22,6 +23,8 @@ namespace Helicopter.Core.Controller
         public HelicopterController()
         {
             Microcontroller.Initialize();
+            communicationsManager = Microcontroller.GetInstanceOfCommunicationManager();
+            communicationsManager.PropertyChanged += OnCommunicationManagerPropertyChanged;
 
             Yaw = new YawController();
             Tilt = new TiltController();
@@ -265,6 +268,11 @@ namespace Helicopter.Core.Controller
             string propertyChanged = String.Format("{0}{1}", angleController.MotorType, e.PropertyName);
 
             RaisePropertyChanged(propertyChanged);
+        }
+
+        private void OnCommunicationManagerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(e.PropertyName);
         }
 
         private void RaisePropertyChanged(string propertyName)
