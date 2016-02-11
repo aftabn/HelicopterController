@@ -15,13 +15,23 @@ namespace Helicopter.Core
 
         public HelicopterManager()
         {
-            helicopterSettings = HelicopterSettings.Load();
             HelicopterController = new HelicopterController();
+            HelicopterController.PropertyChanged += OnControllerPropertyChanged;
+
+            helicopterSettings = HelicopterSettings.Load();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public HelicopterController HelicopterController { get; private set; }
+
+        public bool IsConnected
+        {
+            get
+            {
+                return HelicopterController.IsConnected;
+            }
+        }
 
         public void Connect()
         {
@@ -36,6 +46,24 @@ namespace Helicopter.Core
 
         public void Dispose()
         {
+        }
+
+        public void DisableMotors()
+        {
+            HelicopterController.DisableMotors();
+        }
+
+        private void OnControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(e.PropertyName);
+        }
+
+        private void RaisePropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

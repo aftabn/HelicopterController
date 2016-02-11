@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Helicopter.GUI"
+        xmlns:Util="clr-namespace:Libs.Utilities;assembly=Libs.Utilities"
         xmlns:Core="clr-namespace:Helicopter.Core;assembly=Helicopter.Core"
         xmlns:Controller="clr-namespace:Helicopter.Core.Controller;assembly=Helicopter.Core"
         mc:Ignorable="d"
@@ -78,8 +79,8 @@
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Direction" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel.Resources>
-                                    <local:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
-                                    <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+                                    <Util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+                                    <Util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
                                 </StackPanel.Resources>
                                 <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsPidEnabled, Converter={StaticResource InverseBooleanConverter}}"
                                              IsChecked="{Binding Path=YawDirection, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:Direction.Clockwise}}" />
@@ -125,8 +126,8 @@
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Driver Type" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel.Resources>
-                                    <local:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
-                                    <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+                                    <Util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+                                    <Util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
                                 </StackPanel.Resources>
                                 <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsPidEnabled, Converter={StaticResource InverseBooleanConverter}}"
                                              IsChecked="{Binding Path=YawMotorDriver, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:MotorDriver.AnalogVoltage}}" />
@@ -167,8 +168,8 @@
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Direction" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel.Resources>
-                                    <local:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
-                                    <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+                                    <Util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+                                    <Util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
                                 </StackPanel.Resources>
                                 <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsPidEnabled, Converter={StaticResource InverseBooleanConverter}}"
                                              IsChecked="{Binding Path=TiltDirection, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:Direction.Clockwise}}" />
@@ -214,8 +215,8 @@
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Driver Type" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel.Resources>
-                                    <local:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
-                                    <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+                                    <Util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+                                    <Util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
                                 </StackPanel.Resources>
                                 <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsPidEnabled, Converter={StaticResource InverseBooleanConverter}}"
                                              IsChecked="{Binding Path=TiltMotorDriver, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:MotorDriver.AnalogVoltage}}" />
@@ -230,8 +231,8 @@
             </TabItem>
         </TabControl>
         <Border x:Name="controllerOutputPanel" BorderBrush="Gray" BorderThickness="1" Margin="5">
-            <TextBox x:Name="controllerOutputTextbox" TextWrapping="WrapWithOverflow" Background="LightGray" Padding="5"
-                                 ScrollViewer.VerticalScrollBarVisibility="Visible" IsReadOnly="True" Text="{Binding OutputText}" />
+            <TextBox x:Name="controllerOutputTextbox" TextWrapping="WrapWithOverflow" Background="LightGray" Padding="5" Util:TextBoxBehaviour.ScrollOnTextChanged="True"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto" IsReadOnly="True" Text="{Binding OutputText}" />
         </Border>
     </DockPanel>
 </Window>

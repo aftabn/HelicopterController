@@ -18,7 +18,6 @@ namespace Helicopter.GUI
             HelicopterViewModel = new HelicopterViewModel(startupOptions.IsDeveloperMode);
 
             InitializeComponent();
-
             SetBindingForControls();
         }
 

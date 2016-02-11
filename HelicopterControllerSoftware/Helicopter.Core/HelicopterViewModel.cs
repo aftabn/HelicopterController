@@ -9,6 +9,7 @@ namespace Helicopter.Core
 {
     public class HelicopterViewModel : INotifyPropertyChanged, IDisposable
     {
+        private HelicopterManager helicopterManager;
         private HelicopterController helicopterController;
         private bool isDeveloperMode;
 
@@ -18,7 +19,8 @@ namespace Helicopter.Core
         {
             this.isDeveloperMode = isDeveloperMode;
 
-            helicopterController = new HelicopterController();
+            helicopterManager = new HelicopterManager();
+            helicopterController = helicopterManager.HelicopterController;
 
             AngleControllers = new Dictionary<MotorType, AngleController>();
             AngleControllers.Add(MotorType.Yaw, helicopterController.Yaw);
@@ -31,8 +33,8 @@ namespace Helicopter.Core
             ConnectCommand = new RelayCommand(
                 x =>
                 {
-                    helicopterController.PropertyChanged += OnHelicopterControllerPropertyChanged;
-                    helicopterController.Connect();
+                    helicopterManager.PropertyChanged += OnHelicopterManagerPropertyChanged;
+                    helicopterManager.Connect();
 
                     var text = String.Format("Connected to {0}{1}Firmware Version: {2}{3}Changelog: {4}",
                         helicopterController.ControllerIdentity, Environment.NewLine, helicopterController.FirmwareVersion,
@@ -44,8 +46,8 @@ namespace Helicopter.Core
             DisconnectCommand = new RelayCommand(
                    x =>
                    {
-                       helicopterController.Disconnect();
-                       helicopterController.PropertyChanged -= OnHelicopterControllerPropertyChanged;
+                       helicopterManager.Disconnect();
+                       helicopterManager.PropertyChanged -= OnHelicopterManagerPropertyChanged;
                        UpdateOutputTextbox(String.Format("Disconnected from helicopter controller"));
                    },
                    x => IsConnected);
@@ -86,7 +88,15 @@ namespace Helicopter.Core
                    x =>
                    {
                        helicopterController.RefreshValues();
-                       UpdateOutputTextbox(String.Format("Refreshing all controller values"));
+                       UpdateOutputTextbox(String.Format("Refreshed all controller values"));
+                   },
+                   x => IsConnected);
+
+            DisableMotors = new RelayCommand(
+                   x =>
+                   {
+                       helicopterManager.DisableMotors();
+                       UpdateOutputTextbox(String.Format("Disabled motors"));
                    },
                    x => IsConnected);
 
@@ -348,6 +358,8 @@ namespace Helicopter.Core
         public ICommand EnableSafetyCommand { get; private set; }
         public ICommand DisableSafetyCommand { get; private set; }
         public ICommand RefreshValuesCommand { get; private set; }
+        public ICommand DisableMotors { get; private set; }
+
         public ICommand GetYawAngleCommand { get; private set; }
         public ICommand SetYawSetPointCommand { get; private set; }
         public ICommand SetYawProportionalGainCommand { get; private set; }
@@ -381,7 +393,7 @@ namespace Helicopter.Core
             RaisePropertyChanged("OutputText");
         }
 
-        private void OnHelicopterControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnHelicopterManagerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             RaisePropertyChanged(e.PropertyName);
         }

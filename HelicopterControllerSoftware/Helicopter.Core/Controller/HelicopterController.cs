@@ -11,7 +11,6 @@ namespace Helicopter.Core.Controller
 {
     public class HelicopterController : INotifyPropertyChanged, IDisposable
     {
-        private const int INT_PidIntervalMilliseconds = 250;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private bool isSafetyEnabled;
         private bool isPidEnabled;
@@ -241,6 +240,12 @@ namespace Helicopter.Core.Controller
         {
             Yaw.RefreshValues();
             Tilt.RefreshValues();
+        }
+
+        public void DisableMotors()
+        {
+            Yaw.Disable();
+            Tilt.Disable();
         }
 
         public void RefreshPidLoopInterval()

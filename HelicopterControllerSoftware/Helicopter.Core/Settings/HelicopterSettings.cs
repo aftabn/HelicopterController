@@ -48,7 +48,7 @@ namespace Helicopter.Core.Settings
         private static string GetSettingsFile()
         {
             var executingAssemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var settingsFile = String.Format("{0}\\{1}", executingAssemblyPath, "ControllerSettings.xml");
+            var settingsFile = String.Format("{0}\\{1}", executingAssemblyPath, "HelicopterSettings.xml");
             log.DebugFormat("Loading settings file: {0}", settingsFile);
 
             if (!File.Exists(settingsFile))

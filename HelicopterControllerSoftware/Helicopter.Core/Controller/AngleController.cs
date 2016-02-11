@@ -251,6 +251,11 @@ namespace Helicopter.Core.Controller
         {
         }
 
+        public void Disable()
+        {
+            SetOutputPercentage(0);
+        }
+
         public void RefreshValues()
         {
             RefreshCurrentAngle();
