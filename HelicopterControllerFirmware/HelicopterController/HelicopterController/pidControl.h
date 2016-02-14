@@ -19,7 +19,7 @@ Author:	Aftab
 #define YAW_CHANNEL					0
 #define TILT_CHANNEL				1
 
-#define POT_TOTAL_RANGE_DEGREES		330.0
+#define POT_TOTAL_RANGE_DEGREES		290.0
 #define POT_DEGREES_PER_VOLT		POT_TOTAL_RANGE_DEGREES / ARDUINO_VSS
 #define POT_IDLE_VOLTAGE			2.5		// Voltage when the helicopter is balanced
 

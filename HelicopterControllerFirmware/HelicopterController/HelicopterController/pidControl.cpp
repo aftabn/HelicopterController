@@ -74,25 +74,54 @@ ISR(TIMER1_OVF_vect)
 static void quadratureDecoderISR(void)
 {
 	bool currentEncoderA, currentEncoderB;
-	bool isForward, isError;
+	bool isForward, isError = false;
 
 	currentEncoderA = (bool)digitalRead(ENCODER_CHA_PIN);
 	currentEncoderB = (bool)digitalRead(ENCODER_CHB_PIN);
 
 	if (!previousEncoderA && !previousEncoderB) {
-		isForward = currentEncoderA;
+		if (currentEncoderA && !currentEncoderB) {
+			isForward = true;
+		}
+		else if (!currentEncoderA && currentEncoderB) {
+			isForward = false;
+		}
+		else {
+			isError = true;
+		}
 	}
 	else if (previousEncoderA && !previousEncoderB) {
-		isForward = currentEncoderB;
+		if (currentEncoderA && currentEncoderB) {
+			isForward = true;
+		}
+		else if (!currentEncoderA && !currentEncoderB) {
+			isForward = false;
+		}
+		else {
+			isError = true;
+		}
 	}
 	else if (previousEncoderA && previousEncoderB) {
-		isForward = !currentEncoderA;
+		if (!currentEncoderA && currentEncoderB) {
+			isForward = true;
+		}
+		else if (currentEncoderA && !currentEncoderB) {
+			isForward = false;
+		}
+		else {
+			isError = true;
+		}
 	}
 	else if (!previousEncoderA && previousEncoderB) {
-		isForward = !currentEncoderB;
-	}
-	else {
-		isError = true;
+		if (!currentEncoderA && !currentEncoderB) {
+			isForward = true;
+		}
+		else if (currentEncoderA && currentEncoderB) {
+			isForward = false;
+		}
+		else {
+			isError = true;
+		}
 	}
 
 	if (!isError)
