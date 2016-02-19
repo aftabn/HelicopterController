@@ -7,7 +7,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.172"
+    ComputedModelVersion    "1.173"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -29,7 +29,7 @@ Model {
       $ObjectID		      2
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [-7.0, 0.0, 814.0, 867.0]
+      Location		      [793.0, 0.0, 814.0, 867.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		3
@@ -48,31 +48,31 @@ Model {
       }
       Array {
 	Type			"Simulink.EditorInfo"
-	Dimension		4
+	Dimension		5
 	Object {
 	  $ObjectID		  5
-	  IsActive		  [1]
+	  IsActive		  [0]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "3"
 	  Extents		  [764.0, 689.0]
-	  ZoomFactor		  [0.49999999999999994]
-	  Offset		  [-347.13289880511843, -375.91706341839546]
+	  ZoomFactor		  [1.5]
+	  Offset		  [580.5299999138449, -21.861032642649015]
 	}
 	Object {
 	  $ObjectID		  6
 	  IsActive		  [0]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "162"
-	  Extents		  [764.0, 689.0]
+	  Extents		  [1566.0, 698.0]
 	  ZoomFactor		  [1.5]
-	  Offset		  [87.159513932257227, -89.0623565832204]
+	  Offset		  [-213.5071527344094, 10.3338006445407]
 	}
 	Object {
 	  $ObjectID		  7
 	  IsActive		  [0]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "177"
-	  Extents		  [764.0, 689.0]
+	  Extents		  [1566.0, 698.0]
 	  ZoomFactor		  [1.5]
 	  Offset		  [0.0, 0.0]
 	}
@@ -82,8 +82,17 @@ Model {
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "197"
 	  Extents		  [764.0, 689.0]
-	  ZoomFactor		  [1.75]
-	  Offset		  [47.428571428571445, -88.621966750066193]
+	  ZoomFactor		  [1.5]
+	  Offset		  [19.352435119990417, -138.54414689650258]
+	}
+	Object {
+	  $ObjectID		  9
+	  IsActive		  [1]
+	  ViewObjType		  "SimulinkSubsys"
+	  LoadSaveID		  "243"
+	  Extents		  [764.0, 689.0]
+	  ZoomFactor		  [1.25]
+	  Offset		  [-200.14965031018755, -97.470414846518267]
 	}
 	PropName		"EditorsInfo"
       }
@@ -95,9 +104,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "Wyatt"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Tue Feb 09 16:27:34 2016"
-  RTWModifiedTimeStamp	  376936051
-  ModelVersionFormat	  "1.%<AutoIncrement:172>"
+  LastModifiedDate	  "Thu Feb 18 18:30:47 2016"
+  RTWModifiedTimeStamp	  377697519
+  ModelVersionFormat	  "1.%<AutoIncrement:173>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -139,7 +148,7 @@ Model {
   TryForcingSFcnDF	  off
   Object {
     $PropName		    "DataLoggingOverride"
-    $ObjectID		    9
+    $ObjectID		    10
     $ClassName		    "Simulink.SimulationData.ModelLoggingInfo"
     model_		    "SystemModel"
     Array {
@@ -182,13 +191,13 @@ Model {
     Type		    "Handle"
     Dimension		    1
     Simulink.ConfigSet {
-      $ObjectID		      10
+      $ObjectID		      11
       Version		      "1.15.1"
       Array {
 	Type			"Handle"
 	Dimension		9
 	Simulink.SolverCC {
-	  $ObjectID		  11
+	  $ObjectID		  12
 	  Version		  "1.15.1"
 	  StartTime		  "0.0"
 	  StopTime		  "25"
@@ -225,7 +234,7 @@ Model {
 	  InsertRTBMode		  "Whenever possible"
 	}
 	Simulink.DataIOCC {
-	  $ObjectID		  12
+	  $ObjectID		  13
 	  Version		  "1.15.1"
 	  Decimation		  "1"
 	  ExternalInput		  "[t, u]"
@@ -261,7 +270,7 @@ Model {
 	  LoggingIntervals	  "[-inf, inf]"
 	}
 	Simulink.OptimizationCC {
-	  $ObjectID		  13
+	  $ObjectID		  14
 	  Version		  "1.15.1"
 	  Array {
 	    Type		    "Cell"
@@ -316,7 +325,7 @@ Model {
 	  AccelVerboseBuild	  off
 	}
 	Simulink.DebuggingCC {
-	  $ObjectID		  14
+	  $ObjectID		  15
 	  Version		  "1.15.1"
 	  RTPrefix		  "error"
 	  ConsistencyChecking	  "none"
@@ -406,7 +415,7 @@ Model {
 	  IntegerSaturationMsg	  "warning"
 	}
 	Simulink.HardwareCC {
-	  $ObjectID		  15
+	  $ObjectID		  16
 	  Version		  "1.15.1"
 	  ProdBitPerChar	  8
 	  ProdBitPerShort	  16
@@ -446,7 +455,7 @@ Model {
 	  ProdEqTarget		  on
 	}
 	Simulink.ModelReferenceCC {
-	  $ObjectID		  16
+	  $ObjectID		  17
 	  Version		  "1.15.1"
 	  UpdateModelReferenceTargets "IfOutOfDateOrStructuralChange"
 	  EnableRefExpFcnMdlSchedulingChecks on
@@ -462,7 +471,7 @@ Model {
 	  SupportModelReferenceSimTargetCustomCode off
 	}
 	Simulink.SFSimCC {
-	  $ObjectID		  17
+	  $ObjectID		  18
 	  Version		  "1.15.1"
 	  SFSimEcho		  on
 	  SimCtrlC		  on
@@ -474,7 +483,7 @@ Model {
 	}
 	Simulink.RTWCC {
 	  $BackupClass		  "Simulink.RTWCC"
-	  $ObjectID		  18
+	  $ObjectID		  19
 	  Version		  "1.15.1"
 	  Array {
 	    Type		    "Cell"
@@ -536,7 +545,7 @@ Model {
 	    Type		    "Handle"
 	    Dimension		    2
 	    Simulink.CodeAppCC {
-	      $ObjectID		      19
+	      $ObjectID		      20
 	      Version		      "1.15.1"
 	      Array {
 		Type			"Cell"
@@ -601,7 +610,7 @@ Model {
 	    }
 	    Simulink.GRTTargetCC {
 	      $BackupClass	      "Simulink.TargetCC"
-	      $ObjectID		      20
+	      $ObjectID		      21
 	      Version		      "1.15.1"
 	      Array {
 		Type			"Cell"
@@ -688,7 +697,7 @@ Model {
 	  }
 	}
 	SlCovCC.ConfigComp {
-	  $ObjectID		  21
+	  $ObjectID		  22
 	  Version		  "1.15.1"
 	  Description		  "Simulink Coverage Configuration Component"
 	  Name			  "Simulink Coverage"
@@ -724,11 +733,11 @@ Model {
   }
   Simulink.ConfigSet {
     $PropName		    "ActiveConfigurationSet"
-    $ObjectID		    10
+    $ObjectID		    11
   }
   Object {
     $PropName		    "DataTransfer"
-    $ObjectID		    22
+    $ObjectID		    23
     $ClassName		    "Simulink.GlobalDataTransfer"
     DefaultTransitionBetweenSyncTasks "Ensure deterministic transfer (maximum delay)"
     DefaultTransitionBetweenAsyncTasks "Ensure data integrity only"
@@ -1110,7 +1119,7 @@ Model {
       Variant		      off
       System {
 	Name			"Control System"
-	Location		[-7, 0, 807, 867]
+	Location		[793, 0, 1607, 867]
 	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -1122,7 +1131,7 @@ Model {
 	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
 	TiledPageScale		1
 	ShowPageBoundaries	off
-	ZoomFactor		"50"
+	ZoomFactor		"150"
 	Block {
 	  BlockType		  Reference
 	  Name			  "Altitude ADC"
@@ -1167,7 +1176,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Altitude Control Computer"
-	    Location		    [-8, 0, 1604, 876]
+	    Location		    [-8, -8, 1608, 868]
 	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1434,7 +1443,7 @@ Model {
 	  Variant		  off
 	  System {
 	    Name		    "Altitude Motor"
-	    Location		    [-7, 0, 807, 867]
+	    Location		    [793, 0, 1607, 867]
 	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1446,7 +1455,7 @@ Model {
 	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
 	    TiledPageScale	    1
 	    ShowPageBoundaries	    off
-	    ZoomFactor		    "175"
+	    ZoomFactor		    "150"
 	    Block {
 	      BlockType		      Inport
 	      Name		      "Voltage In"
@@ -1668,8 +1677,8 @@ Model {
 	  }
 	  System {
 	    Name		    "Helicopter Dynamics\n(altitude)"
-	    Location		    [-7, 0, 807, 867]
-	    Open		    off
+	    Location		    [793, 0, 1607, 867]
+	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
 	    ScreenColor		    "white"
@@ -1680,7 +1689,7 @@ Model {
 	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
 	    TiledPageScale	    1
 	    ShowPageBoundaries	    off
-	    ZoomFactor		    "175"
+	    ZoomFactor		    "125"
 	    Block {
 	      BlockType		      Inport
 	      Name		      "RPM"
@@ -1716,14 +1725,14 @@ Model {
 	      Position		      [-120, 70, -90, 100]
 	      ZOrder		      17
 	      BackgroundColor	      "yellow"
-	      Gain		      "mLift"
+	      Gain		      "mLiftTorque"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
 	      BlockType		      Gain
-	      Name		      "Conver to\nradians"
+	      Name		      "Convert to\nradians"
 	      SID		      "257"
 	      Position		      [90, 230, 120, 260]
 	      ZOrder		      61
@@ -1864,7 +1873,7 @@ Model {
 	      Branch {
 		ZOrder			605
 		Points			[0, 150]
-		DstBlock		"Conver to\nradians"
+		DstBlock		"Convert to\nradians"
 		DstPort			1
 	      }
 	    }
@@ -1951,7 +1960,7 @@ Model {
 	    }
 	    Line {
 	      ZOrder		      640
-	      SrcBlock		      "Conver to\nradians"
+	      SrcBlock		      "Convert to\nradians"
 	      SrcPort		      1
 	      DstBlock		      "Get perpendicular\ncomponent of force"
 	      DstPort		      1
@@ -1965,6 +1974,7 @@ Model {
 	      FixedWidth	      on
 	      HorizontalAlignment     "left"
 	      VerticalAlignment	      "top"
+	      ZOrder		      -1
 	    }
 	    Annotation {
 	      SID		      "255"
@@ -1975,6 +1985,7 @@ Model {
 	      FixedWidth	      off
 	      HorizontalAlignment     "left"
 	      VerticalAlignment	      "top"
+	      ZOrder		      -2
 	    }
 	  }
 	}
@@ -1996,7 +2007,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Motor Control\nBoard (Altitude)"
-	    Location		    [-8, 0, 1604, 876]
+	    Location		    [-8, -8, 1608, 868]
 	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200

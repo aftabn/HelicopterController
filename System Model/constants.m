@@ -28,45 +28,46 @@ mainArmLength = 0.15;
 yawArmLength = 0.15;
 
 % Main Motor
-Lmm  = 1.2E-3;      % Inductance     (H)
-Rmm  = 16;          % Resistance     (Ohms)
-Kbmm = 586;           % Back EMF       (RPM/V)
+Lmm  = 1.2E-3;         % Inductance     (H)
+Rmm  = 16;             % Resistance     (Ohms)
+Kbmm = 586;            % Back EMF       (RPM/V)
 Ktmm = 60/(2*pi*Kbmm); % Torque Gain    (Nm/A)
-Jmm  = 0;           % Inertia        (kg m^2)
-Bmm  = 1;           % Friction       (kg m^2/s)
-Mmm  = 108E-3;      % Mass           (kg)
+Jmm  = 0;              % Inertia        (kg m^2)
+Bmm  = Ktmm/(Kbmm*Rmm)*RPMPerw;              % Friction       (kg m^2/s)
+Mmm  = 170E-3;         % Mass (with bracket)    (kg)
 mainBracketMass = 0;
 
 % Main Rotor
 Nmr  = 2;           % Number of Blades
-Lmr  = 1;           % Length         (m)
-Mmr  = 1;           % Mass           (kg)
-Fmr  = 1;           % Friction       (gcm^2/s)
-TPmr = 2.9E-6;           % Thrust Axial   (kg/RPM)
+Lmr  = 0.133;       % Length of a single blade (m)
+Mmr  = 5E-3;        % Mass (total)   (kg)
+Fmr  = 0;           % Friction       (kgm^2/s)
+TPmr = 2.9E-6;      % Thrust Axial   (kg/RPM)
 
 % Tail Motor
 Ltm  = Lmm;           % Inductance     (H)
-Rtm  = Tmm;           % Resistance     (Ohms)
+Rtm  = Rmm;           % Resistance     (Ohms)
 Kttm = Ktmm;           % Torque Gain    (Nm/A)
 Kbtm = Kbmm;           % Back EMF       (RPM/V)
-Jtm  = Jmm;           % Inertia        (gcm^2)
-Btm  = Bmm;           % Friction       (gcm^2/s)
-Mtm  = Mmm;           % Mass           (g)
-tailBracketMass = 0;
+Jtm  = Jmm;           % Inertia        (kgm^2)
+Btm  = Bmm;           % Friction       (kgm^2/s)
+Mtm  = Mmm;           % Mass           (kg)
+tailBracketMass = (6 + 2*22)*10^-3;
 
 % Tail Rotor
 Ntr  = 2;           % Number of Blades
-Ltr  = Lmr;           % Length         (cm)
-Mtr  = Mmr;           % Mass           (g)
-Ftr  = Fmr;           % Friction       (gcm^2/s)
-TPtr = TPmr;           % Thrust Axial   (mg/RPM)
+Ltr  = Lmr;           % Length         (m)
+Mtr  = Mmr;           % Mass           (kg)
+Ftr  = Fmr;           % Friction       (kgm^2/s)
+TPtr = TPmr;           % Thrust Axial   (kg/RPM)
 
 % Drone
-Mh  = 1;            % Mass           (g)
-B1h = 0;            % Air R          (Ns/cm)
-Lh  = 1;            % Length         (cm)
-Jh  = 1;            % Mom of Inertia (gcm^2)
-B2h = 1;            % Rot Air R      (gcm^2/s)
+Mh  = 1;            % Mass           (kg)
+B1h = 0;            % Altitude Rotational Resistance (kgm^2/s)
+Lh  = 1;            % Length         (m)
+J1h  = 0.002;           % Altitude Mom of Inertia (kgm^2)
+J2h  = 0.009;           % Yaw Mom of Inertia (kgm^2)
+B2h = 0;            % Yaw Rotational resistance      (kgm^2/s)
 
 
 % Circuits
