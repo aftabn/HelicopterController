@@ -16,7 +16,7 @@ RPMPerw = 30/pi;        % RPM / rad/s
 % Row 2 = time
 Alt = [ 00  00  40    40
         00  15  15.1  30];
-Yaw = [ 00  00
+Yaw = [ 00  90
         00  30];
 
 % Mechanical Properties
