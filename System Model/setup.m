@@ -18,8 +18,8 @@ constants;  % Assign physical constants
 % CONTROLLER & AMPLIFIER
 % ======================
 % PID Controller
-mPID = [0.0446, 0.0497, 0.0388];
-tPID = [0.0088,0.00511,0.00997];
+mPID = [1E-20, 0, 0];
+tPID = [0,0,0];
 
 % Bias
 CurrentDriverBias = Vss/2;
@@ -76,8 +76,8 @@ tBackEMF = 1/Kbtm;
 % ==========
 % Gravity (N)
 % Include motors, gear, rotors, and heli
-M = (Mmm + Mmg + Mmr*Nmr + Mtm + Mtr*Ntr + Mh) * 1e-3;   % Kg
-Grav = M*G;                   
+%M = (Mmm + Mmg + Mmr*Nmr + Mtm + Mtr*Ntr + Mh) * 1e-3;   % Kg
+%Grav = M*G;                   
 
 % Altitude Helicopter Dynamics:
 % Heli Lift (Nm/RPM)
@@ -85,8 +85,9 @@ mLiftTorque   = TPmr * G * mainArmLength; % Kgm^2/s^2 / RPM  = Nm/RPM
 torqueFromYawMotorMass = (tailBracketMass + Mtm) * G * yawArmLength;
 torqueFromAltMotorMass = (mainBracketMass + Mmm) * G * mainArmLength;
 
-mHeliDynNum = DegPerRad; 
+mHeliDynNum = DegPerRad;
 mHeliDynDen = [J1h B1h 0];
+altSaturation = 45;
 
 % Yaw Helicopter Dynamics:
 % Tail Torque (Nm/RPM)
@@ -94,6 +95,7 @@ tTorque = TPtr * G * yawArmLength;  % Kgm/s^2 / RPM * m = Nm/RPM
 
 tHeliDynNum = [0 0 1]; 
 tHeliDynDen = [J2h B2h 0];   % Rotational Inertia / Air R
+yawSaturation = 180;
 
 % =======
 % Sensors

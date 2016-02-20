@@ -7,7 +7,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.173"
+    ComputedModelVersion    "1.180"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -29,7 +29,7 @@ Model {
       $ObjectID		      2
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [793.0, 0.0, 814.0, 867.0]
+      Location		      [-8.0, -8.0, 1616.0, 876.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		3
@@ -48,51 +48,33 @@ Model {
       }
       Array {
 	Type			"Simulink.EditorInfo"
-	Dimension		5
+	Dimension		3
 	Object {
 	  $ObjectID		  5
-	  IsActive		  [0]
+	  IsActive		  [1]
 	  ViewObjType		  "SimulinkSubsys"
-	  LoadSaveID		  "3"
-	  Extents		  [764.0, 689.0]
-	  ZoomFactor		  [1.5]
-	  Offset		  [580.5299999138449, -21.861032642649015]
+	  LoadSaveID		  "162"
+	  Extents		  [1566.0, 698.0]
+	  ZoomFactor		  [0.8]
+	  Offset		  [-651.18023893512873, -172.47142857142853]
 	}
 	Object {
 	  $ObjectID		  6
 	  IsActive		  [0]
-	  ViewObjType		  "SimulinkSubsys"
-	  LoadSaveID		  "162"
-	  Extents		  [1566.0, 698.0]
-	  ZoomFactor		  [1.5]
-	  Offset		  [-213.5071527344094, 10.3338006445407]
+	  ViewObjType		  "SimulinkTopLevel"
+	  LoadSaveID		  "0"
+	  Extents		  [764.0, 689.0]
+	  ZoomFactor		  [1.05]
+	  Offset		  [0.0, 0.0]
 	}
 	Object {
 	  $ObjectID		  7
 	  IsActive		  [0]
 	  ViewObjType		  "SimulinkSubsys"
-	  LoadSaveID		  "177"
+	  LoadSaveID		  "243"
 	  Extents		  [1566.0, 698.0]
 	  ZoomFactor		  [1.5]
-	  Offset		  [0.0, 0.0]
-	}
-	Object {
-	  $ObjectID		  8
-	  IsActive		  [0]
-	  ViewObjType		  "SimulinkSubsys"
-	  LoadSaveID		  "197"
-	  Extents		  [764.0, 689.0]
-	  ZoomFactor		  [1.5]
-	  Offset		  [19.352435119990417, -138.54414689650258]
-	}
-	Object {
-	  $ObjectID		  9
-	  IsActive		  [1]
-	  ViewObjType		  "SimulinkSubsys"
-	  LoadSaveID		  "243"
-	  Extents		  [764.0, 689.0]
-	  ZoomFactor		  [1.25]
-	  Offset		  [-200.14965031018755, -97.470414846518267]
+	  Offset		  [-238.79042366653309, -39.410977753183843]
 	}
 	PropName		"EditorsInfo"
       }
@@ -104,9 +86,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "Wyatt"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Thu Feb 18 18:30:47 2016"
-  RTWModifiedTimeStamp	  377697519
-  ModelVersionFormat	  "1.%<AutoIncrement:173>"
+  LastModifiedDate	  "Fri Feb 19 20:19:39 2016"
+  RTWModifiedTimeStamp	  377813978
+  ModelVersionFormat	  "1.%<AutoIncrement:180>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -148,7 +130,7 @@ Model {
   TryForcingSFcnDF	  off
   Object {
     $PropName		    "DataLoggingOverride"
-    $ObjectID		    10
+    $ObjectID		    8
     $ClassName		    "Simulink.SimulationData.ModelLoggingInfo"
     model_		    "SystemModel"
     Array {
@@ -191,13 +173,13 @@ Model {
     Type		    "Handle"
     Dimension		    1
     Simulink.ConfigSet {
-      $ObjectID		      11
+      $ObjectID		      9
       Version		      "1.15.1"
       Array {
 	Type			"Handle"
 	Dimension		9
 	Simulink.SolverCC {
-	  $ObjectID		  12
+	  $ObjectID		  10
 	  Version		  "1.15.1"
 	  StartTime		  "0.0"
 	  StopTime		  "25"
@@ -234,7 +216,7 @@ Model {
 	  InsertRTBMode		  "Whenever possible"
 	}
 	Simulink.DataIOCC {
-	  $ObjectID		  13
+	  $ObjectID		  11
 	  Version		  "1.15.1"
 	  Decimation		  "1"
 	  ExternalInput		  "[t, u]"
@@ -270,7 +252,7 @@ Model {
 	  LoggingIntervals	  "[-inf, inf]"
 	}
 	Simulink.OptimizationCC {
-	  $ObjectID		  14
+	  $ObjectID		  12
 	  Version		  "1.15.1"
 	  Array {
 	    Type		    "Cell"
@@ -325,7 +307,7 @@ Model {
 	  AccelVerboseBuild	  off
 	}
 	Simulink.DebuggingCC {
-	  $ObjectID		  15
+	  $ObjectID		  13
 	  Version		  "1.15.1"
 	  RTPrefix		  "error"
 	  ConsistencyChecking	  "none"
@@ -415,7 +397,7 @@ Model {
 	  IntegerSaturationMsg	  "warning"
 	}
 	Simulink.HardwareCC {
-	  $ObjectID		  16
+	  $ObjectID		  14
 	  Version		  "1.15.1"
 	  ProdBitPerChar	  8
 	  ProdBitPerShort	  16
@@ -455,7 +437,7 @@ Model {
 	  ProdEqTarget		  on
 	}
 	Simulink.ModelReferenceCC {
-	  $ObjectID		  17
+	  $ObjectID		  15
 	  Version		  "1.15.1"
 	  UpdateModelReferenceTargets "IfOutOfDateOrStructuralChange"
 	  EnableRefExpFcnMdlSchedulingChecks on
@@ -471,7 +453,7 @@ Model {
 	  SupportModelReferenceSimTargetCustomCode off
 	}
 	Simulink.SFSimCC {
-	  $ObjectID		  18
+	  $ObjectID		  16
 	  Version		  "1.15.1"
 	  SFSimEcho		  on
 	  SimCtrlC		  on
@@ -483,7 +465,7 @@ Model {
 	}
 	Simulink.RTWCC {
 	  $BackupClass		  "Simulink.RTWCC"
-	  $ObjectID		  19
+	  $ObjectID		  17
 	  Version		  "1.15.1"
 	  Array {
 	    Type		    "Cell"
@@ -545,7 +527,7 @@ Model {
 	    Type		    "Handle"
 	    Dimension		    2
 	    Simulink.CodeAppCC {
-	      $ObjectID		      20
+	      $ObjectID		      18
 	      Version		      "1.15.1"
 	      Array {
 		Type			"Cell"
@@ -610,7 +592,7 @@ Model {
 	    }
 	    Simulink.GRTTargetCC {
 	      $BackupClass	      "Simulink.TargetCC"
-	      $ObjectID		      21
+	      $ObjectID		      19
 	      Version		      "1.15.1"
 	      Array {
 		Type			"Cell"
@@ -697,7 +679,7 @@ Model {
 	  }
 	}
 	SlCovCC.ConfigComp {
-	  $ObjectID		  22
+	  $ObjectID		  20
 	  Version		  "1.15.1"
 	  Description		  "Simulink Coverage Configuration Component"
 	  Name			  "Simulink Coverage"
@@ -733,11 +715,11 @@ Model {
   }
   Simulink.ConfigSet {
     $PropName		    "ActiveConfigurationSet"
-    $ObjectID		    11
+    $ObjectID		    9
   }
   Object {
     $PropName		    "DataTransfer"
-    $ObjectID		    23
+    $ObjectID		    21
     $ClassName		    "Simulink.GlobalDataTransfer"
     DefaultTransitionBetweenSyncTasks "Ensure deterministic transfer (maximum delay)"
     DefaultTransitionBetweenAsyncTasks "Ensure data integrity only"
@@ -1031,8 +1013,8 @@ Model {
   }
   System {
     Name		    "SystemModel"
-    Location		    [-8, 0, 1604, 876]
-    Open		    off
+    Location		    [793, 0, 1607, 867]
+    Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
     ScreenColor		    "white"
@@ -1045,7 +1027,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "105"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "257"
+    SIDHighWatermark	    "259"
     Block {
       BlockType		      Scope
       Name		      "Altitude"
@@ -1057,21 +1039,22 @@ Model {
       "gr.Configuration('Core','General UI',true),extmgr.Configuration('Core','Source UI',true),extmgr.Configuration('S"
       "ources','WiredSimulink',true,'DataLoggingSaveFormat','StructureWithTime','DataLoggingDecimation','1','DataLoggin"
       "gDecimateData',true),extmgr.Configuration('Visuals','Time Domain',true,'SerializedDisplays',{struct('MinYLimReal"
-      "','0','MaxYLimReal','25','YLabelReal','','MinYLimMag','0','MaxYLimMag','10','LegendVisibility','off','XGrid',tru"
-      "e,'YGrid',true,'PlotMagPhase',false,'AxesColor',[0 0 0],'AxesTickColor',[0.686274509803922 0.686274509803922 0.6"
-      "86274509803922],'ColorOrder',[1 1 0.0666666666666667;0.0745098039215686 0.623529411764706 1;1 0.411764705882353 "
-      "0.16078431372549;0.392156862745098 0.831372549019608 0.0745098039215686;0.717647058823529 0.274509803921569 1;0."
-      "0588235294117647 1 1;1 0.0745098039215686 0.650980392156863],'Title','%<SignalLabel>','LinePropertiesCache',{{}}"
-      ",'UserDefinedChannelNames',{{}},'NumLines',2,'LineNames',{{'Control System/1','Control System/2'}},'ShowContent'"
-      ",true,'Placement',1)},'DisplayPropertyDefaults',struct('MinYLimReal','0','MaxYLimReal','25','YLabelReal','','Min"
-      "YLimMag','0','MaxYLimMag','10','LegendVisibility','off','XGrid',true,'YGrid',true,'PlotMagPhase',false,'AxesColo"
-      "r',[0 0 0],'AxesTickColor',[0.686274509803922 0.686274509803922 0.686274509803922],'ColorOrder',[1 1 0.066666666"
-      "6666667;0.0745098039215686 0.623529411764706 1;1 0.411764705882353 0.16078431372549;0.392156862745098 0.83137254"
-      "9019608 0.0745098039215686;0.717647058823529 0.274509803921569 1;0.0588235294117647 1 1;1 0.0745098039215686 0.6"
-      "50980392156863],'Title','%<SignalLabel>','LinePropertiesCache',{{}},'UserDefinedChannelNames',{{}},'NumLines',0,"
-      "'LineNames',{{[]}},'ShowContent',true,'Placement',1),'TimeRangeSamples','25','TimeRangeFrames','25'),extmgr.Conf"
-      "iguration('Tools','Plot Navigation',true,'OnceAtStop',false),extmgr.Configuration('Tools','Measurements',true,'V"
-      "ersion','2015b')),'Version','2015b','Location',[41 471 711 844])"
+      "','-7.80793','MaxYLimReal','50.86755','YLabelReal','','MinYLimMag','0.00000','MaxYLimMag','50.86755','LegendVisi"
+      "bility','off','XGrid',true,'YGrid',true,'PlotMagPhase',false,'AxesColor',[0 0 0],'AxesTickColor',[0.686274509803"
+      "922 0.686274509803922 0.686274509803922],'ColorOrder',[1 1 0.0666666666666667;0.0745098039215686 0.6235294117647"
+      "06 1;1 0.411764705882353 0.16078431372549;0.392156862745098 0.831372549019608 0.0745098039215686;0.7176470588235"
+      "29 0.274509803921569 1;0.0588235294117647 1 1;1 0.0745098039215686 0.650980392156863],'Title','%<SignalLabel>','"
+      "LinePropertiesCache',{{}},'UserDefinedChannelNames',{{}},'NumLines',2,'LineNames',{{'Control System/1','Control "
+      "System/2'}},'ShowContent',true,'Placement',1)},'DisplayPropertyDefaults',struct('MinYLimReal','-7.80793','MaxYLi"
+      "mReal','50.86755','YLabelReal','','MinYLimMag','0.00000','MaxYLimMag','50.86755','LegendVisibility','off','XGrid"
+      "',true,'YGrid',true,'PlotMagPhase',false,'AxesColor',[0 0 0],'AxesTickColor',[0.686274509803922 0.68627450980392"
+      "2 0.686274509803922],'ColorOrder',[1 1 0.0666666666666667;0.0745098039215686 0.623529411764706 1;1 0.41176470588"
+      "2353 0.16078431372549;0.392156862745098 0.831372549019608 0.0745098039215686;0.717647058823529 0.274509803921569"
+      " 1;0.0588235294117647 1 1;1 0.0745098039215686 0.650980392156863],'Title','%<SignalLabel>','LinePropertiesCache'"
+      ",{{}},'UserDefinedChannelNames',{{}},'NumLines',0,'LineNames',{{[]}},'ShowContent',true,'Placement',1),'TimeRang"
+      "eSamples','25','TimeRangeFrames','25'),extmgr.Configuration('Tools','Plot Navigation',true,'OnceAtStop',false),e"
+      "xtmgr.Configuration('Tools','Measurements',true,'Version','2015b')),'Version','2015b','Location',[746 354 1416 7"
+      "27])"
     }
     Block {
       BlockType		      Reference
@@ -1119,8 +1102,8 @@ Model {
       Variant		      off
       System {
 	Name			"Control System"
-	Location		[793, 0, 1607, 867]
-	Open			on
+	Location		[-8, -8, 1608, 868]
+	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -1131,7 +1114,19 @@ Model {
 	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
 	TiledPageScale		1
 	ShowPageBoundaries	off
-	ZoomFactor		"150"
+	ZoomFactor		"80"
+	Block {
+	  BlockType		  Saturate
+	  Name			  "Altitude\nSaturation"
+	  SID			  "258"
+	  Ports			  [1, 1]
+	  Position		  [905, 110, 935, 140]
+	  ZOrder		  42
+	  BackgroundColor	  "yellow"
+	  InputPortMap		  "u0"
+	  UpperLimit		  "altSaturation"
+	  LowerLimit		  "-altSaturation"
+	}
 	Block {
 	  BlockType		  Reference
 	  Name			  "Altitude ADC"
@@ -1188,12 +1183,12 @@ Model {
 	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
 	    TiledPageScale	    1
 	    ShowPageBoundaries	    off
-	    ZoomFactor		    "150"
+	    ZoomFactor		    "80"
 	    Block {
 	      BlockType		      Inport
 	      Name		      "Desired Value"
 	      SID		      "163"
-	      Position		      [-185, 43, -155, 57]
+	      Position		      [-30, 43, 0, 57]
 	      ZOrder		      25
 	      IconDisplay	      "Port number"
 	    }
@@ -1201,7 +1196,7 @@ Model {
 	      BlockType		      Inport
 	      Name		      "Sensor Feedback"
 	      SID		      "164"
-	      Position		      [-185, 158, -155, 172]
+	      Position		      [-30, 123, 0, 137]
 	      ZOrder		      26
 	      Port		      "2"
 	      IconDisplay	      "Port number"
@@ -1386,7 +1381,7 @@ Model {
 	      ZOrder		      469
 	      SrcBlock		      "Sensor Feedback"
 	      SrcPort		      1
-	      Points		      [255, 0]
+	      Points		      [100, 0]
 	      DstBlock		      "Sum3"
 	      DstPort		      2
 	    }
@@ -1444,7 +1439,7 @@ Model {
 	  System {
 	    Name		    "Altitude Motor"
 	    Location		    [793, 0, 1607, 867]
-	    Open		    on
+	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
 	    ScreenColor		    "white"
@@ -1658,6 +1653,12 @@ Model {
 	  BackgroundColor	  "yellow"
 	  Numerator		  "tHeliDynNum"
 	  Denominator		  "tHeliDynDen"
+	  Port {
+	    PortNumber		    1
+	    Name		    "(deg)"
+	    RTWStorageClass	    "Auto"
+	    DataLoggingNameMode	    "SignalName"
+	  }
 	}
 	Block {
 	  BlockType		  SubSystem
@@ -1677,7 +1678,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Helicopter Dynamics\n(altitude)"
-	    Location		    [793, 0, 1607, 867]
+	    Location		    [-8, -8, 1608, 868]
 	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1689,7 +1690,7 @@ Model {
 	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
 	    TiledPageScale	    1
 	    ShowPageBoundaries	    off
-	    ZoomFactor		    "125"
+	    ZoomFactor		    "150"
 	    Block {
 	      BlockType		      Inport
 	      Name		      "RPM"
@@ -1863,7 +1864,7 @@ Model {
 	      Labels		      [1, 1]
 	      SrcBlock		      "Helicopter\nDynamics\n(vertical)"
 	      SrcPort		      1
-	      Points		      [48, 0]
+	      Points		      [55, 0]
 	      Branch {
 		ZOrder			620
 		Labels			[1, 1]
@@ -2007,8 +2008,8 @@ Model {
 	  }
 	  System {
 	    Name		    "Motor Control\nBoard (Altitude)"
-	    Location		    [-8, -8, 1608, 868]
-	    Open		    on
+	    Location		    [793, 0, 1607, 867]
+	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
 	    ScreenColor		    "white"
@@ -2281,6 +2282,18 @@ Model {
 	  SaturateOnIntegerOverflow off
 	}
 	Block {
+	  BlockType		  Saturate
+	  Name			  "Yaw\nSaturation"
+	  SID			  "259"
+	  Ports			  [1, 1]
+	  Position		  [930, 510, 960, 540]
+	  ZOrder		  43
+	  BackgroundColor	  "yellow"
+	  InputPortMap		  "u0"
+	  UpperLimit		  "yawSaturation"
+	  LowerLimit		  "0"
+	}
+	Block {
 	  BlockType		  SubSystem
 	  Name			  "Yaw Control Computer"
 	  SID			  "200"
@@ -2298,7 +2311,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Yaw Control Computer"
-	    Location		    [-7, 0, 807, 867]
+	    Location		    [-8, -8, 1608, 868]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -2310,12 +2323,12 @@ Model {
 	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
 	    TiledPageScale	    1
 	    ShowPageBoundaries	    off
-	    ZoomFactor		    "200"
+	    ZoomFactor		    "80"
 	    Block {
 	      BlockType		      Inport
 	      Name		      "Desired Value"
 	      SID		      "201"
-	      Position		      [-120, 43, -90, 57]
+	      Position		      [-5, 43, 25, 57]
 	      ZOrder		      25
 	      IconDisplay	      "Port number"
 	    }
@@ -2323,7 +2336,7 @@ Model {
 	      BlockType		      Inport
 	      Name		      "Sensor Feedback"
 	      SID		      "202"
-	      Position		      [-120, 158, -90, 172]
+	      Position		      [-5, 108, 25, 122]
 	      ZOrder		      26
 	      Port		      "2"
 	      IconDisplay	      "Port number"
@@ -2508,7 +2521,7 @@ Model {
 	      ZOrder		      11
 	      SrcBlock		      "Sensor Feedback"
 	      SrcPort		      1
-	      Points		      [190, 0]
+	      Points		      [75, 0]
 	      DstBlock		      "Sum3"
 	      DstPort		      2
 	    }
@@ -2727,7 +2740,7 @@ Model {
 	  ZOrder		  40
 	  BlockMirror		  on
 	  BackgroundColor	  "yellow"
-	  QuantizationInterval	  "YawEncoderQuantization"
+	  QuantizationInterval	  "yawEncoderQuantization"
 	  Port {
 	    PortNumber		    1
 	    Name		    "(rad)"
@@ -2813,21 +2826,13 @@ Model {
 	  DstPort		  1
 	}
 	Line {
+	  Name			  "(deg)"
 	  ZOrder		  40
+	  Labels		  [1, 1]
 	  SrcBlock		  "Helicopter\nDynamics\n(yaw)"
 	  SrcPort		  1
-	  Points		  [79, 0]
-	  Branch {
-	    ZOrder		    545
-	    Points		    [0, 120]
-	    DstBlock		    "Yaw Optical Encoder"
-	    DstPort		    1
-	  }
-	  Branch {
-	    ZOrder		    524
-	    DstBlock		    "Actual Yaw"
-	    DstPort		    1
-	  }
+	  DstBlock		  "Yaw\nSaturation"
+	  DstPort		  1
 	}
 	Line {
 	  ZOrder		  45
@@ -2951,7 +2956,14 @@ Model {
 	  Labels		  [1, 1]
 	  SrcBlock		  "Helicopter Dynamics\n(altitude)"
 	  SrcPort		  1
-	  Points		  [148, 0]
+	  DstBlock		  "Altitude\nSaturation"
+	  DstPort		  1
+	}
+	Line {
+	  ZOrder		  637
+	  SrcBlock		  "Altitude\nSaturation"
+	  SrcPort		  1
+	  Points		  [38, 0]
 	  Branch {
 	    ZOrder		    613
 	    DstBlock		    "Actual Alt"
@@ -2961,6 +2973,23 @@ Model {
 	    ZOrder		    602
 	    Points		    [0, 125]
 	    DstBlock		    "Potentiometer\nfor angle measurement"
+	    DstPort		    1
+	  }
+	}
+	Line {
+	  ZOrder		  638
+	  SrcBlock		  "Yaw\nSaturation"
+	  SrcPort		  1
+	  Points		  [14, 0]
+	  Branch {
+	    ZOrder		    545
+	    Points		    [0, 120]
+	    DstBlock		    "Yaw Optical Encoder"
+	    DstPort		    1
+	  }
+	  Branch {
+	    ZOrder		    524
+	    DstBlock		    "Actual Yaw"
 	    DstPort		    1
 	  }
 	}
@@ -3007,17 +3036,6 @@ Model {
 	  HorizontalAlignment	  "left"
 	  VerticalAlignment	  "top"
 	  ZOrder		  -3
-	}
-	Annotation {
-	  SID			  "124"
-	  Name			  "(rad)"
-	  Position		  [958, 507, 981, 522]
-	  InternalMargins	  [0, 0, 0, 0]
-	  FixedHeight		  off
-	  FixedWidth		  off
-	  HorizontalAlignment	  "left"
-	  VerticalAlignment	  "top"
-	  ZOrder		  -5
 	}
       }
     }

@@ -14,10 +14,10 @@ RPMPerw = 30/pi;        % RPM / rad/s
 % Desired Trajectory
 % Row 1 = value
 % Row 2 = time
-Alt = [ 00  03  03  18  18  05  00  00
-        00  01  05  08  10  15  20  30];
-Yaw = [ 00  00  60  60 180 180
-        00  05  06  10  15  30];
+Alt = [ 00  00  40    40
+        00  15  15.1  30];
+Yaw = [ 00  00
+        00  30];
 
 % Mechanical Properties
 % The length of the arm going to the main motor (m).
