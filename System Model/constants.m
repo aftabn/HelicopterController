@@ -55,20 +55,17 @@ Mtm  = Mmm;           % Mass           (kg)
 tailBracketMass = (6 + 2*22)*10^-3;
 
 % Tail Rotor
-Ntr  = 2;           % Number of Blades
+Ntr  = 2;             % Number of Blades
 Ltr  = Lmr;           % Length         (m)
 Mtr  = Mmr;           % Mass           (kg)
 Ftr  = Fmr;           % Friction       (kgm^2/s)
-TPtr = TPmr;           % Thrust Axial   (kg/RPM)
+TPtr = TPmr;          % Thrust Axial   (kg/RPM)
 
 % Drone
-Mh  = 1;            % Mass           (kg)
 B1h = 0;            % Altitude Rotational Resistance (kgm^2/s)
-Lh  = 1;            % Length         (m)
 J1h  = 0.002;           % Altitude Mom of Inertia (kgm^2)
 J2h  = 0.009;           % Yaw Mom of Inertia (kgm^2)
 B2h = 0;            % Yaw Rotational resistance      (kgm^2/s)
-
 
 % Circuits
 Vss = 5;            % V
