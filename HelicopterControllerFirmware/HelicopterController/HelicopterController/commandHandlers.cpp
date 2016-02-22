@@ -33,7 +33,7 @@ void onCommandChangelog()
 {
 	if (isReadCommand(gParameters[0]))
 	{
-		Serial.println(F("Added ADC sampling to reduce noise"));
+		Serial.println(F("Fixed outputs not updating from disabling PID"));
 		sendAck();
 	}
 	else

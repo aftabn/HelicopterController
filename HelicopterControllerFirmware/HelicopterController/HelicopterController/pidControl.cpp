@@ -415,14 +415,7 @@ void disableMotors()
 {
 	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
 	{
-		if (motorDriverTypes[channel] == AnalogVoltage)
-		{
-			setDacVoltage(channel, MOTOR_IDLE_VOLTAGE);
-		}
-		else if (motorDriverTypes[channel] == Frequency)
-		{
-			setFrequency(channel, MOTOR_MIN_FREQUENCY);
-		}
+		applyMotorOutputs(channel, directions[channel], 0);
 	}
 }
 
