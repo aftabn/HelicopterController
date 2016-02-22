@@ -6,7 +6,7 @@ Author:	Aftab
 
 #include "Arduino.h"
 #include "globals.h"
-#include "util.h"
+#include "utility.h"
 #include "controller.h"
 #include "commandHandlers.h"
 

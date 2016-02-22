@@ -6,7 +6,7 @@ Author:	Aftab
 
 #include <avr\pgmspace.h>
 #include "globals.h"
-#include "util.h"
+#include "utility.h"
 
 // Implementation of sending had to change due to arduino storing string literals in dynamic memory
 // Used F() to force storage of literals in PROGMEM, which requires directly using Serial.println() to send

@@ -10,7 +10,7 @@ Author:	Aftab
 #include "arduino.h"
 #include "pidControl.h"
 
-class Utility
+static class Utility
 {
 private:
 	static const int INT_DefaultNumDecimals = 2;

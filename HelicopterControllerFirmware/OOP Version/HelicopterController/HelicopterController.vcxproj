@@ -82,7 +82,7 @@
     <ClInclude Include="controller.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="pidControl.h" />
-    <ClInclude Include="util.h" />
+    <ClInclude Include="utility.h" />
     <ClInclude Include="__vm\.HelicopterController.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
@@ -91,7 +91,7 @@
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="pidControl.cpp" />
-    <ClCompile Include="util.cpp" />
+    <ClCompile Include="utility.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

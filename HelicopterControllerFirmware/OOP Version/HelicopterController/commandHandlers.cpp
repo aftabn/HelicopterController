@@ -5,10 +5,10 @@ Author:	Aftab
 */
 
 #include <avr\pgmspace.h>
-#include "globals.h"
-#include "util.h"
-#include "commandHandlers.h"
-#include "pidControl.h"
+#include "globals.hpp"
+#include "util.hpp"
+#include "commandHandlers.hpp"
+#include "pidControl.hpp"
 
 void onCommandIdentity()
 {
