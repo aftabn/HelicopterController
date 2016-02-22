@@ -5,14 +5,14 @@ namespace Helicopter.Core.Sessions
 {
     public class SessionData
     {
-        public SessionData()
+        public SessionData(HelicopterController helicopterController)
         {
-            YawControllerData = new AngleControllerData();
-            TiltControllerData = new AngleControllerData();
+            YawControllerData = helicopterController.Yaw.ControllerData;
+            TiltControllerData = helicopterController.Tilt.ControllerData;
         }
 
-        public AngleControllerData YawControllerData { get; set; }
+        public List<ControllerData> YawControllerData { get; set; }
 
-        public AngleControllerData TiltControllerData { get; set; }
+        public List<ControllerData> TiltControllerData { get; set; }
     }
 }

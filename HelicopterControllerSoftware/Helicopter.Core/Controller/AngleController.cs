@@ -1,6 +1,8 @@
-﻿using Helicopter.Core.Settings;
+﻿using Helicopter.Core.Sessions;
+using Helicopter.Core.Settings;
 using log4net;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Helicopter.Core.Controller
@@ -26,9 +28,13 @@ namespace Helicopter.Core.Controller
         {
             this.controllerChannel = controllerChannel;
             this.motorType = (MotorType)controllerChannel;
+
+            ControllerData = new List<ControllerData>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public List<ControllerData> ControllerData { get; set; }
 
         public MotorType MotorType { get; protected set; }
 
@@ -361,6 +367,20 @@ namespace Helicopter.Core.Controller
         {
             Microcontroller.SetMotorDriver(controllerChannel, motorDriver);
             MotorDriver = motorDriver;
+        }
+
+        public void TakeNewDataSample()
+        {
+            var data = new ControllerData
+            {
+                SetPoint = SetPoint,
+                CurrentAngle = CurrentAngle,
+                ProportionalGain = ProportionalGain,
+                IntegralGain = IntegralGain,
+                DerivativeGain = DerivativeGain,
+                IntegralWindupThreshold = IntegralWindupThreshold,
+                OutputRateLimit = OutputRateLimit
+            };
         }
 
         private void RaisePropertyChanged(string propertyName)

@@ -16,10 +16,8 @@
 <Settings>
   <Helicopter>
     <Controller IsSafetyEnabled="true" PidLoopInterval="250">
-      <Yaw IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="1" IntegralGain="0.25"
-           DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="10" />
-      <Tilt IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="1" IntegralGain="0.25"
-           DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="10" />
+      <Yaw IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="1" IntegralGain="0.25" DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="10" />
+      <Tilt IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="1" IntegralGain="0.25" DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="10" />
     </Controller>
   </Helicopter>
 </Settings>

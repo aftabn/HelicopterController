@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Helicopter.Core.Controller;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,5 +25,11 @@ namespace Helicopter.Core.Sessions
         public int OutputRateLimit { get; set; }
 
         public List<ControllerData> ControllerData { get; set; }
+
+        public void AddDataPoint(double setPoint, double currentAngle)
+        {
+            var data = new ControllerData(setPoint, currentAngle);
+            ControllerData.Add(data);
+        }
     }
 }

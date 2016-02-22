@@ -1,7 +1,9 @@
 ﻿using Helicopter.Core.Controller;
+using Helicopter.Core.Sessions;
 using Helicopter.Core.Settings;
 using System;
 using System.ComponentModel;
+using System.Threading;
 
 namespace Helicopter.Core
 {
@@ -9,12 +11,16 @@ namespace Helicopter.Core
     {
         private HelicopterSettings helicopterSettings;
 
+        private Thread sessionThread;
+        private Session session;
+
         public HelicopterManager()
         {
             HelicopterController = new HelicopterController();
             HelicopterController.PropertyChanged += OnControllerPropertyChanged;
 
             helicopterSettings = HelicopterSettings.Load();
+            session = new Session(HelicopterController);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -42,6 +48,18 @@ namespace Helicopter.Core
 
         public void Dispose()
         {
+        }
+
+        public void StartSession()
+        {
+            if (!sessionThread.IsAlive)
+            {
+                session.StartSession();
+            }
+            else
+            {
+                throw new Exception("The session thread is currently alive. You can only start a new session once the previous one has finished.");
+            }
         }
 
         public void DisableMotors()

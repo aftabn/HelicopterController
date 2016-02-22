@@ -1,6 +1,7 @@
 ﻿using Helicopter.Core.Controller;
 using System;
 using System.ComponentModel;
+using System.Threading;
 
 namespace Helicopter.Core.Sessions
 {
@@ -11,10 +12,15 @@ namespace Helicopter.Core.Sessions
         private bool stopped;
         private volatile bool isSessionComplete;
         private HelicopterController helicopterController;
+        private YawController yaw;
+        private TiltController tilt;
 
-        public Session()
+        public Session(HelicopterController helicopterController)
         {
-            SessionData = new SessionData();
+            this.helicopterController = helicopterController;
+            yaw = helicopterController.Yaw;
+            tilt = helicopterController.Tilt;
+            SessionData = new SessionData(helicopterController);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -66,8 +72,30 @@ namespace Helicopter.Core.Sessions
             }
         }
 
-        public void StartRoutine()
+        public void StartSession()
         {
+            yaw.ControllerData.Clear();
+            tilt.ControllerData.Clear();
+
+            StartTime = DateTime.Now;
+
+            while (!stopping)
+            {
+                yaw.TakeNewDataSample();
+                tilt.TakeNewDataSample();
+
+                var time = DateTime.Now;
+                while ((DateTime.Now - time).Milliseconds < 500)
+                {
+                    if (stopping)
+                    {
+                        break;
+                    }
+                    Thread.Sleep(10);
+                }
+            }
+
+            EndTime = DateTime.Now;
         }
 
         public void Stop()
