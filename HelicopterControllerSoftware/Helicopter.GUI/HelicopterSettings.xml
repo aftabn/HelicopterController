@@ -2,9 +2,12 @@
 <!--
     Attribute Explanations:
 
+    Helicopter:
+      • PidThreadRefreshIntervalMilliseconds is the interval at which the software refreshes the angle and outputs from the microcontroller
+
     Controller:
       • IsSafetyEnabled is what allows direct controlling of the frequency or voltage outputs on the electronics
-      • PidLoopInterval is how often to execute PID loop
+      • PidLoopInterval is how often to execute PID loop on the microcontroller in milliseconds
 
     AngleControllers (i.e. Yaw and Tilt):
       • IsEnabled is whether the angle controller is enabled (aka doing something) during the PID loop
@@ -14,8 +17,8 @@
       • Proportional, Integral and Derivative gains are the PID constants used to tune the controller
 -->
 <Settings>
-  <Helicopter>
-    <Controller IsSafetyEnabled="true" PidLoopInterval="250">
+  <Helicopter PidThreadRefreshIntervalMilliseconds="100">
+    <Controller IsSafetyEnabled="true" PidLoopIntervalMilliseconds="250">
       <Yaw IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="1" IntegralGain="0.25" DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="10" />
       <Tilt IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="1" IntegralGain="0.25" DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="10" />
     </Controller>

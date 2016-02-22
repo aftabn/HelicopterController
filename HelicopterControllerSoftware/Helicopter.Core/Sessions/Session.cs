@@ -10,14 +10,15 @@ namespace Helicopter.Core.Sessions
         private readonly object stopLock = new object();
         private bool stopping;
         private bool stopped;
-        private volatile bool isSessionComplete;
         private HelicopterController helicopterController;
         private YawController yaw;
         private TiltController tilt;
+        private int refreshIntervalMilliseconds;
 
-        public Session(HelicopterController helicopterController)
+        public Session(HelicopterController helicopterController, int refreshIntervalMilliseconds)
         {
             this.helicopterController = helicopterController;
+            this.refreshIntervalMilliseconds = refreshIntervalMilliseconds;
             yaw = helicopterController.Yaw;
             tilt = helicopterController.Tilt;
             SessionData = new SessionData(helicopterController);
@@ -32,23 +33,6 @@ namespace Helicopter.Core.Sessions
         public DateTime StartTime { get; private set; }
 
         public DateTime EndTime { get; private set; }
-
-        public bool IsSessionComplete
-        {
-            get
-            {
-                return isSessionComplete;
-            }
-
-            set
-            {
-                if (value != isSessionComplete)
-                {
-                    isSessionComplete = value;
-                    RaisePropertyChanged("IsSessionComplete");
-                }
-            }
-        }
 
         public bool Stopping
         {
@@ -72,22 +56,24 @@ namespace Helicopter.Core.Sessions
             }
         }
 
-        public void StartSession()
+        public void Start()
         {
-            yaw.ControllerData.Clear();
-            tilt.ControllerData.Clear();
+            Reset();
 
             StartTime = DateTime.Now;
 
-            while (!stopping)
+            while (!Stopping)
             {
+                yaw.RefreshValues();
+                tilt.RefreshValues();
+
                 yaw.TakeNewDataSample();
                 tilt.TakeNewDataSample();
 
                 var time = DateTime.Now;
-                while ((DateTime.Now - time).Milliseconds < 500)
+                while ((DateTime.Now - time).Milliseconds < refreshIntervalMilliseconds)
                 {
-                    if (stopping)
+                    if (Stopping)
                     {
                         break;
                     }
@@ -96,6 +82,7 @@ namespace Helicopter.Core.Sessions
             }
 
             EndTime = DateTime.Now;
+            SetStopped();
         }
 
         public void Stop()
@@ -112,6 +99,18 @@ namespace Helicopter.Core.Sessions
             {
                 stopped = true;
             }
+        }
+
+        private void Reset()
+        {
+            stopping = false;
+            stopped = false;
+
+            yaw.ControllerData.Clear();
+            tilt.ControllerData.Clear();
+
+            StartTime = DateTime.MinValue;
+            EndTime = DateTime.MinValue;
         }
 
         private void RaisePropertyChanged(string propertyName)

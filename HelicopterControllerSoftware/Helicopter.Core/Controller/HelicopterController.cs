@@ -206,7 +206,7 @@ namespace Helicopter.Core.Controller
                 DisableSafety();
             }
 
-            SetPidLoopInterval(settings.PidLoopInterval);
+            SetPidLoopInterval(settings.PidLoopIntervalMilliseconds);
             Yaw.LoadSettings(settings.YawControllerSettings);
             Tilt.LoadSettings(settings.TiltControllerSettings);
         }

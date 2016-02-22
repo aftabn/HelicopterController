@@ -9,7 +9,7 @@
         xmlns:Controller="clr-namespace:Helicopter.Core.Controller;assembly=Helicopter.Core"
         mc:Ignorable="d"
         Title="Helicopter Controller Software"
-        Height="600" Width="800"
+        Height="633" Width="800"
         MinHeight="500" MinWidth="600"
         Loaded="WindowLoaded"
 	    Closing="OnWindowClosing">
@@ -45,6 +45,9 @@
                         <Button Margin="5,0,5,5" Content="Controller Info" Command="{Binding GetControllerInfoCommand}" />
                         <Button Margin="5,0,5,5" Content="Disable Motors" Command="{Binding DisableMotorsCommand}" />
                         <Button Margin="5,0,5,5" Content="Refresh Values" Command="{Binding RefreshValuesCommand}" />
+                        <Separator Margin="5,5,5,10" />
+                        <Button Margin="5,0,5,5" Content="Start PID Session" Command="{Binding StartPidSessionCommand}" />
+                        <Button Margin="5,0,5,5" Content="Stop PID Session" Command="{Binding StopPidSessionCommand}" />
                         <Separator Margin="5,5,5,10" />
                         <Button Margin="5,0,5,5" Content="Enable PID" Command="{Binding EnablePidCommand}" />
                         <Button Margin="5,0,5,5" Content="Disable PID" Command="{Binding DisablePidCommand}" />
@@ -123,6 +126,14 @@
                                 <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawIntegralWindupThresholdCommand}" CommandParameter="{Binding ElementName=setYawIntegralWindupThresholdTextbox, Path=Text}" />
                                 <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawIntegralWindupThresholdTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawIntegralWindupThreshold}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Margin="5,5,5,0">
+                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Output Rate Limit" /></TextBlock>
+                            <StackPanel Orientation="Horizontal">
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawOutputRateLimitCommand}" CommandParameter="{Binding ElementName=setYawOutputRateLimitTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawOutputRateLimitTextbox" />
+                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawOutputRateLimit}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
@@ -212,6 +223,14 @@
                                 <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltIntegralWindupThresholdCommand}" CommandParameter="{Binding ElementName=setTiltIntegralWindupThresholdTextbox, Path=Text}" />
                                 <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltIntegralWindupThresholdTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltIntegralWindupThreshold}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Margin="5,5,5,0">
+                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Output Rate Limit" /></TextBlock>
+                            <StackPanel Orientation="Horizontal">
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltOutputRateLimitCommand}" CommandParameter="{Binding ElementName=setTiltOutputRateLimitTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltOutputRateLimitTextbox" />
+                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltOutputRateLimit}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">

@@ -85,6 +85,12 @@ namespace Helicopter.Core
             set { AngleControllers[MotorType.Yaw].SetIntegralWindupThreshold(value); }
         }
 
+        public int YawOutputRateLimit
+        {
+            get { return AngleControllers[MotorType.Yaw].OutputRateLimit; }
+            set { AngleControllers[MotorType.Yaw].SetOutputRateLimit(value); }
+        }
+
         public int YawOutputPercentage
         {
             get { return AngleControllers[MotorType.Yaw].OutputPercentage; }
@@ -138,6 +144,12 @@ namespace Helicopter.Core
             set { AngleControllers[MotorType.Tilt].SetIntegralWindupThreshold(value); }
         }
 
+        public int TiltOutputRateLimit
+        {
+            get { return AngleControllers[MotorType.Tilt].OutputRateLimit; }
+            set { AngleControllers[MotorType.Tilt].SetOutputRateLimit(value); }
+        }
+
         public int TiltOutputPercentage
         {
             get { return AngleControllers[MotorType.Tilt].OutputPercentage; }
@@ -174,6 +186,8 @@ namespace Helicopter.Core
         public ICommand DisconnectCommand { get; private set; }
         public ICommand GetControllerInfoCommand { get; private set; }
 
+        public ICommand StartPidSessionCommand { get; private set; }
+        public ICommand StopPidSessionCommand { get; private set; }
         public ICommand EnablePidCommand { get; private set; }
         public ICommand DisablePidCommand { get; private set; }
         public ICommand EnableSafetyCommand { get; private set; }
@@ -187,6 +201,7 @@ namespace Helicopter.Core
         public ICommand SetYawIntegralGainCommand { get; private set; }
         public ICommand SetYawDerivativeGainCommand { get; private set; }
         public ICommand SetYawIntegralWindupThresholdCommand { get; private set; }
+        public ICommand SetYawOutputRateLimitCommand { get; private set; }
         public ICommand SetYawOutputPercentageCommand { get; private set; }
         public ICommand SetYawDirectionCommand { get; private set; }
         public ICommand SetYawMotorDriverCommand { get; private set; }
@@ -196,6 +211,7 @@ namespace Helicopter.Core
         public ICommand SetTiltIntegralGainCommand { get; private set; }
         public ICommand SetTiltDerivativeGainCommand { get; private set; }
         public ICommand SetTiltIntegralWindupThresholdCommand { get; private set; }
+        public ICommand SetTiltOutputRateLimitCommand { get; private set; }
         public ICommand SetTiltOutputPercentageCommand { get; private set; }
         public ICommand SetTiltDirectionCommand { get; private set; }
         public ICommand SetTiltMotorDriverCommand { get; private set; }
@@ -244,6 +260,22 @@ namespace Helicopter.Core
                        UpdateOutputTextbox(text);
                    },
                    x => IsConnected);
+
+            StartPidSessionCommand = new RelayCommand(
+                   x =>
+                   {
+                       helicopterManager.StartPidSession();
+                       UpdateOutputTextbox(String.Format("PID session has started"));
+                   },
+                   x => IsConnected && !IsPidEnabled && !helicopterManager.IsPidSessionAlive);
+
+            StopPidSessionCommand = new RelayCommand(
+                   x =>
+                   {
+                       helicopterManager.StopPidSession();
+                       UpdateOutputTextbox(String.Format("PID session has stopped"));
+                   },
+                   x => IsConnected && IsPidEnabled && helicopterManager.IsPidSessionAlive);
 
             EnablePidCommand = new RelayCommand(
                    x =>
