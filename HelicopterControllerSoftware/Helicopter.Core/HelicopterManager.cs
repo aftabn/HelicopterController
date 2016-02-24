@@ -11,7 +11,7 @@ namespace Helicopter.Core
     public class HelicopterManager : INotifyPropertyChanged, IDisposable
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private const int INT_ThreadJoinTimeout = 200;
+        private const int INT_ThreadJoinTimeout = 500;
         private HelicopterSettings helicopterSettings;
         private Thread sessionThread;
         private bool isSessionComplete;
@@ -90,6 +90,7 @@ namespace Helicopter.Core
 
         public void Disconnect()
         {
+            StopPidSession();
             HelicopterController.Disconnect();
         }
 
@@ -178,8 +179,8 @@ namespace Helicopter.Core
             else
             {
                 log.DebugFormat("Could not stop {0}", sessionThread.Name);
-                //KillRoutineThread();
-                throw new Exception("Could not kill session thread");
+                KillRoutineThread();
+                //throw new Exception("Could not kill session thread");
             }
         }
 
@@ -190,10 +191,14 @@ namespace Helicopter.Core
             if (sessionThread != null && sessionThread.IsAlive)
             {
                 sessionThread.Abort();
-                sessionThread = null;
+                //sessionThread = null;
                 IsSessionAborted = true;
             }
 
+            if (sessionThread.IsAlive)
+            {
+                throw new Exception("Could not kill session thread");
+            }
             log.DebugFormat("Routine thread has been forcibly killed");
         }
 

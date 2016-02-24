@@ -1,10 +1,14 @@
-﻿namespace Helicopter.Core.Sessions
+﻿using System;
+
+namespace Helicopter.Core.Sessions
 {
     public class ControllerData
     {
         public ControllerData()
         {
         }
+
+        public DateTime TimeStamp { get; set; }
 
         public double SetPoint { get; set; }
 

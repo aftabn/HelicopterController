@@ -179,6 +179,8 @@ namespace Helicopter.Core.Controller
 
         private void InitializeController()
         {
+            Microcontroller.DisableVerboseMode();
+
             DisablePid();
             EnableSafety();
 

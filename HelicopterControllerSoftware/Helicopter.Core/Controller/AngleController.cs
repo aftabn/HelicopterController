@@ -369,10 +369,11 @@ namespace Helicopter.Core.Controller
             MotorDriver = motorDriver;
         }
 
-        public void TakeNewDataSample()
+        public void TakeNewDataSample(DateTime timeStamp)
         {
             var data = new ControllerData
             {
+                TimeStamp = timeStamp,
                 SetPoint = SetPoint,
                 CurrentAngle = CurrentAngle,
                 ProportionalGain = ProportionalGain,

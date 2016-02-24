@@ -67,8 +67,10 @@ namespace Helicopter.Core.Sessions
                 yaw.RefreshValues();
                 tilt.RefreshValues();
 
-                yaw.TakeNewDataSample();
-                tilt.TakeNewDataSample();
+                var timeStamp = DateTime.Now;
+
+                yaw.TakeNewDataSample(timeStamp);
+                tilt.TakeNewDataSample(timeStamp);
 
                 var time = DateTime.Now;
                 while ((DateTime.Now - time).Milliseconds < refreshIntervalMilliseconds)
