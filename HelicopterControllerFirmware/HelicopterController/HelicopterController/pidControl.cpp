@@ -19,7 +19,8 @@ volatile bool isSafetyOn;
 volatile int pidLoopInterval;
 volatile int currentFrequency;
 
-volatile bool previousEncoderA, previousEncoderB;
+const signed short encoderLookup[] = { 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 };
+byte encoderValues;
 
 volatile double pGains[MAX_NUM_CHANNELS];
 volatile double iGains[MAX_NUM_CHANNELS];
@@ -71,66 +72,13 @@ ISR(TIMER1_OVF_vect)
 	}
 }
 
+// Taken and modified from: http://www.mkesc.co.uk/ise.pdf
 static void quadratureDecoderISR(void)
 {
-	bool currentEncoderA, currentEncoderB;
-	bool isForward, isError = false;
-
-	currentEncoderA = (bool)digitalRead(ENCODER_CHA_PIN);
-	currentEncoderB = (bool)digitalRead(ENCODER_CHB_PIN);
-
-	if (!previousEncoderA && !previousEncoderB) {
-		if (currentEncoderA && !currentEncoderB) {
-			isForward = true;
-		}
-		else if (!currentEncoderA && currentEncoderB) {
-			isForward = false;
-		}
-		else {
-			isError = true;
-		}
-	}
-	else if (previousEncoderA && !previousEncoderB) {
-		if (currentEncoderA && currentEncoderB) {
-			isForward = true;
-		}
-		else if (!currentEncoderA && !currentEncoderB) {
-			isForward = false;
-		}
-		else {
-			isError = true;
-		}
-	}
-	else if (previousEncoderA && previousEncoderB) {
-		if (!currentEncoderA && currentEncoderB) {
-			isForward = true;
-		}
-		else if (currentEncoderA && !currentEncoderB) {
-			isForward = false;
-		}
-		else {
-			isError = true;
-		}
-	}
-	else if (!previousEncoderA && previousEncoderB) {
-		if (!currentEncoderA && !currentEncoderB) {
-			isForward = true;
-		}
-		else if (currentEncoderA && currentEncoderB) {
-			isForward = false;
-		}
-		else {
-			isError = true;
-		}
-	}
-
-	if (!isError)
-	{
-		currentAngles[ENCODER_CHANNEL] += isForward ? 1 : -1;
-	}
-
-	previousEncoderA = currentEncoderA;
-	previousEncoderB = currentEncoderB;
+	interrupts();		// Need this to ensure that reading from serial is not interrupted
+	encoderValues <<= 2;
+	encoderValues |= ((digitalRead(ENCODER_CHA_PIN) << 1) | digitalRead(ENCODER_CHB_PIN));
+	currentAngles[ENCODER_CHANNEL] += encoderLookup[encoderValues & 0xFF];
 }
 
 void initializeSpi(void)
@@ -171,8 +119,7 @@ void initializeQuadratureDecoder(void)
 {
 	pinMode(ENCODER_CHA_PIN, INPUT);
 	pinMode(ENCODER_CHB_PIN, INPUT);
-	previousEncoderA = (bool)digitalRead(ENCODER_CHA_PIN);
-	previousEncoderB = (bool)digitalRead(ENCODER_CHB_PIN);
+	encoderValues = (digitalRead(ENCODER_CHA_PIN) << 1) | digitalRead(ENCODER_CHB_PIN);
 
 	// Sets ISR for external interrupt on pin 2
 	attachInterrupt(0, quadratureDecoderISR, RISING);

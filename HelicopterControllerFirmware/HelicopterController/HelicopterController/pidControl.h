@@ -86,7 +86,6 @@ Author:	Aftab
 enum Direction { Clockwise, CounterClockwise };
 enum MotorDriverType { AnalogVoltage, Frequency };
 
-extern const byte adcChannelLookup[ADC_CHANNEL_MAX - ADC_CHANNEL_MIN + 1];
 extern const int minMotorOutput[MAX_NUM_CHANNELS];
 extern const int maxMotorOutput[MAX_NUM_CHANNELS];
 
@@ -96,9 +95,6 @@ extern volatile bool isSafetyOn;
 
 extern volatile int pidLoopInterval;
 extern volatile int currentFrequency;
-
-extern volatile bool previousEncoderA, previousEncoderB;
-extern volatile bool currentEncoderA, currentEncoderB;
 
 extern volatile double pGains[MAX_NUM_CHANNELS];
 extern volatile double iGains[MAX_NUM_CHANNELS];
