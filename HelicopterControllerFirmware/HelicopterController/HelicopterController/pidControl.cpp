@@ -20,7 +20,7 @@ volatile int pidLoopInterval;
 volatile int currentFrequency;
 
 const signed short encoderLookup[] = { 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 };
-byte encoderValues;
+volatile byte encoderValues;
 
 volatile double pGains[MAX_NUM_CHANNELS];
 volatile double iGains[MAX_NUM_CHANNELS];

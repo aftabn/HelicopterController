@@ -15,7 +15,7 @@ char lineBuffer[INT_LINE_SIZE_MAX + 1];
 
 void initializeController()
 {
-	Serial.begin(115200);
+	Serial.begin(38400);
 
 	pinMode(HEARTBEAT_LED_PIN, OUTPUT);
 }
@@ -204,7 +204,7 @@ void scanSerialPort()
 				updatePotentiometerAngle();
 			}
 
-			if (++heartBeatTimer >= 250000)
+			if (++heartBeatTimer >= 5000)
 			{
 				heartBeatTimer = 0;
 				digitalWrite(HEARTBEAT_LED_PIN, !digitalRead(HEARTBEAT_LED_PIN));
@@ -215,21 +215,20 @@ void scanSerialPort()
 
 		if (incomingChar)
 		{
-			switch (incomingChar)
+			if (incomingChar == '\n') // End of input
 			{
-			case '\n':		// End of input
 				lineBuffer[linePointer] = 0;
 				linePointer = 0;
 
 				sprintf(tmpstr, "> %s", lineBuffer);
 				Serial.println(tmpstr);
 				processLine(lineBuffer);
-				break;
-
-			case '\r':		// Discard the carriage return
-				break;
-
-			default:		// Store any other characters in the buffer
+			}
+			else if (incomingChar == '\r') // Discard the carriage return
+			{
+			}
+			else // Store any other characters in the buffer
+			{
 				lineBuffer[linePointer++] = incomingChar;
 				lineBuffer[linePointer] = 0;
 
@@ -238,7 +237,6 @@ void scanSerialPort()
 					linePointer = INT_LINE_SIZE_MAX - 1;
 					lineBuffer[linePointer] = 0;
 				}
-				break;
 			}
 		}
 	}
