@@ -50,15 +50,15 @@ void processCommand(char *command)
 	{
 		onCommandSafety();
 	}
-	else if (0 == strcmp(command, "OUT"))
+	else if (0 == strcmp(command, "O"))
 	{
 		onCommandOutput();
 	}
-	else if (0 == strcmp(command, "DIR"))
+	else if (0 == strcmp(command, "DC"))
 	{
 		onCommandDirection();
 	}
-	else if (0 == strcmp(command, "DRIVER"))
+	else if (0 == strcmp(command, "DV"))
 	{
 		onCommandMotorDriver();
 	}
@@ -74,15 +74,15 @@ void processCommand(char *command)
 	{
 		onCommandDerivativeGain();
 	}
-	else if (0 == strcmp(command, "LOOP"))
+	else if (0 == strcmp(command, "L"))
 	{
 		onCommandLoopInterval();
 	}
-	else if (0 == strcmp(command, "WINDUP"))
+	else if (0 == strcmp(command, "W"))
 	{
 		onCommandIntegralWindup();
 	}
-	else if (0 == strcmp(command, "RATE"))
+	else if (0 == strcmp(command, "R"))
 	{
 		onCommandIntegralWindup();
 	}
@@ -90,7 +90,7 @@ void processCommand(char *command)
 	{
 		onCommandSetPoint();
 	}
-	else if (0 == strcmp(command, "ANGLE"))
+	else if (0 == strcmp(command, "A"))
 	{
 		onCommandAngle();
 	}
@@ -102,7 +102,7 @@ void processCommand(char *command)
 	{
 		onCommandDacVoltage();
 	}
-	else if (0 == strcmp(command, "FREQ"))
+	else if (0 == strcmp(command, "F"))
 	{
 		onCommandFrequencyOutput();
 	}
@@ -215,20 +215,21 @@ void scanSerialPort()
 
 		if (incomingChar)
 		{
-			if (incomingChar == '\n')  // 13 = \r
+			switch (incomingChar)
 			{
+			case '\n':		// End of input
 				lineBuffer[linePointer] = 0;
 				linePointer = 0;
 
 				sprintf(tmpstr, "> %s", lineBuffer);
 				Serial.println(tmpstr);
 				processLine(lineBuffer);
-			}
-			else if (incomingChar == '\r') // 10 = \n
-			{
-			}
-			else
-			{
+				break;
+
+			case '\r':		// Discard the carriage return
+				break;
+
+			default:		// Store any other characters in the buffer
 				lineBuffer[linePointer++] = incomingChar;
 				lineBuffer[linePointer] = 0;
 
@@ -237,6 +238,7 @@ void scanSerialPort()
 					linePointer = INT_LINE_SIZE_MAX - 1;
 					lineBuffer[linePointer] = 0;
 				}
+				break;
 			}
 		}
 	}
