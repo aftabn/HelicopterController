@@ -19,7 +19,7 @@ volatile bool isSafetyOn;
 volatile int pidLoopInterval;
 volatile int currentFrequency;
 
-const signed short encoderLookup[] = { 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 };
+const signed int encoderLookup[] = { 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 };
 volatile byte encoderValues;
 
 volatile double pGains[MAX_NUM_CHANNELS];
@@ -75,10 +75,9 @@ ISR(TIMER1_OVF_vect)
 // Taken and modified from: http://www.mkesc.co.uk/ise.pdf
 static void quadratureDecoderISR(void)
 {
-	interrupts();		// Need this to ensure that reading from serial is not interrupted
 	encoderValues <<= 2;
 	encoderValues |= ((digitalRead(ENCODER_CHA_PIN) << 1) | digitalRead(ENCODER_CHB_PIN));
-	currentAngles[ENCODER_CHANNEL] += encoderLookup[encoderValues & 0xFF];
+	currentAngles[ENCODER_CHANNEL] += encoderLookup[encoderValues & 0x0F];
 }
 
 void initializeSpi(void)

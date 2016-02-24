@@ -15,6 +15,8 @@ char lineBuffer[INT_LINE_SIZE_MAX + 1];
 
 void initializeController()
 {
+	// The baud rate had to be dropped from 115200 to 38400 as going any higher resulted in data loss
+	// due to the firing of the external interrupt for the decoder ISR
 	Serial.begin(38400);
 
 	pinMode(HEARTBEAT_LED_PIN, OUTPUT);
