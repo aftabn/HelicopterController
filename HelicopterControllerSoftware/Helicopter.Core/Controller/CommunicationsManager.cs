@@ -110,7 +110,7 @@ namespace Helicopter.Core.Controller
             }
             if (comPort != String.Empty)
             {
-                serialPort = new SerialPort(comPort, 115200, Parity.None, 8, StopBits.One);
+                serialPort = new SerialPort(comPort, 38400, Parity.None, 8, StopBits.One);
                 serialPort.DataReceived += OnDataReceived;
                 serialPort.Open();
                 IsConnected = true;
@@ -149,7 +149,7 @@ namespace Helicopter.Core.Controller
             // It apprears that there needs to be some delay after connecting to the Arduino
             // probably due to serial port initialization on its end
             Thread.Sleep(750);
-            serialPort.Write("\r\n"); // Flushes whatever characters are already in the comport
+            serialPort.Write("\r\n"); // Flushes whatever characters are already in the Arduino serial buffer
             Thread.Sleep(750);
             ClearBuffer();
         }
