@@ -11,6 +11,7 @@ namespace Helicopter.Core.Sessions
         {
             YawControllerData = helicopterController.Yaw.ControllerData;
             TiltControllerData = helicopterController.Tilt.ControllerData;
+            TimeStamps = new List<DateTime>();
         }
 
         public List<ControllerData> YawControllerData { get; set; }

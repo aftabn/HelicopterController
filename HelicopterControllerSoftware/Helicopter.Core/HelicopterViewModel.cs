@@ -1,8 +1,11 @@
 ﻿using Helicopter.Core.Controller;
+using Helicopter.Core.Sessions;
 using Libs.Utilities;
+using LiveCharts;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Input;
 
 namespace Helicopter.Core
@@ -168,6 +171,14 @@ namespace Helicopter.Core
             set { AngleControllers[MotorType.Tilt].SetMotorDriver(value); }
         }
 
+        public SessionData SessionData
+        {
+            get
+            {
+                return helicopterManager.Session != null ? helicopterManager.Session.SessionData : null;
+            }
+        }
+
         public string OutputText
         {
             get
@@ -181,6 +192,14 @@ namespace Helicopter.Core
                 RaisePropertyChanged("OutputText");
             }
         }
+
+        public SeriesCollection YawSeries { get; set; }
+
+        public SeriesCollection TiltSeries { get; set; }
+
+        public Func<double, string> XFormatter { get; set; }
+
+        public Func<double, string> YFormatter { get; set; }
 
         public ICommand ConnectCommand { get; private set; }
         public ICommand DisconnectCommand { get; private set; }

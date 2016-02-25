@@ -1,6 +1,10 @@
 ﻿using Helicopter.Core;
+using Helicopter.Core.Sessions;
+using LiveCharts;
 using log4net;
+using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
@@ -12,6 +16,7 @@ namespace Helicopter.GUI
     public partial class HelicopterControllerWindow : Window, INotifyPropertyChanged
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private const int INT_NumSamplesPerWindow = 100;
         private readonly StartupOptions startupOptions;
         private HelicopterViewModel helicopterViewModel;
 
@@ -22,10 +27,35 @@ namespace Helicopter.GUI
             helicopterViewModel.PropertyChanged += OnViewModelPropertyChanged;
 
             InitializeComponent();
+            InitializePidCharts();
             SetBindingForControls();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public SeriesCollection YawSeries
+        {
+            get { return helicopterViewModel.YawSeries; }
+            set { helicopterViewModel.YawSeries = value; }
+        }
+
+        public SeriesCollection TiltSeries
+        {
+            get { return helicopterViewModel.TiltSeries; }
+            set { helicopterViewModel.TiltSeries = value; }
+        }
+
+        public Func<double, string> XFormatter
+        {
+            get { return helicopterViewModel.XFormatter; }
+            set { helicopterViewModel.XFormatter = value; }
+        }
+
+        public Func<double, string> YFormatter
+        {
+            get { return helicopterViewModel.YFormatter; }
+            set { helicopterViewModel.YFormatter = value; }
+        }
 
         private void UpdateStatusBar()
         {
@@ -73,6 +103,61 @@ namespace Helicopter.GUI
             controllerOutputPanel.DataContext = helicopterViewModel;
         }
 
+        private void InitializePidCharts()
+        {
+            var yawConfig = new SeriesConfiguration<ControllerData>();
+            var tiltConfig = new SeriesConfiguration<ControllerData>();
+
+            yawConfig.X(data => data.TimeStamp.ToOADate());
+            yawConfig.Y(data => data.CurrentAngle);
+
+            tiltConfig.X(data => data.TimeStamp.ToOADate());
+            tiltConfig.Y(data => data.CurrentAngle);
+
+            YawSeries = new SeriesCollection(yawConfig)
+            {
+                new LineSeries
+                {
+                    Title = "Yaw",
+                    Values = new ChartValues<ControllerData>(),
+                    PointRadius = 1.5,
+                    Stroke = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFB300"),
+                    StrokeThickness = 1.5
+                }
+            };
+
+            TiltSeries = new SeriesCollection(tiltConfig)
+            {
+                new LineSeries
+                {
+                    Title = "Tilt",
+                    Values = new ChartValues<ControllerData>(),
+                    PointRadius = 1.5,
+                    Stroke = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFB300"),
+                    StrokeThickness = 1.5
+                }
+            };
+
+            XFormatter = val => DateTime.FromOADate(val).ToString("mm:ss");
+            YFormatter = val => val + " °";
+
+            yawChart.Series = YawSeries;
+            yawChart.AxisX.LabelFormatter = XFormatter;
+            yawChart.AxisY.LabelFormatter = YFormatter;
+
+            tiltChart.Series = TiltSeries;
+            tiltChart.AxisX.LabelFormatter = XFormatter;
+            tiltChart.AxisY.LabelFormatter = YFormatter;
+        }
+
+        private void ResetPidCharts()
+        {
+            YawSeries.First().Values.Clear();
+            TiltSeries.First().Values.Clear();
+            yawChart.Redraw();
+            tiltChart.Redraw();
+        }
+
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
             System.Windows.Data.CollectionViewSource helicopterViewModelSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("helicopterViewModelSource")));
@@ -80,7 +165,47 @@ namespace Helicopter.GUI
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsConnected")
+            if (e.PropertyName == "YawControllerData")
+            {
+                if (YawSeries != null)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        var yawData = helicopterViewModel.SessionData.YawControllerData;
+                        var yawSeries = YawSeries.First().Values;
+
+                        if (yawSeries.Count > INT_NumSamplesPerWindow)
+                        {
+                            yawSeries.RemoveAt(0);
+                        }
+
+                        yawSeries.Add(yawData.Last());
+                    });
+                }
+            }
+            else if (e.PropertyName == "TiltControllerData")
+            {
+                if (TiltSeries != null)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        var tiltData = helicopterViewModel.SessionData.TiltControllerData;
+                        var tiltSeries = TiltSeries.First().Values;
+
+                        if (tiltSeries.Count > INT_NumSamplesPerWindow)
+                        {
+                            tiltSeries.RemoveAt(0);
+                        }
+
+                        tiltSeries.Add(tiltData.Last());
+                    });
+                }
+            }
+            else if (e.PropertyName == "IsSessionComplete")
+            {
+                ResetPidCharts();
+            }
+            else if (e.PropertyName == "IsConnected")
             {
                 UpdateStatusBar();
             }

@@ -44,11 +44,11 @@ namespace Helicopter.PidGraph
                 ChartType = SeriesChartType.Line,
             };
 
-            foreach (var measurement in controllerData.Measurements)
-            {
-                var zeroedTimeStamp = (measurement.TimeStamp - controllerData.StartTime).TotalSeconds;
-                forceSeries.Points.AddXY(zeroedTimeStamp, measurement.Force);
-            }
+            //foreach (var measurement in controllerData.Measurements)
+            //{
+            //    var zeroedTimeStamp = (measurement.TimeStamp - controllerData.StartTime).TotalSeconds;
+            //    forceSeries.Points.AddXY(zeroedTimeStamp, measurement.Force);
+            //}
 
             return forceSeries;
         }

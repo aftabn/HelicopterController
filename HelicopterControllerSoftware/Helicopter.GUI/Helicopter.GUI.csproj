@@ -35,6 +35,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamicDataDisplay, Version=0.3.0.1, Culture=neutral, PublicKeyToken=5b7d744a7263923f, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicDataDisplay.0.3.0.1\lib\net45\DynamicDataDisplay.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="LiveCharts, Version=0.6.4.0, Culture=neutral, PublicKeyToken=bc51a8d89213f1fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.6.4.0\lib\net452\LiveCharts.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>

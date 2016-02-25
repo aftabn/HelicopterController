@@ -28,13 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
             this.yawPidChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tiltPidChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -44,21 +38,8 @@
             // 
             // yawPidChart
             // 
-            chartArea1.Name = "yawChartArea";
-            this.yawPidChart.ChartAreas.Add(chartArea1);
             this.yawPidChart.Location = new System.Drawing.Point(12, 12);
             this.yawPidChart.Name = "yawPidChart";
-            series1.ChartArea = "yawChartArea";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Name = "yawAngleSeries";
-            series2.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-            series2.ChartArea = "yawChartArea";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Color = System.Drawing.Color.Red;
-            series2.IsVisibleInLegend = false;
-            series2.Name = "yawSetPointSeries";
-            this.yawPidChart.Series.Add(series1);
-            this.yawPidChart.Series.Add(series2);
             this.yawPidChart.Size = new System.Drawing.Size(762, 335);
             this.yawPidChart.TabIndex = 0;
             this.yawPidChart.Text = "chart1";
@@ -69,21 +50,8 @@
             // 
             // tiltPidChart
             // 
-            chartArea2.Name = "tiltChartArea";
-            this.tiltPidChart.ChartAreas.Add(chartArea2);
             this.tiltPidChart.Location = new System.Drawing.Point(12, 359);
             this.tiltPidChart.Name = "tiltPidChart";
-            series3.ChartArea = "tiltChartArea";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series3.Name = "tiltAngleSeries";
-            series4.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-            series4.ChartArea = "tiltChartArea";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series4.Color = System.Drawing.Color.Red;
-            series4.IsVisibleInLegend = false;
-            series4.Name = "tiltSetPointSeries";
-            this.tiltPidChart.Series.Add(series3);
-            this.tiltPidChart.Series.Add(series4);
             this.tiltPidChart.Size = new System.Drawing.Size(762, 335);
             this.tiltPidChart.TabIndex = 1;
             this.tiltPidChart.Text = "chart1";

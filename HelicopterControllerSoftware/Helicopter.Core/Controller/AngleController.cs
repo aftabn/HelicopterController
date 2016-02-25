@@ -382,6 +382,11 @@ namespace Helicopter.Core.Controller
                 IntegralWindupThreshold = IntegralWindupThreshold,
                 OutputRateLimit = OutputRateLimit
             };
+
+            ControllerData.Add(data);
+
+            // This is needed in order for PID graphs to update
+            RaisePropertyChanged("ControllerData");
         }
 
         private void RaisePropertyChanged(string propertyName)

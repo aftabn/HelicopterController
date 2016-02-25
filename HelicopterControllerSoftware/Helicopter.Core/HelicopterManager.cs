@@ -11,7 +11,7 @@ namespace Helicopter.Core
     public class HelicopterManager : INotifyPropertyChanged, IDisposable
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private const int INT_ThreadJoinTimeout = 500;
+        private const int INT_ThreadJoinTimeout = 1500;
         private HelicopterSettings helicopterSettings;
         private Thread sessionThread;
         private bool isSessionComplete;

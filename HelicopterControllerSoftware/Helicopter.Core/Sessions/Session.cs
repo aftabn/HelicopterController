@@ -21,12 +21,9 @@ namespace Helicopter.Core.Sessions
             this.refreshIntervalMilliseconds = refreshIntervalMilliseconds;
             yaw = helicopterController.Yaw;
             tilt = helicopterController.Tilt;
-            SessionData = new SessionData(helicopterController);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public event EventHandler<EventArgs> ErrorMessageReceived = delegate { };
 
         public SessionData SessionData { get; set; }
 
@@ -58,6 +55,8 @@ namespace Helicopter.Core.Sessions
 
         public void Start()
         {
+            SessionData = new SessionData(helicopterController);
+
             Reset();
 
             StartTime = DateTime.Now;
@@ -68,6 +67,7 @@ namespace Helicopter.Core.Sessions
                 tilt.RefreshValues();
 
                 var timeStamp = DateTime.Now;
+                SessionData.TimeStamps.Add(timeStamp);
 
                 yaw.TakeNewDataSample(timeStamp);
                 tilt.TakeNewDataSample(timeStamp);
@@ -121,13 +121,6 @@ namespace Helicopter.Core.Sessions
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
-        }
-
-        //TODO: Can probably remove this later
-        private void RaiseErrorMessageReceived(EventArgs e)
-        {
-            EventHandler<EventArgs> handler = ErrorMessageReceived;
-            handler(this, e);
         }
     }
 }
