@@ -10,7 +10,7 @@
         xmlns:lvc="clr-namespace:LiveCharts;assembly=LiveCharts"
         mc:Ignorable="d"
         Title="Helicopter Controller Software"
-        Height="756.65" Width="1495.9"
+        Height="733.419" Width="1500"
         MinHeight="500" MinWidth="600"
         Loaded="WindowLoaded"
 	    Closing="OnWindowClosing">
@@ -34,13 +34,13 @@
             </StatusBarItem>
         </StatusBar>
         <TabControl x:Name="controllerTabs">
-            <TabItem x:Name="ControllerTab" Header="Operator">
+            <TabItem x:Name="operatorTab" Header="Operator" GotFocus="OnOperatorTabGetFocus">
                 <DockPanel x:Name="mainDockPanel">
                     <StackPanel DockPanel.Dock="Left" Margin="5" Width="150"></StackPanel>
                     <StackPanel DockPanel.Dock="Left" Margin="5" Width="150"></StackPanel>
                 </DockPanel>
             </TabItem>
-            <TabItem x:Name="DeveloperTab" Header="Developer">
+            <TabItem x:Name="DeveloperTab" Header="Developer" GotFocus="OnDeveloperTabGetFocus">
                 <DockPanel x:Name="developerDockPanel">
                     <StackPanel DockPanel.Dock="Left"  Margin="5,10,5,5" Width="150">
                         <Button Margin="5,0,5,5" Content="Controller Info" Command="{Binding GetControllerInfoCommand}" />
@@ -250,53 +250,30 @@
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
-                    <StackPanel DockPanel.Dock="Left"  Margin="5,10,5,5" Width="700">
-                        <Grid Background="#505050">
-                            <!--<lvc:LineChart Name="Chart" Grid.Row="1" Grid.Column="0" DataClick="Chart_OnDataClick" LegendLocation="Bottom">
-                                <lvc:LineChart.Series>
-                                    <lvc:LineSeries Title="Maria" Values="20, 40, 45, 60, 55, 60, 65, 70" Stroke="#FFB300" Fill="#33FFB300" PointRadius="0" StrokeThickness="4"></lvc:LineSeries>
-                                    <lvc:LineSeries Title="John" Values="30, 35, 43, 68, 65 ,70, 55, 60" Stroke="#FFA000" Fill="#33FFA000" PointRadius="0" StrokeThickness="4"></lvc:LineSeries>
-                                    <lvc:LineSeries Title="Erick" Values="40, 42, 50, 70, 50, 55, 44, 73" Stroke="#FF8F00" Fill="#33FF8F00" PointRadius="0" StrokeThickness="4"></lvc:LineSeries>
-                                </lvc:LineChart.Series>
-                                <lvc:LineChart.AxisY>
-                                    <lvc:Axis Title="Sold Items" IsEnabled="False" Foreground="White" FontSize="13" FontFamily="Arial">
-                                        <lvc:Axis.Separator>
-                                            <lvc:Separator Color="#404040" Thickness="2" IsEnabled="True"></lvc:Separator>
-                                        </lvc:Axis.Separator>
-                                    </lvc:Axis>
-                                </lvc:LineChart.AxisY>
-                                <lvc:LineChart.AxisX>
-                                    <lvc:Axis Title="Month" Separator="{x:Static lvc:DefaultAxes.CleanSeparator}" Labels="Jan, Feb, Mar, Apr, May, Jun, Ago, Sep, Oct, Nov, Dec" IsEnabled="False">
-                                    </lvc:Axis>
-                                </lvc:LineChart.AxisX>
-                            </lvc:LineChart>-->
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"></RowDefinition>
-                                <RowDefinition Height="*"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <lvc:LineChart x:Name="yawChart" Grid.Row="0" Series="{Binding YawSeries}" Height="300" Width="700">
-                                <lvc:LineChart.AxisX>
-                                    <lvc:Axis LabelFormatter="{Binding XFormatter}" Separator="{x:Static lvc:DefaultAxes.CleanSeparator}" />
-                                </lvc:LineChart.AxisX>
-                                <lvc:LineChart.AxisY>
-                                    <lvc:Axis LabelFormatter="{Binding YFormatter}"></lvc:Axis>
-                                </lvc:LineChart.AxisY>
-                            </lvc:LineChart>
-                            <lvc:LineChart x:Name="tiltChart" Grid.Row="1" Series="{Binding TiltSeries}" Height="300" Width="700">
-                                <lvc:LineChart.AxisX>
-                                    <lvc:Axis LabelFormatter="{Binding XFormatter}" Separator="{x:Static lvc:DefaultAxes.CleanSeparator}" />
-                                </lvc:LineChart.AxisX>
-                                <lvc:LineChart.AxisY>
-                                    <lvc:Axis LabelFormatter="{Binding YFormatter}"></lvc:Axis>
-                                </lvc:LineChart.AxisY>
-                            </lvc:LineChart>
-                        </Grid>
-                    </StackPanel>
+                    <Border x:Name="controllerOutputPanel" BorderBrush="Gray" BorderThickness="1" Margin="5,0" Width="295" DockPanel.Dock="Left">
+                        <TextBox x:Name="controllerOutputTextbox" TextWrapping="WrapWithOverflow" Background="LightGray" Padding="5" IsReadOnly="True" Text="{Binding OutputText}" />
+                    </Border>
+                    <Grid Background="#505050" MinWidth="700" Width="Auto">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.5*"></RowDefinition>
+                            <RowDefinition Height="0.5*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <lvc:LineChart x:Name="yawChart" Grid.Row="0" Series="{Binding YawSeries}">
+                            <lvc:LineChart.AxisY>
+                                <lvc:Axis Title="Angle" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
+                            </lvc:LineChart.AxisY>
+                        </lvc:LineChart>
+                        <lvc:LineChart x:Name="tiltChart" Grid.Row="1" Series="{Binding TiltSeries}">
+                            <lvc:LineChart.AxisX>
+                                <lvc:Axis Title="Time" LabelFormatter="{Binding XFormatter}" Separator="{x:Static lvc:DefaultAxes.CleanSeparator}" />
+                            </lvc:LineChart.AxisX>
+                            <lvc:LineChart.AxisY>
+                                <lvc:Axis Title="Angle" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
+                            </lvc:LineChart.AxisY>
+                        </lvc:LineChart>
+                    </Grid>
                 </DockPanel>
             </TabItem>
         </TabControl>
-        <Border x:Name="controllerOutputPanel" BorderBrush="Gray" BorderThickness="1" Margin="5">
-            <TextBox x:Name="controllerOutputTextbox" TextWrapping="WrapWithOverflow" Background="LightGray" Padding="5" IsReadOnly="True" Text="{Binding OutputText}" />
-        </Border>
     </DockPanel>
 </Window>

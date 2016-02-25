@@ -11,7 +11,7 @@ namespace Helicopter.Core
     public class HelicopterManager : INotifyPropertyChanged, IDisposable
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private const int INT_ThreadJoinTimeout = 1500;
+        private const int INT_ThreadJoinTimeout = 2000;
         private HelicopterSettings helicopterSettings;
         private Thread sessionThread;
         private bool isSessionComplete;
@@ -121,15 +121,17 @@ namespace Helicopter.Core
             {
                 HelicopterController.DisablePid();
                 StopSession();
+                Session.PropertyChanged -= OnSessionPropertyChanged;
             }
         }
 
         private void StartSession()
         {
+            ResetSession();
+
             if (!IsPidSessionAlive)
             {
                 Session.PropertyChanged += OnSessionPropertyChanged;
-                //Session.ErrorMessageReceived += OnErrorMessageReceived;
                 sessionThread = new Thread(Session.Start);
                 sessionThread.Name = "PidSessionThread";
                 sessionThread.Start();
@@ -147,14 +149,8 @@ namespace Helicopter.Core
 
         private void ResetSession()
         {
-            IsSessionComplete = false;
-            IsSessionAborted = false;
-
-            if (Session != null)
-            {
-                Session.PropertyChanged -= OnSessionPropertyChanged;
-                //Session.ErrorMessageReceived -= OnErrorMessageReceived;
-            }
+            isSessionComplete = false;
+            isSessionAborted = false;
         }
 
         private void StopSession()

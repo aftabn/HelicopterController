@@ -16,7 +16,7 @@ namespace Helicopter.GUI
     public partial class HelicopterControllerWindow : Window, INotifyPropertyChanged
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private const int INT_NumSamplesPerWindow = 100;
+        private const int INT_NumSamplesPerWindow = 75;
         private readonly StartupOptions startupOptions;
         private HelicopterViewModel helicopterViewModel;
 
@@ -27,6 +27,7 @@ namespace Helicopter.GUI
             helicopterViewModel.PropertyChanged += OnViewModelPropertyChanged;
 
             InitializeComponent();
+            SetVisibilty();
             InitializePidCharts();
             SetBindingForControls();
         }
@@ -57,6 +58,12 @@ namespace Helicopter.GUI
             set { helicopterViewModel.YFormatter = value; }
         }
 
+        private void SetVisibilty()
+        {
+            Width = 600;
+            controllerOutputPanel.Visibility = Visibility.Collapsed;
+        }
+
         private void UpdateStatusBar()
         {
             SolidColorBrush statusBarColor;
@@ -73,6 +80,77 @@ namespace Helicopter.GUI
             }
 
             statusBar.Background = statusBarColor;
+        }
+
+        private void SetBindingForControls()
+        {
+            menuHeader.DataContext = helicopterViewModel;
+            optionsToolbar.DataContext = helicopterViewModel;
+            controllerTabs.DataContext = helicopterViewModel;
+            yawChart.DataContext = helicopterViewModel;
+            tiltChart.DataContext = helicopterViewModel;
+            controllerOutputPanel.DataContext = helicopterViewModel;
+        }
+
+        private void InitializePidCharts()
+        {
+            var pidChartConfig = new SeriesConfiguration<ControllerData>();
+
+            pidChartConfig.X(data => data.TimeStamp.ToOADate());
+            pidChartConfig.Y(data => data.CurrentAngle);
+
+            YawSeries = new SeriesCollection(pidChartConfig)
+            {
+                new LineSeries
+                {
+                    Title = "Yaw",
+                    Values = new ChartValues<ControllerData>(),
+                    PointRadius = 1.5,
+                    Stroke = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFB300"),
+                    StrokeThickness = 1.5
+                }
+            };
+
+            TiltSeries = new SeriesCollection(pidChartConfig)
+            {
+                new LineSeries
+                {
+                    Title = "Tilt",
+                    Values = new ChartValues<ControllerData>(),
+                    PointRadius = 1.5,
+                    Stroke = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFB300"),
+                    StrokeThickness = 1.5
+                }
+            };
+
+            XFormatter = val => DateTime.FromOADate(val).ToString("mm:ss");
+            YFormatter = val => val + " °";
+
+            yawChart.AxisX.Visibility = Visibility.Collapsed;
+        }
+
+        private void ResetPidCharts()
+        {
+            YawSeries.First().Values.Clear();
+            TiltSeries.First().Values.Clear();
+
+            yawChart.UpdateLayout();
+            tiltChart.UpdateLayout();
+        }
+
+        private void OnOperatorTabGetFocus(object sender, RoutedEventArgs e)
+        {
+            Width = 600;
+        }
+
+        private void OnDeveloperTabGetFocus(object sender, RoutedEventArgs e)
+        {
+            Width = 1500;
+        }
+
+        private void WindowLoaded(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Data.CollectionViewSource helicopterViewModelSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("helicopterViewModelSource")));
         }
 
         private void OnWindowClosing(object sender, CancelEventArgs e)
@@ -93,74 +171,6 @@ namespace Helicopter.GUI
 
                     break;
             }
-        }
-
-        private void SetBindingForControls()
-        {
-            menuHeader.DataContext = helicopterViewModel;
-            optionsToolbar.DataContext = helicopterViewModel;
-            controllerTabs.DataContext = helicopterViewModel;
-            controllerOutputPanel.DataContext = helicopterViewModel;
-        }
-
-        private void InitializePidCharts()
-        {
-            var yawConfig = new SeriesConfiguration<ControllerData>();
-            var tiltConfig = new SeriesConfiguration<ControllerData>();
-
-            yawConfig.X(data => data.TimeStamp.ToOADate());
-            yawConfig.Y(data => data.CurrentAngle);
-
-            tiltConfig.X(data => data.TimeStamp.ToOADate());
-            tiltConfig.Y(data => data.CurrentAngle);
-
-            YawSeries = new SeriesCollection(yawConfig)
-            {
-                new LineSeries
-                {
-                    Title = "Yaw",
-                    Values = new ChartValues<ControllerData>(),
-                    PointRadius = 1.5,
-                    Stroke = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFB300"),
-                    StrokeThickness = 1.5
-                }
-            };
-
-            TiltSeries = new SeriesCollection(tiltConfig)
-            {
-                new LineSeries
-                {
-                    Title = "Tilt",
-                    Values = new ChartValues<ControllerData>(),
-                    PointRadius = 1.5,
-                    Stroke = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFB300"),
-                    StrokeThickness = 1.5
-                }
-            };
-
-            XFormatter = val => DateTime.FromOADate(val).ToString("mm:ss");
-            YFormatter = val => val + " °";
-
-            yawChart.Series = YawSeries;
-            yawChart.AxisX.LabelFormatter = XFormatter;
-            yawChart.AxisY.LabelFormatter = YFormatter;
-
-            tiltChart.Series = TiltSeries;
-            tiltChart.AxisX.LabelFormatter = XFormatter;
-            tiltChart.AxisY.LabelFormatter = YFormatter;
-        }
-
-        private void ResetPidCharts()
-        {
-            YawSeries.First().Values.Clear();
-            TiltSeries.First().Values.Clear();
-            yawChart.Redraw();
-            tiltChart.Redraw();
-        }
-
-        private void WindowLoaded(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Data.CollectionViewSource helicopterViewModelSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("helicopterViewModelSource")));
         }
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
