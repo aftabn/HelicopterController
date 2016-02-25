@@ -1,6 +1,7 @@
 ﻿using Helicopter.Core;
 using Helicopter.Core.Sessions;
 using LiveCharts;
+using LiveCharts.CoreComponents;
 using log4net;
 using System;
 using System.ComponentModel;
@@ -34,29 +35,13 @@ namespace Helicopter.GUI
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public SeriesCollection YawSeries
-        {
-            get { return helicopterViewModel.YawSeries; }
-            set { helicopterViewModel.YawSeries = value; }
-        }
+        public SeriesCollection YawSeries { get; set; }
 
-        public SeriesCollection TiltSeries
-        {
-            get { return helicopterViewModel.TiltSeries; }
-            set { helicopterViewModel.TiltSeries = value; }
-        }
+        public SeriesCollection TiltSeries { get; set; }
 
-        public Func<double, string> XFormatter
-        {
-            get { return helicopterViewModel.XFormatter; }
-            set { helicopterViewModel.XFormatter = value; }
-        }
+        public Func<double, string> XFormatter { get; set; }
 
-        public Func<double, string> YFormatter
-        {
-            get { return helicopterViewModel.YFormatter; }
-            set { helicopterViewModel.YFormatter = value; }
-        }
+        public Func<double, string> YFormatter { get; set; }
 
         private void SetVisibilty()
         {
@@ -99,11 +84,13 @@ namespace Helicopter.GUI
             pidChartConfig.X(data => data.TimeStamp.ToOADate());
             pidChartConfig.Y(data => data.CurrentAngle);
 
+            var algorthim =
+
             YawSeries = new SeriesCollection(pidChartConfig)
             {
                 new LineSeries
                 {
-                    Title = "Yaw",
+                    Title = "Yaw Angle",
                     Values = new ChartValues<ControllerData>(),
                     PointRadius = 1.5,
                     Stroke = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFB300"),
@@ -115,7 +102,7 @@ namespace Helicopter.GUI
             {
                 new LineSeries
                 {
-                    Title = "Tilt",
+                    Title = "Tilt Angle",
                     Values = new ChartValues<ControllerData>(),
                     PointRadius = 1.5,
                     Stroke = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFB300"),
@@ -126,16 +113,19 @@ namespace Helicopter.GUI
             XFormatter = val => DateTime.FromOADate(val).ToString("mm:ss");
             YFormatter = val => val + " °";
 
+            yawChart.Series = YawSeries;
             yawChart.AxisX.Visibility = Visibility.Collapsed;
+            yawChart.AxisY.LabelFormatter = YFormatter;
+
+            tiltChart.Series = TiltSeries;
+            tiltChart.AxisX.LabelFormatter = XFormatter;
+            tiltChart.AxisY.LabelFormatter = YFormatter;
         }
 
         private void ResetPidCharts()
         {
             YawSeries.First().Values.Clear();
             TiltSeries.First().Values.Clear();
-
-            yawChart.UpdateLayout();
-            tiltChart.UpdateLayout();
         }
 
         private void OnOperatorTabGetFocus(object sender, RoutedEventArgs e)
