@@ -95,6 +95,8 @@ extern "C" void __cxa_pure_virtual() {;}
 #include <..\HelicopterController\dac.h>
 #include <..\HelicopterController\pidController.cpp>
 #include <..\HelicopterController\pidController.h>
+#include <..\HelicopterController\potentiometer.cpp>
+#include <..\HelicopterController\potentiometer.h>
 #include <..\HelicopterController\tilt.cpp>
 #include <..\HelicopterController\tilt.h>
 #include <..\HelicopterController\utility.cpp>

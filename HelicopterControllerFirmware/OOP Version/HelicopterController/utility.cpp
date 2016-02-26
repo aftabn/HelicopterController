@@ -8,6 +8,8 @@ Author:	Aftab
 #include "utility.h"
 #include "pidController.h"
 
+const double Utility::DBL_ArduinoVss = 5.0;
+
 const char* Utility::UNIT_None = "";
 const char* Utility::UNIT_Percent = "%";
 const char* Utility::UNIT_Milliseconds = "ms";

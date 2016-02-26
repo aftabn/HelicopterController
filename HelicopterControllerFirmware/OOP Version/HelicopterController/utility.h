@@ -18,6 +18,8 @@ private:
 	static const byte INT_MinNumFloatChars = 4;
 
 public:
+	static const double DBL_ArduinoVss;
+
 	static const char* UNIT_None;
 	static const char* UNIT_Percent;
 	static const char* UNIT_Milliseconds;
