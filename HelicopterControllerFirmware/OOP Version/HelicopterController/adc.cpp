@@ -10,6 +10,13 @@ const double Adc::DBL_VoltsPerBit = DBL_ReferenceVoltage / Adc::INT_Resolution;
 
 const byte Adc::adcChannelLookup[] = { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
 
+void Adc::initialize()
+{
+	pinModeFast(Utility::PIN_AdcChipSelect, OUTPUT);
+	digitalWriteFast(Utility::PIN_AdcChipSelect, LOW);
+	digitalWriteFast(Utility::PIN_AdcChipSelect, HIGH);
+}
+
 double Adc::getSampledAdcVoltage(int channel)
 {
 	return getSampledAdcVoltage(channel, INT_DefaultNumSamples);

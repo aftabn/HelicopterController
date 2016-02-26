@@ -18,7 +18,7 @@ private:
 	double convertAdcValueToVoltage(int adcValue);
 
 public:
-	Adc() {};
+	Adc() {}
 	void initialize(void);
 	double getSampledAdcVoltage(int channel);
 	double getSampledAdcVoltage(int channel, uint8_t numSamples);
