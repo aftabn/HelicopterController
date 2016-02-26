@@ -8,16 +8,22 @@
 class Potentiometer
 {
 private:
-	Potentiometer() {};
 	Adc adc;
+	static const int channel = 0;
+	static const double DBL_TotalRangeDegrees;
+	static const double DBL_DegreesPerVolt;
+	static const double DBL_IdleVoltage;
+
+	double convertAdcVoltageToAngle(double voltage);
+	double getAngle(int channel);
 
 public:
+	Potentiometer();
+	~Potentiometer();
+
+	double currentAngle;
 	void initialize(void);
-	double getSampledAdcVoltage(int channel);
-	double getSampledAdcVoltage(int channel, uint8_t numSamples);
-	int getAdcValue(int channel);
-	double getAdcVoltage(int channel);
-	double convertAdcValueToVoltage(int adcValue);
+	void updateAngle(void);
 };
 
 #endif
