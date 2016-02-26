@@ -16,7 +16,7 @@ char lineBuffer[INT_LINE_SIZE_MAX + 1];
 void initializeController()
 {
 	// The baud rate had to be dropped from 115200 to 38400 as going any higher resulted in data loss
-	// due to the firing of the external interrupt for the decoder ISR
+	// due to the firing of the external interrupt for the decode
 	Serial.begin(38400);
 
 	pinMode(HEARTBEAT_LED_PIN, OUTPUT);
@@ -190,7 +190,7 @@ void scanSerialPort()
 {
 	char incomingChar;
 	uint8_t linePointer = 0;
-	char tmpstr[256];
+	char tmpstr[100];
 
 	long heartBeatTimer = 0;
 	long refreshAngleTimer = 0;
@@ -206,7 +206,7 @@ void scanSerialPort()
 				updatePotentiometerAngle();
 			}
 
-			if (++heartBeatTimer >= 5000)
+			if (++heartBeatTimer >= 250000)
 			{
 				heartBeatTimer = 0;
 				digitalWrite(HEARTBEAT_LED_PIN, !digitalRead(HEARTBEAT_LED_PIN));

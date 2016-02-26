@@ -12,7 +12,7 @@ Author:	Aftab
 
 void onCommandIdentity()
 {
-	Serial.println(CONTROLLER_NAME);
+	Serial.println(F("Arduino Helicopter Controller"));
 	sendAck();
 }
 

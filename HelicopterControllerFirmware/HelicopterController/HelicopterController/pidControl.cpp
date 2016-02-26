@@ -8,7 +8,7 @@ Author:	Aftab
 #include "util.h"
 #include "pidControl.h"
 
-const byte adcChannelLookup[ADC_CHANNEL_MAX - ADC_CHANNEL_MIN + 1] = { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+const byte adcChannelLookup[] = { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
 const int minMotorOutput[MAX_NUM_CHANNELS] = { YAW_OUTPUT_MIN, TILT_OUTPUT_MIN };
 const int maxMotorOutput[MAX_NUM_CHANNELS] = { YAW_OUTPUT_MAX, TILT_OUTPUT_MAX };
 
@@ -20,7 +20,7 @@ volatile int pidLoopInterval;
 volatile int currentFrequency;
 
 const signed int encoderLookup[] = { 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 };
-volatile byte encoderValues;
+byte encoderValues;
 
 volatile double pGains[MAX_NUM_CHANNELS];
 volatile double iGains[MAX_NUM_CHANNELS];
@@ -77,7 +77,7 @@ static void quadratureDecoderISR(void)
 {
 	encoderValues <<= 2;
 	encoderValues |= ((digitalRead(ENCODER_CHA_PIN) << 1) | digitalRead(ENCODER_CHB_PIN));
-	currentAngles[ENCODER_CHANNEL] += encoderLookup[encoderValues & 0x0F];
+	currentAngles[ENCODER_CHANNEL] += encoderLookup[encoderValues & 0x0F] * ENCODER_DEGREES_PER_PULSE;
 }
 
 void initializeSpi(void)
