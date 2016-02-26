@@ -5,8 +5,15 @@ Author:	Aftab
 */
 
 #include <avr\pgmspace.h>
-#include "globals.h"
 #include "utility.h"
+#include "pidController.h"
+
+const char* Utility::UNIT_None = "";
+const char* Utility::UNIT_Percent = "%";
+const char* Utility::UNIT_Milliseconds = "ms";
+const char* Utility::UNIT_Hertz = "Hz";
+const char* Utility::UNIT_Degrees = "°";
+const char* Utility::UNIT_Volts = "V";
 
 // Implementation of sending had to change due to arduino storing string literals in dynamic memory
 // Used F() to force storage of literals in PROGMEM, which requires directly using Serial.println() to send
@@ -205,7 +212,7 @@ bool Utility::isChannelCorrect(char* channelArg)
 {
 	char channelStr[3];
 
-	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
+	for (int channel = 0; channel < INT_MaxNumChannels; channel++)
 	{
 		sprintf(channelStr, "%d", channel);
 		if (0 == stricmp(channelArg, channelStr))

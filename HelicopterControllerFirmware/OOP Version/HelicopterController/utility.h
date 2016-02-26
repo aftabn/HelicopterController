@@ -4,19 +4,42 @@ Created: 1/10/2016 1:09:10 PM
 Author:	Aftab
 */
 
-#ifndef _UTIL_h
-#define _UTIL_h
+#ifndef _UTILITY_h
+#define _UTILITY_h
 
 #include "arduino.h"
-#include "pidControl.h"
+#include "pidController.h"
 
-static class Utility
+class Utility
 {
 private:
-	static const int INT_DefaultNumDecimals = 2;
-	static const int INT_MinNumFloatChars = 4;
+	Utility() {}
+	static const byte INT_DefaultNumDecimals = 2;
+	static const byte INT_MinNumFloatChars = 4;
 
 public:
+	static const char* UNIT_None;
+	static const char* UNIT_Percent;
+	static const char* UNIT_Milliseconds;
+	static const char* UNIT_Hertz;
+	static const char* UNIT_Degrees;
+	static const char* UNIT_Volts;
+
+	// Can't use pin 13 (on-board LED) since it's tied to SPI SCK
+	// Source: http://playground.arduino.cc/Code/Spi
+	static const byte PIN_HeartbeatLed = 6;
+	static const byte PIN_EncoderChannelA = 4;
+	static const byte PIN_EncoderChannelB = 5;
+	static const byte PIN_FrequencyOutput = 7;
+	static const byte PIN_FreqeuncyDirection = 8;
+	static const byte PIN_AdcChipSelect = 9;
+	static const byte PIN_DacChipSelect = 10;
+
+	static const byte INT_MaxNumChannels = 2;
+	static const byte INT_LineSizeMax = 100;
+	static const byte INT_ParameterCountMax = 3;
+	static const byte INT_ParameterLengthMax = 20;
+
 	static void sendNack(void);
 	static void sendAck(void);
 	static void sendError(const char* str);
@@ -36,7 +59,6 @@ public:
 	static void sendOneOrZeroError(void);
 	static void sendDirectionError(void);
 	static void sendMotorDriverError(void);
-	static void sendChannelError(void);
 
 	static bool isOnCommandArg(char* arg);
 	static bool isOffCommandArg(char* arg);

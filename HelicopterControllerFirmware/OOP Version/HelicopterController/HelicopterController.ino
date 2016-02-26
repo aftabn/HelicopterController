@@ -4,24 +4,24 @@ Created: 1/10/2016 1:09:10 PM
 Author:	Aftab
 */
 
-#include "angleController.h"
-#include <SPI.h>
+#include "adc.h"
+#include "dac.h"
+#include "tilt.h"
+#include "Tilt.h"
+#include "yaw.h"
+#include "Arduino.h"
+#include <digitalWriteFast.h>
 #include "controller.h"
-#include "pidControl.h"
+
+Controller controller;
 
 void setup()
 {
-	initializeController();
-	initializeSpi();
-	initializeAdc(); // Must be initialized after SPI
-	initializeDac(); // Must be initialized after SPI
-	initializeFrequencyOutput();
-	initializeQuadratureDecoder();
-	initializePotentiometerTimer();
-	initializePid();
+	controller.initialize();
 }
 
 void loop()
 {
-	scanSerialPort();
+	//Serial.print("h");
+	controller.scanSerialPort();
 }

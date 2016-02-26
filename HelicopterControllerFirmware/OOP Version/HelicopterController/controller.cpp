@@ -1,125 +1,147 @@
 /*
 Name: controller.cpp
-Created: 1/10/2016 1:09:10 PM
+Created: 1/10/2016
 Author:	Aftab
 */
 
 #include "Arduino.h"
-#include "globals.h"
-#include "utility.h"
+#include <digitalWriteFast.h>
 #include "controller.h"
-#include "commandHandlers.h"
+#include "utility.h"
+#include "commandHandler.h"
 
-char lineBuffer[INT_LINE_SIZE_MAX + 1];
-
-void initializeController()
+Controller::Controller()
 {
-	Serial.begin(115200);
-
-	pinMode(HEARTBEAT_LED_PIN, OUTPUT);
+	lineBuffer[Utility::INT_LineSizeMax];
 }
 
-void processCommand(char *command)
+void Controller::initialize()
+{
+	Serial.begin(115200);
+	Serial.println();
+	Serial.flush();
+
+	pinModeFast(Utility::PIN_HeartbeatLed, OUTPUT);
+}
+
+void Controller::processCommand(char *command)
 {
 	if (0 == strcmp(command, "*IDN?"))
 	{
-		onCommandIdentity();
+		CommandHandler::onCommandIdentity();
 	}
 	else if (0 == strcmp(command, "ECHO"))
 	{
-		onCommandEcho();
+		CommandHandler::onCommandEcho();
 	}
-	else if (0 == strcmp(command, "SYS"))
+	else if (0 == strcmp(command, "CHANGELOG"))
 	{
-		onCommandSystem();
+		CommandHandler::onCommandChangelog();
 	}
-	else if (0 == strcmp(command, "PID"))
+	else if (0 == strcmp(command, "VER"))
 	{
-		onCommandPidControl();
+		CommandHandler::onCommandVersion();
 	}
-	else if (0 == strcmp(command, "DEBUG"))
-	{
-		onCommandDebug();
-	}
-	else if (0 == strcmp(command, "SAFETY"))
-	{
-		onCommandSafety();
-	}
-	else if (0 == strcmp(command, "OUT"))
-	{
-		onCommandOutput();
-	}
-	else if (0 == strcmp(command, "DIR"))
-	{
-		onCommandDirection();
-	}
-	else if (0 == strcmp(command, "DRIVER"))
-	{
-		onCommandMotorDriver();
-	}
-	else if (0 == strcmp(command, "P"))
-	{
-		onCommandProportionalGain();
-	}
-	else if (0 == strcmp(command, "I"))
-	{
-		onCommandIntegralGain();
-	}
-	else if (0 == strcmp(command, "D"))
-	{
-		onCommandDerivativeGain();
-	}
-	else if (0 == strcmp(command, "LOOP"))
-	{
-		onCommandLoopInterval();
-	}
-	else if (0 == strcmp(command, "SP"))
-	{
-		onCommandSetPoint();
-	}
-	else if (0 == strcmp(command, "ANGLE"))
-	{
-		onCommandAngle();
-	}
-	else if (0 == strcmp(command, "ADC"))
-	{
-		onCommandAdc();
-	}
-	else if (0 == strcmp(command, "DAC"))
-	{
-		onCommandDacVoltage();
-	}
-	else if (0 == strcmp(command, "FREQ"))
-	{
-		onCommandFrequencyOutput();
-	}
-	else if (0 == strcmp(command, "STATE"))
-	{
-		onCommandState();
-	}
-	else if (0 == strcmp(command, "TEST"))
-	{
-		onCommandTest();
-	}
+	//else if (0 == strcmp(command, "PID"))
+	//{
+	//	onCommandPidControl();
+	//}
+	//else if (0 == strcmp(command, "VERBOSE"))
+	//{
+	//	onCommandVerbose();
+	//}
+	//else if (0 == strcmp(command, "SAFETY"))
+	//{
+	//	onCommandSafety();
+	//}
+	//else if (0 == strcmp(command, "O"))
+	//{
+	//	onCommandOutput();
+	//}
+	//else if (0 == strcmp(command, "DC"))
+	//{
+	//	onCommandDirection();
+	//}
+	//else if (0 == strcmp(command, "DV"))
+	//{
+	//	onCommandMotorDriver();
+	//}
+	//else if (0 == strcmp(command, "P"))
+	//{
+	//	onCommandProportionalGain();
+	//}
+	//else if (0 == strcmp(command, "I"))
+	//{
+	//	onCommandIntegralGain();
+	//}
+	//else if (0 == strcmp(command, "D"))
+	//{
+	//	onCommandDerivativeGain();
+	//}
+	//else if (0 == strcmp(command, "L"))
+	//{
+	//	onCommandLoopInterval();
+	//}
+	//else if (0 == strcmp(command, "W"))
+	//{
+	//	onCommandIntegralWindup();
+	//}
+	//else if (0 == strcmp(command, "R"))
+	//{
+	//	onCommandIntegralWindup();
+	//}
+	//else if (0 == strcmp(command, "SP"))
+	//{
+	//	onCommandSetPoint();
+	//}
+	//else if (0 == strcmp(command, "A"))
+	//{
+	//	onCommandAngle();
+	//}
+	//else if (0 == strcmp(command, "ADC"))
+	//{
+	//	onCommandAdc();
+	//}
+	//else if (0 == strcmp(command, "DAC"))
+	//{
+	//	onCommandDacVoltage();
+	//}
+	//else if (0 == strcmp(command, "F"))
+	//{
+	//	onCommandFrequencyOutput();
+	//}
+	//else if (0 == strcmp(command, "TEST"))
+	//{
+	//	onCommandTest();
+	//}
+	////else if (0 == strcmp(command, "'"))
+	////{
+	////	processLine(lastCommand);
+	////}
 	else if (0 == strcmp(command, "HELP"))
 	{
-		onCommandHelp();
+		CommandHandler::onCommandHelp();
 	}
 	else
 	{
-		handleCommandUnknown(command);
+		CommandHandler::handleCommandUnknown(command);
 	}
-}
 
-void clearParameters()
-{
-	for (int i = 0; i < INT_PARAMETER_COUNT_MAX; i++)
+	/*if (!(0 == strcmp(command, "'")))
 	{
-		strcpy(gParameters[i], "");
+		sprintf(lastCommand, "%s", lineBuffer);
+	}*/
+}
+
+void Controller::clearParameters()
+{
+	for (int i = 0; i < Utility::INT_ParameterCountMax; i++)
+	{
+		strcpy(CommandHandler::gParameters[i], "");
 	}
 }
 
-void processParameters(char *parameterString)
+void Controller::processParameters(char *parameterString)
 {
 	clearParameters();
 
@@ -135,21 +157,21 @@ void processParameters(char *parameterString)
 		while (NULL != token)
 		{
 			// copy parameters into the global parameter variables
-			strcpy(gParameters[i++], token);
+			strcpy(CommandHandler::gParameters[i++], token);
 			token = strtok(NULL, delimiter);
 		}
 	}
 }
 
-void processLine(char *line)
+void Controller::processLine(char *line)
 {
-	char buffer[256];
+	char buffer[100];
 	const char delimiter[] = " ";
 	char *commandString = NULL;
 	char *remainingString = NULL;
 
 	strcpy(buffer, line);
-	upperCaseString(buffer);
+	Utility::upperCaseString(buffer);
 
 	// get first token
 	commandString = strtok(buffer, delimiter);
@@ -166,11 +188,11 @@ void processLine(char *line)
 	}
 }
 
-void scanSerialPort()
+void Controller::scanSerialPort()
 {
 	char incomingChar;
 	uint8_t linePointer = 0;
-	char tmpstr[256];
+	char tmpstr[100];
 
 	long heartBeatTimer = 0;
 	long refreshAngleTimer = 0;
@@ -183,13 +205,13 @@ void scanSerialPort()
 			if (++refreshAngleTimer >= 5000)
 			{
 				refreshAngleTimer = 0;
-				updatePotentiometerAngle();
+				//updatePotentiometerAngle();
 			}
 
 			if (++heartBeatTimer >= 250000)
 			{
 				heartBeatTimer = 0;
-				digitalWrite(HEARTBEAT_LED_PIN, !digitalRead(HEARTBEAT_LED_PIN));
+				digitalWriteFast(Utility::PIN_HeartbeatLed, !digitalReadFast(Utility::PIN_HeartbeatLed));
 			}
 		}
 
@@ -197,7 +219,7 @@ void scanSerialPort()
 
 		if (incomingChar)
 		{
-			if (incomingChar == '\n')  // 13 = \r
+			if (incomingChar == '\n') // End of input
 			{
 				lineBuffer[linePointer] = 0;
 				linePointer = 0;
@@ -206,17 +228,17 @@ void scanSerialPort()
 				Serial.println(tmpstr);
 				processLine(lineBuffer);
 			}
-			else if (incomingChar == '\r') // 10 = \n
+			else if (incomingChar == '\r') // Discard the carriage return
 			{
 			}
-			else
+			else // Store any other characters in the buffer
 			{
 				lineBuffer[linePointer++] = incomingChar;
 				lineBuffer[linePointer] = 0;
 
-				if (linePointer >= INT_LINE_SIZE_MAX - 1)
+				if (linePointer >= Utility::INT_LineSizeMax - 1)
 				{
-					linePointer = INT_LINE_SIZE_MAX - 1;
+					linePointer = Utility::INT_LineSizeMax - 1;
 					lineBuffer[linePointer] = 0;
 				}
 			}

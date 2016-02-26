@@ -7,9 +7,13 @@ Author:	Aftab
 #ifndef _CONTROLLER_h
 #define _CONTROLLER_h
 
+#include "commandHandler.h"
+
 class Controller
 {
 private:
+	char lineBuffer[Utility::INT_LineSizeMax];
+
 	void toggleHeartbeatLED(void);
 	void clearParameters(void);
 	void processCommand(char *command);
@@ -18,7 +22,7 @@ private:
 
 public:
 	Controller();
-	void initializeController(void);
+	void initialize(void);
 	void scanSerialPort(void);
 };
 
