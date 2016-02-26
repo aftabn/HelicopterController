@@ -1,6 +1,8 @@
-//
-//
-//
+/*
+Name: adc.cpp
+Created: 2/25/2016
+Author:	Aftab
+*/
 
 #include <SPI\SPI.h>
 #include "adc.h"
@@ -17,18 +19,18 @@ void Adc::initialize()
 	digitalWriteFast(Utility::PIN_AdcChipSelect, HIGH);
 }
 
-double Adc::getSampledAdcVoltage(int channel)
+double Adc::getSampledVoltage(int channel)
 {
-	return getSampledAdcVoltage(channel, INT_DefaultNumSamples);
+	return getSampledVoltage(channel, INT_DefaultNumSamples);
 }
 
-double Adc::getSampledAdcVoltage(int channel, uint8_t numSamples)
+double Adc::getSampledVoltage(int channel, uint8_t numSamples)
 {
 	double adcVoltage = 0;
 
 	for (int i = 0; i < numSamples; i++)
 	{
-		adcVoltage += getAdcVoltage(channel);
+		adcVoltage += getVoltage(channel);
 	}
 
 	adcVoltage /= numSamples;
@@ -39,7 +41,7 @@ double Adc::getSampledAdcVoltage(int channel, uint8_t numSamples)
 // Unlike the other functions, the MCP3008 ADC has 8 channels, which means
 // the input parameter can be between 0 and 7
 // Source for code: https://rheingoldheavy.com/mcp3008-tutorial-02-sampling-dc-voltage/
-int Adc::getAdcValue(int channel)
+int Adc::getValue(int channel)
 {
 	SPISettings MCP3008(2000000, MSBFIRST, SPI_MODE0);
 
@@ -63,9 +65,9 @@ int Adc::getAdcValue(int channel)
 	return adcValue;
 }
 
-double Adc::getAdcVoltage(int channel)
+double Adc::getVoltage(int channel)
 {
-	int adcValue = getAdcValue(channel);
+	int adcValue = getValue(channel);
 	double voltage = convertAdcValueToVoltage(adcValue);
 	return voltage;
 }

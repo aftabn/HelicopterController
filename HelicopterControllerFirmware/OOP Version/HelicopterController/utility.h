@@ -33,7 +33,7 @@ public:
 	static const byte PIN_EncoderChannelA = 4;
 	static const byte PIN_EncoderChannelB = 5;
 	static const byte PIN_FrequencyOutput = 7;
-	static const byte PIN_FreqeuncyDirection = 8;
+	static const byte PIN_FrequencyDirection = 8;
 	static const byte PIN_AdcChipSelect = 9;
 	static const byte PIN_DacChipSelect = 10;
 

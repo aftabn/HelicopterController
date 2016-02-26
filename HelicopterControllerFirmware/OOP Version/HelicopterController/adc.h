@@ -1,4 +1,8 @@
-// adc.h
+/*
+Name: adc.h
+Created: 2/25/2016
+Author:	Aftab
+*/
 
 #ifndef _ADC_h
 #define _ADC_h
@@ -14,15 +18,16 @@ private:
 	static const double DBL_VoltsPerBit;
 	static const byte adcChannelLookup[];
 
-	int getAdcValue(int channel);
+	int getValue(int channel);
 	double convertAdcValueToVoltage(int adcValue);
 
 public:
-	Adc() {}
+	Adc() {};
+	~Adc() {};
 	void initialize(void);
-	double getSampledAdcVoltage(int channel);
-	double getSampledAdcVoltage(int channel, uint8_t numSamples);
-	double getAdcVoltage(int channel);
+	double getSampledVoltage(int channel);
+	double getSampledVoltage(int channel, uint8_t numSamples);
+	double getVoltage(int channel);
 };
 
 #endif

@@ -1,16 +1,21 @@
-//
-//
-//
+/*
+Name: potentiometer.cpp
+Created: 2/25/2016
+Author:	Aftab
+*/
 
 #include "potentiometer.h"
 
 const double Potentiometer::DBL_TotalRangeDegrees = 290.0;
 const double Potentiometer::DBL_DegreesPerVolt = DBL_TotalRangeDegrees / Utility::DBL_ArduinoVss;
-const double Potentiometer::DBL_IdleVoltage = 2.5;
 
-Potentiometer::Potentiometer()
+Potentiometer::Potentiometer(double idleVoltage) : DBL_IdleVoltage(idleVoltage)
 {
 	Adc adc;
+}
+
+Potentiometer::~Potentiometer()
+{
 }
 
 double Potentiometer::convertAdcVoltageToAngle(double voltage)
@@ -19,9 +24,9 @@ double Potentiometer::convertAdcVoltageToAngle(double voltage)
 	return angle;
 }
 
-double Potentiometer::getAngle(int channel)
+double Potentiometer::getAngle(byte channel)
 {
-	double voltage = adc.getSampledAdcVoltage(channel);
+	double voltage = adc.getSampledVoltage(channel);
 	double angle = convertAdcVoltageToAngle(voltage);
 
 	return angle;
@@ -29,6 +34,6 @@ double Potentiometer::getAngle(int channel)
 
 void Potentiometer::updateAngle(void)
 {
-	double angle = getAngle(channel);
+	double angle = getAngle(INT_MotorChannel);
 	currentAngle = angle;
 }

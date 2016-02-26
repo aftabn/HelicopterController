@@ -1,12 +1,17 @@
-//
-//
-//
+/*
+Name: dac.cpp
+Created: 2/25/2016
+Author:	Aftab
+*/
 
 #include "dac.h"
 
-const double Dac::DBL_DefaultVoltage = 2.5;
 const double Dac::DBL_ReferenceVoltage = Utility::DBL_ArduinoVss;
 const double Dac::DBL_VoltsPerBit = DBL_ReferenceVoltage / Dac::INT_Resolution;
+
+Dac::Dac(double defaultVoltage) : DBL_DefaultVoltage(defaultVoltage)
+{
+}
 
 void Dac::initialize()
 {
@@ -16,7 +21,7 @@ void Dac::initialize()
 
 	for (int channel = 0; channel < Utility::INT_MaxNumChannels; channel++)
 	{
-		setDacVoltage(channel, DBL_DefaultVoltage);
+		setVoltage(channel, DBL_DefaultVoltage);
 	}
 }
 
@@ -26,9 +31,8 @@ int Dac::convertVoltageToDacValue(double voltage)
 	return value;
 }
 
-// TODO: Refactor this once requirements and sensors have been finalized
 // Refer to : https://github.com/wigman27/Tutorial-Using-Arduino-SPI for more info
-void Dac::setDacVoltage(int channel, double voltage)
+void Dac::setVoltage(int channel, double voltage)
 {
 	int value = convertVoltageToDacValue(voltage);
 
@@ -54,5 +58,5 @@ void Dac::setDacVoltage(int channel, double voltage)
 	digitalWriteFast(Utility::PIN_DacChipSelect, HIGH);
 	interrupts();
 
-	//currentVoltages[channel] = voltage;
+	currentVoltages[channel] = voltage;
 }
