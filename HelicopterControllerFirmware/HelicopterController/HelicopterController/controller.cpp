@@ -5,6 +5,7 @@ Author:	Aftab
 */
 
 #include "Arduino.h"
+#include <digitalWriteFast.h>
 #include "globals.h"
 #include "util.h"
 #include "controller.h"
@@ -17,9 +18,9 @@ void initializeController()
 {
 	// The baud rate had to be dropped from 115200 to 38400 as going any higher resulted in data loss
 	// due to the firing of the external interrupt for the decode
-	Serial.begin(38400);
+	Serial.begin(9600);
 
-	pinMode(HEARTBEAT_LED_PIN, OUTPUT);
+	pinModeFast(HEARTBEAT_LED_PIN, OUTPUT);
 }
 
 void processCommand(char *command)
@@ -209,7 +210,7 @@ void scanSerialPort()
 			if (++heartBeatTimer >= 250000)
 			{
 				heartBeatTimer = 0;
-				digitalWrite(HEARTBEAT_LED_PIN, !digitalRead(HEARTBEAT_LED_PIN));
+				digitalWriteFast(HEARTBEAT_LED_PIN, !digitalReadFast(HEARTBEAT_LED_PIN));
 			}
 		}
 

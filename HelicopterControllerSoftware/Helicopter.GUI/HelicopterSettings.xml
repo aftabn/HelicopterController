@@ -18,7 +18,7 @@
 -->
 <Settings>
   <Helicopter PidThreadRefreshIntervalMilliseconds="100">
-    <Controller IsSafetyEnabled="true" PidLoopIntervalMilliseconds="250">
+    <Controller IsSafetyEnabled="true" PidLoopIntervalMilliseconds="100">
       <Yaw IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="1" IntegralGain="0.25" DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="10" />
       <Tilt IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="1" IntegralGain="0.25" DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="10" />
     </Controller>

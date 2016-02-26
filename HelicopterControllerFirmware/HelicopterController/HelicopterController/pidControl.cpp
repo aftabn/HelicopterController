@@ -5,6 +5,7 @@ Author:	Aftab
 */
 
 #include <SPI\SPI.h>
+#include <digitalWriteFast.h>
 #include "util.h"
 #include "pidControl.h"
 
@@ -76,7 +77,7 @@ ISR(TIMER1_OVF_vect)
 static void quadratureDecoderISR(void)
 {
 	encoderValues <<= 2;
-	encoderValues |= ((digitalRead(ENCODER_CHA_PIN) << 1) | digitalRead(ENCODER_CHB_PIN));
+	encoderValues |= ((digitalReadFast(ENCODER_CHA_PIN) << 1) | digitalReadFast(ENCODER_CHB_PIN));
 	currentAngles[ENCODER_CHANNEL] += encoderLookup[encoderValues & 0x0F] * ENCODER_DEGREES_PER_PULSE;
 }
 
@@ -110,15 +111,15 @@ void initializeFrequencyOutput(void)
 {
 	const int dummyChannel = 0; // Only one frequency output so channel doesn't matter during initialization
 
-	pinMode(FREQUENCY_OUTPUT_PIN, OUTPUT);
+	pinModeFast(FREQUENCY_OUTPUT_PIN, OUTPUT);
 	setFrequency(dummyChannel, MOTOR_MIN_FREQUENCY);
 }
 
 void initializeQuadratureDecoder(void)
 {
-	pinMode(ENCODER_CHA_PIN, INPUT);
-	pinMode(ENCODER_CHB_PIN, INPUT);
-	encoderValues = (digitalRead(ENCODER_CHA_PIN) << 1) | digitalRead(ENCODER_CHB_PIN);
+	pinModeFast(ENCODER_CHA_PIN, INPUT);
+	pinModeFast(ENCODER_CHB_PIN, INPUT);
+	encoderValues = (digitalReadFast(ENCODER_CHA_PIN) << 1) | digitalReadFast(ENCODER_CHB_PIN);
 
 	// Sets ISR for external interrupt on pin 2
 	attachInterrupt(0, quadratureDecoderISR, RISING);
@@ -126,16 +127,16 @@ void initializeQuadratureDecoder(void)
 
 void initializeAdc(void)
 {
-	pinMode(ADC_CHIP_SELECT_PIN, OUTPUT);
-	digitalWrite(ADC_CHIP_SELECT_PIN, LOW);
-	digitalWrite(ADC_CHIP_SELECT_PIN, HIGH);
+	pinModeFast(ADC_CHIP_SELECT_PIN, OUTPUT);
+	digitalWriteFast(ADC_CHIP_SELECT_PIN, LOW);
+	digitalWriteFast(ADC_CHIP_SELECT_PIN, HIGH);
 }
 
 void initializeDac(void)
 {
-	pinMode(DAC_CHIP_SELECT_PIN, OUTPUT);
-	digitalWrite(DAC_CHIP_SELECT_PIN, LOW);
-	digitalWrite(DAC_CHIP_SELECT_PIN, HIGH);
+	pinModeFast(DAC_CHIP_SELECT_PIN, OUTPUT);
+	digitalWriteFast(DAC_CHIP_SELECT_PIN, LOW);
+	digitalWriteFast(DAC_CHIP_SELECT_PIN, HIGH);
 
 	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
 	{
@@ -261,10 +262,10 @@ void setDacVoltage(int channel, double voltage)
 	}
 
 	noInterrupts();
-	digitalWrite(DAC_CHIP_SELECT_PIN, LOW);
+	digitalWriteFast(DAC_CHIP_SELECT_PIN, LOW);
 	SPI.transfer(primaryByte);
 	SPI.transfer(secondaryByte);
-	digitalWrite(DAC_CHIP_SELECT_PIN, HIGH);
+	digitalWriteFast(DAC_CHIP_SELECT_PIN, HIGH);
 	interrupts();
 
 	currentVoltages[channel] = voltage;
@@ -273,7 +274,7 @@ void setDacVoltage(int channel, double voltage)
 void setFrequency(int channel, int frequency)
 {
 	tone(FREQUENCY_OUTPUT_PIN, frequency);
-	digitalWrite(FREQUENCY_DIRECTION_PIN, directions[channel] == Clockwise ? HIGH : LOW);
+	digitalWriteFast(FREQUENCY_DIRECTION_PIN, directions[channel] == Clockwise ? HIGH : LOW);
 
 	currentFrequency = frequency;
 }
@@ -311,11 +312,11 @@ int getAdcValue(int channel)
 
 	noInterrupts();
 	SPI.beginTransaction(MCP3008);
-	digitalWrite(ADC_CHIP_SELECT_PIN, LOW);
+	digitalWriteFast(ADC_CHIP_SELECT_PIN, LOW);
 	SPI.transfer(0x01);									// Start Bit
 	dataMSB = SPI.transfer(readAddress << 4) & 0x03;	// Send readAddress and receive MSB data, masked to two bits
 	dataLSB = SPI.transfer(JUNK);						// Push junk data and get LSB byte return
-	digitalWrite(ADC_CHIP_SELECT_PIN, HIGH);
+	digitalWriteFast(ADC_CHIP_SELECT_PIN, HIGH);
 	SPI.endTransaction();
 	interrupts();
 
