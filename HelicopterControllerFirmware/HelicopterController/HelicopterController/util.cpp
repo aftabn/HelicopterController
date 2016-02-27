@@ -69,7 +69,7 @@ void sendDirectionStatus(Direction direction)
 {
 	if (direction == Clockwise)
 	{
-		Serial.println(F("C"));
+		Serial.println(F("CW"));
 	}
 	else if (direction == CounterClockwise)
 	{
