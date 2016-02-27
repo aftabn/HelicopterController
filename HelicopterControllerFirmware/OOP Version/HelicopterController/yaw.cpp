@@ -6,7 +6,9 @@ Author:	Aftab
 
 #include "yaw.h"
 
-double Yaw::getAngle()
+Yaw::Yaw(Dac *dac, Encoder *encoder) : dac(dac), encoder(encoder)
 {
-	return encoder->currentAngle();
+	currentAngle = &(encoder->currentAngle);
 }
+
+Yaw::~Yaw() {}

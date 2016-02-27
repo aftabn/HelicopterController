@@ -93,6 +93,7 @@ enum MotorDriverType { AnalogVoltage, Frequency };
 extern const int minMotorOutput[MAX_NUM_CHANNELS];
 extern const int maxMotorOutput[MAX_NUM_CHANNELS];
 
+extern volatile bool isPidCalculationNeeded;
 extern volatile bool isPidEnabled;
 extern volatile bool isVerboseMode;
 extern volatile bool isSafetyOn;
@@ -128,6 +129,7 @@ void enablePid(void);
 void disablePid(void);
 void resetPidValues(void);
 
+void executePidCalculation(void);
 void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOutput);
 void applyMotorOutputs(int channel, Direction direction, int percentageOutput);
 

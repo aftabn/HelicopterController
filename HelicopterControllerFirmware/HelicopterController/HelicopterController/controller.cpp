@@ -18,7 +18,9 @@ void initializeController()
 {
 	// The baud rate had to be dropped from 115200 to 38400 as going any higher resulted in data loss
 	// due to the firing of the external interrupt for the decode
-	Serial.begin(9600);
+	Serial.begin(115200);
+	Serial.println();
+	Serial.flush();
 
 	pinModeFast(HEARTBEAT_LED_PIN, OUTPUT);
 }
@@ -211,6 +213,12 @@ void scanSerialPort()
 			{
 				heartBeatTimer = 0;
 				digitalWriteFast(HEARTBEAT_LED_PIN, !digitalReadFast(HEARTBEAT_LED_PIN));
+			}
+
+			if (isPidCalculationNeeded)
+			{
+				executePidCalculation();
+				isPidCalculationNeeded = false;
 			}
 		}
 

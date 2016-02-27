@@ -219,7 +219,18 @@ namespace Helicopter.Core.Controller
             string command = String.Format("{0} {1}", STR_DirectionCommand, channel);
             string direction = communicationsManager.Write(command).ReturnValue;
 
-            return (Direction)Enum.Parse(typeof(Direction), direction);
+            if (direction == "CW")
+            {
+                return Direction.Clockwise;
+            }
+            else if (direction == "CCW")
+            {
+                return Direction.CounterClockwise;
+            }
+            else
+            {
+                throw new Exception(String.Format("Returned direction [{0}] is not valid", direction));
+            }
         }
 
         public static void SetMotorDirection(int channel, Direction direction)
@@ -233,7 +244,18 @@ namespace Helicopter.Core.Controller
             string command = String.Format("{0} {1}", STR_MotorDriverCommand, channel);
             string motorDriver = communicationsManager.Write(command).ReturnValue;
 
-            return (MotorDriver)Enum.Parse(typeof(MotorDriver), motorDriver);
+            if (motorDriver == "AV")
+            {
+                return MotorDriver.AnalogVoltage;
+            }
+            else if (motorDriver == "CCW")
+            {
+                return MotorDriver.Frequency;
+            }
+            else
+            {
+                throw new Exception(String.Format("Returned motor driver type [{0}] is not valid", motorDriver));
+            }
         }
 
         public static void SetMotorDriver(int channel, MotorDriver motorDriver)
