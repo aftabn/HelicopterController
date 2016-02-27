@@ -5,7 +5,9 @@ Author:	Aftab
 */
 
 #include <SPI\SPI.h>
+#include <digitalWriteFast.h>
 #include "adc.h"
+#include "utility.h"
 
 const double Adc::DBL_ReferenceVoltage = Utility::DBL_ArduinoVss;
 const double Adc::DBL_VoltsPerBit = DBL_ReferenceVoltage / Adc::INT_Resolution;

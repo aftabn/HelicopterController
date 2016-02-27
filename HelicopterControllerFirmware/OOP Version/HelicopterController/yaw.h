@@ -7,10 +7,29 @@ Author:	Aftab
 #ifndef _YAW_h
 #define _YAW_h
 
-#if defined(ARDUINO) && ARDUINO >= 100
-#include "arduino.h"
-#else
-#include "WProgram.h"
-#endif
+#include "dac.h"
+#include "encoder.h"
+#include "pidSettings.h"
+#include "motorEnums.h"
+
+class Yaw
+{
+private:
+	Encoder *encoder;
+	Dac *dac;
+	static const byte INT_MotorChannel = 0;
+
+public:
+	Yaw(Dac *dac, Encoder *encoder) : dac(dac), encoder(encoder) {}
+	~Yaw() {}
+
+	PidSettings pidSettings;
+	volatile double setPoint;
+	volatile MotorEnums::Direction direction;
+	volatile MotorEnums::MotorDriverType motorDriverType;
+
+	void initialize(void);
+	double getAngle(void);
+};
 
 #endif

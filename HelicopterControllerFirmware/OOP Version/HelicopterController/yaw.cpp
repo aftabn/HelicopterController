@@ -5,3 +5,8 @@ Author:	Aftab
 */
 
 #include "yaw.h"
+
+double Yaw::getAngle()
+{
+	return encoder->currentAngle();
+}

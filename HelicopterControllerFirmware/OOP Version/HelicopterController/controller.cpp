@@ -10,7 +10,7 @@ Author:	Aftab
 #include "utility.h"
 #include "commandHandler.h"
 
-Controller::Controller()
+Controller::Controller() : potentiometer(&adc), yaw(&dac, &encoder), tilt(&dac, &potentiometer), pidController(&yaw, &tilt)
 {
 	lineBuffer[Utility::INT_LineSizeMax];
 }
@@ -22,6 +22,15 @@ void Controller::initialize()
 	Serial.flush();
 
 	pinModeFast(Utility::PIN_HeartbeatLed, OUTPUT);
+}
+
+void Controller::updateHeartbeat()
+{
+	if (++heartbeatCounter >= 250000)
+	{
+		heartbeatCounter = 0;
+		digitalWriteFast(Utility::PIN_HeartbeatLed, !digitalReadFast(Utility::PIN_HeartbeatLed));
+	}
 }
 
 void Controller::processCommand(char *command)
@@ -190,29 +199,16 @@ void Controller::processLine(char *line)
 
 void Controller::scanSerialPort()
 {
-	char incomingChar;
 	uint8_t linePointer = 0;
+	char incomingChar;
 	char tmpstr[100];
-
-	long heartBeatTimer = 0;
-	long refreshAngleTimer = 0;
 
 	while (true)
 	{
 		// Use this to toggle heartbeat LED when not receiving characters
 		while (Serial.available() <= 0)
 		{
-			if (++refreshAngleTimer >= 5000)
-			{
-				refreshAngleTimer = 0;
-				//updatePotentiometerAngle();
-			}
-
-			if (++heartBeatTimer >= 250000)
-			{
-				heartBeatTimer = 0;
-				digitalWriteFast(Utility::PIN_HeartbeatLed, !digitalReadFast(Utility::PIN_HeartbeatLed));
-			}
+			updateHeartbeat();
 		}
 
 		incomingChar = (char)Serial.read();

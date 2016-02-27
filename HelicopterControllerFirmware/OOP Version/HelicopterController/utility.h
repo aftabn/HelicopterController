@@ -8,7 +8,7 @@ Author:	Aftab
 #define _UTILITY_h
 
 #include "arduino.h"
-#include "pidController.h"
+#include "motorEnums.h"
 
 class Utility
 {
@@ -19,6 +19,7 @@ private:
 
 public:
 	static const double DBL_ArduinoVss;
+	static const double DBL_MotorIdleVoltage;
 
 	static const char* UNIT_None;
 	static const char* UNIT_Percent;
@@ -50,8 +51,8 @@ public:
 	static void sendDouble(double num, int numDecimals);
 	static void sendOnOffStatus(bool isOn);
 	static void sendOneOrZeroStatus(bool isHigh);
-	static void sendDirectionStatus(Direction direction);
-	static void sendMotorDriverStatus(MotorDriverType motorDriverType);
+	static void sendDirectionStatus(MotorEnums::Direction direction);
+	static void sendMotorDriverStatus(MotorEnums::MotorDriverType motorDriverType);
 	static void sendIntRangeError(int lowerLimit, int upperLimit, char* unit);
 	static void sendDoubleRangeError(double lowerLimit, double upperLimit, char* unit);
 	static void sendChannelError(void);

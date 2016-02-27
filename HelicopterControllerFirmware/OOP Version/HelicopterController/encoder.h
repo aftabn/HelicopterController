@@ -1,13 +1,15 @@
 /*
-Name: decoder.h
+Name: encoder.h
 Created: 2/25/2016
 Author:	Aftab
 */
 
-#ifndef _DECODER_h
-#define _DECODER_h
+#ifndef _ENCODER_h
+#define _ENCODER_h
 
-class Decoder
+#include "Arduino.h"
+
+class Encoder
 {
 private:
 	static const byte INT_MotorChannel = 0;
@@ -17,12 +19,11 @@ private:
 	static const int encoderLookup[16]; // One for each possible state
 	static byte encoderValues;
 	static volatile double _currentAngle;
-
 	static void quadratureDecoderISR(void);
 
 public:
-	Decoder();
-	~Decoder();
+	Encoder() {}
+	~Encoder() {}
 
 	double currentAngle() { return _currentAngle; }
 

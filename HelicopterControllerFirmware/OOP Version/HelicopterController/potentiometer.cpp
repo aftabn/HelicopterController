@@ -5,28 +5,21 @@ Author:	Aftab
 */
 
 #include "potentiometer.h"
+#include "utility.h"
 
 const double Potentiometer::DBL_TotalRangeDegrees = 290.0;
 const double Potentiometer::DBL_DegreesPerVolt = DBL_TotalRangeDegrees / Utility::DBL_ArduinoVss;
-
-Potentiometer::Potentiometer(double idleVoltage) : DBL_IdleVoltage(idleVoltage)
-{
-	Adc adc;
-}
-
-Potentiometer::~Potentiometer()
-{
-}
+const double Potentiometer::DBL_ZeroedVoltage = 2.5;
 
 double Potentiometer::convertAdcVoltageToAngle(double voltage)
 {
-	double angle = (voltage - DBL_IdleVoltage) * DBL_DegreesPerVolt;
+	double angle = (voltage - DBL_ZeroedVoltage) * DBL_DegreesPerVolt;
 	return angle;
 }
 
 double Potentiometer::getAngle(byte channel)
 {
-	double voltage = adc.getSampledVoltage(channel);
+	double voltage = adc->getSampledVoltage(channel);
 	double angle = convertAdcVoltageToAngle(voltage);
 
 	return angle;

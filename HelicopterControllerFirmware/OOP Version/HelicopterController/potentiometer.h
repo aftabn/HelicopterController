@@ -12,18 +12,18 @@ Author:	Aftab
 class Potentiometer
 {
 private:
-	Adc adc;
+	Adc *adc;
 	static const byte INT_MotorChannel = 1;
 	static const double DBL_TotalRangeDegrees;
 	static const double DBL_DegreesPerVolt;
-	const double DBL_IdleVoltage;
+	static const double DBL_ZeroedVoltage;
 
 	double convertAdcVoltageToAngle(double voltage);
 	double getAngle(byte channel);
 
 public:
-	Potentiometer(double idleVoltage);
-	~Potentiometer();
+	Potentiometer(Adc *adc) : adc(adc) {}
+	~Potentiometer() {}
 
 	double currentAngle;
 

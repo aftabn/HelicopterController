@@ -57,7 +57,7 @@ void CommandHandler::onCommandVersion()
 //{
 //	if (Utility::isReadCommand(CommandHandler::gParameters[0]))
 //	{
-//		sendOnOffStatus(isPidEnabled);
+//		Utility::sendOnOffStatus(isPidEnabled);
 //		Utility::sendAck();
 //	}
 //	else if (isOnCommandArg(CommandHandler::gParameters[0]))

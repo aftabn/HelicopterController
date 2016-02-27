@@ -5,10 +5,13 @@ Author:	Aftab
 */
 
 #include <avr\pgmspace.h>
+#include "motorEnums.h"
 #include "utility.h"
-#include "pidController.h"
+
+using namespace MotorEnums;
 
 const double Utility::DBL_ArduinoVss = 5.0;
+const double Utility::DBL_MotorIdleVoltage = 2.5;
 
 const char* Utility::UNIT_None = "";
 const char* Utility::UNIT_Percent = "%";

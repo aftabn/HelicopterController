@@ -4,14 +4,13 @@ Created: 2/25/2016
 Author:	Aftab
 */
 
+#include <SPI\SPI.h>
+#include <digitalWriteFast.h>
 #include "dac.h"
 
 const double Dac::DBL_ReferenceVoltage = Utility::DBL_ArduinoVss;
 const double Dac::DBL_VoltsPerBit = DBL_ReferenceVoltage / Dac::INT_Resolution;
-
-Dac::Dac(double defaultVoltage) : DBL_DefaultVoltage(defaultVoltage)
-{
-}
+const double Dac::DBL_DefaultVoltage = Utility::DBL_MotorIdleVoltage;
 
 void Dac::initialize()
 {

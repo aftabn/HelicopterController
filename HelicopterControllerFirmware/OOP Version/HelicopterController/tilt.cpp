@@ -5,3 +5,9 @@ Author:	Aftab
 */
 
 #include "tilt.h"
+
+double Tilt::getAngle()
+{
+	potentiometer->updateAngle();
+	return potentiometer->currentAngle;
+}
