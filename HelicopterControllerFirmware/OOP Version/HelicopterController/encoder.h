@@ -12,21 +12,23 @@ Author:	Aftab
 class Encoder
 {
 private:
+	Encoder();
+	~Encoder();
+	static Encoder *encoder;
 	static const byte INT_MotorChannel = 0;
 	static const int INT_PulsesPerRevolution = 400;
 	static const double DBL_TotalRangeDegrees;
 	static const double DBL_DegreesPerPulse;
 	static const int encoderLookup[16]; // One for each possible state
-	static byte encoderValues;
-	static volatile double _currentAngle;
+	byte encoderValues;
+
 	static void quadratureDecoderISR(void);
 
 public:
-	Encoder() {}
-	~Encoder() {}
+	volatile double currentAngle;
 
-	double currentAngle() { return _currentAngle; }
-
+	static Encoder *getEncoder(void);
+	static void destruct(void);
 	void initialize(void);
 	void zeroAngle(void);
 };
