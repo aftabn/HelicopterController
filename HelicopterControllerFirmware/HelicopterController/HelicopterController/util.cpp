@@ -69,11 +69,11 @@ void sendDirectionStatus(Direction direction)
 {
 	if (direction == Clockwise)
 	{
-		Serial.println(F("Clockwise"));
+		Serial.println(F("C"));
 	}
 	else if (direction == CounterClockwise)
 	{
-		Serial.println(F("CounterClockwise"));
+		Serial.println(F("CCW"));
 	}
 }
 
@@ -81,11 +81,11 @@ void sendMotorDriverStatus(MotorDriverType motorDriverType)
 {
 	if (motorDriverType == AnalogVoltage)
 	{
-		Serial.println(F("AnalogVoltage"));
+		Serial.println(F("AV"));
 	}
 	else if (motorDriverType == Frequency)
 	{
-		Serial.println(F("Frequency"));
+		Serial.println(F("F"));
 	}
 }
 
@@ -141,13 +141,13 @@ void sendOneOrZeroError()
 
 void sendDirectionError()
 {
-	Serial.println(F("Value must be CW or CCW"));
+	Serial.println(F("Value must be CLOCKWISE / CW or COUNTERCLOCKWISE / CCW"));
 	sendNack();
 }
 
 void sendMotorDriverError()
 {
-	Serial.println(F("Value must be ANALOGVOLTAGE or FREQUENCY"));
+	Serial.println(F("Value must be ANALOGVOLTAGE / AV or FREQUENCY / F"));
 	sendNack();
 }
 
@@ -166,25 +166,25 @@ bool isOffCommandArg(char* arg)
 bool isClockwiseCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "CLOCKWISE") || 0 == stricmp(arg, "CW") || 0 == stricmp(arg, "0"));
+	return (0 == stricmp(arg, "CLOCKWISE") || 0 == stricmp(arg, "CW"));
 }
 
 bool isCounterClockwiseCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "COUNTERCLOCKWISE") || 0 == stricmp(arg, "CCW") || 0 == stricmp(arg, "1"));
+	return (0 == stricmp(arg, "COUNTERCLOCKWISE") || 0 == stricmp(arg, "CCW"));
 }
 
 bool isAnalogVoltageCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "ANALOGVOLTAGE") || 0 == stricmp(arg, "0"));
+	return (0 == stricmp(arg, "ANALOGVOLTAGE") || 0 == stricmp(arg, "AV"));
 }
 
 bool isFrequencyCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "FREQUENCY") || 0 == stricmp(arg, "1"));
+	return (0 == stricmp(arg, "FREQUENCY") || 0 == stricmp(arg, "F"));
 }
 
 bool isReadCommand(char* arg)
