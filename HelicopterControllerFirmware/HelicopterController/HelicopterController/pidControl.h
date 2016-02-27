@@ -84,7 +84,7 @@ Author:	Aftab
 #define DEFAULT_D_GAIN					D_GAIN_MIN
 #define DEFAULT_SET_POINT				SET_POINT_MIN
 #define DEFAULT_I_WINDUP_THRESH			30.0
-#define DEFAULT_OUTPUT_RATE_LIMIT		5
+#define DEFAULT_OUTPUT_RATE_LIMIT		10
 #define DEFAULT_PID_INTERVAL_MS			250
 
 enum Direction { Clockwise, CounterClockwise };
