@@ -110,7 +110,7 @@ namespace Helicopter.Core.Controller
             }
             if (comPort != String.Empty)
             {
-                serialPort = new SerialPort(comPort, 9600, Parity.None, 8, StopBits.One);
+                serialPort = new SerialPort(comPort, 115200, Parity.None, 8, StopBits.One);
                 serialPort.DataReceived += OnDataReceived;
                 serialPort.Open();
                 IsConnected = true;
