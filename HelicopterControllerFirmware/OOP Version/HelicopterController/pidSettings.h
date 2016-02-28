@@ -18,13 +18,13 @@ private:
 
 public:
 	PidSettings();
-	~PidSettings() {}
+	~PidSettings();
 
-	double proportionalGain;
-	double integralGain;
-	double derivativeGain;
-	double integralWindupThreshold;
-	int outputRateLimit;
+	volatile double proportionalGain;
+	volatile double integralGain;
+	volatile double derivativeGain;
+	volatile double integralWindupThreshold;
+	volatile int outputRateLimit;
 };
 
 #endif

@@ -27,6 +27,27 @@
     <ClCompile Include="utility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dac.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="adc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="potentiometer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="encoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pidSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tilt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yaw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="pidController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,6 +63,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dac.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="adc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="potentiometer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="motorEnums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="encoder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pidSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tilt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="yaw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pidController.h">

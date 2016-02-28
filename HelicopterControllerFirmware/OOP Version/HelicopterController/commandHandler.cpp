@@ -5,6 +5,7 @@ Author:	Aftab
 */
 
 #include "commandHandler.h"
+#include "pidController.h"
 
 char CommandHandler::gParameters[Utility::INT_ParameterCountMax][Utility::INT_ParameterLengthMax + 1];
 
@@ -52,38 +53,38 @@ void CommandHandler::onCommandVersion()
 		Utility::sendReadOnlyError();
 	}
 }
-//
-//void onCommandPidControl()
-//{
-//	if (Utility::isReadCommand(CommandHandler::gParameters[0]))
-//	{
-//		Utility::sendOnOffStatus(isPidEnabled);
-//		Utility::sendAck();
-//	}
-//	else if (isOnCommandArg(CommandHandler::gParameters[0]))
-//	{
-//		if (!isPidEnabled)
-//		{
-//			enablePid();
-//			Utility::sendAck();
-//		}
-//		else
-//		{
-//			Serial.println(F("PID control is already on."));
-//			Utility::sendNack();
-//		}
-//	}
-//	else if (isOffCommandArg(CommandHandler::gParameters[0]))
-//	{
-//		disablePid();
-//		Utility::sendAck();
-//	}
-//	else
-//	{
-//		sendOnOffError();
-//	}
-//}
-//
+
+void CommandHandler::onCommandPidControl(PidController *pidController)
+{
+	if (Utility::isReadCommand(CommandHandler::gParameters[0]))
+	{
+		Utility::sendOnOffStatus(pidController->isPidEnabled);
+		Utility::sendAck();
+	}
+	else if (Utility::isOnCommandArg(CommandHandler::gParameters[0]))
+	{
+		if (!pidController->isPidEnabled)
+		{
+			pidController->enablePid();
+			Utility::sendAck();
+		}
+		else
+		{
+			Serial.println(F("PID control is already on."));
+			Utility::sendNack();
+		}
+	}
+	else if (Utility::isOffCommandArg(CommandHandler::gParameters[0]))
+	{
+		pidController->disablePid();
+		Utility::sendAck();
+	}
+	else
+	{
+		Utility::sendOnOffError();
+	}
+}
+
 //void onCommandVerbose()
 //{
 //	if (Utility::isReadCommand(CommandHandler::gParameters[0]))
@@ -556,6 +557,7 @@ void CommandHandler::onCommandVersion()
 //	}
 //}
 //
+
 void CommandHandler::onCommandHelp()
 {
 	Serial.println(F("Command: *IDN? \r\nDescription: Returns the identity of the controller\r\n"));

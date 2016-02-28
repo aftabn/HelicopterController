@@ -15,17 +15,20 @@ Author:	Aftab
 #include "yaw.h"
 #include "tilt.h"
 #include "pidController.h"
+#include "utility.h"
 
 class Controller
 {
 private:
-	Dac dac;
-	Adc adc;
-	Potentiometer potentiometer;
-	Encoder encoder;
-	Yaw yaw;
-	Tilt tilt;
-	PidController pidController;
+	static const double DBL_FirmwareVersion;
+
+	Dac *dac;
+	Adc *adc;
+	Potentiometer *potentiometer;
+	Encoder *encoder;
+	Yaw *yaw;
+	Tilt *tilt;
+	PidController *pidController;
 	char lineBuffer[Utility::INT_LineSizeMax];
 	long heartbeatCounter = 0;
 
@@ -37,7 +40,8 @@ private:
 
 public:
 	Controller();
-	~Controller() {}
+	~Controller();
+
 	void initialize(void);
 	void scanSerialPort(void);
 };

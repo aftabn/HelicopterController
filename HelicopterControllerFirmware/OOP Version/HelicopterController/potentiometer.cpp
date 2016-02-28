@@ -11,6 +11,15 @@ const double Potentiometer::DBL_TotalRangeDegrees = 290.0;
 const double Potentiometer::DBL_DegreesPerVolt = DBL_TotalRangeDegrees / Utility::DBL_ArduinoVss;
 const double Potentiometer::DBL_ZeroedVoltage = 2.5;
 
+Potentiometer::Potentiometer(Adc *adc) : adc(adc)
+{
+}
+
+Potentiometer::~Potentiometer()
+{
+	delete adc;
+}
+
 double Potentiometer::convertAdcVoltageToAngle(double voltage)
 {
 	double angle = (voltage - DBL_ZeroedVoltage) * DBL_DegreesPerVolt;

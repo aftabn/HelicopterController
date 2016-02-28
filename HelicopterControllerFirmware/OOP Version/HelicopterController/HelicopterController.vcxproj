@@ -47,7 +47,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino;C:\Program Files (x86)\Arduino\hardware\arduino\avr\variants\standard;C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterControllerFirmware\OOP Version\HelicopterController;C:\Users\Aftab\Documents\Arduino\libraries\digitalWriteFast;C:\Users\Aftab\Documents\Arduino\libraries\digitalWriteFast\utility;C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SPI;C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SPI\utility;C:\Program Files (x86)\Arduino\libraries;C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\ejdm0tkg.2eh\Micro Platforms\default\debuggers;C:\Users\Aftab\Documents\Arduino\libraries;C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterControllerFirmware\OOP Version\HelicopterController;C:\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino;C:\Program Files (x86)\Arduino\hardware\arduino\avr\variants\standard;C:\Users\Aftab\Documents\Arduino\libraries\digitalWriteFast;C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SPI;C:\Program Files (x86)\Arduino\libraries;C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\ejdm0tkg.2eh\Micro Platforms\default\debuggers;C:\Users\Aftab\Documents\Arduino\libraries;C:\Program Files (x86)\Arduino\hardware\tools\avr/avr/include/;C:\Program Files (x86)\Arduino\hardware\tools\avr//avr/include/avr/;C:\Program Files (x86)\Arduino\hardware\tools\avr/lib\gcc\avr\4.8.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino;C:\Program Files (x86)\Arduino\hardware\arduino\avr\variants\standard;C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterControllerFirmware\OOP Version\HelicopterController;C:\Users\Aftab\Documents\Arduino\libraries\digitalWriteFast;C:\Users\Aftab\Documents\Arduino\libraries\digitalWriteFast\utility;C:\Users\Aftab\Documents\Arduino\libraries\Streaming;C:\Users\Aftab\Documents\Arduino\libraries\Streaming\utility;C:\Program Files (x86)\Arduino\libraries;C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\ejdm0tkg.2eh\Micro Platforms\default\debuggers;C:\Users\Aftab\Documents\Arduino\libraries;C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterControllerFirmware\OOP Version\HelicopterController;C:\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino;C:\Program Files (x86)\Arduino\hardware\arduino\avr\variants\standard;C:\Users\Aftab\Documents\Arduino\libraries\digitalWriteFast;C:\Users\Aftab\Documents\Arduino\libraries\Streaming;C:\Program Files (x86)\Arduino\libraries;C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\ejdm0tkg.2eh\Micro Platforms\default\debuggers;C:\Users\Aftab\Documents\Arduino\libraries;C:\Program Files (x86)\Arduino\hardware\tools\avr/avr/include/;C:\Program Files (x86)\Arduino\hardware\tools\avr//avr/include/avr/;C:\Program Files (x86)\Arduino\hardware\tools\avr/lib\gcc\avr\4.8.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterControllerFirmware\OOP Version\HelicopterController\__vm\.HelicopterController.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
       <PreprocessorDefinitions>__AVR_ATmega328p__;__AVR_ATmega328P__;F_CPU=16000000L;ARDUINO=10607;ARDUINO_AVR_UNO;ARDUINO_ARCH_AVR;__cplusplus;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -77,17 +77,32 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="adc.h" />
     <ClInclude Include="commandHandler.h" />
     <ClInclude Include="controller.h" />
+    <ClInclude Include="dac.h" />
+    <ClInclude Include="encoder.h" />
+    <ClInclude Include="motorEnums.h" />
     <ClInclude Include="pidController.h" />
+    <ClInclude Include="pidSettings.h" />
+    <ClInclude Include="potentiometer.h" />
+    <ClInclude Include="tilt.h" />
     <ClInclude Include="utility.h" />
+    <ClInclude Include="yaw.h" />
     <ClInclude Include="__vm\.HelicopterController.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="adc.cpp" />
     <ClCompile Include="commandHandler.cpp" />
     <ClCompile Include="controller.cpp" />
+    <ClCompile Include="dac.cpp" />
+    <ClCompile Include="encoder.cpp" />
     <ClCompile Include="pidController.cpp" />
+    <ClCompile Include="pidSettings.cpp" />
+    <ClCompile Include="potentiometer.cpp" />
+    <ClCompile Include="tilt.cpp" />
     <ClCompile Include="utility.cpp" />
+    <ClCompile Include="yaw.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

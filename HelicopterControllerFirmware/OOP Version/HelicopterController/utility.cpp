@@ -5,20 +5,24 @@ Author:	Aftab
 */
 
 #include <avr\pgmspace.h>
-#include "motorEnums.h"
+#include <Streaming.h>
+#include "motor.h"
 #include "utility.h"
 
-using namespace MotorEnums;
+using namespace Motor;
 
 const double Utility::DBL_ArduinoVss = 5.0;
-const double Utility::DBL_MotorIdleVoltage = 2.5;
 
 const char* Utility::UNIT_None = "";
 const char* Utility::UNIT_Percent = "%";
 const char* Utility::UNIT_Milliseconds = "ms";
 const char* Utility::UNIT_Hertz = "Hz";
-const char* Utility::UNIT_Degrees = "°";
+const char* Utility::UNIT_Degrees = "deg";
 const char* Utility::UNIT_Volts = "V";
+
+const char* Utility::STR_NewLine = "\r\n";
+
+Utility::Utility() {}
 
 // Implementation of sending had to change due to arduino storing string literals in dynamic memory
 // Used F() to force storage of literals in PROGMEM, which requires directly using Serial.println() to send
@@ -35,89 +39,46 @@ void Utility::sendAck()
 	Serial.println(F("OK"));
 }
 
-void Utility::sendError(const char* str)
-{
-	Serial.println(str);
-	sendNack();
-}
-
 void Utility::sendInt(int num)
 {
-	char tmpstr[20];
-	sprintf(tmpstr, "%d", num);
-	Serial.println(tmpstr);
+	Serial << num << STR_NewLine;
 }
 
 void Utility::sendDouble(double num)
 {
-	sendDouble(num, INT_DefaultNumDecimals);
-}
-
-// Using dtostrf instead of sprintf as it works better on embedded systems and doesn't
-// require the full version of stdlib
-// Source: http://blog.protoneer.co.nz/arduino-float-to-string-that-actually-works/
-void Utility::sendDouble(double num, int numDecimals)
-{
-	char tmpstr[20];
-	dtostrf(num, INT_MinNumFloatChars, numDecimals, tmpstr);
-	Serial.println(tmpstr);
+	Serial << num << STR_NewLine;
 }
 
 void Utility::sendOnOffStatus(bool isOn)
 {
-	char tmpstr[5];
-	sprintf(tmpstr, "%s", isOn ? "ON" : "OFF");
-	Serial.println(tmpstr);
+	Serial << (isOn ? F("ON") : F("OFF")) << STR_NewLine;
 }
 
 void Utility::sendOneOrZeroStatus(bool isHigh)
 {
-	char tmpstr[3];
-	sprintf(tmpstr, "%d", isHigh ? 1 : 0);
-	Serial.println(tmpstr);
+	Serial << (isHigh ? 1 : 0) << STR_NewLine;
 }
 
 void Utility::sendDirectionStatus(Direction direction)
 {
-	char tmpstr[17];
-	sprintf(tmpstr, "%s", direction == Clockwise ? "Clockwise" : "CounterClockwise");
-	Serial.println(tmpstr);
+	Serial << (direction == Direction::Clockwise ? F("CW") : F("CCW")) << STR_NewLine;
 }
 
 void Utility::sendMotorDriverStatus(MotorDriverType motorDriverType)
 {
-	char tmpstr[17];
-
-	if (motorDriverType == AnalogVoltage)
-	{
-		sprintf(tmpstr, "%s", "AnalogVoltage");
-	}
-	else if (motorDriverType == Frequency)
-	{
-		sprintf(tmpstr, "%s", "Frequency");
-	}
-
-	Serial.println(tmpstr);
+	Serial << (motorDriverType == MotorDriverType::AnalogVoltage ? F("AV") : F("F")) << STR_NewLine;
 }
 
 void Utility::sendIntRangeError(int lowerLimit, int upperLimit, char* unit)
 {
-	char tmpstr[50];
-	sprintf(tmpstr, "Value must be between %d%s and %d%s", lowerLimit, unit, upperLimit, unit);
-	sendError(tmpstr);
+	Serial << F("Value must be between ") << lowerLimit << unit << F(" and ") << upperLimit << unit << STR_NewLine;
+	sendNack();
 }
 
 void Utility::sendDoubleRangeError(double lowerLimit, double upperLimit, char* unit)
 {
-	char lowerLimitStr[10];
-	char upperLimitStr[10];
-	char tmpstr[50];
-
-	dtostrf(lowerLimit, INT_MinNumFloatChars, INT_DefaultNumDecimals, lowerLimitStr);
-	dtostrf(upperLimit, INT_MinNumFloatChars, INT_DefaultNumDecimals, upperLimitStr);
-	sprintf(tmpstr, "Value must be between %s%s and %s%s", lowerLimitStr, unit, upperLimitStr, unit);
-
-	sendError(tmpstr);
+	Serial << F("Value must be between ") << lowerLimit << unit << F(" and ") << upperLimit << unit << STR_NewLine;
+	sendNack();
 }
 
 void Utility::sendChannelError()
@@ -152,13 +113,13 @@ void Utility::sendOneOrZeroError()
 
 void Utility::sendDirectionError()
 {
-	Serial.println(F("Value must be CW or CCW"));
+	Serial.println(F("Value must be CLOCKWISE / CW or COUNTERCLOCKWISE / CCW"));
 	sendNack();
 }
 
 void Utility::sendMotorDriverError()
 {
-	Serial.println(F("Value must be ANALOG or FREQUENCY"));
+	Serial.println(F("Value must be ANALOGVOLTAGE / AV or FREQUENCY / F"));
 	sendNack();
 }
 
@@ -177,25 +138,25 @@ bool Utility::isOffCommandArg(char* arg)
 bool Utility::isClockwiseCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "CW") || 0 == stricmp(arg, "0"));
+	return (0 == stricmp(arg, "CLOCKWISE") || 0 == stricmp(arg, "CW"));
 }
 
 bool Utility::isCounterClockwiseCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "CCW") || 0 == stricmp(arg, "1"));
+	return (0 == stricmp(arg, "COUNTERCLOCKWISE") || 0 == stricmp(arg, "CCW"));
 }
 
 bool Utility::isAnalogVoltageCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "ANALOG") || 0 == stricmp(arg, "0"));
+	return (0 == stricmp(arg, "ANALOGVOLTAGE") || 0 == stricmp(arg, "AV"));
 }
 
 bool Utility::isFrequencyCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "FREQUENCY") || 0 == stricmp(arg, "1"));
+	return (0 == stricmp(arg, "FREQUENCY") || 0 == stricmp(arg, "F"));
 }
 
 bool Utility::isReadCommand(char* arg)
@@ -254,11 +215,6 @@ int Utility::stricmp(const char *p1, const char *p2)
 	} while (c1 == c2);
 
 	return c1 - c2;
-}
-
-void Utility::convertDoubleToString(double num, char *str)
-{
-	dtostrf(num, INT_MinNumFloatChars, INT_DefaultNumDecimals, str);
 }
 
 int Utility::convertToInt(char *str)

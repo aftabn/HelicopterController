@@ -10,7 +10,11 @@ Author:	Aftab
 
 const double Dac::DBL_ReferenceVoltage = Utility::DBL_ArduinoVss;
 const double Dac::DBL_VoltsPerBit = DBL_ReferenceVoltage / Dac::INT_Resolution;
-const double Dac::DBL_DefaultVoltage = Utility::DBL_MotorIdleVoltage;
+const double Dac::DBL_DefaultVoltage = Motor::DBL_MotorIdleVoltage;
+
+Dac::Dac() {}
+
+Dac::~Dac() {}
 
 void Dac::initialize()
 {

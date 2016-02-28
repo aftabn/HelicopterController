@@ -8,10 +8,9 @@ Author:	Aftab
 #define _TILT_h
 
 #include "pidSettings.h"
-#include "motorEnums.h"
 #include "potentiometer.h"
 #include "dac.h"
-#include "motorEnums.h"
+#include "motor.h"
 
 // TODO: Add a preprocessor if statement to define either a DAC or frequency output for
 // controlling the motors (based on whether it's demo 1 or 2)
@@ -20,19 +19,27 @@ class Tilt
 private:
 	Potentiometer *potentiometer;
 	Dac *dac;
-	static const byte INT_MotorChannel = 1;
+
+	double adjustOutputToVoltage(Motor::Direction *newDirection, int *newOutput);
+	int adjustOutputToFrequency(int *newOutput);
 
 public:
-	Tilt(Dac *dac, Potentiometer *potentiometer) : dac(dac), potentiometer(potentiometer) {}
-	~Tilt() {}
+	Tilt(Dac *dac, Potentiometer *potentiometer);
+	~Tilt();
 
+	static const byte INT_MotorChannel = 1;
+	const int INT_MinOutput;
+	const int INT_MaxOutput;
 	PidSettings pidSettings;
 	volatile double setPoint;
-	volatile MotorEnums::Direction direction;
-	volatile MotorEnums::MotorDriverType motorDriverType;
+	volatile double *currentAngle;
+	volatile double currentOutput;
+	volatile Motor::Direction direction;
+	volatile Motor::MotorDriverType motorDriverType;
 
 	void initialize(void);
-	double getAngle(void);
+	void refreshAngle(void);
+	void applyMotorOutputs(Motor::Direction *newDirection, int *newOutput);
 };
 
 #endif

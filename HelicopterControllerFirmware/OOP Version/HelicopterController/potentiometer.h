@@ -22,8 +22,8 @@ private:
 	double getAngle(byte channel);
 
 public:
-	Potentiometer(Adc *adc) : adc(adc) {}
-	~Potentiometer() {}
+	Potentiometer(Adc *adc);
+	~Potentiometer();
 
 	double currentAngle;
 

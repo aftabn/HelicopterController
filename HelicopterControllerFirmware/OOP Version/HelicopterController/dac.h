@@ -21,8 +21,8 @@ private:
 	int convertVoltageToDacValue(double voltage);
 
 public:
-	Dac() {};
-	~Dac() {};
+	Dac();
+	~Dac();
 	void initialize(void);
 	void setVoltage(int channel, double voltage);
 };

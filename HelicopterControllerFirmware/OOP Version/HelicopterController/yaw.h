@@ -10,26 +10,32 @@ Author:	Aftab
 #include "dac.h"
 #include "encoder.h"
 #include "pidSettings.h"
-#include "motorEnums.h"
+#include "motor.h"
 
 class Yaw
 {
 private:
 	Encoder *encoder;
 	Dac *dac;
-	static const byte INT_MotorChannel = 0;
+
+	double adjustOutputToVoltage(Motor::Direction *newDirection, int *newOutput);
 
 public:
-	Yaw(Dac *dac, Encoder *encoder) : dac(dac), encoder(encoder) {}
-	~Yaw() {}
+	Yaw(Dac *dac, Encoder *encoder);
+	~Yaw();
 
+	static const byte INT_MotorChannel = 0;
+	const int INT_MinOutput;
+	const int INT_MaxOutput;
 	PidSettings pidSettings;
 	volatile double setPoint;
-	volatile MotorEnums::Direction direction;
-	volatile MotorEnums::MotorDriverType motorDriverType;
+	volatile double *currentAngle;
+	volatile double currentOutput;
+	volatile Motor::Direction direction;
+	volatile Motor::MotorDriverType motorDriverType;
 
 	void initialize(void);
-	double getAngle(void);
+	void applyMotorOutputs(Motor::Direction *newDirection, int *newOutput);
 };
 
 #endif

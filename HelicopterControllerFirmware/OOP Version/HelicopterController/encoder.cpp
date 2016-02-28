@@ -12,6 +12,8 @@ const double Encoder::DBL_TotalRangeDegrees = 360.0;
 const double Encoder::DBL_DegreesPerPulse = Encoder::DBL_TotalRangeDegrees / Encoder::DBL_DegreesPerPulse;
 const signed int Encoder::encoderLookup[] = { 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 };
 
+Encoder *Encoder::encoder;
+
 Encoder::Encoder() {}
 
 Encoder::~Encoder() {}
@@ -19,7 +21,7 @@ Encoder::~Encoder() {}
 // Using a singleton pattern in order to let the static ISR know about the encoder object
 Encoder* Encoder::getEncoder()
 {
-	if (encoder == nullptr)
+	if (!encoder)
 	{
 		encoder = new Encoder();
 	}
@@ -29,7 +31,7 @@ Encoder* Encoder::getEncoder()
 
 void Encoder::destruct()
 {
-	if (encoder != nullptr)
+	if (encoder)
 	{
 		delete encoder;
 	}

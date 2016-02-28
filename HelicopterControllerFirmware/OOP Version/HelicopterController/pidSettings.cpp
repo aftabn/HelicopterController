@@ -20,3 +20,5 @@ PidSettings::PidSettings()
 	integralWindupThreshold = DBL_DefaultIntegralWindupThreshold;
 	outputRateLimit = INT_DefaultOutputRateLimit;
 }
+
+PidSettings::~PidSettings() {}

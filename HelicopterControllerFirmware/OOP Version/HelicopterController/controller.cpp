@@ -10,9 +10,23 @@ Author:	Aftab
 #include "utility.h"
 #include "commandHandler.h"
 
-Controller::Controller() : potentiometer(&adc), yaw(&dac, &encoder), tilt(&dac, &potentiometer), pidController(&yaw, &tilt)
+const double Controller::DBL_FirmwareVersion = 1.07;
+
+Controller::Controller()
 {
-	lineBuffer[Utility::INT_LineSizeMax];
+	dac = new Dac();
+	adc = new Adc();
+	potentiometer = new Potentiometer(adc);
+	encoder = Encoder::getEncoder();
+	yaw = new Yaw(dac, encoder);
+	tilt = new Tilt(dac, potentiometer);
+	pidController = PidController::getPidController(yaw, tilt);
+}
+
+Controller::~Controller()
+{
+	delete dac;
+	PidController::destruct();
 }
 
 void Controller::initialize()
@@ -209,6 +223,8 @@ void Controller::scanSerialPort()
 		while (Serial.available() <= 0)
 		{
 			updateHeartbeat();
+			// TODO: Apply PID motor outputs here.
+			// Simply have PID ISR set a flag stating that its time to recalculate
 		}
 
 		incomingChar = (char)Serial.read();

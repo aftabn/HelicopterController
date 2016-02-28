@@ -8,18 +8,17 @@ Author:	Aftab
 #define _UTILITY_h
 
 #include "arduino.h"
-#include "motorEnums.h"
+#include "motor.h"
 
 class Utility
 {
 private:
-	Utility() {}
+	Utility();
 	static const byte INT_DefaultNumDecimals = 2;
 	static const byte INT_MinNumFloatChars = 4;
 
 public:
 	static const double DBL_ArduinoVss;
-	static const double DBL_MotorIdleVoltage;
 
 	static const char* UNIT_None;
 	static const char* UNIT_Percent;
@@ -27,6 +26,8 @@ public:
 	static const char* UNIT_Hertz;
 	static const char* UNIT_Degrees;
 	static const char* UNIT_Volts;
+
+	static const char* STR_NewLine;
 
 	// Can't use pin 13 (on-board LED) since it's tied to SPI SCK
 	// Source: http://playground.arduino.cc/Code/Spi
@@ -45,14 +46,13 @@ public:
 
 	static void sendNack(void);
 	static void sendAck(void);
-	static void sendError(const char* str);
 	static void sendInt(int num);
 	static void sendDouble(double num);
 	static void sendDouble(double num, int numDecimals);
 	static void sendOnOffStatus(bool isOn);
 	static void sendOneOrZeroStatus(bool isHigh);
-	static void sendDirectionStatus(MotorEnums::Direction direction);
-	static void sendMotorDriverStatus(MotorEnums::MotorDriverType motorDriverType);
+	static void sendDirectionStatus(Motor::Direction direction);
+	static void sendMotorDriverStatus(Motor::MotorDriverType motorDriverType);
 	static void sendIntRangeError(int lowerLimit, int upperLimit, char* unit);
 	static void sendDoubleRangeError(double lowerLimit, double upperLimit, char* unit);
 	static void sendChannelError(void);
@@ -76,7 +76,6 @@ public:
 
 	static void upperCaseString(char *str);
 	static int stricmp(const char *p1, const char *p2);
-	static void convertDoubleToString(double num, char *str);
 	static int convertToInt(char *str);
 };
 

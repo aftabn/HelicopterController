@@ -8,6 +8,7 @@ Author:	Aftab
 #define _COMMANDHANDLER_h
 
 #include "utility.h"
+#include "pidController.h"
 
 class CommandHandler
 {
@@ -21,8 +22,8 @@ public:
 	static void onCommandVersion(void);
 	static void onCommandChangelog(void);
 	static void onCommandEcho(void);
-	/*static oid onCommandPidControl(void);
-	static void onCommandVerbose(void);
+	static void onCommandPidControl(PidController *pidController);
+	/*static void onCommandVerbose(void);
 	static void onCommandSafety(void);
 	static void onCommandOutput(void);
 	static void onCommandDirection(void);
