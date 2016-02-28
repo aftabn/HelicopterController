@@ -46,7 +46,7 @@ void onCommandVersion()
 {
 	if (isReadCommand(gParameters[0]))
 	{
-		sendDouble(FIRMWARE_VERSION, DEFAULT_NUM_DECIMALS);
+		sendDouble(FIRMWARE_VERSION);
 		sendAck();
 	}
 	else
@@ -261,7 +261,7 @@ void onCommandProportionalGain()
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(pGains[channel], DEFAULT_NUM_DECIMALS);
+			sendDouble(pGains[channel]);
 			sendAck();
 		}
 		else if (isDoubleWithinRange(pGain, P_GAIN_MIN, P_GAIN_MAX))
@@ -289,7 +289,7 @@ void onCommandIntegralGain()
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(iGains[channel], DEFAULT_NUM_DECIMALS);
+			sendDouble(iGains[channel]);
 			sendAck();
 		}
 		else if (isDoubleWithinRange(iGain, I_GAIN_MIN, P_GAIN_MAX))
@@ -317,7 +317,7 @@ void onCommandDerivativeGain()
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(dGains[channel], DEFAULT_NUM_DECIMALS);
+			sendDouble(dGains[channel]);
 			sendAck();
 		}
 		else if (isDoubleWithinRange(dGain, D_GAIN_MIN, D_GAIN_MAX))
@@ -345,7 +345,7 @@ void onCommandSetPoint()
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(setPoints[channel], DEFAULT_NUM_DECIMALS);
+			sendDouble(setPoints[channel]);
 			sendAck();
 		}
 		else if (isDoubleWithinRange(setPoint, SET_POINT_MIN, SET_POINT_MAX))
@@ -401,7 +401,7 @@ void onCommandIntegralWindup()
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(iWindupThresholds[channel], DEFAULT_NUM_DECIMALS);
+			sendDouble(iWindupThresholds[channel]);
 			sendAck();
 		}
 		else if (isDoubleWithinRange(windup, I_WINDUP_THRESH_MIN, I_WINDUP_THRESH_MAX))
@@ -456,7 +456,7 @@ void onCommandAngle()
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(currentAngles[channel], DEFAULT_NUM_DECIMALS);
+			sendDouble(currentAngles[channel]);
 			sendAck();
 		}
 		else
@@ -477,7 +477,7 @@ void onCommandAdc()
 	if (isIntWithinRange(adcChannel, ADC_CHANNEL_MIN, ADC_CHANNEL_MAX))
 	{
 		double voltage = getSampledAdcVoltage(adcChannel);
-		sendDouble(voltage, THREE_DECIMALS);
+		sendDouble(voltage);
 		sendAck();
 	}
 	else
@@ -497,7 +497,7 @@ void onCommandDacVoltage()
 
 			if (isReadCommand(gParameters[1]))
 			{
-				sendDouble(currentVoltages[channel], DEFAULT_NUM_DECIMALS);
+				sendDouble(currentVoltages[channel]);
 				sendAck();
 			}
 			else if (isDoubleWithinRange(voltage, MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE))

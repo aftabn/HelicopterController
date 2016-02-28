@@ -10,15 +10,12 @@ Author:	Aftab
 #include "arduino.h"
 #include "pidControl.h"
 
-#define DEFAULT_NUM_DECIMALS	2
-#define THREE_DECIMALS			3
-#define MIN_NUMBER_FLOAT_CHARS	4
+#define NEWLINE					"\r\n"
 
 void sendNack(void);
 void sendAck(void);
-void sendError(const char* str);
 void sendInt(int num);
-void sendDouble(double num, int numDecimals);
+void sendDouble(double num);
 void sendOnOffStatus(bool isOn);
 void sendOneOrZeroStatus(bool isHigh);
 void sendDirectionStatus(Direction direction);

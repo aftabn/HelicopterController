@@ -6,6 +6,7 @@ Author:	Aftab
 
 #include <SPI\SPI.h>
 #include <digitalWriteFast.h>
+#include <Streaming.h>
 #include "util.h"
 #include "pidControl.h"
 
@@ -150,16 +151,8 @@ void executePidCalculation()
 
 		if (isVerboseMode)
 		{
-			char tmpstr[70];
-			char setpoint[8];
-			char angle[8];
-
-			dtostrf(setPoints[channel], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, setpoint);
-			dtostrf(currentAngles[channel], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, angle);
-
-			sprintf(tmpstr, "[CH%d] SP: %s deg, Output: %d %%, Angle: %s deg", channel, setpoint, currentOutputs[channel], angle);
-
-			Serial.println(tmpstr);
+			// Format is: "[CH%d] SP: %s deg, Output: %d %%, Angle: %s deg"
+			Serial << F("[CH") << channel << F("] SP: ") << setPoints[channel] << F("deg, Output: ") << currentOutputs[channel] << F("%, Angle: ") << currentAngles[channel] << F(" °") << NEWLINE;
 		}
 	}
 }
