@@ -486,6 +486,19 @@ void CommandHandler::onCommandAngle(PidController *pidController)
 	}
 }
 
+void CommandHandler::onCommandZeroEncoderAngle(Encoder *encoder)
+{
+	if (isReadCommand(gParameters[1]))
+	{
+		encoder->zeroAngle();
+		sendAck();
+	}
+	else
+	{
+		sendReadOnlyError();
+	}
+}
+
 void CommandHandler::onCommandAdc(Adc *adc)
 {
 	int adcChannel = Utility::convertToInt(gParameters[0]);

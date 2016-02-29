@@ -17,6 +17,7 @@ namespace Helicopter.Core.Controller
         private const string STR_MotorOutputCommand = "O";
         private const string STR_AngleSetPointCommand = "SP";
         private const string STR_AngleCommand = "A";
+        private const string STR_ZeroEncoderAngleCommand = "Z";
         private const string STR_DirectionCommand = "DC";
         private const string STR_MotorDriverCommand = "DV";
         private const string STR_DacVoltageCommand = "DAC";
@@ -117,6 +118,12 @@ namespace Helicopter.Core.Controller
         {
             string command = String.Format("{0} {1}", STR_AngleCommand, channel);
             return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
+        }
+
+        public static void ZeroEncoderAngle()
+        {
+            string command = String.Format("{0}", STR_ZeroEncoderAngleCommand);
+            communicationsManager.Write(command);
         }
 
         public static int GetPidLoopInterval()

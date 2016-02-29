@@ -143,6 +143,10 @@ void Controller::processCommand(char *command)
 	{
 		CommandHandler::onCommandAngle(pidController);
 	}
+	else if (0 == strcmp(command, "Z"))
+	{
+		CommandHandler::onCommandZeroEncoderAngle(encoder);
+	}
 	else if (0 == strcmp(command, "ADC"))
 	{
 		CommandHandler::onCommandAdc(adc);

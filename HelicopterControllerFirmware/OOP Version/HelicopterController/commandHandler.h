@@ -36,6 +36,7 @@ public:
 	static void onCommandRateLimit(PidController *pidController);
 	static void onCommandSetPoint(PidController *pidController);
 	static void onCommandAngle(PidController *pidController);
+	static void onCommandZeroEncoderAngle(Encoder *endoder);
 	static void onCommandAdc(Adc *adc);
 	static void onCommandDacVoltage(bool *isSafetyOn, Dac *dac);
 	static void onCommandFrequencyOutput(bool *isSafetyOn, FrequencyGenerator *frequencyGenerator);
