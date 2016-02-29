@@ -35,7 +35,7 @@ private:
 	void updateOutputsFromPid(byte channel, Motor::Direction *direction, int *percentageOutput);
 	void convertToSignedOutput(int *output, Motor::Direction *direction);
 	void convertToUnsignedOutput(int *output, Motor::Direction *direction);
-	void constrainOutput(byte channelint, int *newOutput);
+	void constrainOutput(byte channelint, int *currentOutput, int *newOutput);
 	void calculateNewPidOutput(byte channel, int *newOutput);
 
 public:

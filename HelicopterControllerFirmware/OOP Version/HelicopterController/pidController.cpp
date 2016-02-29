@@ -155,14 +155,12 @@ void PidController::updateOutputsFromPid(byte channel, Motor::Direction *newDire
 	// Update previous angle for next calculation
 	previousAngles[channel] = *currentAngles[channel];
 
-	int output = *currentOutputs[channel];
+	int currentOutput = *currentOutputs[channel];
 
-	convertToSignedOutput(&output, (Direction *)directions[channel]);
-	calculateNewPidOutput(channel, &output);
-	constrainOutput(channel, &output);
-	convertToUnsignedOutput(&output, newDirection); // The new direction is updated here
-
-	*newOutput = output;
+	convertToSignedOutput(&currentOutput, (Direction *)directions[channel]);
+	calculateNewPidOutput(channel, newOutput);
+	constrainOutput(channel, &currentOutput, newOutput);
+	convertToUnsignedOutput(newOutput, newDirection);
 }
 
 // Applies the output and direction passed in to the specified motor channel
@@ -187,8 +185,8 @@ void PidController::convertToSignedOutput(int *output, Direction *direction)
 // Convert output back to between 0 and 100 %
 void PidController::convertToUnsignedOutput(int *output, Direction *direction)
 {
-	*output = abs(*output);
 	*direction = *output > 0 ? Direction::Clockwise : Direction::CounterClockwise;
+	*output = abs(*output);
 }
 
 // Calculates the new output based on the pid values
@@ -211,18 +209,18 @@ void PidController::calculateNewPidOutput(byte channel, int *newOutput)
 }
 
 // Constrains the output based on rate limit and max allowable percentage value
-void PidController::constrainOutput(byte channel, int *newOutput)
+void PidController::constrainOutput(byte channel, int *currentOutput, int *newOutput)
 {
 	// Limit the amount the output can change by
-	if (abs(*newOutput - *currentOutputs[channel]) > *outputRateLimits[channel])
+	if (abs(*newOutput - *currentOutput) > *outputRateLimits[channel])
 	{
-		if (*newOutput > *currentOutputs[channel])
+		if (*newOutput > *currentOutput)
 		{
-			*newOutput = *currentOutputs[channel] + *outputRateLimits[channel];
+			*newOutput = *currentOutput + *outputRateLimits[channel];
 		}
 		else
 		{
-			*newOutput = *currentOutputs[channel] - *outputRateLimits[channel];
+			*newOutput = *currentOutput - *outputRateLimits[channel];
 		}
 	}
 
