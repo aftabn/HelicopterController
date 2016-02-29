@@ -30,9 +30,9 @@ Tilt::~Tilt()
 void Tilt::initialize()
 {
 	setPoint = 0;
-	currentOutput = 0;
 	direction = Direction::Clockwise;
 	motorDriverType = MotorDriverType::AnalogVoltage;
+	disable();
 }
 
 // Disables both the frequency generator and dac

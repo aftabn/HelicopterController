@@ -47,9 +47,9 @@ public:
 	static const int INT_MaxPidLoopInterval;
 	const double *minSetPoints[Utility::INT_MaxNumChannels];
 	const double *maxSetPoints[Utility::INT_MaxNumChannels];
-	volatile bool isVerboseMode;
-	volatile bool isPidEnabled;
-	volatile bool isPidCalculationNeeded;
+	volatile bool isVerboseMode = false;
+	volatile bool isPidEnabled = false;
+	volatile bool isPidCalculationNeeded = false;
 	volatile int pidLoopInterval;
 	volatile double *pGains[Utility::INT_MaxNumChannels];
 	volatile double *iGains[Utility::INT_MaxNumChannels];

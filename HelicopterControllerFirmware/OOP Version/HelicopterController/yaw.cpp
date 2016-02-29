@@ -27,9 +27,9 @@ Yaw::~Yaw()
 void Yaw::initialize()
 {
 	setPoint = 0;
-	currentOutput = 0;
 	direction = Direction::Clockwise;
 	motorDriverType = MotorDriverType::AnalogVoltage;
+	disable();
 }
 
 void Yaw::disable()

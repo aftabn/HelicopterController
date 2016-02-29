@@ -32,7 +32,7 @@ public:
 	PidSettings pidSettings;
 	volatile double setPoint;
 	volatile double *currentAngle;
-	volatile double currentOutput;
+	volatile int currentOutput;
 	volatile Motor::Direction direction;
 	volatile Motor::MotorDriverType motorDriverType;
 

@@ -57,6 +57,7 @@ void PidController::initialize()
 	outputRateLimits[Yaw::INT_MotorChannel] = &(yaw->pidSettings.outputRateLimit);
 	setPoints[Yaw::INT_MotorChannel] = &(yaw->setPoint);
 	currentAngles[Yaw::INT_MotorChannel] = yaw->currentAngle;
+	currentOutputs[Yaw::INT_MotorChannel] = &(yaw->currentOutput);
 	directions[Yaw::INT_MotorChannel] = &(yaw->direction);
 	motorDriverTypes[Yaw::INT_MotorChannel] = &(yaw->motorDriverType);
 	minMotorOutputs[Yaw::INT_MotorChannel] = &(Yaw::INT_MinOutput);
@@ -72,6 +73,7 @@ void PidController::initialize()
 	outputRateLimits[Tilt::INT_MotorChannel] = &(tilt->pidSettings.outputRateLimit);
 	setPoints[Tilt::INT_MotorChannel] = &(tilt->setPoint);
 	currentAngles[Tilt::INT_MotorChannel] = tilt->currentAngle;
+	currentOutputs[Tilt::INT_MotorChannel] = &(tilt->currentOutput);
 	directions[Tilt::INT_MotorChannel] = &(tilt->direction);
 	motorDriverTypes[Tilt::INT_MotorChannel] = &(tilt->motorDriverType);
 	minMotorOutputs[Tilt::INT_MotorChannel] = &(Tilt::INT_MinOutput);
