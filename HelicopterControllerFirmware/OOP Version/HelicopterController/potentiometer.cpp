@@ -13,6 +13,7 @@ const double Potentiometer::DBL_ZeroedVoltage = 2.5;
 
 Potentiometer::Potentiometer(Adc *adc) : adc(adc)
 {
+	currentAngle = 0;
 }
 
 Potentiometer::~Potentiometer()

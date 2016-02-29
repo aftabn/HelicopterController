@@ -25,7 +25,7 @@ public:
 	Potentiometer(Adc *adc);
 	~Potentiometer();
 
-	double currentAngle;
+	volatile double currentAngle;
 
 	void initialize(void);
 	void updateAngle(void);

@@ -4,7 +4,7 @@ Created: 2/25/2016
 Author:	Aftab
 */
 
-#include <SPI\SPI.h>
+#include <SPI.h>
 #include <digitalWriteFast.h>
 #include "adc.h"
 #include "utility.h"
