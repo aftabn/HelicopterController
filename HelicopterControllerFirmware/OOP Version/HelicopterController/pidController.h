@@ -51,15 +51,15 @@ public:
 	volatile bool isPidEnabled = false;
 	volatile bool isPidCalculationNeeded = false;
 	volatile int pidLoopInterval;
-	volatile double *pGains[Utility::INT_MaxNumChannels];
-	volatile double *iGains[Utility::INT_MaxNumChannels];
-	volatile double *dGains[Utility::INT_MaxNumChannels];
+	volatile double *proportionalGains[Utility::INT_MaxNumChannels];
+	volatile double *integralGains[Utility::INT_MaxNumChannels];
+	volatile double *derivativeGains[Utility::INT_MaxNumChannels];
 	volatile double *integralWindupThresholds[Utility::INT_MaxNumChannels];
 	volatile int *outputRateLimits[Utility::INT_MaxNumChannels];
 	volatile double *setPoints[Utility::INT_MaxNumChannels];
+	volatile int *currentOutputs[Utility::INT_MaxNumChannels];
 	volatile double *currentAngles[Utility::INT_MaxNumChannels];
 	volatile double previousAngles[Utility::INT_MaxNumChannels];
-	volatile int *currentOutputs[Utility::INT_MaxNumChannels];
 	volatile Motor::Direction *directions[Utility::INT_MaxNumChannels];
 	volatile Motor::MotorDriverType *motorDriverTypes[Utility::INT_MaxNumChannels];
 

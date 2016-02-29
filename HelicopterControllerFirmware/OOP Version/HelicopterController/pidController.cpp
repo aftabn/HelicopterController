@@ -50,9 +50,9 @@ void PidController::initialize()
 	pidLoopInterval = DBL_DefaultPidInterval;
 
 	// Set up yaw constants
-	pGains[Yaw::INT_MotorChannel] = &(yaw->pidSettings.proportionalGain);
-	iGains[Yaw::INT_MotorChannel] = &(yaw->pidSettings.integralGain);
-	dGains[Yaw::INT_MotorChannel] = &(yaw->pidSettings.derivativeGain);
+	proportionalGains[Yaw::INT_MotorChannel] = &(yaw->pidSettings.proportionalGain);
+	integralGains[Yaw::INT_MotorChannel] = &(yaw->pidSettings.integralGain);
+	derivativeGains[Yaw::INT_MotorChannel] = &(yaw->pidSettings.derivativeGain);
 	integralWindupThresholds[Yaw::INT_MotorChannel] = &(yaw->pidSettings.integralWindupThreshold);
 	outputRateLimits[Yaw::INT_MotorChannel] = &(yaw->pidSettings.outputRateLimit);
 	setPoints[Yaw::INT_MotorChannel] = &(yaw->setPoint);
@@ -66,9 +66,9 @@ void PidController::initialize()
 	maxSetPoints[Yaw::INT_MotorChannel] = &(Yaw::DBL_SetPointMax);
 
 	// Set up tilt constants
-	pGains[Tilt::INT_MotorChannel] = &(tilt->pidSettings.proportionalGain);
-	iGains[Tilt::INT_MotorChannel] = &(tilt->pidSettings.integralGain);
-	dGains[Tilt::INT_MotorChannel] = &(tilt->pidSettings.derivativeGain);
+	proportionalGains[Tilt::INT_MotorChannel] = &(tilt->pidSettings.proportionalGain);
+	integralGains[Tilt::INT_MotorChannel] = &(tilt->pidSettings.integralGain);
+	derivativeGains[Tilt::INT_MotorChannel] = &(tilt->pidSettings.derivativeGain);
 	integralWindupThresholds[Tilt::INT_MotorChannel] = &(tilt->pidSettings.integralWindupThreshold);
 	outputRateLimits[Tilt::INT_MotorChannel] = &(tilt->pidSettings.outputRateLimit);
 	setPoints[Tilt::INT_MotorChannel] = &(tilt->setPoint);
@@ -207,7 +207,7 @@ void PidController::calculateNewPidOutput(byte channel, int *newOutput)
 	derivativeAnglesErrors[channel] = (*currentAngles[channel] - previousAngles[channel]) / pidLoopInterval / 1000.0;
 
 	// Get new signed output from PID algorithm
-	*newOutput = (int)((*pGains[channel]) * angleErrors[channel] + (*iGains[channel]) * integratedAngleErrors[channel] + (*dGains[channel]) * derivativeAnglesErrors[channel]);
+	*newOutput = (int)((*proportionalGains[channel]) * angleErrors[channel] + (*integralGains[channel]) * integratedAngleErrors[channel] + (*derivativeGains[channel]) * derivativeAnglesErrors[channel]);
 }
 
 // Constrains the output based on rate limit and max allowable percentage value

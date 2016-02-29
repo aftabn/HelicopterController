@@ -277,12 +277,12 @@ void CommandHandler::onCommandProportionalGain(PidController *pidController)
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(*(pidController->pGains[channel]));
+			sendDouble(*(pidController->proportionalGains[channel]));
 			sendAck();
 		}
 		else if (isDoubleWithinRange(pGain, PidSettings::DBL_ProportionalGainMin, PidSettings::DBL_ProportionalGainMax))
 		{
-			*(pidController->pGains[channel]) = pGain;
+			*(pidController->proportionalGains[channel]) = pGain;
 			sendAck();
 		}
 		else
@@ -305,12 +305,12 @@ void CommandHandler::onCommandIntegralGain(PidController *pidController)
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(*(pidController->iGains[channel]));
+			sendDouble(*(pidController->integralGains[channel]));
 			sendAck();
 		}
 		else if (isDoubleWithinRange(iGain, PidSettings::DBL_IntegralGainMin, PidSettings::DBL_IntegralGainMax))
 		{
-			*(pidController->iGains[channel]) = iGain;
+			*(pidController->integralGains[channel]) = iGain;
 			sendAck();
 		}
 		else
@@ -333,12 +333,12 @@ void CommandHandler::onCommandDerivativeGain(PidController *pidController)
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(*(pidController->dGains[channel]));
+			sendDouble(*(pidController->derivativeGains[channel]));
 			sendAck();
 		}
 		else if (isDoubleWithinRange(dGain, PidSettings::DBL_DerivativeGainMin, PidSettings::DBL_DerivativeGainMax))
 		{
-			*(pidController->dGains[channel]) = dGain;
+			*(pidController->derivativeGains[channel]) = dGain;
 			sendAck();
 		}
 		else
@@ -530,7 +530,7 @@ void CommandHandler::onCommandDacVoltage(bool *isSafetyOn, Dac *dac)
 			}
 			else
 			{
-				Serial.println(F("Cannot change frequency output while safety is on."));
+				Serial.println(F("Cannot change voltage while safety is on."));
 				sendNack();
 			}
 		}
@@ -607,13 +607,15 @@ void CommandHandler::onCommandState(bool *isSafetyOn, bool *isVerboseMode, PidCo
 	Serial << F("| Output\t") << *(pidController->currentOutputs[0]) << F("\t") << *(pidController->currentOutputs[1]) << F("\t|\r\n");
 	Serial << F("| Directions\t") << yawDirection << F("\t") << tiltDirection << F("\t|\r\n");
 	Serial << F("| Angles\t") << *(pidController->currentAngles[0]) << F("\t") << *(pidController->currentAngles[1]) << F("\t|\r\n");
-	Serial << F("| P-Gain\t") << *(pidController->pGains[0]) << F("\t") << *(pidController->pGains[1]) << F("\t|\r\n");
-	Serial << F("| I-Gain\t") << *(pidController->iGains[0]) << F("\t") << *(pidController->iGains[1]) << F("\t|\r\n");
-	Serial << F("| D-Gain\t") << *(pidController->dGains[0]) << F("\t") << *(pidController->dGains[1]) << F("\t|\r\n");
+	Serial << F("| P-Gain\t") << *(pidController->proportionalGains[0]) << F("\t") << *(pidController->proportionalGains[1]) << F("\t|\r\n");
+	Serial << F("| I-Gain\t") << *(pidController->integralGains[0]) << F("\t") << *(pidController->integralGains[1]) << F("\t|\r\n");
+	Serial << F("| D-Gain\t") << *(pidController->derivativeGains[0]) << F("\t") << *(pidController->derivativeGains[1]) << F("\t|\r\n");
+	Serial << F("| I-Windup\t") << *(pidController->integralWindupThresholds[0]) << F("\t") << *(pidController->integralWindupThresholds[1]) << F("\t|\r\n");
+	Serial << F("| Out R.L.\t") << *(pidController->outputRateLimits[0]) << F("\t") << *(pidController->outputRateLimits[1]) << F("\t|\r\n");
 	Serial << F("| Set Points\t") << *(pidController->setPoints[0]) << F("\t") << *(pidController->setPoints[1]) << F("\t|\r\n");
 	Serial << F("| Drivers\t") << yawMotorDriver << F("\t") << tiltMotorDriver << F("\t|\r\n");
 	Serial << F("| DAC\t\t") << dac->currentVoltages[0] << F("\t") << dac->currentVoltages[1] << F(" V\t|\r\n");
-	Serial << F("| Frequency\t") << frequencyGenerator->currentFrequency << F(" Hz\t\t|\r\n");
+	Serial << F("| Frequency\t") << frequencyGenerator->currentFrequency << F(" Hz\t(CH. 1)\t|\r\n");
 	Serial << F("| PID Interval\t") << pidController->pidLoopInterval << F(" ms\t\t|\r\n");
 	Serial << F("| PID Control\t") << (pidController->isPidEnabled ? F("On") : F("Off")) << F("\t\t|\r\n");
 	Serial << F("| Safety\t") << (*isSafetyOn ? F("On") : F("Off")) << F("\t\t|\r\n");

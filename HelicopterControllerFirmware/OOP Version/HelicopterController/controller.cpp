@@ -62,7 +62,7 @@ void Controller::initializeSpi(void)
 
 void Controller::updateHeartbeat()
 {
-	if (++heartbeatCounter >= 250000)
+	if (++heartbeatCounter >= 65535)
 	{
 		heartbeatCounter = 0;
 		digitalWriteFast(Utility::PIN_HeartbeatLed, !digitalReadFast(Utility::PIN_HeartbeatLed));
@@ -245,8 +245,13 @@ void Controller::scanSerialPort()
 		while (Serial.available() <= 0)
 		{
 			updateHeartbeat();
-			// TODO: Apply PID motor outputs here.
-			// Simply have PID ISR set a flag stating that its time to recalculate
+
+			if (pidController->isPidCalculationNeeded)
+			{
+				potentiometer->updateAngle();
+				pidController->executePidCalculation();
+				pidController->isPidCalculationNeeded = false;
+			}
 		}
 
 		incomingChar = (char)Serial.read();
