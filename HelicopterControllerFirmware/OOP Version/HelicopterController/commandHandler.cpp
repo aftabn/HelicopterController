@@ -590,6 +590,37 @@ void CommandHandler::onCommandFrequencyOutput(bool *isSafetyOn, FrequencyGenerat
 	}
 }
 
+void CommandHandler::onCommandState(bool *isSafetyOn, bool *isVerboseMode, PidController *pidController, Dac *dac, FrequencyGenerator *frequencyGenerator)
+{
+	char yawDirection[4];
+	char tiltDirection[4];
+	char yawMotorDriver[3];
+	char tiltMotorDriver[3];
+	sprintf(yawDirection, *(pidController->directions[0]) == Direction::Clockwise ? "CW" : "CCW");
+	sprintf(tiltDirection, *(pidController->directions[1]) == Direction::Clockwise ? "CW" : "CCW");
+	sprintf(yawMotorDriver, *(pidController->motorDriverTypes[0]) == MotorDriverType::AnalogVoltage ? "AV" : "F");
+	sprintf(tiltMotorDriver, *(pidController->motorDriverTypes[1]) == MotorDriverType::AnalogVoltage ? "AV" : "F");
+
+	Serial.println(F("|===============================|"));
+	Serial.println(F("| Channel\t0\t1\t|"));
+	Serial.println(F("|-------------------------------|"));
+	Serial << F("| Output\t") << *(pidController->currentOutputs[0]) << F("\t") << *(pidController->currentOutputs[1]) << F("\t|\r\n");
+	Serial << F("| Directions\t") << yawDirection << F("\t") << tiltDirection << F("\t|\r\n");
+	Serial << F("| Angles\t") << *(pidController->currentAngles[0]) << F("\t") << *(pidController->currentAngles[1]) << F("\t|\r\n");
+	Serial << F("| P-Gain\t") << *(pidController->pGains[0]) << F("\t") << *(pidController->pGains[1]) << F("\t|\r\n");
+	Serial << F("| I-Gain\t") << *(pidController->iGains[0]) << F("\t") << *(pidController->iGains[1]) << F("\t|\r\n");
+	Serial << F("| D-Gain\t") << *(pidController->dGains[0]) << F("\t") << *(pidController->dGains[1]) << F("\t|\r\n");
+	Serial << F("| Set Points\t") << *(pidController->setPoints[0]) << F("\t") << *(pidController->setPoints[1]) << F("\t|\r\n");
+	Serial << F("| Drivers\t") << yawMotorDriver << F("\t") << tiltMotorDriver << F("\t|\r\n");
+	Serial << F("| DAC\t\t") << dac->currentVoltages[0] << F("\t") << dac->currentVoltages[1] << F(" V\t|\r\n");
+	Serial << F("| Frequency\t") << frequencyGenerator->currentFrequency << F(" Hz\t\t|\r\n");
+	Serial << F("| PID Interval\t") << pidController->pidLoopInterval << F(" ms\t\t|\r\n");
+	Serial << F("| PID Control\t") << (pidController->isPidEnabled ? F("On") : F("Off")) << F("\t\t|\r\n");
+	Serial << F("| Safety\t") << (*isSafetyOn ? F("On") : F("Off")) << F("\t\t|\r\n");
+	Serial << F("| Verbose\t") << (*isVerboseMode ? F("On") : F("Off")) << F("\t\t|\r\n");
+	Serial.println(F("|===============================|"));
+}
+
 void CommandHandler::onCommandHelp()
 {
 	Serial.println(F("Command: *IDN? \r\nDescription: Returns the identity of the controller\r\n"));

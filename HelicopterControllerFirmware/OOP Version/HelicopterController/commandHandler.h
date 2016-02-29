@@ -39,6 +39,7 @@ public:
 	static void onCommandAdc(Adc *adc);
 	static void onCommandDacVoltage(bool *isSafetyOn, Dac *dac);
 	static void onCommandFrequencyOutput(bool *isSafetyOn, FrequencyGenerator *frequencyGenerator);
+	static void onCommandState(bool *isSafetyOn, bool *isVerboseMode, PidController *pidController, Dac *dac, FrequencyGenerator *frequencyGenerator);
 	static void onCommandHelp(void);
 	static void handleCommandUnknown(char *command);
 

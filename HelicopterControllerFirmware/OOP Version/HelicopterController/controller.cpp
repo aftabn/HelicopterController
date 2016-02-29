@@ -155,6 +155,10 @@ void Controller::processCommand(char *command)
 	{
 		CommandHandler::onCommandFrequencyOutput(&isSafetyOn, frequencyGenerator);
 	}
+	else if (0 == strcmp(command, "STATE"))
+	{
+		CommandHandler::onCommandState(&isSafetyOn, &isVerboseMode, pidController, dac, frequencyGenerator);
+	}
 	////else if (0 == strcmp(command, "'"))
 	////{
 	////	processLine(lastCommand);
