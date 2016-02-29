@@ -16,7 +16,7 @@ private:
 	~Encoder();
 	static Encoder *encoder;
 	static const byte INT_MotorChannel = 0;
-	static const int INT_PulsesPerRevolution = 400;
+	static const int INT_PulsesPerRevolution;
 	static const double DBL_TotalRangeDegrees;
 	static const double DBL_DegreesPerPulse;
 	static const int encoderLookup[16]; // One for each possible state

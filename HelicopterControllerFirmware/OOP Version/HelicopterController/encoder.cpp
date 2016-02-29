@@ -9,8 +9,9 @@ Author:	Aftab
 #include "utility.h"
 
 const double Encoder::DBL_TotalRangeDegrees = 360.0;
-const double Encoder::DBL_DegreesPerPulse = Encoder::DBL_TotalRangeDegrees / Encoder::DBL_DegreesPerPulse;
-const signed int Encoder::encoderLookup[] = { 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 };
+const int Encoder::INT_PulsesPerRevolution = 400;
+const double Encoder::DBL_DegreesPerPulse = Encoder::DBL_TotalRangeDegrees / Encoder::INT_PulsesPerRevolution;
+const signed int Encoder::encoderLookup[16] = { 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 };
 
 Encoder *Encoder::encoder;
 
