@@ -172,6 +172,8 @@ void CommandHandler::onCommandOutput(PidController *pidController)
 	}
 }
 
+// Allows the reading or changing of direction for specified motor, but only allows change in
+// direction if the change results in a percentage change of less than the outputRateLimit
 void CommandHandler::onCommandDirection(PidController *pidController)
 {
 	if (isChannelCorrect(gParameters[0]))
@@ -186,23 +188,32 @@ void CommandHandler::onCommandDirection(PidController *pidController)
 		else if (!pidController->isPidEnabled)
 		{
 			int output = *(pidController->currentOutputs[channel]);
+			int outputRateLimit = *(pidController->outputRateLimits[channel]);
 			Direction direction;
 
 			if (isClockwiseCommandArg(gParameters[1]))
 			{
 				direction = Direction::Clockwise;
-				pidController->applyMotorOutputs(channel, &direction, &output);
-				sendAck();
 			}
 			else if (isCounterClockwiseCommandArg(gParameters[1]))
 			{
 				direction = Direction::CounterClockwise;
-				pidController->applyMotorOutputs(channel, &direction, &output);
-				sendAck();
 			}
 			else
 			{
 				sendDirectionError();
+				return;
+			}
+
+			if (direction != *(pidController->directions[channel]) && output > outputRateLimit / 2)
+			{
+				Serial << F("Cannot make a change to output by more than ") << outputRateLimit << F("%") << Utility::STR_NewLine;
+				sendNack();
+			}
+			else
+			{
+				pidController->applyMotorOutputs(channel, &direction, &output);
+				sendAck();
 			}
 		}
 		else
