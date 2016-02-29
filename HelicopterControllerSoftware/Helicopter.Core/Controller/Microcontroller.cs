@@ -120,6 +120,7 @@ namespace Helicopter.Core.Controller
             return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
         }
 
+        // TODO: Add this to the GUI
         public static void ZeroEncoderAngle()
         {
             string command = String.Format("{0}", STR_ZeroEncoderAngleCommand);
@@ -255,7 +256,7 @@ namespace Helicopter.Core.Controller
             {
                 return MotorDriver.AnalogVoltage;
             }
-            else if (motorDriver == "CCW")
+            else if (motorDriver == "F")
             {
                 return MotorDriver.Frequency;
             }
