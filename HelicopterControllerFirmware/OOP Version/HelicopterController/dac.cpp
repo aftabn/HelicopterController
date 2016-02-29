@@ -8,6 +8,7 @@ Author:	Aftab
 #include <digitalWriteFast.h>
 #include "dac.h"
 
+const int Dac::INT_Resolution = 1023;
 const double Dac::DBL_ReferenceVoltage = Utility::DBL_ArduinoVss;
 const double Dac::DBL_VoltsPerBit = DBL_ReferenceVoltage / Dac::INT_Resolution;
 const double Dac::DBL_DefaultVoltage = Motor::DBL_MotorIdleVoltage;
@@ -22,7 +23,7 @@ void Dac::initialize()
 	digitalWriteFast(Utility::PIN_DacChipSelect, LOW);
 	digitalWriteFast(Utility::PIN_DacChipSelect, HIGH);
 
-	for (int channel = 0; channel < Utility::INT_MaxNumChannels; channel++)
+	for (byte channel = 0; channel < Utility::INT_MaxNumChannels; channel++)
 	{
 		setVoltage(channel, DBL_DefaultVoltage);
 	}
@@ -35,7 +36,7 @@ int Dac::convertVoltageToDacValue(double voltage)
 }
 
 // Refer to : https://github.com/wigman27/Tutorial-Using-Arduino-SPI for more info
-void Dac::setVoltage(int channel, double voltage)
+void Dac::setVoltage(byte channel, double voltage)
 {
 	int value = convertVoltageToDacValue(voltage);
 

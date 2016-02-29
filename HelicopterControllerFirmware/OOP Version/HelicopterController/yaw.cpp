@@ -9,7 +9,12 @@ Author:	Aftab
 
 using namespace Motor;
 
-Yaw::Yaw(Dac *dac, Encoder *encoder) : dac(dac), encoder(encoder), INT_MinOutput(-100), INT_MaxOutput(100)
+const double Yaw::DBL_SetPointMin = -180;
+const double Yaw::DBL_SetPointMax = 180;
+const int Yaw::INT_MinOutput = -100;
+const int Yaw::INT_MaxOutput = 100;
+
+Yaw::Yaw(Dac *dac, Encoder *encoder) : dac(dac), encoder(encoder)
 {
 	currentAngle = &(encoder->currentAngle);
 }
@@ -17,6 +22,14 @@ Yaw::Yaw(Dac *dac, Encoder *encoder) : dac(dac), encoder(encoder), INT_MinOutput
 Yaw::~Yaw()
 {
 	Encoder::destruct();
+}
+
+void Yaw::initialize()
+{
+	setPoint = 0;
+	currentOutput = 0;
+	direction = Direction::Clockwise;
+	motorDriverType = MotorDriverType::AnalogVoltage;
 }
 
 void Yaw::applyMotorOutputs(Direction *newDirection, int *newOutput)

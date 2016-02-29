@@ -4,15 +4,19 @@ Created: 1/10/2016
 Author:	Aftab
 */
 
+#include <Streaming.h>
+#include "motor.h"
 #include "commandHandler.h"
 #include "pidController.h"
+
+using namespace Motor;
 
 char CommandHandler::gParameters[Utility::INT_ParameterCountMax][Utility::INT_ParameterLengthMax + 1];
 
 void CommandHandler::onCommandIdentity()
 {
 	Serial.println(F("Arduino Helicopter Controller"));
-	Utility::sendAck();
+	sendAck();
 }
 
 void CommandHandler::onCommandEcho()
@@ -20,506 +24,508 @@ void CommandHandler::onCommandEcho()
 	if (CommandHandler::gParameters[0] != NULL)
 	{
 		Serial.println(CommandHandler::gParameters[0]);
-		Utility::sendAck();
+		sendAck();
 	}
 	else
 	{
-		Utility::sendNack();
+		sendNack();
 	}
 }
 
 void CommandHandler::onCommandChangelog()
 {
-	if (Utility::isReadCommand(CommandHandler::gParameters[0]))
+	if (isReadCommand(CommandHandler::gParameters[0]))
 	{
 		Serial.println(F("Fixed outputs not updating from disabling PID"));
-		Utility::sendAck();
+		sendAck();
 	}
 	else
 	{
-		Utility::sendReadOnlyError();
+		sendReadOnlyError();
 	}
 }
 
-void CommandHandler::onCommandVersion()
+void CommandHandler::onCommandFirmwareVersion(const double *firmwareVersion)
 {
-	if (Utility::isReadCommand(CommandHandler::gParameters[0]))
+	if (isReadCommand(CommandHandler::gParameters[0]))
 	{
-		Utility::sendDouble(1.07);
-		Utility::sendAck();
+		sendDouble(*firmwareVersion);
+		sendAck();
 	}
 	else
 	{
-		Utility::sendReadOnlyError();
+		sendReadOnlyError();
 	}
 }
 
 void CommandHandler::onCommandPidControl(PidController *pidController)
 {
-	if (Utility::isReadCommand(CommandHandler::gParameters[0]))
+	if (isReadCommand(CommandHandler::gParameters[0]))
 	{
-		Utility::sendOnOffStatus(pidController->isPidEnabled);
-		Utility::sendAck();
+		sendOnOffStatus(pidController->isPidEnabled);
+		sendAck();
 	}
-	else if (Utility::isOnCommandArg(CommandHandler::gParameters[0]))
+	else if (isOnCommandArg(CommandHandler::gParameters[0]))
 	{
 		if (!pidController->isPidEnabled)
 		{
 			pidController->enablePid();
-			Utility::sendAck();
+			sendAck();
 		}
 		else
 		{
 			Serial.println(F("PID control is already on."));
-			Utility::sendNack();
+			sendNack();
 		}
 	}
-	else if (Utility::isOffCommandArg(CommandHandler::gParameters[0]))
+	else if (isOffCommandArg(CommandHandler::gParameters[0]))
 	{
 		pidController->disablePid();
-		Utility::sendAck();
+		sendAck();
 	}
 	else
 	{
-		Utility::sendOnOffError();
+		sendOnOffError();
 	}
 }
 
-//void onCommandVerbose()
-//{
-//	if (Utility::isReadCommand(CommandHandler::gParameters[0]))
-//	{
-//		sendOnOffStatus(isVerboseMode);
-//		Utility::sendAck();
-//	}
-//	else if (isOnCommandArg(CommandHandler::gParameters[0]))
-//	{
-//		isVerboseMode = true;
-//		Utility::sendAck();
-//	}
-//	else if (isOffCommandArg(CommandHandler::gParameters[0]))
-//	{
-//		isVerboseMode = false;
-//		Utility::sendAck();
-//	}
-//	else
-//	{
-//		sendOnOffError();
-//	}
-//}
-//
-//void onCommandSafety()
-//{
-//	if (Utility::isReadCommand(CommandHandler::gParameters[0]))
-//	{
-//		sendOnOffStatus(isSafetyOn);
-//		Utility::sendAck();
-//	}
-//	else if (isOnCommandArg(CommandHandler::gParameters[0]))
-//	{
-//		isSafetyOn = true;
-//		Utility::sendAck();
-//	}
-//	else if (isOffCommandArg(CommandHandler::gParameters[0]))
-//	{
-//		isSafetyOn = false;
-//		Utility::sendAck();
-//	}
-//	else
-//	{
-//		sendOnOffError();
-//	}
-//}
-//
-//void onCommandOutput()
-//{
-//	if (isChannelCorrect(CommandHandler::gParameters[0]))
-//	{
-//		int channel = convertToInt(CommandHandler::gParameters[0]);
-//		int output = convertToInt(CommandHandler::gParameters[1]);
-//
-//		if (Utility::isReadCommand(CommandHandler::gParameters[1]))
-//		{
-//			sendInt(currentOutputs[channel]);
-//			Utility::sendAck();
-//		}
-//		else if (!isPidEnabled)
-//		{
-//			if (isIntWithinRange(output, PID_OUTPUT_MIN, PID_OUTPUT_MAX))
-//			{
-//				const Direction direction = directions[channel];
-//
-//				applyMotorOutputs(channel, direction, output);
-//				Utility::sendAck();
-//			}
-//			else
-//			{
-//				sendIntRangeError(PID_OUTPUT_MIN, PID_OUTPUT_MAX, PERCENTAGE_UNIT);
-//			}
-//		}
-//		else
-//		{
-//			Serial.println(F("Cannot change percentage output while PID control is on."));
-//			Utility::sendNack();
-//		}
-//	}
-//	else
-//	{
-//		sendChannelError();
-//	}
-//}
-//
-//void onCommandDirection()
-//{
-//	if (isChannelCorrect(CommandHandler::gParameters[0]))
-//	{
-//		int channel = convertToInt(CommandHandler::gParameters[0]);
-//
-//		if (Utility::isReadCommand(CommandHandler::gParameters[1]))
-//		{
-//			sendDirectionStatus(directions[channel]);
-//			Utility::sendAck();
-//		}
-//		else if (!isPidEnabled)
-//		{
-//			const int output = currentOutputs[channel];
-//
-//			if (isClockwiseCommandArg(CommandHandler::gParameters[1]))
-//			{
-//				applyMotorOutputs(channel, Clockwise, output);
-//				Utility::sendAck();
-//			}
-//			else if (isCounterClockwiseCommandArg(CommandHandler::gParameters[1]))
-//			{
-//				applyMotorOutputs(channel, CounterClockwise, output);
-//				Utility::sendAck();
-//			}
-//			else
-//			{
-//				sendDirectionError();
-//			}
-//		}
-//		else
-//		{
-//			Serial.println(F("Cannot change direction while PID control is on."));
-//			Utility::sendNack();
-//		}
-//	}
-//	else
-//	{
-//		sendChannelError();
-//	}
-//}
-//
-//void onCommandMotorDriver()
-//{
-//	if (isChannelCorrect(CommandHandler::gParameters[0]))
-//	{
-//		int channel = convertToInt(CommandHandler::gParameters[0]);
-//
-//		if (Utility::isReadCommand(CommandHandler::gParameters[1]))
-//		{
-//			sendMotorDriverStatus(motorDriverTypes[channel]);
-//			Utility::sendAck();
-//		}
-//		else if (!isPidEnabled)
-//		{
-//			if (isAnalogVoltageCommandArg(CommandHandler::gParameters[1]))
-//			{
-//				motorDriverTypes[channel] = AnalogVoltage;
-//				Utility::sendAck();
-//			}
-//			else if (isFrequencyCommandArg(CommandHandler::gParameters[1]))
-//			{
-//				motorDriverTypes[channel] = Frequency;
-//				Utility::sendAck();
-//			}
-//			else
-//			{
-//				sendMotorDriverError();
-//			}
-//		}
-//		else
-//		{
-//			Serial.println(F("Cannot change driver type while PID control is on."));
-//			Utility::sendNack();
-//		}
-//	}
-//	else
-//	{
-//		sendChannelError();
-//	}
-//}
-//
-//void onCommandProportionalGain()
-//{
-//	if (isChannelCorrect(CommandHandler::gParameters[0]))
-//	{
-//		int channel = convertToInt(CommandHandler::gParameters[0]);
-//		double pGain = atof(CommandHandler::gParameters[1]);
-//
-//		if (Utility::isReadCommand(CommandHandler::gParameters[1]))
-//		{
-//			sendDouble(pGains[channel], DEFAULT_NUM_DECIMALS);
-//			Utility::sendAck();
-//		}
-//		else if (isDoubleWithinRange(pGain, P_GAIN_MIN, P_GAIN_MAX))
-//		{
-//			pGains[channel] = pGain;
-//			Utility::sendAck();
-//		}
-//		else
-//		{
-//			sendDoubleRangeError(P_GAIN_MIN, P_GAIN_MAX, NO_UNIT);
-//		}
-//	}
-//	else
-//	{
-//		sendChannelError();
-//	}
-//}
-//
-//void onCommandIntegralGain()
-//{
-//	if (isChannelCorrect(CommandHandler::gParameters[0]))
-//	{
-//		int channel = convertToInt(CommandHandler::gParameters[0]);
-//		double iGain = atof(CommandHandler::gParameters[1]);
-//
-//		if (Utility::isReadCommand(CommandHandler::gParameters[1]))
-//		{
-//			sendDouble(iGains[channel], DEFAULT_NUM_DECIMALS);
-//			Utility::sendAck();
-//		}
-//		else if (isDoubleWithinRange(iGain, I_GAIN_MIN, P_GAIN_MAX))
-//		{
-//			iGains[channel] = iGain;
-//			Utility::sendAck();
-//		}
-//		else
-//		{
-//			sendDoubleRangeError(I_GAIN_MIN, I_GAIN_MAX, NO_UNIT);
-//		}
-//	}
-//	else
-//	{
-//		sendChannelError();
-//	}
-//}
-//
-//void onCommandDerivativeGain()
-//{
-//	if (isChannelCorrect(CommandHandler::gParameters[0]))
-//	{
-//		int channel = convertToInt(CommandHandler::gParameters[0]);
-//		double dGain = atof(CommandHandler::gParameters[1]);
-//
-//		if (Utility::isReadCommand(CommandHandler::gParameters[1]))
-//		{
-//			sendDouble(dGains[channel], DEFAULT_NUM_DECIMALS);
-//			Utility::sendAck();
-//		}
-//		else if (isDoubleWithinRange(dGain, D_GAIN_MIN, D_GAIN_MAX))
-//		{
-//			dGains[channel] = dGain;
-//			Utility::sendAck();
-//		}
-//		else
-//		{
-//			sendDoubleRangeError(D_GAIN_MIN, D_GAIN_MAX, NO_UNIT);
-//		}
-//	}
-//	else
-//	{
-//		sendChannelError();
-//	}
-//}
-//
-//void onCommandSetPoint()
-//{
-//	if (isChannelCorrect(CommandHandler::gParameters[0]))
-//	{
-//		int channel = convertToInt(CommandHandler::gParameters[0]);
-//		double setPoint = atof(CommandHandler::gParameters[1]);
-//
-//		if (Utility::isReadCommand(CommandHandler::gParameters[1]))
-//		{
-//			sendDouble(setPoints[channel], DEFAULT_NUM_DECIMALS);
-//			Utility::sendAck();
-//		}
-//		else if (isDoubleWithinRange(setPoint, SET_POINT_MIN, SET_POINT_MAX))
-//		{
-//			setPoints[channel] = setPoint;
-//			Utility::sendAck();
-//		}
-//		else
-//		{
-//			sendDoubleRangeError(SET_POINT_MIN, SET_POINT_MAX, DEGREES_UNIT);
-//		}
-//	}
-//	else
-//	{
-//		sendChannelError();
-//	}
-//}
-//
-//void onCommandLoopInterval()
-//{
-//	int loopInterval = convertToInt(CommandHandler::gParameters[0]);
-//
-//	if (Utility::isReadCommand(CommandHandler::gParameters[0]))
-//	{
-//		sendInt(pidLoopInterval);
-//		Utility::sendAck();
-//	}
-//	else if (isIntWithinRange(loopInterval, PID_INTERVAL_MS_MIN, PID_INTERVAL_MS_MAX))
-//	{
-//		if (!isPidEnabled)
-//		{
-//			pidLoopInterval = loopInterval;
-//			Utility::sendAck();
-//		}
-//		else
-//		{
-//			Serial.println(F("Cannot change loop interval while PID control is on."));
-//			Utility::sendNack();
-//		}
-//	}
-//	else
-//	{
-//		sendIntRangeError(PID_INTERVAL_MS_MIN, PID_INTERVAL_MS_MAX, MILLISECONDS_UNIT);
-//	}
-//}
-//
-//void onCommandIntegralWindup()
-//{
-//	if (isChannelCorrect(CommandHandler::gParameters[0]))
-//	{
-//		int channel = convertToInt(CommandHandler::gParameters[0]);
-//		double windup = atof(CommandHandler::gParameters[1]);
-//
-//		if (Utility::isReadCommand(CommandHandler::gParameters[1]))
-//		{
-//			sendDouble(iWindupThresholds[channel], DEFAULT_NUM_DECIMALS);
-//			Utility::sendAck();
-//		}
-//		else if (isDoubleWithinRange(windup, I_WINDUP_THRESH_MIN, I_WINDUP_THRESH_MAX))
-//		{
-//			iWindupThresholds[channel] = windup;
-//			Utility::sendAck();
-//		}
-//		else
-//		{
-//			sendDoubleRangeError(I_WINDUP_THRESH_MIN, I_WINDUP_THRESH_MAX, DEGREES_UNIT);
-//		}
-//	}
-//	else
-//	{
-//		sendChannelError();
-//	}
-//}
-//
-//void onCommandRateLimit()
-//{
-//	if (isChannelCorrect(CommandHandler::gParameters[0]))
-//	{
-//		int channel = convertToInt(CommandHandler::gParameters[0]);
-//		int rateLimit = convertToInt(CommandHandler::gParameters[1]);
-//
-//		if (Utility::isReadCommand(CommandHandler::gParameters[1]))
-//		{
-//			sendInt(outputRateLimits[channel]);
-//			Utility::sendAck();
-//		}
-//		else if (isIntWithinRange(rateLimit, OUTPUT_RATE_LIMIT_MIN, OUTPUT_RATE_LIMIT_MAX))
-//		{
-//			outputRateLimits[channel] = rateLimit;
-//			Utility::sendAck();
-//		}
-//		else
-//		{
-//			sendIntRangeError(OUTPUT_RATE_LIMIT_MIN, OUTPUT_RATE_LIMIT_MAX, DEGREES_UNIT);
-//		}
-//	}
-//	else
-//	{
-//		sendChannelError();
-//	}
-//}
-//
-//void onCommandAngle()
-//{
-//	if (isChannelCorrect(CommandHandler::gParameters[0]))
-//	{
-//		int channel = convertToInt(CommandHandler::gParameters[0]);
-//
-//		if (Utility::isReadCommand(CommandHandler::gParameters[1]))
-//		{
-//			sendDouble(currentAngles[channel], DEFAULT_NUM_DECIMALS);
-//			Utility::sendAck();
-//		}
-//		else
-//		{
-//			Utility::sendReadOnlyError();
-//		}
-//	}
-//	else
-//	{
-//		sendChannelError();
-//	}
-//}
-//
-//void onCommandAdc()
-//{
-//	int adcChannel = convertToInt(CommandHandler::gParameters[0]);
-//
-//	if (isIntWithinRange(adcChannel, ADC_CHANNEL_MIN, ADC_CHANNEL_MAX))
-//	{
-//		double voltage = getSampledAdcVoltage(adcChannel);
-//		sendDouble(voltage, THREE_DECIMALS);
-//		Utility::sendAck();
-//	}
-//	else
-//	{
-//		sendIntRangeError(ADC_CHANNEL_MIN, ADC_CHANNEL_MAX, NO_UNIT);
-//	}
-//}
-//
-//void onCommandDacVoltage()
-//{
-//	if (isChannelCorrect(CommandHandler::gParameters[0]))
-//	{
-//		if (!isSafetyOn)
-//		{
-//			int channel = convertToInt(CommandHandler::gParameters[0]);
-//			double voltage = atof(CommandHandler::gParameters[1]);
-//
-//			if (Utility::isReadCommand(CommandHandler::gParameters[1]))
-//			{
-//				sendDouble(currentVoltages[channel], DEFAULT_NUM_DECIMALS);
-//				Utility::sendAck();
-//			}
-//			else if (isDoubleWithinRange(voltage, MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE))
-//			{
-//				setDacVoltage(channel, voltage);
-//				Utility::sendAck();
-//			}
-//			else
-//			{
-//				sendDoubleRangeError(MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE, VOLTAGE_UNIT);
-//			}
-//		}
-//		else
-//		{
-//			Serial.println(F("Cannot change DAC voltage while safety is on."));
-//			Utility::sendNack();
-//		}
-//	}
-//	else
-//	{
-//		sendChannelError();
-//	}
-//}
+void CommandHandler::onCommandVerbose(bool *isVerboseMode)
+{
+	if (isReadCommand(CommandHandler::gParameters[0]))
+	{
+		sendOnOffStatus(*isVerboseMode);
+		sendAck();
+	}
+	else if (isOnCommandArg(CommandHandler::gParameters[0]))
+	{
+		*isVerboseMode = true;
+		sendAck();
+	}
+	else if (isOffCommandArg(CommandHandler::gParameters[0]))
+	{
+		*isVerboseMode = false;
+		sendAck();
+	}
+	else
+
+		sendOnOffError();
+}
+
+void CommandHandler::onCommandSafety(bool *isSafetyOn)
+{
+	if (isReadCommand(CommandHandler::gParameters[0]))
+	{
+		sendOnOffStatus(*isSafetyOn);
+		sendAck();
+	}
+	else if (isOnCommandArg(CommandHandler::gParameters[0]))
+	{
+		*isSafetyOn = true;
+		sendAck();
+	}
+	else if (isOffCommandArg(CommandHandler::gParameters[0]))
+	{
+		*isSafetyOn = false;
+		sendAck();
+	}
+	else
+	{
+		sendOnOffError();
+	}
+}
+
+void CommandHandler::onCommandOutput(PidController *pidController)
+{
+	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	{
+		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+		int output = Utility::convertToInt(CommandHandler::gParameters[1]);
+
+		if (isReadCommand(CommandHandler::gParameters[1]))
+		{
+			sendInt(*(pidController->currentOutputs[channel]));
+			sendAck();
+		}
+		else if (!pidController->isPidEnabled)
+		{
+			if (isIntWithinRange(output, pidController->INT_MinPidOutput, pidController->INT_MaxPidOutput))
+			{
+				Direction direction = *(pidController->directions[channel]);
+
+				pidController->applyMotorOutputs(channel, &direction, &output);
+				sendAck();
+			}
+			else
+			{
+				sendIntRangeError(pidController->INT_MinPidOutput, pidController->INT_MaxPidOutput, Utility::UNIT_Percent);
+			}
+		}
+		else
+		{
+			Serial.println(F("Cannot change percentage output while PID control is on."));
+			sendNack();
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
+void CommandHandler::onCommandDirection(PidController *pidController)
+{
+	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	{
+		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+
+		if (isReadCommand(CommandHandler::gParameters[1]))
+		{
+			sendDirectionStatus(*(pidController->directions[channel]));
+			sendAck();
+		}
+		else if (!pidController->isPidEnabled)
+		{
+			int output = *(pidController->currentOutputs[channel]);
+			Direction direction;
+
+			if (isClockwiseCommandArg(CommandHandler::gParameters[1]))
+			{
+				direction = Direction::Clockwise;
+				pidController->applyMotorOutputs(channel, &direction, &output);
+				sendAck();
+			}
+			else if (isCounterClockwiseCommandArg(CommandHandler::gParameters[1]))
+			{
+				direction = Direction::CounterClockwise;
+				pidController->applyMotorOutputs(channel, &direction, &output);
+				sendAck();
+			}
+			else
+			{
+				sendDirectionError();
+			}
+		}
+		else
+		{
+			Serial.println(F("Cannot change direction while PID control is on."));
+			sendNack();
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
+void CommandHandler::onCommandMotorDriver(PidController *pidController)
+{
+	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	{
+		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+
+		if (isReadCommand(CommandHandler::gParameters[1]))
+		{
+			sendMotorDriverStatus(*(pidController->motorDriverTypes[channel]));
+			sendAck();
+		}
+		else if (!pidController->isPidEnabled)
+		{
+			if (isAnalogVoltageCommandArg(CommandHandler::gParameters[1]))
+			{
+				*(pidController->motorDriverTypes[channel]) = MotorDriverType::AnalogVoltage;
+				sendAck();
+			}
+			else if (isFrequencyCommandArg(CommandHandler::gParameters[1]))
+			{
+				*(pidController->motorDriverTypes[channel]) = MotorDriverType::Frequency;
+				sendAck();
+			}
+			else
+			{
+				sendMotorDriverError();
+			}
+		}
+		else
+		{
+			Serial.println(F("Cannot change driver type while PID control is on."));
+			sendNack();
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
+void CommandHandler::onCommandProportionalGain(PidController *pidController)
+{
+	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	{
+		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+		double pGain = atof(CommandHandler::gParameters[1]);
+
+		if (isReadCommand(CommandHandler::gParameters[1]))
+		{
+			sendDouble(*(pidController->pGains[channel]));
+			sendAck();
+		}
+		else if (isDoubleWithinRange(pGain, PidSettings::DBL_ProportionalGainMin, PidSettings::DBL_ProportionalGainMax))
+		{
+			*(pidController->pGains[channel]) = pGain;
+			sendAck();
+		}
+		else
+		{
+			sendDoubleRangeError(PidSettings::DBL_ProportionalGainMin, PidSettings::DBL_ProportionalGainMax, Utility::UNIT_None);
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
+void CommandHandler::onCommandIntegralGain(PidController *pidController)
+{
+	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	{
+		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+		double iGain = atof(CommandHandler::gParameters[1]);
+
+		if (isReadCommand(CommandHandler::gParameters[1]))
+		{
+			sendDouble(*(pidController->iGains[channel]));
+			sendAck();
+		}
+		else if (isDoubleWithinRange(iGain, PidSettings::DBL_IntegralGainMin, PidSettings::DBL_IntegralGainMax))
+		{
+			*(pidController->iGains[channel]) = iGain;
+			sendAck();
+		}
+		else
+		{
+			sendDoubleRangeError(PidSettings::DBL_IntegralGainMin, PidSettings::DBL_IntegralGainMax, Utility::UNIT_None);
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
+void CommandHandler::onCommandDerivativeGain(PidController *pidController)
+{
+	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	{
+		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+		double dGain = atof(CommandHandler::gParameters[1]);
+
+		if (isReadCommand(CommandHandler::gParameters[1]))
+		{
+			sendDouble(*(pidController->dGains[channel]));
+			sendAck();
+		}
+		else if (isDoubleWithinRange(dGain, PidSettings::DBL_DerivativeGainMin, PidSettings::DBL_DerivativeGainMax))
+		{
+			*(pidController->dGains[channel]) = dGain;
+			sendAck();
+		}
+		else
+		{
+			sendDoubleRangeError(PidSettings::DBL_DerivativeGainMin, PidSettings::DBL_DerivativeGainMax, Utility::UNIT_None);
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
+void CommandHandler::onCommandSetPoint(PidController *pidController)
+{
+	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	{
+		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+		double setPoint = atof(CommandHandler::gParameters[1]);
+
+		if (isReadCommand(CommandHandler::gParameters[1]))
+		{
+			sendDouble(*(pidController->setPoints[channel]));
+			sendAck();
+		}
+		else if (isDoubleWithinRange(setPoint, *(pidController->minSetPoints[channel]), *(pidController->maxSetPoints[channel])))
+		{
+			*(pidController->setPoints[channel]) = setPoint;
+			sendAck();
+		}
+		else
+		{
+			sendDoubleRangeError(*(pidController->minSetPoints[channel]), *(pidController->maxSetPoints[channel]), Utility::UNIT_Degrees);
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
+void CommandHandler::onCommandLoopInterval(PidController *pidController)
+{
+	int loopInterval = Utility::convertToInt(CommandHandler::gParameters[0]);
+
+	if (isReadCommand(CommandHandler::gParameters[0]))
+	{
+		sendInt(pidController->pidLoopInterval);
+		sendAck();
+	}
+	else if (isIntWithinRange(loopInterval, pidController->INT_MinPidLoopInterval, pidController->INT_MaxPidLoopInterval))
+	{
+		if (!pidController->isPidEnabled)
+		{
+			pidController->pidLoopInterval = loopInterval;
+			sendAck();
+		}
+		else
+		{
+			Serial.println(F("Cannot change loop interval while PID control is on."));
+			sendNack();
+		}
+	}
+	else
+	{
+		sendIntRangeError(pidController->INT_MinPidLoopInterval, pidController->INT_MaxPidLoopInterval, Utility::UNIT_Milliseconds);
+	}
+}
+
+void CommandHandler::onCommandIntegralWindup(PidController *pidController)
+{
+	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	{
+		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+		double windup = atof(CommandHandler::gParameters[1]);
+
+		if (isReadCommand(CommandHandler::gParameters[1]))
+		{
+			sendDouble(*(pidController->integralWindupThresholds[channel]));
+			sendAck();
+		}
+		else if (isDoubleWithinRange(windup, PidSettings::DBL_IntegralWindupThresholdMin, PidSettings::DBL_IntegralWindupThresholdMax))
+		{
+			*(pidController->integralWindupThresholds[channel]) = windup;
+			sendAck();
+		}
+		else
+		{
+			sendDoubleRangeError(PidSettings::DBL_IntegralWindupThresholdMin, PidSettings::DBL_IntegralWindupThresholdMax, Utility::UNIT_Degrees);
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
+void CommandHandler::onCommandRateLimit(PidController *pidController)
+{
+	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	{
+		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+		int rateLimit = Utility::convertToInt(CommandHandler::gParameters[1]);
+
+		if (isReadCommand(CommandHandler::gParameters[1]))
+		{
+			sendInt(*(pidController->outputRateLimits[channel]));
+			sendAck();
+		}
+		else if (isIntWithinRange(rateLimit, PidSettings::INT_OutputRateLimitMin, PidSettings::INT_OutputRateLimitMax))
+		{
+			*(pidController->outputRateLimits[channel]) = rateLimit;
+			sendAck();
+		}
+		else
+		{
+			sendIntRangeError(PidSettings::INT_OutputRateLimitMin, PidSettings::INT_OutputRateLimitMax, Utility::UNIT_Degrees);
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
+void CommandHandler::onCommandAngle(PidController *pidController)
+{
+	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	{
+		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+
+		if (isReadCommand(CommandHandler::gParameters[1]))
+		{
+			sendDouble(*(pidController->currentAngles[channel]));
+			sendAck();
+		}
+		else
+		{
+			sendReadOnlyError();
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
+void CommandHandler::onCommandAdc(Adc *adc)
+{
+	int adcChannel = Utility::convertToInt(CommandHandler::gParameters[0]);
+
+	if (isIntWithinRange(adcChannel, adc->INT_ChannelMin, adc->INT_ChannelMax))
+	{
+		double voltage = adc->getSampledVoltage(adcChannel);
+		sendDouble(voltage);
+		sendAck();
+	}
+	else
+	{
+		sendIntRangeError(adc->INT_ChannelMin, adc->INT_ChannelMax, Utility::UNIT_None);
+	}
+}
+
+void CommandHandler::onCommandDacVoltage(bool *isSafetyOn, Dac *dac)
+{
+	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	{
+		if (!*isSafetyOn)
+		{
+			byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+			double voltage = atof(CommandHandler::gParameters[1]);
+
+			if (isReadCommand(CommandHandler::gParameters[1]))
+			{
+				sendDouble(dac->currentVoltages[channel]);
+				sendAck();
+			}
+			else if (isDoubleWithinRange(voltage, Motor::DBL_MotorVoltageMin, Motor::DBL_MotorVoltageMax))
+			{
+				dac->setVoltage(channel, voltage);
+				sendAck();
+			}
+			else
+			{
+				sendDoubleRangeError(Motor::DBL_MotorVoltageMin, Motor::DBL_MotorVoltageMax, Utility::UNIT_Volts);
+			}
+		}
+		else
+		{
+			Serial.println(F("Cannot change DAC voltage while safety is on."));
+			sendNack();
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
 //
 //void onCommandFrequencyOutput()
 //{
@@ -527,8 +533,8 @@ void CommandHandler::onCommandPidControl(PidController *pidController)
 //	{
 //		if (!isSafetyOn)
 //		{
-//			int channel = convertToInt(CommandHandler::gParameters[0]);
-//			int frequency = convertToInt(CommandHandler::gParameters[1]);
+//			byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+//			int frequency = Utility::convertToInt(CommandHandler::gParameters[1]);
 //
 //			if (Utility::isReadCommand(CommandHandler::gParameters[1]))
 //			{
@@ -594,13 +600,179 @@ void CommandHandler::handleCommandUnknown(char* command)
 
 	for (int i = 0; i < Utility::INT_ParameterCountMax; i++)
 	{
-		if (strlen(CommandHandler::gParameters[i]))
+		if (strlen(gParameters[i]))
 		{
-			sprintf(newstr, "  %d{%s}", i, CommandHandler::gParameters[i]);
+			sprintf(newstr, "  %d{%s}", i, gParameters[i]);
 			strcat(tmpstr, newstr);
 		}
 	}
 
 	Serial.println(tmpstr);
-	Utility::sendNack();
+	sendNack();
+}
+
+// Implementation of sending had to change due to arduino storing string literals in dynamic memory
+// Used F() to force storage of literals in PROGMEM, which requires directly using Serial.println() to send
+// This is because Serial.print has the proper overload to handle [const PROGMEM char *] conversion
+// Source: https://www.arduino.cc/en/Reference/PROGMEM
+
+void CommandHandler::sendNack()
+{
+	Serial.println(F("ERROR"));
+}
+
+void CommandHandler::sendAck()
+{
+	Serial.println(F("OK"));
+}
+
+void CommandHandler::sendInt(int num)
+{
+	Serial << num << Utility::STR_NewLine;
+}
+
+void CommandHandler::sendDouble(double num)
+{
+	Serial << num << Utility::STR_NewLine;
+}
+
+void CommandHandler::sendOnOffStatus(bool isOn)
+{
+	Serial << (isOn ? F("ON") : F("OFF")) << Utility::STR_NewLine;
+}
+
+void CommandHandler::sendOneOrZeroStatus(bool isHigh)
+{
+	Serial << (isHigh ? 1 : 0) << Utility::STR_NewLine;
+}
+
+void CommandHandler::sendDirectionStatus(Direction direction)
+{
+	Serial << (direction == Direction::Clockwise ? F("CW") : F("CCW")) << Utility::STR_NewLine;
+}
+
+void CommandHandler::sendMotorDriverStatus(MotorDriverType motorDriverType)
+{
+	Serial << (motorDriverType == MotorDriverType::AnalogVoltage ? F("AV") : F("F")) << Utility::STR_NewLine;
+}
+
+void CommandHandler::sendIntRangeError(int lowerLimit, int upperLimit, const char* unit)
+{
+	Serial << F("Value must be between ") << lowerLimit << unit << F(" and ") << upperLimit << unit << Utility::STR_NewLine;
+	sendNack();
+}
+
+void CommandHandler::sendDoubleRangeError(double lowerLimit, double upperLimit, const char* unit)
+{
+	Serial << F("Value must be between ") << lowerLimit << unit << F(" and ") << upperLimit << unit << Utility::STR_NewLine;
+	sendNack();
+}
+
+void CommandHandler::sendChannelError()
+{
+	Serial.println(F("Invalid channel"));
+	sendNack();
+}
+
+void CommandHandler::sendSyntaxError()
+{
+	Serial.println(F("Check syntax"));
+	sendNack();
+}
+
+void CommandHandler::sendReadOnlyError()
+{
+	Serial.println(F("Read only commands have no additional arguments"));
+	sendNack();
+}
+
+void CommandHandler::sendOnOffError()
+{
+	Serial.println(F("Value must be ON or OFF"));
+	sendNack();
+}
+
+void CommandHandler::sendOneOrZeroError()
+{
+	Serial.println(F("Value must be 0 or 1"));
+	sendNack();
+}
+
+void CommandHandler::sendDirectionError()
+{
+	Serial.println(F("Value must be CLOCKWISE / CW or COUNTERCLOCKWISE / CCW"));
+	sendNack();
+}
+
+void CommandHandler::sendMotorDriverError()
+{
+	Serial.println(F("Value must be ANALOGVOLTAGE / AV or FREQUENCY / F"));
+	sendNack();
+}
+
+bool CommandHandler::isOnCommandArg(char* arg)
+{
+	Utility::upperCaseString(arg);
+	return (0 == Utility::stricmp(arg, "ON") || 0 == Utility::stricmp(arg, "1"));
+}
+
+bool CommandHandler::isOffCommandArg(char* arg)
+{
+	Utility::upperCaseString(arg);
+	return (0 == Utility::stricmp(arg, "OFF") || 0 == Utility::stricmp(arg, "0"));
+}
+
+bool CommandHandler::isClockwiseCommandArg(char* arg)
+{
+	Utility::upperCaseString(arg);
+	return (0 == Utility::stricmp(arg, "CLOCKWISE") || 0 == Utility::stricmp(arg, "CW"));
+}
+
+bool CommandHandler::isCounterClockwiseCommandArg(char* arg)
+{
+	Utility::upperCaseString(arg);
+	return (0 == Utility::stricmp(arg, "COUNTERCLOCKWISE") || 0 == Utility::stricmp(arg, "CCW"));
+}
+
+bool CommandHandler::isAnalogVoltageCommandArg(char* arg)
+{
+	Utility::upperCaseString(arg);
+	return (0 == Utility::stricmp(arg, "ANALOGVOLTAGE") || 0 == Utility::stricmp(arg, "AV"));
+}
+
+bool CommandHandler::isFrequencyCommandArg(char* arg)
+{
+	Utility::upperCaseString(arg);
+	return (0 == Utility::stricmp(arg, "FREQUENCY") || 0 == Utility::stricmp(arg, "F"));
+}
+
+bool CommandHandler::isReadCommand(char* arg)
+{
+	return (0 == Utility::stricmp(arg, ""));
+}
+
+bool CommandHandler::isIntWithinRange(int number, int lowerLimit, int upperLimit)
+{
+	return (number >= lowerLimit && number <= upperLimit);
+}
+
+bool CommandHandler::isDoubleWithinRange(double number, double lowerLimit, double upperLimit)
+{
+	return (number >= lowerLimit && number <= upperLimit);
+}
+
+bool CommandHandler::isChannelCorrect(char* channelArg)
+{
+	char channelStr[3];
+
+	for (byte channel = 0; channel < Utility::INT_MaxNumChannels; channel++)
+	{
+		sprintf(channelStr, "%d", channel);
+		if (0 == Utility::stricmp(channelArg, channelStr))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }

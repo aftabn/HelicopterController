@@ -6,6 +6,7 @@ Author:	Aftab
 
 #include "Arduino.h"
 #include <digitalWriteFast.h>
+#include <SPI.h>
 #include "controller.h"
 #include "utility.h"
 #include "commandHandler.h"
@@ -31,11 +32,30 @@ Controller::~Controller()
 
 void Controller::initialize()
 {
+	isSafetyOn = true;
+	isVerboseMode = false;
+
 	Serial.begin(115200);
 	Serial.println();
 	Serial.flush();
 
 	pinModeFast(Utility::PIN_HeartbeatLed, OUTPUT);
+
+	initializeSpi();
+	adc->initialize();
+	dac->initialize();
+	potentiometer->initialize();
+	encoder->initialize();
+	yaw->initialize();
+	tilt->initialize();
+	pidController->initialize();
+}
+
+void Controller::initializeSpi(void)
+{
+	SPI.begin();
+	SPI.setBitOrder(MSBFIRST);
+	SPI.setDataMode(SPI_MODE0);
 }
 
 void Controller::updateHeartbeat()
@@ -63,80 +83,76 @@ void Controller::processCommand(char *command)
 	}
 	else if (0 == strcmp(command, "VER"))
 	{
-		CommandHandler::onCommandVersion();
+		CommandHandler::onCommandFirmwareVersion(&DBL_FirmwareVersion);
 	}
-	//else if (0 == strcmp(command, "PID"))
-	//{
-	//	onCommandPidControl();
-	//}
-	//else if (0 == strcmp(command, "VERBOSE"))
-	//{
-	//	onCommandVerbose();
-	//}
-	//else if (0 == strcmp(command, "SAFETY"))
-	//{
-	//	onCommandSafety();
-	//}
-	//else if (0 == strcmp(command, "O"))
-	//{
-	//	onCommandOutput();
-	//}
-	//else if (0 == strcmp(command, "DC"))
-	//{
-	//	onCommandDirection();
-	//}
-	//else if (0 == strcmp(command, "DV"))
-	//{
-	//	onCommandMotorDriver();
-	//}
-	//else if (0 == strcmp(command, "P"))
-	//{
-	//	onCommandProportionalGain();
-	//}
-	//else if (0 == strcmp(command, "I"))
-	//{
-	//	onCommandIntegralGain();
-	//}
-	//else if (0 == strcmp(command, "D"))
-	//{
-	//	onCommandDerivativeGain();
-	//}
-	//else if (0 == strcmp(command, "L"))
-	//{
-	//	onCommandLoopInterval();
-	//}
-	//else if (0 == strcmp(command, "W"))
-	//{
-	//	onCommandIntegralWindup();
-	//}
-	//else if (0 == strcmp(command, "R"))
-	//{
-	//	onCommandIntegralWindup();
-	//}
-	//else if (0 == strcmp(command, "SP"))
-	//{
-	//	onCommandSetPoint();
-	//}
-	//else if (0 == strcmp(command, "A"))
-	//{
-	//	onCommandAngle();
-	//}
-	//else if (0 == strcmp(command, "ADC"))
-	//{
-	//	onCommandAdc();
-	//}
-	//else if (0 == strcmp(command, "DAC"))
-	//{
-	//	onCommandDacVoltage();
-	//}
-	//else if (0 == strcmp(command, "F"))
-	//{
-	//	onCommandFrequencyOutput();
-	//}
-	//else if (0 == strcmp(command, "TEST"))
-	//{
-	//	onCommandTest();
-	//}
+	else if (0 == strcmp(command, "PID"))
+	{
+		CommandHandler::onCommandPidControl(pidController);
+	}
+	else if (0 == strcmp(command, "VERBOSE"))
+	{
+		CommandHandler::onCommandVerbose(&isVerboseMode);
+	}
+	else if (0 == strcmp(command, "SAFETY"))
+	{
+		CommandHandler::onCommandSafety(&isSafetyOn);
+	}
+	else if (0 == strcmp(command, "O"))
+	{
+		CommandHandler::onCommandOutput(pidController);
+	}
+	else if (0 == strcmp(command, "DC"))
+	{
+		CommandHandler::onCommandDirection(pidController);
+	}
+	else if (0 == strcmp(command, "DV"))
+	{
+		CommandHandler::onCommandMotorDriver(pidController);
+	}
+	else if (0 == strcmp(command, "P"))
+	{
+		CommandHandler::onCommandProportionalGain(pidController);
+	}
+	else if (0 == strcmp(command, "I"))
+	{
+		CommandHandler::onCommandIntegralGain(pidController);
+	}
+	else if (0 == strcmp(command, "D"))
+	{
+		CommandHandler::onCommandDerivativeGain(pidController);
+	}
+	else if (0 == strcmp(command, "L"))
+	{
+		CommandHandler::onCommandLoopInterval(pidController);
+	}
+	else if (0 == strcmp(command, "W"))
+	{
+		CommandHandler::onCommandIntegralWindup(pidController);
+	}
+	else if (0 == strcmp(command, "R"))
+	{
+		CommandHandler::onCommandIntegralWindup(pidController);
+	}
+	else if (0 == strcmp(command, "SP"))
+	{
+		CommandHandler::onCommandSetPoint(pidController);
+	}
+	else if (0 == strcmp(command, "A"))
+	{
+		CommandHandler::onCommandAngle(pidController);
+	}
+	else if (0 == strcmp(command, "ADC"))
+	{
+		CommandHandler::onCommandAdc(adc);
+	}
+	else if (0 == strcmp(command, "DAC"))
+	{
+		CommandHandler::onCommandDacVoltage(&isSafetyOn, dac);
+	}
+	/*else if (0 == strcmp(command, "F"))
+	{
+		onCommandFrequencyOutput();
+	}*/
 	////else if (0 == strcmp(command, "'"))
 	////{
 	////	processLine(lastCommand);

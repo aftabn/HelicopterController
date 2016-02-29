@@ -10,8 +10,12 @@ Author:	Aftab
 
 using namespace Motor;
 
-Tilt::Tilt(Dac *dac, Potentiometer *potentiometer)
-	: dac(dac), potentiometer(potentiometer), INT_MinOutput(0), INT_MaxOutput(100)
+const double Tilt::DBL_SetPointMin = 0;
+const double Tilt::DBL_SetPointMax = 45;
+const int Tilt::INT_MinOutput = 0;
+const int Tilt::INT_MaxOutput = 100;
+
+Tilt::Tilt(Dac *dac, Potentiometer *potentiometer) : dac(dac), potentiometer(potentiometer)
 {
 	currentAngle = &(potentiometer->currentAngle);
 }
@@ -19,6 +23,14 @@ Tilt::Tilt(Dac *dac, Potentiometer *potentiometer)
 Tilt::~Tilt()
 {
 	delete potentiometer;
+}
+
+void Tilt::initialize()
+{
+	setPoint = 0;
+	currentOutput = 0;
+	direction = Direction::Clockwise;
+	motorDriverType = MotorDriverType::AnalogVoltage;
 }
 
 void Tilt::refreshAngle()
@@ -36,6 +48,7 @@ void Tilt::applyMotorOutputs(Direction *newDirection, int *newOutput)
 	else if (motorDriverType == MotorDriverType::Frequency)
 	{
 		int frequency = adjustOutputToFrequency(newOutput);
+		// TODO: Add frequency setting here
 	}
 
 	currentOutput = *newOutput;

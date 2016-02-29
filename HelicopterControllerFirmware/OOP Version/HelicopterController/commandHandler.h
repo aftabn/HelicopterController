@@ -19,12 +19,12 @@ public:
 	static char gParameters[Utility::INT_ParameterCountMax][Utility::INT_ParameterLengthMax + 1];
 
 	static void onCommandIdentity(void);
-	static void onCommandVersion(void);
+	static void onCommandFirmwareVersion(const double *firmwareVersion);
 	static void onCommandChangelog(void);
 	static void onCommandEcho(void);
 	static void onCommandPidControl(PidController *pidController);
 	static void onCommandVerbose(bool *isVerboseMode);
-	//static void onCommandSafety(void);
+	static void onCommandSafety(bool *isSafetyOn);
 	static void onCommandOutput(PidController *pidController);
 	static void onCommandDirection(PidController *pidController);
 	static void onCommandMotorDriver(PidController *pidController);
@@ -37,7 +37,7 @@ public:
 	static void onCommandSetPoint(PidController *pidController);
 	static void onCommandAngle(PidController *pidController);
 	static void onCommandAdc(Adc *adc);
-	static void onCommandDacVoltage(Dac *dac);
+	static void onCommandDacVoltage(bool *isSafetyOn, Dac *dac);
 	//static void onCommandFrequencyOutput(void);
 	static void onCommandHelp(void);
 	static void handleCommandUnknown(char *command);

@@ -28,8 +28,10 @@ public:
 	~Tilt();
 
 	static const byte INT_MotorChannel = 1;
-	const int INT_MinOutput;
-	const int INT_MaxOutput;
+	static const double DBL_SetPointMin;
+	static const double DBL_SetPointMax;
+	static const int INT_MinOutput;
+	static const int INT_MaxOutput;
 	PidSettings pidSettings;
 	volatile double setPoint;
 	volatile double *currentAngle;

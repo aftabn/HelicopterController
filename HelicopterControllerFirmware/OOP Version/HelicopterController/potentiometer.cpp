@@ -20,15 +20,20 @@ Potentiometer::~Potentiometer()
 	delete adc;
 }
 
+void Potentiometer::initialize()
+{
+	updateAngle();
+}
+
 double Potentiometer::convertAdcVoltageToAngle(double voltage)
 {
 	double angle = (voltage - DBL_ZeroedVoltage) * DBL_DegreesPerVolt;
 	return angle;
 }
 
-double Potentiometer::getAngle(byte channel)
+double Potentiometer::getAngle()
 {
-	double voltage = adc->getSampledVoltage(channel);
+	double voltage = adc->getSampledVoltage(INT_MotorChannel);
 	double angle = convertAdcVoltageToAngle(voltage);
 
 	return angle;
@@ -36,6 +41,5 @@ double Potentiometer::getAngle(byte channel)
 
 void Potentiometer::updateAngle(void)
 {
-	double angle = getAngle(INT_MotorChannel);
-	currentAngle = angle;
+	currentAngle = getAngle();
 }

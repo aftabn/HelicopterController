@@ -19,7 +19,7 @@ private:
 	static const double DBL_ZeroedVoltage;
 
 	double convertAdcVoltageToAngle(double voltage);
-	double getAngle(byte channel);
+	double getAngle();
 
 public:
 	Potentiometer(Adc *adc);

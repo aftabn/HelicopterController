@@ -48,6 +48,8 @@ void Encoder::quadratureDecoderISR(void)
 
 void Encoder::initialize()
 {
+	zeroAngle();
+
 	pinModeFast(Utility::PIN_EncoderChannelA, INPUT);
 	pinModeFast(Utility::PIN_EncoderChannelB, INPUT);
 	encoderValues = (digitalReadFast(Utility::PIN_EncoderChannelA) << 1) | digitalReadFast(Utility::PIN_EncoderChannelB);

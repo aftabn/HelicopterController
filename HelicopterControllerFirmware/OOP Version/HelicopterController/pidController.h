@@ -19,22 +19,34 @@ private:
 	PidController(Yaw *yaw, Tilt *tilt);
 	~PidController();
 
-	const double DBL_DefaultPidInterval;
-	const double DBL_MotorIdleVoltage;
+	static const double DBL_DefaultPidInterval;
+	static const double DBL_MotorIdleVoltage;
+	const int *minMotorOutputs[Utility::INT_MaxNumChannels];
+	const int *maxMotorOutputs[Utility::INT_MaxNumChannels];
 	static PidController *pidController;
 	Yaw *yaw;
 	Tilt *tilt;
 	double angleErrors[Utility::INT_MaxNumChannels];
 	double integratedAngleErrors[Utility::INT_MaxNumChannels];
 	double derivativeAnglesErrors[Utility::INT_MaxNumChannels];
-	const int *minMotorOutputs[Utility::INT_MaxNumChannels];
-	const int *maxMotorOutputs[Utility::INT_MaxNumChannels];
 
-	void updatePidMotorOutputs(int channel, Motor::Direction *direction, int *percentageOutput);
-	void applyMotorOutputs(int channel, Motor::Direction *direction, int *percentageOutput);
+	void initializePidTimer(int numMilliseconds);
+	void resetPidValues(void);
+	void updateOutputsFromPid(byte channel, Motor::Direction *direction, int *percentageOutput);
+	void convertToSignedOutput(int *output, Motor::Direction *direction);
+	void convertToUnsignedOutput(int *output, Motor::Direction *direction);
+	void constrainOutput(byte channelint, int *newOutput);
+	void calculateNewPidOutput(byte channel, int *newOutput);
 
 public:
-	// Pid ISR loop interval in milliseconds
+	// These two are only used when trying to explicitly set the pid percentage output
+	// i.e. When the output is being set from outside of the PID loop
+	static const int INT_MinPidOutput;
+	static const int INT_MaxPidOutput;
+	static const int INT_MinPidLoopInterval;
+	static const int INT_MaxPidLoopInterval;
+	const double *minSetPoints[Utility::INT_MaxNumChannels];
+	const double *maxSetPoints[Utility::INT_MaxNumChannels];
 	volatile bool isVerboseMode;
 	volatile bool isPidEnabled;
 	volatile bool isPidCalculationNeeded;
@@ -42,7 +54,7 @@ public:
 	volatile double *pGains[Utility::INT_MaxNumChannels];
 	volatile double *iGains[Utility::INT_MaxNumChannels];
 	volatile double *dGains[Utility::INT_MaxNumChannels];
-	volatile double *iWindupThresholds[Utility::INT_MaxNumChannels];
+	volatile double *integralWindupThresholds[Utility::INT_MaxNumChannels];
 	volatile int *outputRateLimits[Utility::INT_MaxNumChannels];
 	volatile double *setPoints[Utility::INT_MaxNumChannels];
 	volatile double *currentAngles[Utility::INT_MaxNumChannels];
@@ -57,6 +69,8 @@ public:
 	void initialize(void);
 	void enablePid(void);
 	void disablePid(void);
+	void disableMotors(void);
+	void applyMotorOutputs(byte channel, Motor::Direction *direction, int *percentageOutput);
 	void executePidCalculation(void);
 };
 
