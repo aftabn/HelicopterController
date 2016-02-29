@@ -241,34 +241,34 @@ void CommandHandler::onCommandMotorDriver(PidController *pidController)
 		}
 		else
 		{
-			if (channel == Tilt::INT_MotorChannel)
+			if (!pidController->isPidEnabled)
 			{
-				if (!pidController->isPidEnabled)
+				if (isAnalogVoltageCommandArg(gParameters[1]))
 				{
-					if (isAnalogVoltageCommandArg(gParameters[1]))
-					{
-						*(pidController->motorDriverTypes[channel]) = MotorDriverType::AnalogVoltage;
-						sendAck();
-					}
-					else if (isFrequencyCommandArg(gParameters[1]))
+					*(pidController->motorDriverTypes[channel]) = MotorDriverType::AnalogVoltage;
+					sendAck();
+				}
+				else if (isFrequencyCommandArg(gParameters[1]))
+				{
+					if (channel == Tilt::INT_MotorChannel)
 					{
 						*(pidController->motorDriverTypes[channel]) = MotorDriverType::Frequency;
 						sendAck();
 					}
 					else
 					{
-						sendMotorDriverError();
+						Serial.println(F("Yaw (Channel 1) can only be set to Analog Voltage"));
+						sendNack();
 					}
 				}
 				else
 				{
-					Serial.println(F("Cannot change driver type while PID control is on."));
-					sendNack();
+					sendMotorDriverError();
 				}
 			}
 			else
 			{
-				Serial.println(F("Changing the motor driver type can only be done for channel 1 (tilt)."));
+				Serial.println(F("Cannot change driver type while PID control is on."));
 				sendNack();
 			}
 		}
