@@ -44,36 +44,6 @@ public:
 	static const byte INT_ParameterCountMax = 3;
 	static const byte INT_ParameterLengthMax = 20;
 
-	static void sendNack(void);
-	static void sendAck(void);
-	static void sendInt(int num);
-	static void sendDouble(double num);
-	static void sendDouble(double num, int numDecimals);
-	static void sendOnOffStatus(bool isOn);
-	static void sendOneOrZeroStatus(bool isHigh);
-	static void sendDirectionStatus(Motor::Direction direction);
-	static void sendMotorDriverStatus(Motor::MotorDriverType motorDriverType);
-	static void sendIntRangeError(int lowerLimit, int upperLimit, char* unit);
-	static void sendDoubleRangeError(double lowerLimit, double upperLimit, char* unit);
-	static void sendChannelError(void);
-	static void sendSyntaxError(void);
-	static void sendReadOnlyError(void);
-	static void sendOnOffError(void);
-	static void sendOneOrZeroError(void);
-	static void sendDirectionError(void);
-	static void sendMotorDriverError(void);
-
-	static bool isOnCommandArg(char* arg);
-	static bool isOffCommandArg(char* arg);
-	static bool isClockwiseCommandArg(char* arg);
-	static bool isCounterClockwiseCommandArg(char* arg);
-	static bool isAnalogVoltageCommandArg(char* arg);
-	static bool isFrequencyCommandArg(char* arg);
-	static bool isChannelCorrect(char* channelArg);
-	static bool isReadCommand(char* arg);
-	static bool isIntWithinRange(int number, int lowerLimit, int upperLimit);
-	static bool isDoubleWithinRange(double number, double lowerLimit, double upperLimit);
-
 	static void upperCaseString(char *str);
 	static int stricmp(const char *p1, const char *p2);
 	static int convertToInt(char *str);
