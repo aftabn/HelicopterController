@@ -32,6 +32,12 @@ void Yaw::initialize()
 	motorDriverType = MotorDriverType::AnalogVoltage;
 }
 
+void Yaw::disable()
+{
+	dac->setVoltage(INT_MotorChannel, Motor::DBL_MotorIdleVoltage);
+	currentOutput = 0;
+}
+
 void Yaw::applyMotorOutputs(Direction *newDirection, int *newOutput)
 {
 	if (motorDriverType == MotorDriverType::AnalogVoltage)

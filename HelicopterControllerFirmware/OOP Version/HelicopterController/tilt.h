@@ -42,6 +42,7 @@ public:
 	volatile Motor::MotorDriverType motorDriverType;
 
 	void initialize(void);
+	void disable(void);
 	void refreshAngle(void);
 	void applyMotorOutputs(Motor::Direction *newDirection, int *newOutput);
 };

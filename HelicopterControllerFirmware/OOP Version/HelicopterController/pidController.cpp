@@ -120,10 +120,8 @@ void PidController::resetPidValues()
 
 void PidController::disableMotors()
 {
-	for (byte channel = 0; channel < Utility::INT_MaxNumChannels; channel++)
-	{
-		applyMotorOutputs(channel, (Direction *)directions[channel], 0);
-	}
+	yaw->disable();
+	tilt->disable();
 }
 
 void PidController::executePidCalculation()

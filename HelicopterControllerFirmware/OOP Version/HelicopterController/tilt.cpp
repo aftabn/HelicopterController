@@ -35,6 +35,14 @@ void Tilt::initialize()
 	motorDriverType = MotorDriverType::AnalogVoltage;
 }
 
+// Disables both the frequency generator and dac
+void Tilt::disable()
+{
+	dac->setVoltage(INT_MotorChannel, Motor::DBL_MotorIdleVoltage);
+	frequencyGenerator->disable();
+	currentOutput = 0;
+}
+
 void Tilt::refreshAngle()
 {
 	potentiometer->updateAngle();
