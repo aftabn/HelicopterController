@@ -4,9 +4,9 @@ Created: 1/10/2016
 Author:	Aftab
 */
 
-#include "Arduino.h"
 #include <digitalWriteFast.h>
 #include <SPI.h>
+#include "Arduino.h"
 #include "controller.h"
 #include "utility.h"
 #include "commandHandler.h"

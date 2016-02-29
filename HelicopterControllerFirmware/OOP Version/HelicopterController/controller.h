@@ -8,13 +8,6 @@ Author:	Aftab
 #define _CONTROLLER_h
 
 #include "commandHandler.h"
-#include "dac.h"
-#include "adc.h"
-#include "potentiometer.h"
-#include "encoder.h"
-#include "yaw.h"
-#include "tilt.h"
-#include "pidController.h"
 #include "utility.h"
 
 class Controller
@@ -22,6 +15,8 @@ class Controller
 private:
 	static const double DBL_FirmwareVersion;
 
+	// The controller needs to have access to all of these objects in order to pass them
+	// as references to the commandhandler functions
 	Dac *dac;
 	Adc *adc;
 	FrequencyGenerator *frequencyGenerator;

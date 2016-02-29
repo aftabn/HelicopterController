@@ -239,27 +239,38 @@ void CommandHandler::onCommandMotorDriver(PidController *pidController)
 			sendMotorDriverStatus(*(pidController->motorDriverTypes[channel]));
 			sendAck();
 		}
-		else if (!pidController->isPidEnabled)
+		else
 		{
-			if (isAnalogVoltageCommandArg(gParameters[1]))
+			if (channel == Tilt::INT_MotorChannel)
 			{
-				*(pidController->motorDriverTypes[channel]) = MotorDriverType::AnalogVoltage;
-				sendAck();
-			}
-			else if (isFrequencyCommandArg(gParameters[1]))
-			{
-				*(pidController->motorDriverTypes[channel]) = MotorDriverType::Frequency;
-				sendAck();
+				if (!pidController->isPidEnabled)
+				{
+					if (isAnalogVoltageCommandArg(gParameters[1]))
+					{
+						*(pidController->motorDriverTypes[channel]) = MotorDriverType::AnalogVoltage;
+						sendAck();
+					}
+					else if (isFrequencyCommandArg(gParameters[1]))
+					{
+						*(pidController->motorDriverTypes[channel]) = MotorDriverType::Frequency;
+						sendAck();
+					}
+					else
+					{
+						sendMotorDriverError();
+					}
+				}
+				else
+				{
+					Serial.println(F("Cannot change driver type while PID control is on."));
+					sendNack();
+				}
 			}
 			else
 			{
-				sendMotorDriverError();
+				Serial.println(F("Changing the motor driver type can only be done for channel 1 (tilt)."));
+				sendNack();
 			}
-		}
-		else
-		{
-			Serial.println(F("Cannot change driver type while PID control is on."));
-			sendNack();
 		}
 	}
 	else
@@ -625,14 +636,14 @@ void CommandHandler::onCommandState(bool *isSafetyOn, bool *isVerboseMode, PidCo
 	Serial << F("| Frequency\t") << frequencyGenerator->currentFrequency << F(" Hz\t(CH. 1)\t|\r\n");
 	Serial << F("| PID Interval\t") << pidController->pidLoopInterval << F(" ms\t\t|\r\n");
 	Serial << F("| PID Control\t") << (pidController->isPidEnabled ? F("On") : F("Off")) << F("\t\t|\r\n");
+	Serial << F("| Safety\t") << (*isSafetyOn ? F("On") : F("Off")) << F("\t\t|\r\n");
+	Serial << F("| Verbose\t") << (*isVerboseMode ? F("On") : F("Off")) << F("\t\t|\r\n");
 	Serial << F("| P-Gain\t") << *(pidController->proportionalGains[0]) << F("\t") << *(pidController->proportionalGains[1]) << F("\t|\r\n");
 	Serial << F("| I-Gain\t") << *(pidController->integralGains[0]) << F("\t") << *(pidController->integralGains[1]) << F("\t|\r\n");
 	Serial << F("| D-Gain\t") << *(pidController->derivativeGains[0]) << F("\t") << *(pidController->derivativeGains[1]) << F("\t|\r\n");
 	Serial << F("| I-Windup\t") << *(pidController->integralWindupThresholds[0]) << F("\t") << *(pidController->integralWindupThresholds[1]) << F("\t|\r\n");
-	Serial << F("| Out R.L.\t") << *(pidController->outputRateLimits[0]) << F("\t") << *(pidController->outputRateLimits[1]) << F("\t|\r\n");
+	Serial << F("| Rate Limit\t") << *(pidController->outputRateLimits[0]) << F("\t") << *(pidController->outputRateLimits[1]) << F("\t|\r\n");
 	Serial << F("| Drivers\t") << yawMotorDriver << F("\t") << tiltMotorDriver << F("\t|\r\n");
-	Serial << F("| Safety\t") << (*isSafetyOn ? F("On") : F("Off")) << F("\t\t|\r\n");
-	Serial << F("| Verbose\t") << (*isVerboseMode ? F("On") : F("Off")) << F("\t\t|\r\n");
 	Serial.println(F("|===============================|"));
 }
 

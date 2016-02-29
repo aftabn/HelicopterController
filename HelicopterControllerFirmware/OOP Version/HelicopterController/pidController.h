@@ -9,7 +9,6 @@ Author:	Aftab
 
 #include "Arduino.h"
 #include "utility.h"
-#include "dac.h"
 #include "yaw.h"
 #include "tilt.h"
 
