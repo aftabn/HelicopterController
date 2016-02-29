@@ -34,7 +34,7 @@ Controller::~Controller()
 void Controller::initialize()
 {
 	isSafetyOn = true;
-	isVerboseMode = false;
+	isVerboseMode = &(pidController->isVerboseMode);
 
 	Serial.begin(115200);
 	Serial.println();
@@ -93,7 +93,7 @@ void Controller::processCommand(char *command)
 	}
 	else if (0 == strcmp(command, "VERBOSE"))
 	{
-		CommandHandler::onCommandVerbose(&isVerboseMode);
+		CommandHandler::onCommandVerbose(isVerboseMode);
 	}
 	else if (0 == strcmp(command, "SAFETY"))
 	{
@@ -157,7 +157,7 @@ void Controller::processCommand(char *command)
 	}
 	else if (0 == strcmp(command, "STATE"))
 	{
-		CommandHandler::onCommandState(&isSafetyOn, &isVerboseMode, pidController, dac, frequencyGenerator);
+		CommandHandler::onCommandState(&isSafetyOn, isVerboseMode, pidController, dac, frequencyGenerator);
 	}
 	////else if (0 == strcmp(command, "'"))
 	////{

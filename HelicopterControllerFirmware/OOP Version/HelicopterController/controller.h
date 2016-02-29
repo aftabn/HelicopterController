@@ -33,7 +33,7 @@ private:
 	char lineBuffer[Utility::INT_LineSizeMax];
 	int heartbeatCounter = 0;
 	bool isSafetyOn;
-	bool isVerboseMode;
+	bool *isVerboseMode;
 
 	void initializeSpi(void);
 	void updateHeartbeat(void);
