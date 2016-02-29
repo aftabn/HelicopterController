@@ -195,8 +195,8 @@ void scanSerialPort()
 	uint8_t linePointer = 0;
 	char tmpstr[100];
 
-	long heartBeatTimer = 0;
-	long refreshAngleTimer = 0;
+	uint16_t heartBeatTimer = 0;
+	uint16_t refreshAngleTimer = 0;
 
 	while (true)
 	{
@@ -209,7 +209,7 @@ void scanSerialPort()
 				updatePotentiometerAngle();
 			}
 
-			if (++heartBeatTimer >= 250000)
+			if (++heartBeatTimer >= 65535)
 			{
 				heartBeatTimer = 0;
 				digitalWriteFast(HEARTBEAT_LED_PIN, !digitalReadFast(HEARTBEAT_LED_PIN));

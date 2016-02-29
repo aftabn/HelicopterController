@@ -152,7 +152,7 @@ void executePidCalculation()
 		if (isVerboseMode)
 		{
 			// Format is: "[CH%d] SP: %s deg, Output: %d %%, Angle: %s deg"
-			Serial << F("[CH") << channel << F("] SP: ") << setPoints[channel] << F("deg, Output: ") << currentOutputs[channel] << F("%, Angle: ") << currentAngles[channel] << F(" °") << NEWLINE;
+			Serial << F("[CH") << channel << F("] SP: ") << setPoints[channel] << F("deg, Output: ") << currentOutputs[channel] << F("%, Angle: ") << currentAngles[channel] << F(" degs") << NEWLINE;
 		}
 	}
 }

@@ -31,7 +31,7 @@ private:
 	Tilt *tilt;
 	PidController *pidController;
 	char lineBuffer[Utility::INT_LineSizeMax];
-	int heartbeatCounter = 0;
+	uint16_t heartbeatCounter = 0;
 	bool isSafetyOn;
 	bool *isVerboseMode;
 
