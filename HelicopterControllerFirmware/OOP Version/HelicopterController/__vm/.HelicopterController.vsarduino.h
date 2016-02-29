@@ -95,6 +95,8 @@ extern "C" void __cxa_pure_virtual() {;}
 #include <..\HelicopterController\dac.h>
 #include <..\HelicopterController\encoder.cpp>
 #include <..\HelicopterController\encoder.h>
+#include <..\HelicopterController\frequencyGenerator.cpp>
+#include <..\HelicopterController\frequencyGenerator.h>
 #include <..\HelicopterController\motor.h>
 #include <..\HelicopterController\pidController.cpp>
 #include <..\HelicopterController\pidController.h>

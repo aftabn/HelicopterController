@@ -38,7 +38,7 @@ public:
 	static void onCommandAngle(PidController *pidController);
 	static void onCommandAdc(Adc *adc);
 	static void onCommandDacVoltage(bool *isSafetyOn, Dac *dac);
-	//static void onCommandFrequencyOutput(void);
+	static void onCommandFrequencyOutput(bool *isSafetyOn, FrequencyGenerator *frequencyGenerator);
 	static void onCommandHelp(void);
 	static void handleCommandUnknown(char *command);
 

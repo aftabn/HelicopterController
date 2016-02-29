@@ -24,6 +24,7 @@ private:
 
 	Dac *dac;
 	Adc *adc;
+	FrequencyGenerator *frequencyGenerator;
 	Potentiometer *potentiometer;
 	Encoder *encoder;
 	Yaw *yaw;

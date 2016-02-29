@@ -17,10 +17,11 @@ Controller::Controller()
 {
 	dac = new Dac();
 	adc = new Adc();
+	frequencyGenerator = new FrequencyGenerator();
 	potentiometer = new Potentiometer(adc);
 	encoder = Encoder::getEncoder();
 	yaw = new Yaw(dac, encoder);
-	tilt = new Tilt(dac, potentiometer);
+	tilt = new Tilt(dac, frequencyGenerator, potentiometer);
 	pidController = PidController::getPidController(yaw, tilt);
 }
 
@@ -44,6 +45,7 @@ void Controller::initialize()
 	initializeSpi();
 	adc->initialize();
 	dac->initialize();
+	frequencyGenerator->initialize();
 	potentiometer->initialize();
 	encoder->initialize();
 	yaw->initialize();
@@ -149,10 +151,10 @@ void Controller::processCommand(char *command)
 	{
 		CommandHandler::onCommandDacVoltage(&isSafetyOn, dac);
 	}
-	/*else if (0 == strcmp(command, "F"))
+	else if (0 == strcmp(command, "F"))
 	{
-		onCommandFrequencyOutput();
-	}*/
+		CommandHandler::onCommandFrequencyOutput(&isSafetyOn, frequencyGenerator);
+	}
 	////else if (0 == strcmp(command, "'"))
 	////{
 	////	processLine(lastCommand);

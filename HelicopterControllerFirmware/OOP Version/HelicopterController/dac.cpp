@@ -31,6 +31,9 @@ void Dac::initialize()
 
 int Dac::convertVoltageToDacValue(double voltage)
 {
+	// Constrain voltage to between limits
+	voltage = max(min(voltage, Motor::DBL_MotorVoltageMin), Motor::DBL_MotorVoltageMin);
+
 	int value = (int)(voltage / DBL_ReferenceVoltage * INT_Resolution);
 	return value;
 }

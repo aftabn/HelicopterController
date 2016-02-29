@@ -15,7 +15,8 @@ const double Tilt::DBL_SetPointMax = 45;
 const int Tilt::INT_MinOutput = 0;
 const int Tilt::INT_MaxOutput = 100;
 
-Tilt::Tilt(Dac *dac, Potentiometer *potentiometer) : dac(dac), potentiometer(potentiometer)
+Tilt::Tilt(Dac *dac, FrequencyGenerator *frequencyGenerator, Potentiometer *potentiometer)
+	: dac(dac), frequencyGenerator(frequencyGenerator), potentiometer(potentiometer)
 {
 	currentAngle = &(potentiometer->currentAngle);
 }
@@ -23,6 +24,7 @@ Tilt::Tilt(Dac *dac, Potentiometer *potentiometer) : dac(dac), potentiometer(pot
 Tilt::~Tilt()
 {
 	delete potentiometer;
+	delete frequencyGenerator;
 }
 
 void Tilt::initialize()
@@ -48,7 +50,7 @@ void Tilt::applyMotorOutputs(Direction *newDirection, int *newOutput)
 	else if (motorDriverType == MotorDriverType::Frequency)
 	{
 		int frequency = adjustOutputToFrequency(newOutput);
-		// TODO: Add frequency setting here
+		frequencyGenerator->setFrequency(frequency);
 	}
 
 	currentOutput = *newOutput;

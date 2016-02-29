@@ -21,9 +21,9 @@ void CommandHandler::onCommandIdentity()
 
 void CommandHandler::onCommandEcho()
 {
-	if (CommandHandler::gParameters[0] != NULL)
+	if (gParameters[0] != NULL)
 	{
-		Serial.println(CommandHandler::gParameters[0]);
+		Serial.println(gParameters[0]);
 		sendAck();
 	}
 	else
@@ -34,7 +34,7 @@ void CommandHandler::onCommandEcho()
 
 void CommandHandler::onCommandChangelog()
 {
-	if (isReadCommand(CommandHandler::gParameters[0]))
+	if (isReadCommand(gParameters[0]))
 	{
 		Serial.println(F("Fixed outputs not updating from disabling PID"));
 		sendAck();
@@ -47,7 +47,7 @@ void CommandHandler::onCommandChangelog()
 
 void CommandHandler::onCommandFirmwareVersion(const double *firmwareVersion)
 {
-	if (isReadCommand(CommandHandler::gParameters[0]))
+	if (isReadCommand(gParameters[0]))
 	{
 		sendDouble(*firmwareVersion);
 		sendAck();
@@ -60,12 +60,12 @@ void CommandHandler::onCommandFirmwareVersion(const double *firmwareVersion)
 
 void CommandHandler::onCommandPidControl(PidController *pidController)
 {
-	if (isReadCommand(CommandHandler::gParameters[0]))
+	if (isReadCommand(gParameters[0]))
 	{
 		sendOnOffStatus(pidController->isPidEnabled);
 		sendAck();
 	}
-	else if (isOnCommandArg(CommandHandler::gParameters[0]))
+	else if (isOnCommandArg(gParameters[0]))
 	{
 		if (!pidController->isPidEnabled)
 		{
@@ -78,7 +78,7 @@ void CommandHandler::onCommandPidControl(PidController *pidController)
 			sendNack();
 		}
 	}
-	else if (isOffCommandArg(CommandHandler::gParameters[0]))
+	else if (isOffCommandArg(gParameters[0]))
 	{
 		pidController->disablePid();
 		sendAck();
@@ -91,17 +91,17 @@ void CommandHandler::onCommandPidControl(PidController *pidController)
 
 void CommandHandler::onCommandVerbose(bool *isVerboseMode)
 {
-	if (isReadCommand(CommandHandler::gParameters[0]))
+	if (isReadCommand(gParameters[0]))
 	{
 		sendOnOffStatus(*isVerboseMode);
 		sendAck();
 	}
-	else if (isOnCommandArg(CommandHandler::gParameters[0]))
+	else if (isOnCommandArg(gParameters[0]))
 	{
 		*isVerboseMode = true;
 		sendAck();
 	}
-	else if (isOffCommandArg(CommandHandler::gParameters[0]))
+	else if (isOffCommandArg(gParameters[0]))
 	{
 		*isVerboseMode = false;
 		sendAck();
@@ -113,17 +113,17 @@ void CommandHandler::onCommandVerbose(bool *isVerboseMode)
 
 void CommandHandler::onCommandSafety(bool *isSafetyOn)
 {
-	if (isReadCommand(CommandHandler::gParameters[0]))
+	if (isReadCommand(gParameters[0]))
 	{
 		sendOnOffStatus(*isSafetyOn);
 		sendAck();
 	}
-	else if (isOnCommandArg(CommandHandler::gParameters[0]))
+	else if (isOnCommandArg(gParameters[0]))
 	{
 		*isSafetyOn = true;
 		sendAck();
 	}
-	else if (isOffCommandArg(CommandHandler::gParameters[0]))
+	else if (isOffCommandArg(gParameters[0]))
 	{
 		*isSafetyOn = false;
 		sendAck();
@@ -136,12 +136,12 @@ void CommandHandler::onCommandSafety(bool *isSafetyOn)
 
 void CommandHandler::onCommandOutput(PidController *pidController)
 {
-	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	if (isChannelCorrect(gParameters[0]))
 	{
-		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
-		int output = Utility::convertToInt(CommandHandler::gParameters[1]);
+		byte channel = Utility::convertToInt(gParameters[0]);
+		int output = Utility::convertToInt(gParameters[1]);
 
-		if (isReadCommand(CommandHandler::gParameters[1]))
+		if (isReadCommand(gParameters[1]))
 		{
 			sendInt(*(pidController->currentOutputs[channel]));
 			sendAck();
@@ -174,11 +174,11 @@ void CommandHandler::onCommandOutput(PidController *pidController)
 
 void CommandHandler::onCommandDirection(PidController *pidController)
 {
-	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	if (isChannelCorrect(gParameters[0]))
 	{
-		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+		byte channel = Utility::convertToInt(gParameters[0]);
 
-		if (isReadCommand(CommandHandler::gParameters[1]))
+		if (isReadCommand(gParameters[1]))
 		{
 			sendDirectionStatus(*(pidController->directions[channel]));
 			sendAck();
@@ -188,13 +188,13 @@ void CommandHandler::onCommandDirection(PidController *pidController)
 			int output = *(pidController->currentOutputs[channel]);
 			Direction direction;
 
-			if (isClockwiseCommandArg(CommandHandler::gParameters[1]))
+			if (isClockwiseCommandArg(gParameters[1]))
 			{
 				direction = Direction::Clockwise;
 				pidController->applyMotorOutputs(channel, &direction, &output);
 				sendAck();
 			}
-			else if (isCounterClockwiseCommandArg(CommandHandler::gParameters[1]))
+			else if (isCounterClockwiseCommandArg(gParameters[1]))
 			{
 				direction = Direction::CounterClockwise;
 				pidController->applyMotorOutputs(channel, &direction, &output);
@@ -219,23 +219,23 @@ void CommandHandler::onCommandDirection(PidController *pidController)
 
 void CommandHandler::onCommandMotorDriver(PidController *pidController)
 {
-	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	if (isChannelCorrect(gParameters[0]))
 	{
-		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+		byte channel = Utility::convertToInt(gParameters[0]);
 
-		if (isReadCommand(CommandHandler::gParameters[1]))
+		if (isReadCommand(gParameters[1]))
 		{
 			sendMotorDriverStatus(*(pidController->motorDriverTypes[channel]));
 			sendAck();
 		}
 		else if (!pidController->isPidEnabled)
 		{
-			if (isAnalogVoltageCommandArg(CommandHandler::gParameters[1]))
+			if (isAnalogVoltageCommandArg(gParameters[1]))
 			{
 				*(pidController->motorDriverTypes[channel]) = MotorDriverType::AnalogVoltage;
 				sendAck();
 			}
-			else if (isFrequencyCommandArg(CommandHandler::gParameters[1]))
+			else if (isFrequencyCommandArg(gParameters[1]))
 			{
 				*(pidController->motorDriverTypes[channel]) = MotorDriverType::Frequency;
 				sendAck();
@@ -259,12 +259,12 @@ void CommandHandler::onCommandMotorDriver(PidController *pidController)
 
 void CommandHandler::onCommandProportionalGain(PidController *pidController)
 {
-	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	if (isChannelCorrect(gParameters[0]))
 	{
-		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
-		double pGain = atof(CommandHandler::gParameters[1]);
+		byte channel = Utility::convertToInt(gParameters[0]);
+		double pGain = atof(gParameters[1]);
 
-		if (isReadCommand(CommandHandler::gParameters[1]))
+		if (isReadCommand(gParameters[1]))
 		{
 			sendDouble(*(pidController->pGains[channel]));
 			sendAck();
@@ -287,12 +287,12 @@ void CommandHandler::onCommandProportionalGain(PidController *pidController)
 
 void CommandHandler::onCommandIntegralGain(PidController *pidController)
 {
-	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	if (isChannelCorrect(gParameters[0]))
 	{
-		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
-		double iGain = atof(CommandHandler::gParameters[1]);
+		byte channel = Utility::convertToInt(gParameters[0]);
+		double iGain = atof(gParameters[1]);
 
-		if (isReadCommand(CommandHandler::gParameters[1]))
+		if (isReadCommand(gParameters[1]))
 		{
 			sendDouble(*(pidController->iGains[channel]));
 			sendAck();
@@ -315,12 +315,12 @@ void CommandHandler::onCommandIntegralGain(PidController *pidController)
 
 void CommandHandler::onCommandDerivativeGain(PidController *pidController)
 {
-	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	if (isChannelCorrect(gParameters[0]))
 	{
-		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
-		double dGain = atof(CommandHandler::gParameters[1]);
+		byte channel = Utility::convertToInt(gParameters[0]);
+		double dGain = atof(gParameters[1]);
 
-		if (isReadCommand(CommandHandler::gParameters[1]))
+		if (isReadCommand(gParameters[1]))
 		{
 			sendDouble(*(pidController->dGains[channel]));
 			sendAck();
@@ -343,12 +343,12 @@ void CommandHandler::onCommandDerivativeGain(PidController *pidController)
 
 void CommandHandler::onCommandSetPoint(PidController *pidController)
 {
-	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	if (isChannelCorrect(gParameters[0]))
 	{
-		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
-		double setPoint = atof(CommandHandler::gParameters[1]);
+		byte channel = Utility::convertToInt(gParameters[0]);
+		double setPoint = atof(gParameters[1]);
 
-		if (isReadCommand(CommandHandler::gParameters[1]))
+		if (isReadCommand(gParameters[1]))
 		{
 			sendDouble(*(pidController->setPoints[channel]));
 			sendAck();
@@ -371,9 +371,9 @@ void CommandHandler::onCommandSetPoint(PidController *pidController)
 
 void CommandHandler::onCommandLoopInterval(PidController *pidController)
 {
-	int loopInterval = Utility::convertToInt(CommandHandler::gParameters[0]);
+	int loopInterval = Utility::convertToInt(gParameters[0]);
 
-	if (isReadCommand(CommandHandler::gParameters[0]))
+	if (isReadCommand(gParameters[0]))
 	{
 		sendInt(pidController->pidLoopInterval);
 		sendAck();
@@ -399,12 +399,12 @@ void CommandHandler::onCommandLoopInterval(PidController *pidController)
 
 void CommandHandler::onCommandIntegralWindup(PidController *pidController)
 {
-	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	if (isChannelCorrect(gParameters[0]))
 	{
-		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
-		double windup = atof(CommandHandler::gParameters[1]);
+		byte channel = Utility::convertToInt(gParameters[0]);
+		double windup = atof(gParameters[1]);
 
-		if (isReadCommand(CommandHandler::gParameters[1]))
+		if (isReadCommand(gParameters[1]))
 		{
 			sendDouble(*(pidController->integralWindupThresholds[channel]));
 			sendAck();
@@ -427,12 +427,12 @@ void CommandHandler::onCommandIntegralWindup(PidController *pidController)
 
 void CommandHandler::onCommandRateLimit(PidController *pidController)
 {
-	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	if (isChannelCorrect(gParameters[0]))
 	{
-		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
-		int rateLimit = Utility::convertToInt(CommandHandler::gParameters[1]);
+		byte channel = Utility::convertToInt(gParameters[0]);
+		int rateLimit = Utility::convertToInt(gParameters[1]);
 
-		if (isReadCommand(CommandHandler::gParameters[1]))
+		if (isReadCommand(gParameters[1]))
 		{
 			sendInt(*(pidController->outputRateLimits[channel]));
 			sendAck();
@@ -455,11 +455,11 @@ void CommandHandler::onCommandRateLimit(PidController *pidController)
 
 void CommandHandler::onCommandAngle(PidController *pidController)
 {
-	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	if (isChannelCorrect(gParameters[0]))
 	{
-		byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
+		byte channel = Utility::convertToInt(gParameters[0]);
 
-		if (isReadCommand(CommandHandler::gParameters[1]))
+		if (isReadCommand(gParameters[1]))
 		{
 			sendDouble(*(pidController->currentAngles[channel]));
 			sendAck();
@@ -477,7 +477,7 @@ void CommandHandler::onCommandAngle(PidController *pidController)
 
 void CommandHandler::onCommandAdc(Adc *adc)
 {
-	int adcChannel = Utility::convertToInt(CommandHandler::gParameters[0]);
+	int adcChannel = Utility::convertToInt(gParameters[0]);
 
 	if (isIntWithinRange(adcChannel, adc->INT_ChannelMin, adc->INT_ChannelMax))
 	{
@@ -493,31 +493,83 @@ void CommandHandler::onCommandAdc(Adc *adc)
 
 void CommandHandler::onCommandDacVoltage(bool *isSafetyOn, Dac *dac)
 {
-	if (isChannelCorrect(CommandHandler::gParameters[0]))
+	if (isChannelCorrect(gParameters[0]))
 	{
-		if (!*isSafetyOn)
-		{
-			byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
-			double voltage = atof(CommandHandler::gParameters[1]);
+		byte channel = Utility::convertToInt(gParameters[0]);
+		double voltage = atof(gParameters[1]);
 
-			if (isReadCommand(CommandHandler::gParameters[1]))
+		if (isReadCommand(gParameters[1]))
+		{
+			sendDouble(dac->currentVoltages[channel]);
+			sendAck();
+		}
+		else
+		{
+			if (!*isSafetyOn)
 			{
-				sendDouble(dac->currentVoltages[channel]);
-				sendAck();
+				if (isDoubleWithinRange(voltage, Motor::DBL_MotorVoltageMin, Motor::DBL_MotorVoltageMax))
+				{
+					dac->setVoltage(channel, voltage);
+					sendAck();
+				}
+				else
+				{
+					sendDoubleRangeError(Motor::DBL_MotorVoltageMin, Motor::DBL_MotorVoltageMax, Utility::UNIT_Volts);
+				}
 			}
-			else if (isDoubleWithinRange(voltage, Motor::DBL_MotorVoltageMin, Motor::DBL_MotorVoltageMax))
+			else
 			{
-				dac->setVoltage(channel, voltage);
+				Serial.println(F("Cannot change frequency output while safety is on."));
+				sendNack();
+			}
+		}
+	}
+	else
+	{
+		sendChannelError();
+	}
+}
+
+// This command is complex because it only allows setting of frequency for channel 1
+// This is because only the tilt motor can be controlled by frequency
+void CommandHandler::onCommandFrequencyOutput(bool *isSafetyOn, FrequencyGenerator *frequencyGenerator)
+{
+	if (isChannelCorrect(gParameters[0]))
+	{
+		byte channel = Utility::convertToInt(gParameters[0]);
+		int frequency = Utility::convertToInt(gParameters[1]);
+
+		if (channel == Tilt::INT_MotorChannel)
+		{
+			if (isReadCommand(gParameters[1]))
+			{
+				sendInt(frequencyGenerator->currentFrequency);
 				sendAck();
 			}
 			else
 			{
-				sendDoubleRangeError(Motor::DBL_MotorVoltageMin, Motor::DBL_MotorVoltageMax, Utility::UNIT_Volts);
+				if (!*isSafetyOn)
+				{
+					if (isIntWithinRange(frequency, Motor::INT_MotorMinFrequency, Motor::INT_MotorMaxFrequency))
+					{
+						frequencyGenerator->setFrequency(frequency);
+						sendAck();
+					}
+					else
+					{
+						sendIntRangeError(Motor::INT_MotorMinFrequency, Motor::INT_MotorMaxFrequency, Utility::UNIT_Hertz);
+					}
+				}
+				else
+				{
+					Serial.println(F("Cannot change frequency output while safety is on."));
+					sendNack();
+				}
 			}
 		}
 		else
 		{
-			Serial.println(F("Cannot change DAC voltage while safety is on."));
+			Serial.println(F("Changing or reading of frequency only applies to channel 1"));
 			sendNack();
 		}
 	}
@@ -526,43 +578,6 @@ void CommandHandler::onCommandDacVoltage(bool *isSafetyOn, Dac *dac)
 		sendChannelError();
 	}
 }
-//
-//void onCommandFrequencyOutput()
-//{
-//	if (isChannelCorrect(CommandHandler::gParameters[0]))
-//	{
-//		if (!isSafetyOn)
-//		{
-//			byte channel = Utility::convertToInt(CommandHandler::gParameters[0]);
-//			int frequency = Utility::convertToInt(CommandHandler::gParameters[1]);
-//
-//			if (Utility::isReadCommand(CommandHandler::gParameters[1]))
-//			{
-//				sendInt(currentFrequency);
-//				Utility::sendAck();
-//			}
-//			else if (isIntWithinRange(frequency, MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY))
-//			{
-//				setFrequency(channel, frequency);
-//				Utility::sendAck();
-//			}
-//			else
-//			{
-//				sendIntRangeError(MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY, HERTZ_UNIT);
-//			}
-//		}
-//		else
-//		{
-//			Serial.println(F("Cannot change frequency output while safety is on."));
-//			Utility::sendNack();
-//		}
-//	}
-//	else
-//	{
-//		sendChannelError();
-//	}
-//}
-//
 
 void CommandHandler::onCommandHelp()
 {
@@ -594,20 +609,18 @@ void CommandHandler::onCommandHelp()
 
 void CommandHandler::handleCommandUnknown(char* command)
 {
-	char tmpstr[128];
-	char newstr[40];
-	sprintf(tmpstr, "Unknown command [%s]", command);
+	Serial << F("Unknown command [") << command << F("]");
 
 	for (int i = 0; i < Utility::INT_ParameterCountMax; i++)
 	{
 		if (strlen(gParameters[i]))
 		{
-			sprintf(newstr, "  %d{%s}", i, gParameters[i]);
-			strcat(tmpstr, newstr);
+			Serial << F(" ") << i << F("{") << gParameters[i] << F("}");
 		}
 	}
 
-	Serial.println(tmpstr);
+	Serial << Utility::STR_NewLine;
+
 	sendNack();
 }
 

@@ -8,6 +8,7 @@ Author:	Aftab
 #define _TILT_h
 
 #include "pidSettings.h"
+#include "frequencyGenerator.h"
 #include "potentiometer.h"
 #include "dac.h"
 #include "motor.h"
@@ -17,14 +18,15 @@ Author:	Aftab
 class Tilt
 {
 private:
-	Potentiometer *potentiometer;
 	Dac *dac;
+	FrequencyGenerator *frequencyGenerator;
+	Potentiometer *potentiometer;
 
 	double adjustOutputToVoltage(Motor::Direction *newDirection, int *newOutput);
 	int adjustOutputToFrequency(int *newOutput);
 
 public:
-	Tilt(Dac *dac, Potentiometer *potentiometer);
+	Tilt(Dac *dac, FrequencyGenerator *frequencyGenerator, Potentiometer *potentiometer);
 	~Tilt();
 
 	static const byte INT_MotorChannel = 1;
