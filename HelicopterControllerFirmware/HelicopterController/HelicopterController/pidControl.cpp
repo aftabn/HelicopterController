@@ -360,6 +360,11 @@ void updatePotentiometerAngle(void)
 	currentAngles[POTENTIOMETER_CHANNEL] = angle;
 }
 
+void zeroEncoderAngle()
+{
+	currentAngles[YAW_CHANNEL] = 0;
+}
+
 void disableMotors()
 {
 	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)

@@ -151,6 +151,8 @@ double convertPotentiometerVoltageToAngle(double voltage);
 double getPotentiometerAngle(int channel);
 void updatePotentiometerAngle(void);
 
+void zeroEncoderAngle(void);
+
 int convertVoltageToDacValue(double voltage);
 void setDacVoltage(int channel, double voltage);
 

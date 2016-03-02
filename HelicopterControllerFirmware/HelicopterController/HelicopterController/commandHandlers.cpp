@@ -5,6 +5,7 @@ Author:	Aftab
 */
 
 #include <avr\pgmspace.h>
+#include <Streaming.h>
 #include "globals.h"
 #include "util.h"
 #include "commandHandlers.h"
@@ -170,34 +171,48 @@ void onCommandOutput()
 	}
 }
 
+// Allows the reading or changing of direction for specified motor, but only allows change in
+// direction if the change results in a percentage change of less than the outputRateLimit
 void onCommandDirection()
 {
 	if (isChannelCorrect(gParameters[0]))
 	{
-		int channel = convertToInt(gParameters[0]);
+		byte channel = convertToInt(gParameters[0]);
 
 		if (isReadCommand(gParameters[1]))
 		{
 			sendDirectionStatus(directions[channel]);
 			sendAck();
 		}
-		else if (!isPidEnabled)
+		else if (isPidEnabled)
 		{
-			const int output = currentOutputs[channel];
+			int output = currentOutputs[channel];
+			int outputRateLimit = outputRateLimits[channel];
+			Direction direction;
 
 			if (isClockwiseCommandArg(gParameters[1]))
 			{
-				applyMotorOutputs(channel, Clockwise, output);
-				sendAck();
+				direction = Direction::Clockwise;
 			}
 			else if (isCounterClockwiseCommandArg(gParameters[1]))
 			{
-				applyMotorOutputs(channel, CounterClockwise, output);
-				sendAck();
+				direction = Direction::CounterClockwise;
 			}
 			else
 			{
 				sendDirectionError();
+				return;
+			}
+
+			if (direction != directions[channel] && output > outputRateLimit / 2)
+			{
+				Serial << F("Cannot make a change to output by more than ") << outputRateLimit << F("%") << NEWLINE;
+				sendNack();
+			}
+			else
+			{
+				applyMotorOutputs(channel, direction, output);
+				sendAck();
 			}
 		}
 		else
@@ -216,34 +231,45 @@ void onCommandMotorDriver()
 {
 	if (isChannelCorrect(gParameters[0]))
 	{
-		int channel = convertToInt(gParameters[0]);
+		byte channel = convertToInt(gParameters[0]);
 
 		if (isReadCommand(gParameters[1]))
 		{
 			sendMotorDriverStatus(motorDriverTypes[channel]);
 			sendAck();
 		}
-		else if (!isPidEnabled)
+		else
 		{
-			if (isAnalogVoltageCommandArg(gParameters[1]))
+			if (isPidEnabled)
 			{
-				motorDriverTypes[channel] = AnalogVoltage;
-				sendAck();
-			}
-			else if (isFrequencyCommandArg(gParameters[1]))
-			{
-				motorDriverTypes[channel] = Frequency;
-				sendAck();
+				if (isAnalogVoltageCommandArg(gParameters[1]))
+				{
+					motorDriverTypes[channel] = AnalogVoltage;
+					sendAck();
+				}
+				else if (isFrequencyCommandArg(gParameters[1]))
+				{
+					if (channel == TILT_CHANNEL)
+					{
+						motorDriverTypes[channel] = Frequency;
+						sendAck();
+					}
+					else
+					{
+						Serial.println(F("Yaw (Channel 1) can only be set to Analog Voltage"));
+						sendNack();
+					}
+				}
+				else
+				{
+					sendMotorDriverError();
+				}
 			}
 			else
 			{
-				sendMotorDriverError();
+				Serial.println(F("Cannot change driver type while PID control is on."));
+				sendNack();
 			}
-		}
-		else
-		{
-			Serial.println(F("Cannot change driver type while PID control is on."));
-			sendNack();
 		}
 	}
 	else
@@ -467,6 +493,19 @@ void onCommandAngle()
 	else
 	{
 		sendChannelError();
+	}
+}
+
+void onCommandZeroEncoderAngle()
+{
+	if (isReadCommand(gParameters[1]))
+	{
+		zeroEncoderAngle();
+		sendAck();
+	}
+	else
+	{
+		sendReadOnlyError();
 	}
 }
 

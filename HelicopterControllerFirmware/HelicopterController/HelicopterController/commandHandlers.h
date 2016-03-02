@@ -32,6 +32,7 @@ void onCommandIntegralWindup(void);
 void onCommandRateLimit(void);
 void onCommandSetPoint(void);
 void onCommandAngle(void);
+void onCommandZeroEncoderAngle();
 void onCommandAdc(void);
 void onCommandDacVoltage(void);
 void onCommandFrequencyOutput(void);

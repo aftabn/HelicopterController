@@ -99,6 +99,10 @@ void processCommand(char *command)
 	{
 		onCommandAngle();
 	}
+	else if (0 == strcmp(command, "Z"))
+	{
+		onCommandZeroEncoderAngle();
+	}
 	else if (0 == strcmp(command, "ADC"))
 	{
 		onCommandAdc();
@@ -196,19 +200,12 @@ void scanSerialPort()
 	char tmpstr[100];
 
 	uint16_t heartBeatTimer = 0;
-	uint16_t refreshAngleTimer = 0;
 
 	while (true)
 	{
 		// Use this to toggle heartbeat LED when not receiving characters
 		while (Serial.available() <= 0)
 		{
-			if (++refreshAngleTimer >= 5000)
-			{
-				refreshAngleTimer = 0;
-				updatePotentiometerAngle();
-			}
-
 			if (++heartBeatTimer >= 65535)
 			{
 				heartBeatTimer = 0;
@@ -217,6 +214,7 @@ void scanSerialPort()
 
 			if (isPidCalculationNeeded)
 			{
+				updatePotentiometerAngle();
 				executePidCalculation();
 				isPidCalculationNeeded = false;
 			}
