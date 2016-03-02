@@ -13,6 +13,8 @@ Author:	Aftab
 const byte adcChannelLookup[] = { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
 const int minMotorOutput[MAX_NUM_CHANNELS] = { YAW_OUTPUT_MIN, TILT_OUTPUT_MIN };
 const int maxMotorOutput[MAX_NUM_CHANNELS] = { YAW_OUTPUT_MAX, TILT_OUTPUT_MAX };
+const double minSetPoint[MAX_NUM_CHANNELS] = { YAW_SET_POINT_MIN, TILT_SET_POINT_MIN };
+const double maxSetPoint[MAX_NUM_CHANNELS] = { YAW_SET_POINT_MAX, TILT_SET_POINT_MAX };
 
 volatile bool isPidCalculationNeeded;
 volatile bool isPidEnabled;
@@ -160,8 +162,11 @@ void executePidCalculation()
 void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOutput)
 {
 	// Get output as a signed value from -100 to 100 based on direction for easier calculations
-	int currentOutput = directions[channel] == Clockwise ? currentOutputs[channel] : -1 * currentOutputs[channel];
+	int currentOutput = currentOutputs[channel] * directions[channel] == Clockwise ? 1 : -1;
 	double currentAngle = currentAngles[channel];
+
+	// Update previous angle for next calculation
+	previousAngles[channel] = currentAngle;
 
 	// P term
 	angleErrors[channel] = setPoints[channel] - currentAngle;
@@ -174,9 +179,6 @@ void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOut
 
 	// D term
 	derivativeAnglesErrors[channel] = (currentAngle - previousAngles[channel]) / pidLoopInterval / 1000.0;
-
-	// Update previous angle for next calculation
-	previousAngles[channel] = currentAngle;
 
 	// Get new signed output from PID algorithm
 	int newOutput = (int)(pGains[channel] * angleErrors[channel] + iGains[channel] * integratedAngleErrors[channel] + dGains[channel] * derivativeAnglesErrors[channel]);

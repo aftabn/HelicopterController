@@ -65,8 +65,11 @@ Author:	Aftab
 #define PID_OUTPUT_MIN					0
 #define PID_OUTPUT_MAX					100
 
-#define SET_POINT_MIN					0.00
-#define SET_POINT_MAX					360.0
+#define YAW_SET_POINT_MIN				-180.0
+#define YAW_SET_POINT_MAX				180.0
+
+#define TILT_SET_POINT_MIN				-45
+#define TILT_SET_POINT_MAX				90
 
 #define YAW_OUTPUT_MIN					-100
 #define YAW_OUTPUT_MAX					100
@@ -82,7 +85,7 @@ Author:	Aftab
 #define DEFAULT_P_GAIN					P_GAIN_MIN
 #define DEFAULT_I_GAIN					I_GAIN_MIN
 #define DEFAULT_D_GAIN					D_GAIN_MIN
-#define DEFAULT_SET_POINT				SET_POINT_MIN
+#define DEFAULT_SET_POINT				0.0
 #define DEFAULT_I_WINDUP_THRESH			30.0
 #define DEFAULT_OUTPUT_RATE_LIMIT		10
 #define DEFAULT_PID_INTERVAL_MS			250
@@ -92,6 +95,8 @@ enum MotorDriverType { AnalogVoltage, Frequency };
 
 extern const int minMotorOutput[MAX_NUM_CHANNELS];
 extern const int maxMotorOutput[MAX_NUM_CHANNELS];
+extern const double minSetPoint[MAX_NUM_CHANNELS];
+extern const double maxSetPoint[MAX_NUM_CHANNELS];
 
 extern volatile bool isPidCalculationNeeded;
 extern volatile bool isPidEnabled;

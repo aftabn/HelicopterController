@@ -348,14 +348,14 @@ void onCommandSetPoint()
 			sendDouble(setPoints[channel]);
 			sendAck();
 		}
-		else if (isDoubleWithinRange(setPoint, SET_POINT_MIN, SET_POINT_MAX))
+		else if (isDoubleWithinRange(setPoint, minSetPoint[channel], maxSetPoint[channel]))
 		{
 			setPoints[channel] = setPoint;
 			sendAck();
 		}
 		else
 		{
-			sendDoubleRangeError(SET_POINT_MIN, SET_POINT_MAX, DEGREES_UNIT);
+			sendDoubleRangeError(minSetPoint[channel], maxSetPoint[channel], DEGREES_UNIT);
 		}
 	}
 	else
