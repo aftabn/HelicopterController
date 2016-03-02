@@ -529,30 +529,33 @@ void onCommandDacVoltage()
 {
 	if (isChannelCorrect(gParameters[0]))
 	{
-		if (!isSafetyOn)
-		{
-			int channel = convertToInt(gParameters[0]);
-			double voltage = atof(gParameters[1]);
+		byte channel = convertToInt(gParameters[0]);
+		double voltage = atof(gParameters[1]);
 
-			if (isReadCommand(gParameters[1]))
-			{
-				sendDouble(currentVoltages[channel]);
-				sendAck();
-			}
-			else if (isDoubleWithinRange(voltage, MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE))
-			{
-				setDacVoltage(channel, voltage);
-				sendAck();
-			}
-			else
-			{
-				sendDoubleRangeError(MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE, VOLTAGE_UNIT);
-			}
+		if (isReadCommand(gParameters[1]))
+		{
+			sendDouble(currentVoltages[channel]);
+			sendAck();
 		}
 		else
 		{
-			Serial.println(F("Cannot change DAC voltage while safety is on."));
-			sendNack();
+			if (!isSafetyOn)
+			{
+				if (isDoubleWithinRange(voltage, MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE))
+				{
+					dac->setVoltage(channel, voltage);
+					sendAck();
+				}
+				else
+				{
+					sendDoubleRangeError(MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE, VOLTAGE_UNIT);
+				}
+			}
+			else
+			{
+				Serial.println(F("Cannot change voltage while safety is on."));
+				sendNack();
+			}
 		}
 	}
 	else
@@ -561,33 +564,46 @@ void onCommandDacVoltage()
 	}
 }
 
+// This command is complex because it only allows setting of frequency for channel 1
+// This is because only the tilt motor can be controlled by frequency
 void onCommandFrequencyOutput()
 {
 	if (isChannelCorrect(gParameters[0]))
 	{
-		if (!isSafetyOn)
-		{
-			int channel = convertToInt(gParameters[0]);
-			int frequency = convertToInt(gParameters[1]);
+		byte channel = convertToInt(gParameters[0]);
+		int frequency = convertToInt(gParameters[1]);
 
+		if (channel == TILT_CHANNEL)
+		{
 			if (isReadCommand(gParameters[1]))
 			{
 				sendInt(currentFrequency);
 				sendAck();
 			}
-			else if (isIntWithinRange(frequency, MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY))
-			{
-				setFrequency(channel, frequency);
-				sendAck();
-			}
 			else
 			{
-				sendIntRangeError(MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY, HERTZ_UNIT);
+				if (!isSafetyOn)
+				{
+					if (isIntWithinRange(frequency, MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY))
+					{
+						setFrequency(frequency);
+						sendAck();
+					}
+					else
+					{
+						sendIntRangeError(MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY, HERTZ_UNIT);
+					}
+				}
+				else
+				{
+					Serial.println(F("Cannot change frequency output while safety is on."));
+					sendNack();
+				}
 			}
 		}
 		else
 		{
-			Serial.println(F("Cannot change frequency output while safety is on."));
+			Serial.println(F("Changing or reading of frequency only applies to channel 1"));
 			sendNack();
 		}
 	}
