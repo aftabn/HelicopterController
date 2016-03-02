@@ -543,7 +543,7 @@ void onCommandDacVoltage()
 			{
 				if (isDoubleWithinRange(voltage, MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE))
 				{
-					dac->setVoltage(channel, voltage);
+					setDacVoltage(channel, voltage);
 					sendAck();
 				}
 				else
@@ -586,7 +586,7 @@ void onCommandFrequencyOutput()
 				{
 					if (isIntWithinRange(frequency, MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY))
 					{
-						setFrequency(frequency);
+						setFrequency(channel, frequency);
 						sendAck();
 					}
 					else
