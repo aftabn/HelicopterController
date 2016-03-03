@@ -240,7 +240,7 @@ void onCommandMotorDriver()
 		}
 		else
 		{
-			if (isPidEnabled)
+			if (!isPidEnabled)
 			{
 				if (isAnalogVoltageCommandArg(gParameters[1]))
 				{
