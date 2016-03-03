@@ -3,6 +3,7 @@ using Libs.Utilities;
 using log4net;
 using log4net.Config;
 using SciChart.Charting.Visuals;
+using SciChart.Examples.ExternalDependencies.Controls.ExceptionView;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

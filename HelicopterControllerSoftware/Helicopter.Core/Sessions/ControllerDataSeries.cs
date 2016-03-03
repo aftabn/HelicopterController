@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 
 namespace Helicopter.Core.Sessions
 {
-    public class ControllerDataSeries : INotifyPropertyChanged
+    public class ControllerDataSeries : INotifyPropertyChanged, IDisposable
     {
         private AngleController angleController;
+        private string controllerDataString;
 
         public ControllerDataSeries(AngleController angleController)
         {
+            controllerDataString = String.Format("{0}ControllerData", angleController.MotorType);
+
             this.angleController = angleController;
             angleController.PropertyChanged += OnAngleControllerPropertyChanged;
 
@@ -23,13 +26,19 @@ namespace Helicopter.Core.Sessions
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public List<ControllerDataPoint> ControllerData { get; set; }
+
         public string Name { get; set; }
 
-        public List<ControllerDataPoint> ControllerData { get; set; }
+        public void Dispose()
+        {
+            angleController.PropertyChanged -= OnAngleControllerPropertyChanged;
+            angleController = null;
+        }
 
         private void OnAngleControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ControllerData")
+            if (e.PropertyName == controllerDataString)
             {
                 RaisePropertyChanged(e.PropertyName);
             }

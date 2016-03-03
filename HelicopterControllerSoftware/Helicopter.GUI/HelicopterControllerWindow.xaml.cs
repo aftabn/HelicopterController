@@ -37,10 +37,7 @@ namespace Helicopter.GUI
 
         private void SetVisibilty()
         {
-            Width = 600;
             controllerOutputPanel.Visibility = Visibility.Collapsed;
-            Grid.SetRow(yawPidChart, 0);
-            Grid.SetRow(tiltPidChart, 1);
         }
 
         private void UpdateStatusBar()
@@ -71,24 +68,12 @@ namespace Helicopter.GUI
 
         private void StartPidCharting()
         {
-            yawPidChart.StartNewSession(helicopterViewModel.HelicopterManager.Session.YawDataSeries);
-            tiltPidChart.StartNewSession(helicopterViewModel.HelicopterManager.Session.TiltDataSeries);
+            pidChart.StartNewSession(helicopterViewModel.HelicopterManager.Session);
         }
 
         private void StopPidCharting()
         {
-            yawPidChart.EndSession();
-            tiltPidChart.EndSession();
-        }
-
-        private void OnOperatorTabGetFocus(object sender, RoutedEventArgs e)
-        {
-            Width = 600;
-        }
-
-        private void OnDeveloperTabGetFocus(object sender, RoutedEventArgs e)
-        {
-            Width = 1500;
+            pidChart.EndSession();
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -109,6 +94,7 @@ namespace Helicopter.GUI
 
                     if (helicopterViewModel.IsConnected)
                     {
+                        helicopterViewModel.HelicopterManager.StopSession();
                         helicopterViewModel.Disconnect();
                     }
 

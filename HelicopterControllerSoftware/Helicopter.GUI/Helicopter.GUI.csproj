@@ -44,6 +44,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="SciChart.Charting, Version=4.0.4.8098, Culture=neutral, PublicKeyToken=b55dd9efe817e823, processorArchitecture=MSIL" />
+    <Reference Include="SciChart.Charting3D, Version=4.0.4.8098, Culture=neutral, PublicKeyToken=b55dd9efe817e823, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\AppData\Roaming\SciChart SDK\Examples\SciChart.Examples.ExternalDependencies\bin\Debug\SciChart.Charting3D.dll</HintPath>
+    </Reference>
     <Reference Include="SciChart.Core, Version=4.0.4.8098, Culture=neutral, PublicKeyToken=b55dd9efe817e823, processorArchitecture=MSIL" />
     <Reference Include="SciChart.Data, Version=4.0.4.8098, Culture=neutral, PublicKeyToken=b55dd9efe817e823, processorArchitecture=MSIL" />
     <Reference Include="SciChart.Drawing, Version=4.0.4.8098, Culture=neutral, PublicKeyToken=b55dd9efe817e823, processorArchitecture=MSIL" />

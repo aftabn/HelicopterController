@@ -263,10 +263,7 @@ namespace Helicopter.Core.Controller
 
         private void OnAngleControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var angleController = sender as AngleController;
-            string propertyChanged = String.Format("{0}{1}", angleController.MotorType, e.PropertyName);
-
-            RaisePropertyChanged(propertyChanged);
+            RaisePropertyChanged(e.PropertyName);
         }
 
         private void OnCommunicationManagerPropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -28,17 +28,31 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <ext:SciChartInteractionToolbar TargetSurface="{Binding ElementName=sciChartSurface}" />
+
         <!--  Define a SciChartSurface with RolloverModifier  -->
-        <s:SciChartSurface x:Name="sciChartSurface" Grid.Column="1">
+        <s:SciChartSurface x:Name="sciChartSurface" Grid.Column="1" ChartTitle="Pid Tuning Chart">
             <s:SciChartSurface.RenderableSeries>
 
-                <s:FastLineRenderableSeries x:Name="angleSeries" Stroke="DarkOrange" StrokeThickness="2">
+                <s:FastLineRenderableSeries x:Name="yawSetPointSeries" Stroke="Orange" StrokeThickness="2">
                     <s:FastLineRenderableSeries.PointMarker>
                         <s:EllipsePointMarker Width="6" Height="6" Fill="{Binding Path=Stroke, RelativeSource={RelativeSource Self}}" />
                     </s:FastLineRenderableSeries.PointMarker>
                 </s:FastLineRenderableSeries>
 
-                <s:FastLineRenderableSeries x:Name="setPointSeries" Stroke="SteelBlue" StrokeThickness="2">
+                <s:FastLineRenderableSeries x:Name="yawAngleSeries" Stroke="DarkOrange" StrokeThickness="2">
+                    <s:FastLineRenderableSeries.PointMarker>
+                        <s:EllipsePointMarker Width="6" Height="6" Fill="{Binding Path=Stroke, RelativeSource={RelativeSource Self}}" />
+                    </s:FastLineRenderableSeries.PointMarker>
+                </s:FastLineRenderableSeries>
+
+                <s:FastLineRenderableSeries x:Name="tiltSetPointSeries" Stroke="LightBlue" StrokeThickness="2">
+                    <s:FastLineRenderableSeries.PointMarker>
+                        <s:EllipsePointMarker Width="6" Height="6" Fill="{Binding Path=Stroke, RelativeSource={RelativeSource Self}}" />
+                    </s:FastLineRenderableSeries.PointMarker>
+                </s:FastLineRenderableSeries>
+
+                <s:FastLineRenderableSeries x:Name="tiltAngleSeries" Stroke="SteelBlue" StrokeThickness="2">
                     <s:FastLineRenderableSeries.PointMarker>
                         <s:EllipsePointMarker Width="6" Height="6" Fill="{Binding Path=Stroke, RelativeSource={RelativeSource Self}}" />
                     </s:FastLineRenderableSeries.PointMarker>

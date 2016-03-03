@@ -33,13 +33,13 @@
             </StatusBarItem>
         </StatusBar>
         <TabControl x:Name="controllerTabs">
-            <TabItem x:Name="operatorTab" Header="Operator" GotFocus="OnOperatorTabGetFocus">
+            <TabItem x:Name="operatorTab" Header="Operator">
                 <DockPanel x:Name="mainDockPanel">
                     <StackPanel DockPanel.Dock="Left" Margin="5" Width="150"></StackPanel>
                     <StackPanel DockPanel.Dock="Left" Margin="5" Width="150"></StackPanel>
                 </DockPanel>
             </TabItem>
-            <TabItem x:Name="DeveloperTab" Header="Developer" GotFocus="OnDeveloperTabGetFocus">
+            <TabItem x:Name="DeveloperTab" Header="Developer">
                 <DockPanel x:Name="developerDockPanel">
                     <StackPanel DockPanel.Dock="Left"  Margin="5,10,5,5" Width="150">
                         <Button Margin="5,0,5,5" Content="Controller Info" Command="{Binding GetControllerInfoCommand}" />
@@ -252,18 +252,9 @@
                     <Border x:Name="controllerOutputPanel" BorderBrush="Gray" BorderThickness="1" Margin="5,0" Width="295" DockPanel.Dock="Left">
                         <TextBox x:Name="controllerOutputTextbox" TextWrapping="WrapWithOverflow" Background="LightGray" Padding="5" IsReadOnly="True" Text="{Binding OutputText}" />
                     </Border>
-                    <Grid x:Name="pidChartsGrid" Background="#505050" MinWidth="700" Width="Auto">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="0.5*"></RowDefinition>
-                            <RowDefinition Height="0.5*"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <local:RealTimePidChart x:Name="yawPidChart">
-                        </local:RealTimePidChart>
-                        <local:RealTimePidChart x:Name="tiltPidChart">
-                        </local:RealTimePidChart>
-                    </Grid>
                 </DockPanel>
             </TabItem>
         </TabControl>
+        <local:RealTimePidChart x:Name="pidChart" />
     </DockPanel>
 </Window>

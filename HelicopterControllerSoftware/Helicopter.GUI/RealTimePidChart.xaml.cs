@@ -16,22 +16,10 @@
 
 using Helicopter.Core.Sessions;
 using SciChart.Charting.Model.DataSeries;
-using System;
-using System.Collections.Generic;
+using SciChart.Examples.ExternalDependencies.Data;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Helicopter.GUI
 {
@@ -41,59 +29,69 @@ namespace Helicopter.GUI
     public partial class RealTimePidChart : UserControl
     {
         private const int FifoSampleSize = 100;
-        private ControllerDataSeries controllerDataSeries;
+        private Session session;
+        private ControllerDataSeries yawDataSeries;
+        private ControllerDataSeries tiltDataSeries;
 
-        private DateTime startTime;
-
-        private IXyDataSeries<double, double> angles;
-        private IXyDataSeries<double, double> setPoints;
+        private IXyDataSeries<double, double> yawAngles;
+        private IXyDataSeries<double, double> yawSetPoints;
+        private IXyDataSeries<double, double> tiltAngles;
+        private IXyDataSeries<double, double> tiltSetPoints;
 
         public RealTimePidChart()
         {
             InitializeComponent();
         }
 
-        public void StartNewSession(ControllerDataSeries controllerDataSeries)
+        public void StartNewSession(Session session)
         {
-            this.controllerDataSeries = controllerDataSeries;
+            this.session = session;
+            yawDataSeries = session.YawDataSeries;
+            tiltDataSeries = session.TiltDataSeries;
 
-            sciChartSurface.ChartTitle = controllerDataSeries.Name;
-
-            controllerDataSeries.PropertyChanged += OnNewControllerData;
+            session.PropertyChanged += OnNewControllerDataReceived;
 
             ClearDataSeries();
 
-            angles = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = "Current Angle" };
-            setPoints = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = "Set Point" };
+            yawAngles = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = "Yaw Angle" };
+            yawSetPoints = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = " Yaw Set Point" };
+            tiltAngles = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = "Tilt Angle" };
+            tiltSetPoints = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = "Tilt Set Point" };
 
-            angleSeries.DataSeries = angles;
-            setPointSeries.DataSeries = setPoints;
+            yawAngleSeries.DataSeries = yawAngles;
+            yawSetPointSeries.DataSeries = yawSetPoints;
+            tiltAngleSeries.DataSeries = tiltAngles;
+            tiltSetPointSeries.DataSeries = tiltSetPoints;
         }
 
         public void EndSession()
         {
-            controllerDataSeries.PropertyChanged -= OnNewControllerData;
-            controllerDataSeries = null;
+            session.PropertyChanged -= OnNewControllerDataReceived;
+            session = null;
+            yawDataSeries = null;
+            tiltDataSeries = null;
         }
 
         private void ClearDataSeries()
         {
             using (sciChartSurface.SuspendUpdates())
             {
-                if (angles != null)
+                if (yawAngles != null)
                 {
-                    angles.Clear();
-                    setPoints.Clear();
+                    yawAngles.Clear();
+                    yawSetPoints.Clear();
+                    tiltAngles.Clear();
+                    tiltSetPoints.Clear();
                 }
             }
         }
 
-        private void OnNewControllerData(object sender, PropertyChangedEventArgs e)
+        private void OnNewControllerDataReceived(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ControllerData")
+            if (e.PropertyName == "YawControllerData")
             {
-                var startTime = controllerDataSeries.ControllerData.First().TimeStamp;
-                var newDataPoint = controllerDataSeries.ControllerData.Last();
+                var startTime = session.StartTime;
+                var newDataPoint = yawDataSeries.ControllerData.Last();
 
                 double time = (newDataPoint.TimeStamp - startTime).TotalSeconds;
                 double angle = newDataPoint.CurrentAngle;
@@ -102,8 +100,24 @@ namespace Helicopter.GUI
                 // Suspending updates ensures we only get one redraw after both series have been appended to
                 using (sciChartSurface.SuspendUpdates())
                 {
-                    angles.Append(time, angle);
-                    setPoints.Append(time, setPoint);
+                    yawAngles.Append(time, angle);
+                    yawSetPoints.Append(time, setPoint);
+                }
+            }
+            else if (e.PropertyName == "TiltControllerData")
+            {
+                var startTime = session.StartTime;
+                var newDataPoint = tiltDataSeries.ControllerData.Last();
+
+                double time = (newDataPoint.TimeStamp - startTime).TotalSeconds;
+                double angle = newDataPoint.CurrentAngle;
+                double setPoint = newDataPoint.SetPoint;
+
+                // Suspending updates ensures we only get one redraw after both series have been appended to
+                using (sciChartSurface.SuspendUpdates())
+                {
+                    tiltAngles.Append(time, angle);
+                    tiltSetPoints.Append(time, setPoint);
                 }
             }
         }

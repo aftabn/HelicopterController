@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Helicopter.Core.Sessions
 {
-    public class Session
+    public class Session : INotifyPropertyChanged, IDisposable
     {
         private YawController yaw;
         private TiltController tilt;
@@ -19,7 +19,12 @@ namespace Helicopter.Core.Sessions
             TiltDataSeries = new ControllerDataSeries(tilt);
 
             RefreshIntervalMilliseconds = refreshIntervalMilliseconds;
+
+            YawDataSeries.PropertyChanged += OnDataSeriesPropertyChanged;
+            TiltDataSeries.PropertyChanged += OnDataSeriesPropertyChanged;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public int RefreshIntervalMilliseconds { get; private set; }
 
@@ -31,6 +36,15 @@ namespace Helicopter.Core.Sessions
 
         public ControllerDataSeries TiltDataSeries { get; set; }
 
+        public void Dispose()
+        {
+            YawDataSeries.PropertyChanged -= OnDataSeriesPropertyChanged;
+            TiltDataSeries.PropertyChanged -= OnDataSeriesPropertyChanged;
+
+            YawDataSeries = null;
+            TiltDataSeries = null;
+        }
+
         public void TakeNewDataSamples(DateTime timeStamp)
         {
             yaw.TakeNewDataSample(timeStamp);
@@ -41,6 +55,19 @@ namespace Helicopter.Core.Sessions
         {
             yaw.ControllerData.Clear();
             tilt.ControllerData.Clear();
+        }
+
+        private void OnDataSeriesPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(e.PropertyName);
+        }
+
+        private void RaisePropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }
