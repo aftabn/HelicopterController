@@ -14,7 +14,7 @@ namespace Helicopter.Core.Controller
     public class CommunicationsManager : INotifyPropertyChanged, IDisposable
     {
         private const double DBL_DefaultTimeoutSeconds = 1;
-        private const string STR_MainDeviceName = "Arduino";
+        private const string STR_SerialDeviceName = "Arduino";
         private const string STR_BluetoothDeviceName = "COM10";
 
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -24,14 +24,16 @@ namespace Helicopter.Core.Controller
         private readonly object serialPortLock = new object();
         private readonly object receivedPacketsLock = new object();
 
+        private ConnectionType connectionType;
         private SerialPort serialPort;
-        private string serialPortBuffer;
+        private string deviceName;
+        private string serialPortBuffer = String.Empty;
         private string comPort = String.Empty;
         private bool isConnected;
 
-        public CommunicationsManager()
+        public CommunicationsManager(ConnectionType defaultConnectionType)
         {
-            serialPortBuffer = String.Empty;
+            ConnectionType = defaultConnectionType;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -49,6 +51,23 @@ namespace Helicopter.Core.Controller
                 {
                     isConnected = value;
                     RaisePropertyChanged("IsConnected");
+                }
+            }
+        }
+
+        public ConnectionType ConnectionType
+        {
+            get
+            {
+                return connectionType;
+            }
+
+            set
+            {
+                if (value != connectionType)
+                {
+                    connectionType = value;
+                    RaisePropertyChanged("ConnectionType");
                 }
             }
         }
@@ -95,12 +114,14 @@ namespace Helicopter.Core.Controller
                 return;
             }
 
+            SetDeviceName();
+
             var serialPorts = GetSerialPortDescriptions();
             string potentialPort = String.Empty;
             string comPort = String.Empty;
             foreach (string port in serialPorts)
             {
-                if (port.Contains(STR_BluetoothDeviceName))
+                if (port.Contains(deviceName))
                 {
                     potentialPort = port;
                     comPort = potentialPort.Substring(potentialPort.IndexOf("COM"));
@@ -115,11 +136,14 @@ namespace Helicopter.Core.Controller
                 serialPort.Open();
                 IsConnected = true;
 
-                InitializeArduino();
+                if (ConnectionType == ConnectionType.Serial)
+                {
+                    InitializeArduino();
+                }
             }
             else
             {
-                throw new Exception(String.Format("Device \"{0}\" is not listed on the COM ports", STR_MainDeviceName));
+                throw new Exception(String.Format("Device \"{0}\" is not listed on the COM ports", deviceName));
             }
         }
 
@@ -152,6 +176,18 @@ namespace Helicopter.Core.Controller
             serialPort.Write("\r\n"); // Flushes whatever characters are already in the Arduino serial buffer
             Thread.Sleep(750);
             ClearBuffer();
+        }
+
+        private void SetDeviceName()
+        {
+            if (ConnectionType == ConnectionType.Serial)
+            {
+                deviceName = STR_SerialDeviceName;
+            }
+            else if (ConnectionType == ConnectionType.Bluetooth)
+            {
+                deviceName = STR_BluetoothDeviceName;
+            }
         }
 
         public Packet Write(string input)

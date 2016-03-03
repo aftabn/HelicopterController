@@ -18,10 +18,10 @@ namespace Helicopter.Core
 
         public HelicopterManager()
         {
-            HelicopterController = new HelicopterController();
-            HelicopterController.PropertyChanged += OnControllerPropertyChanged;
-
             helicopterSettings = HelicopterSettings.Load();
+
+            HelicopterController = new HelicopterController(helicopterSettings.ConnectionType);
+            HelicopterController.PropertyChanged += OnControllerPropertyChanged;
 
             InitializeSessionWorker();
         }
@@ -38,6 +38,12 @@ namespace Helicopter.Core
             {
                 return HelicopterController.IsConnected;
             }
+        }
+
+        public ConnectionType ConnectionType
+        {
+            get { return HelicopterController.ConnectionType; }
+            set { HelicopterController.ConnectionType = value; }
         }
 
         public bool IsSessionRunning

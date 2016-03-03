@@ -41,9 +41,9 @@ namespace Helicopter.Core.Controller
             }
         }
 
-        public static void Initialize()
+        public static void Initialize(ConnectionType connectionType)
         {
-            communicationsManager = new CommunicationsManager();
+            communicationsManager = new CommunicationsManager(connectionType);
         }
 
         public static void Connect()

@@ -18,7 +18,6 @@ namespace Helicopter.GUI
     public partial class HelicopterControllerWindow : Window, INotifyPropertyChanged
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private const int INT_NumSamplesPerWindow = 75;
         private readonly StartupOptions startupOptions;
         private HelicopterViewModel helicopterViewModel;
 

@@ -42,6 +42,22 @@
             <TabItem x:Name="DeveloperTab" Header="Developer">
                 <DockPanel x:Name="developerDockPanel">
                     <StackPanel DockPanel.Dock="Left"  Margin="5,10,5,5" Width="150">
+                        <StackPanel Margin="5,5,5,0">
+                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Connection Type:" /></TextBlock>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel.Resources>
+                                    <Util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+                                    <Util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+                                </StackPanel.Resources>
+                                <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsConnected, Converter={StaticResource InverseBooleanConverter}}"
+                                             IsChecked="{Binding Path=ConnectionType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:ConnectionType.Serial}}" />
+                                <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="35"><Run Text="Serial" /></TextBlock>
+                                <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsConnected, Converter={StaticResource InverseBooleanConverter}}"
+                                             IsChecked="{Binding Path=ConnectionType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:ConnectionType.Bluetooth}}" />
+                                <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,0,0" Width="55"><Run Text="Bluetooth" /></TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                        <Separator Margin="5,5,5,10" />
                         <Button Margin="5,0,5,5" Content="Controller Info" Command="{Binding GetControllerInfoCommand}" />
                         <Button Margin="5,0,5,5" Content="Disable Motors" Command="{Binding DisableMotorsCommand}" />
                         <Button Margin="5,0,5,5" Content="Refresh Values" Command="{Binding RefreshValuesCommand}" />

@@ -16,9 +16,9 @@ namespace Helicopter.Core.Controller
         private string changelog;
         private int pidLoopInterval;
 
-        public HelicopterController()
+        public HelicopterController(ConnectionType connectionType)
         {
-            Microcontroller.Initialize();
+            Microcontroller.Initialize(connectionType);
             communicationsManager = Microcontroller.GetInstanceOfCommunicationManager();
             communicationsManager.PropertyChanged += OnCommunicationManagerPropertyChanged;
 
@@ -37,6 +37,12 @@ namespace Helicopter.Core.Controller
             {
                 return Microcontroller.IsConnected;
             }
+        }
+
+        public ConnectionType ConnectionType
+        {
+            get { return communicationsManager.ConnectionType; }
+            set { communicationsManager.ConnectionType = value; }
         }
 
         public string ControllerIdentity

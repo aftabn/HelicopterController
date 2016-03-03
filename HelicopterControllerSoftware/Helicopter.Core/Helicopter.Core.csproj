@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\AngleController.cs" />
+    <Compile Include="Controller\ConnectionType.cs" />
     <Compile Include="Sessions\ControllerDataPoint.cs" />
     <Compile Include="Controller\Direction.cs" />
     <Compile Include="Controller\HelicopterController.cs" />

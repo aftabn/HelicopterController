@@ -3,6 +3,7 @@
     Attribute Explanations:
 
     Helicopter:
+      • ConnectionType is how the software will communicate with the microcontroller
       • PidThreadRefreshIntervalMilliseconds is the interval at which the software refreshes the angle and outputs from the microcontroller
 
     Controller:
@@ -17,7 +18,7 @@
       • Proportional, Integral and Derivative gains are the PID constants used to tune the controller
 -->
 <Settings>
-  <Helicopter PidThreadRefreshIntervalMilliseconds="100">
+  <Helicopter ConnectionType="Bluetooth" PidThreadRefreshIntervalMilliseconds="100">
     <Controller IsSafetyEnabled="true" PidLoopIntervalMilliseconds="250">
       <Yaw IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="1" IntegralGain="0.25" DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="10" />
       <Tilt IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="1" IntegralGain="0.25" DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="10" />

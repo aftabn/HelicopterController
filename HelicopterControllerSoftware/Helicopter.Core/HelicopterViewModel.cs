@@ -40,6 +40,12 @@ namespace Helicopter.Core
 
         public bool IsConnected { get { return helicopterController.IsConnected; } }
 
+        public ConnectionType ConnectionType
+        {
+            get { return HelicopterManager.ConnectionType; }
+            set { HelicopterManager.ConnectionType = value; }
+        }
+
         public bool IsPidEnabled { get { return helicopterController.IsPidEnabled; } }
 
         public bool IsSafetyEnabled { get { return helicopterController.IsSafetyEnabled; } }
@@ -377,13 +383,13 @@ namespace Helicopter.Core
                    },
                    x => IsConnected);
 
-            SetYawOutputPercentageCommand = new RelayCommand(
+            SetYawOutputRateLimitCommand = new RelayCommand(
                    x =>
                    {
-                       var output = Convert.ToInt32(x);
-                       YawOutputPercentage = output;
+                       var outputRateLimit = Convert.ToInt32(x);
+                       YawOutputRateLimit = outputRateLimit;
                    },
-                   x => IsConnected && !IsPidEnabled);
+                   x => IsConnected);
 
             GetTiltAngleCommand = new RelayCommand(
                    x => tilt.RefreshCurrentAngle(),
@@ -429,13 +435,13 @@ namespace Helicopter.Core
                    },
                    x => IsConnected);
 
-            SetTiltOutputPercentageCommand = new RelayCommand(
+            SetTiltOutputRateLimitCommand = new RelayCommand(
                    x =>
                    {
-                       var output = Convert.ToInt32(x);
-                       TiltOutputPercentage = output;
+                       var outputRateLimit = Convert.ToInt32(x);
+                       TiltOutputRateLimit = outputRateLimit;
                    },
-                   x => IsConnected && !IsPidEnabled);
+                   x => IsConnected);
         }
 
         private void UpdateOutputTextbox(string text)
