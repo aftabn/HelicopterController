@@ -27,22 +27,6 @@ namespace Helicopter.Core.Sessions
 
         public List<ControllerDataPoint> ControllerData { get; set; }
 
-        public double LastSetPoint
-        {
-            get
-            {
-                return ControllerData.Select(x => x.SetPoint).Last();
-            }
-        }
-
-        public double LastAngle
-        {
-            get
-            {
-                return ControllerData.Select(x => x.CurrentAngle).Last();
-            }
-        }
-
         private void OnAngleControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "ControllerData")

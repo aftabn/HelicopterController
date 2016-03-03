@@ -13,8 +13,8 @@ namespace Helicopter.Core
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private HelicopterSettings helicopterSettings;
         private BackgroundWorker sessionWorker;
-        private bool isPidSessionRunning;
-        private bool isPidSessionComplete;
+        private bool isSessionRunning;
+        private bool isSessionComplete;
 
         public HelicopterManager()
         {
@@ -24,7 +24,6 @@ namespace Helicopter.Core
             helicopterSettings = HelicopterSettings.Load();
 
             InitializeSessionWorker();
-            Session = new Session(HelicopterController, helicopterSettings.PidThreadRefreshIntervalMilliseconds);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -41,36 +40,36 @@ namespace Helicopter.Core
             }
         }
 
-        public bool IsPidSessionRunning
+        public bool IsSessionRunning
         {
             get
             {
-                return isPidSessionRunning;
+                return isSessionRunning;
             }
 
             private set
             {
-                if (value != isPidSessionRunning)
+                if (value != isSessionRunning)
                 {
-                    isPidSessionRunning = value;
-                    RaisePropertyChanged("IsPidSessionRunning");
+                    isSessionRunning = value;
+                    RaisePropertyChanged("IsSessionRunning");
                 }
             }
         }
 
-        public bool IsPidSessionComplete
+        public bool IsSessionComplete
         {
             get
             {
-                return isPidSessionComplete;
+                return isSessionComplete;
             }
 
             private set
             {
-                if (value != isPidSessionComplete)
+                if (value != isSessionComplete)
                 {
-                    isPidSessionComplete = value;
-                    RaisePropertyChanged("IsPidSessionComplete");
+                    isSessionComplete = value;
+                    RaisePropertyChanged("IsSessionComplete");
                 }
             }
         }
@@ -95,9 +94,9 @@ namespace Helicopter.Core
             HelicopterController.DisableMotors();
         }
 
-        public void StartPidSession()
+        public void StartSession()
         {
-            if (IsPidSessionRunning)
+            if (IsSessionRunning)
             {
                 throw new Exception("A PID session is currently ongoing. You can only start a new session once the previous one has finished.");
             }
@@ -113,8 +112,9 @@ namespace Helicopter.Core
             }
         }
 
-        public void StopPidSession()
+        public void StopSession()
         {
+            HelicopterController.DisablePid();
             if (sessionWorker.IsBusy)
             {
                 sessionWorker.CancelAsync();
@@ -132,13 +132,11 @@ namespace Helicopter.Core
 
         private void ResetSession()
         {
-            Session.StartTime = DateTime.MinValue;
-            Session.EndTime = DateTime.MinValue;
-
+            Session = new Session(HelicopterController, helicopterSettings.PidThreadRefreshIntervalMilliseconds);
             Session.ClearControllerData();
 
-            IsPidSessionComplete = false;
-            IsPidSessionRunning = true;
+            IsSessionComplete = false;
+            IsSessionRunning = true;
         }
 
         private void SessionWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -163,25 +161,13 @@ namespace Helicopter.Core
 
         private void SessionWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            IsPidSessionRunning = false;
-            IsPidSessionComplete = true;
+            IsSessionRunning = false;
+            IsSessionComplete = true;
         }
 
         private void OnControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             RaisePropertyChanged(e.PropertyName);
-        }
-
-        private void OnSessionPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            var session = sender as Session;
-
-            if (e.PropertyName == "StartTime")
-            {
-            }
-            else if (e.PropertyName == "EndTime")
-            {
-            }
         }
 
         private void RaisePropertyChanged(string propertyName)

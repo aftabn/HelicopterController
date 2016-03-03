@@ -12,7 +12,6 @@ namespace Helicopter.Core
 {
     public class HelicopterViewModel : INotifyPropertyChanged, IDisposable
     {
-        private HelicopterManager helicopterManager;
         private HelicopterController helicopterController;
         private YawController yaw;
         private TiltController tilt;
@@ -23,8 +22,8 @@ namespace Helicopter.Core
         {
             this.isDeveloperMode = isDeveloperMode;
 
-            helicopterManager = new HelicopterManager();
-            helicopterController = helicopterManager.HelicopterController;
+            HelicopterManager = new HelicopterManager();
+            helicopterController = HelicopterManager.HelicopterController;
             yaw = helicopterController.Yaw;
             tilt = helicopterController.Tilt;
 
@@ -34,6 +33,8 @@ namespace Helicopter.Core
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public HelicopterManager HelicopterManager { get; private set; }
 
         public bool IsDeveloperMode { get { return isDeveloperMode; } }
 
@@ -169,11 +170,11 @@ namespace Helicopter.Core
             set { tilt.SetMotorDriver(value); }
         }
 
-        public Session PidSession { get { return helicopterManager.Session; } }
+        public Session PidSession { get { return HelicopterManager.Session; } }
 
-        public bool IsPidSessionRunning { get { return helicopterManager.IsPidSessionRunning; } }
+        public bool IsPidSessionRunning { get { return HelicopterManager.IsSessionRunning; } }
 
-        public bool IsPidSessionComplete { get { return helicopterManager.IsPidSessionComplete; } }
+        public bool IsPidSessionComplete { get { return HelicopterManager.IsSessionComplete; } }
 
         public string OutputText
         {
@@ -229,8 +230,8 @@ namespace Helicopter.Core
 
         public void Connect()
         {
-            helicopterManager.PropertyChanged += OnHelicopterManagerPropertyChanged;
-            helicopterManager.Connect();
+            HelicopterManager.PropertyChanged += OnHelicopterManagerPropertyChanged;
+            HelicopterManager.Connect();
 
             var text = String.Format("Connected to {0}", helicopterController.ControllerIdentity);
             UpdateOutputTextbox(text);
@@ -238,8 +239,8 @@ namespace Helicopter.Core
 
         public void Disconnect()
         {
-            helicopterManager.Disconnect();
-            helicopterManager.PropertyChanged -= OnHelicopterManagerPropertyChanged;
+            HelicopterManager.Disconnect();
+            HelicopterManager.PropertyChanged -= OnHelicopterManagerPropertyChanged;
             UpdateOutputTextbox(String.Format("Disconnected from helicopter controller"));
         }
 
@@ -271,7 +272,7 @@ namespace Helicopter.Core
             StartPidSessionCommand = new RelayCommand(
                    x =>
                    {
-                       helicopterManager.StartPidSession();
+                       HelicopterManager.StartSession();
                        UpdateOutputTextbox(String.Format("PID session has started"));
                    },
                    x => IsConnected && !IsPidEnabled && !IsPidSessionRunning);
@@ -279,7 +280,7 @@ namespace Helicopter.Core
             StopPidSessionCommand = new RelayCommand(
                    x =>
                    {
-                       helicopterManager.StopPidSession();
+                       HelicopterManager.StopSession();
                        UpdateOutputTextbox(String.Format("PID session has stopped"));
                    },
                    x => IsConnected && IsPidEnabled && IsPidSessionRunning);
@@ -327,7 +328,7 @@ namespace Helicopter.Core
             DisableMotorsCommand = new RelayCommand(
                    x =>
                    {
-                       helicopterManager.DisableMotors();
+                       HelicopterManager.DisableMotors();
                        UpdateOutputTextbox(String.Format("Disabled motors"));
                    },
                    x => IsConnected);

@@ -7,7 +7,6 @@
         xmlns:Util="clr-namespace:Libs.Utilities;assembly=Libs.Utilities"
         xmlns:Core="clr-namespace:Helicopter.Core;assembly=Helicopter.Core"
         xmlns:Controller="clr-namespace:Helicopter.Core.Controller;assembly=Helicopter.Core"
-        xmlns:lvc="clr-namespace:LiveCharts;assembly=LiveCharts"
         mc:Ignorable="d"
         Title="Helicopter Controller Software"
         Height="733.419" Width="1500"
@@ -253,24 +252,15 @@
                     <Border x:Name="controllerOutputPanel" BorderBrush="Gray" BorderThickness="1" Margin="5,0" Width="295" DockPanel.Dock="Left">
                         <TextBox x:Name="controllerOutputTextbox" TextWrapping="WrapWithOverflow" Background="LightGray" Padding="5" IsReadOnly="True" Text="{Binding OutputText}" />
                     </Border>
-                    <Grid Background="#505050" MinWidth="700" Width="Auto">
+                    <Grid x:Name="pidChartsGrid" Background="#505050" MinWidth="700" Width="Auto">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="0.5*"></RowDefinition>
                             <RowDefinition Height="0.5*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <lvc:LineChart x:Name="yawChart" Grid.Row="0" Series="{Binding YawSeries}">
-                            <lvc:LineChart.AxisY>
-                                <lvc:Axis Title="Angle" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
-                            </lvc:LineChart.AxisY>
-                        </lvc:LineChart>
-                        <lvc:LineChart x:Name="tiltChart" Grid.Row="1" Series="{Binding TiltSeries}">
-                            <lvc:LineChart.AxisX>
-                                <lvc:Axis Title="Time" LabelFormatter="{Binding XFormatter}" Separator="{x:Static lvc:DefaultAxes.CleanSeparator}" />
-                            </lvc:LineChart.AxisX>
-                            <lvc:LineChart.AxisY>
-                                <lvc:Axis Title="Angle" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
-                            </lvc:LineChart.AxisY>
-                        </lvc:LineChart>
+                        <local:RealTimePidChart x:Name="yawPidChart">
+                        </local:RealTimePidChart>
+                        <local:RealTimePidChart x:Name="tiltPidChart">
+                        </local:RealTimePidChart>
                     </Grid>
                 </DockPanel>
             </TabItem>
