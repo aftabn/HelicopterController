@@ -68,8 +68,8 @@ Author:	Aftab
 #define YAW_SET_POINT_MIN				-180.0
 #define YAW_SET_POINT_MAX				180.0
 
-#define TILT_SET_POINT_MIN				-45
-#define TILT_SET_POINT_MAX				90
+#define TILT_SET_POINT_MIN				-45.0
+#define TILT_SET_POINT_MAX				90.0
 
 #define YAW_OUTPUT_MIN					-100
 #define YAW_OUTPUT_MAX					100
@@ -135,7 +135,7 @@ void disablePid(void);
 void resetPidValues(void);
 
 void executePidCalculation(void);
-void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOutput);
+void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOutput);
 void applyMotorOutputs(int channel, Direction direction, int percentageOutput);
 
 double adjustOutputToVoltage(Direction direction, int percentageOutput);

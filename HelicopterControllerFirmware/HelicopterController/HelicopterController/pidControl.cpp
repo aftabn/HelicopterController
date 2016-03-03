@@ -71,7 +71,7 @@ void initializeSpi(void)
 void initializePid(void)
 {
 	pidLoopInterval = DEFAULT_PID_INTERVAL_MS;
-	isSafetyOn = false; // TODO: Change this later
+	isSafetyOn = true;
 
 	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
 	{
@@ -89,7 +89,7 @@ void initializePid(void)
 
 void initializeFrequencyOutput(void)
 {
-	const int dummyChannel = 0; // Only one frequency output so channel doesn't matter during initialization
+	const int dummyChannel = 0; // Only one frequency output so channel doesn't matter
 
 	pinModeFast(FREQUENCY_OUTPUT_PIN, OUTPUT);
 	setFrequency(dummyChannel, MOTOR_MIN_FREQUENCY);
@@ -159,17 +159,13 @@ void executePidCalculation()
 	}
 }
 
-void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOutput)
+void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOutput)
 {
 	// Get output as a signed value from -100 to 100 based on direction for easier calculations
-	int currentOutput = currentOutputs[channel] * directions[channel] == Clockwise ? 1 : -1;
-	double currentAngle = currentAngles[channel];
-
-	// Update previous angle for next calculation
-	previousAngles[channel] = currentAngle;
+	int currentOutput = currentOutputs[channel] * (directions[channel] == Clockwise ? 1 : -1);
 
 	// P term
-	angleErrors[channel] = setPoints[channel] - currentAngle;
+	angleErrors[channel] = setPoints[channel] - currentAngles[channel];
 
 	// I term
 	if (abs(angleErrors[channel]) < iWindupThresholds[channel])
@@ -178,7 +174,10 @@ void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOut
 	}
 
 	// D term
-	derivativeAnglesErrors[channel] = (currentAngle - previousAngles[channel]) / pidLoopInterval / 1000.0;
+	derivativeAnglesErrors[channel] = (currentAngles[channel] - previousAngles[channel]) / pidLoopInterval / 1000.0;
+
+	// Update previous angle for next calculation
+	previousAngles[channel] = currentAngles[channel];
 
 	// Get new signed output from PID algorithm
 	int newOutput = (int)(pGains[channel] * angleErrors[channel] + iGains[channel] * integratedAngleErrors[channel] + dGains[channel] * derivativeAnglesErrors[channel]);

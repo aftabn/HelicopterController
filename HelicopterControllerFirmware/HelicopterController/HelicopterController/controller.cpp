@@ -79,15 +79,15 @@ void processCommand(char *command)
 	{
 		onCommandDerivativeGain();
 	}
-	else if (0 == strcmp(command, "L"))
+	else if (0 == strcmp(command, "LI"))
 	{
 		onCommandLoopInterval();
 	}
-	else if (0 == strcmp(command, "W"))
+	else if (0 == strcmp(command, "IW"))
 	{
 		onCommandIntegralWindup();
 	}
-	else if (0 == strcmp(command, "R"))
+	else if (0 == strcmp(command, "RL"))
 	{
 		onCommandIntegralWindup();
 	}
