@@ -2,6 +2,7 @@
 using Libs.Utilities;
 using log4net;
 using log4net.Config;
+using SciChart.Charting.Visuals;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -33,6 +34,15 @@ namespace Helicopter.GUI
             {
                 Debug.WriteLine(ex.Message);
             }
+
+            SciChartSurface.SetRuntimeLicenseKey(@"<LicenseContract>
+                <Customer>aftab@narsimhan.com</Customer>
+                <OrderId>University Scheme</OrderId>
+                <LicenseCount>1</LicenseCount>
+                <IsTrialLicense>true</IsTrialLicense>
+                <SupportExpires>04/26/2016 00:00:00</SupportExpires>
+                <KeyCode>tgIAAA0jQpSob9EBAEBrk06f0QE9AGMAQ3VzdG9tZXI9YWZ0YWJAbmFyc2ltaGFuLmNvbTtPcmRlcklkPVVuaXZlcnNpdHkgU2NoZW1lO1N1YnNjcmlwdGlvblZhbGlkVG89MjYtQXByLTIwMTY7UHJvZHVjdENvZGU9aUveVZfOqg7TtoBg2HGP1db8TupiPw4sxKI4YoiJ/W+BH1kLdOsXwOp5vMarlGBC</KeyCode>
+            </LicenseContract>");
 
             // Exception handling for MVVM
             AppDomain.CurrentDomain.UnhandledException += (s, ex) =>

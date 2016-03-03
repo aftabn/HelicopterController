@@ -71,8 +71,8 @@ namespace Helicopter.GUI
 
         private void StartPidCharting()
         {
-            yawPidChart.StartNewSession(helicopterViewModel.HelicopterManager.Session.StartTime, helicopterViewModel.HelicopterManager.Session.YawDataSeries);
-            tiltPidChart.StartNewSession(helicopterViewModel.HelicopterManager.Session.StartTime, helicopterViewModel.HelicopterManager.Session.TiltDataSeries);
+            yawPidChart.StartNewSession(helicopterViewModel.HelicopterManager.Session.YawDataSeries);
+            tiltPidChart.StartNewSession(helicopterViewModel.HelicopterManager.Session.TiltDataSeries);
         }
 
         private void StopPidCharting()

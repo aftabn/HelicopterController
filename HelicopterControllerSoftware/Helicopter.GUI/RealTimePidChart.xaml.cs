@@ -53,9 +53,8 @@ namespace Helicopter.GUI
             InitializeComponent();
         }
 
-        public void StartNewSession(DateTime startTime, ControllerDataSeries controllerDataSeries)
+        public void StartNewSession(ControllerDataSeries controllerDataSeries)
         {
-            this.startTime = startTime;
             this.controllerDataSeries = controllerDataSeries;
 
             sciChartSurface.ChartTitle = controllerDataSeries.Name;
@@ -64,8 +63,8 @@ namespace Helicopter.GUI
 
             ClearDataSeries();
 
-            angles = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = "Orange Series" };
-            setPoints = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = "Blue Series" };
+            angles = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = "Current Angle" };
+            setPoints = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = "Set Point" };
 
             angleSeries.DataSeries = angles;
             setPointSeries.DataSeries = setPoints;
@@ -93,6 +92,7 @@ namespace Helicopter.GUI
         {
             if (e.PropertyName == "ControllerData")
             {
+                var startTime = controllerDataSeries.ControllerData.First().TimeStamp;
                 var newDataPoint = controllerDataSeries.ControllerData.Last();
 
                 double time = (newDataPoint.TimeStamp - startTime).TotalSeconds;
