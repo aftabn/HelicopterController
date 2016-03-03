@@ -11,9 +11,9 @@ namespace Helicopter.Core.Controller
         private const string STR_ProportionalGainCommand = "P";
         private const string STR_IntegralGainCommand = "I";
         private const string STR_DerivativeGainCommand = "D";
-        private const string STR_IntegralWindupCommand = "W";
-        private const string STR_OutputRateLimitCommand = "R";
-        private const string STR_PidLoopIntervalCommand = "L";
+        private const string STR_IntegralWindupCommand = "IW";
+        private const string STR_OutputRateLimitCommand = "RL";
+        private const string STR_PidLoopIntervalCommand = "LI";
         private const string STR_MotorOutputCommand = "O";
         private const string STR_AngleSetPointCommand = "SP";
         private const string STR_AngleCommand = "A";

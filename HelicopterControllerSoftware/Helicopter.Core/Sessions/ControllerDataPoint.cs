@@ -2,9 +2,9 @@
 
 namespace Helicopter.Core.Sessions
 {
-    public class ControllerData
+    public class ControllerDataPoint
     {
-        public ControllerData()
+        public ControllerDataPoint()
         {
         }
 

@@ -100,7 +100,7 @@ namespace Helicopter.Core.Controller
             string comPort = String.Empty;
             foreach (string port in serialPorts)
             {
-                if (port.Contains(STR_MainDeviceName))
+                if (port.Contains(STR_BluetoothDeviceName))
                 {
                     potentialPort = port;
                     comPort = potentialPort.Substring(potentialPort.IndexOf("COM"));

@@ -11,11 +11,10 @@ namespace Helicopter.Core
     public class HelicopterManager : INotifyPropertyChanged, IDisposable
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private const int INT_ThreadJoinTimeout = 3000;
         private HelicopterSettings helicopterSettings;
-        private Thread sessionThread;
-        private bool isSessionComplete;
-        private bool isSessionAborted;
+        private BackgroundWorker sessionWorker;
+        private bool isPidSessionRunning;
+        private bool isPidSessionComplete;
 
         public HelicopterManager()
         {
@@ -23,6 +22,8 @@ namespace Helicopter.Core
             HelicopterController.PropertyChanged += OnControllerPropertyChanged;
 
             helicopterSettings = HelicopterSettings.Load();
+
+            InitializeSessionWorker();
             Session = new Session(HelicopterController, helicopterSettings.PidThreadRefreshIntervalMilliseconds);
         }
 
@@ -40,44 +41,36 @@ namespace Helicopter.Core
             }
         }
 
-        public bool IsPidSessionAlive
+        public bool IsPidSessionRunning
         {
             get
             {
-                return (sessionThread != null ? sessionThread.IsAlive : false);
-            }
-        }
-
-        public bool IsSessionAborted
-        {
-            get
-            {
-                return isSessionAborted;
+                return isPidSessionRunning;
             }
 
-            set
+            private set
             {
-                if (value != isSessionAborted)
+                if (value != isPidSessionRunning)
                 {
-                    isSessionAborted = value;
-                    RaisePropertyChanged("IsSessionAborted");
+                    isPidSessionRunning = value;
+                    RaisePropertyChanged("IsPidSessionRunning");
                 }
             }
         }
 
-        public bool IsSessionComplete
+        public bool IsPidSessionComplete
         {
             get
             {
-                return isSessionComplete;
+                return isPidSessionComplete;
             }
 
-            set
+            private set
             {
-                if (value != isSessionComplete)
+                if (value != isPidSessionComplete)
                 {
-                    isSessionComplete = value;
-                    RaisePropertyChanged("IsSessionComplete");
+                    isPidSessionComplete = value;
+                    RaisePropertyChanged("IsPidSessionComplete");
                 }
             }
         }
@@ -90,7 +83,6 @@ namespace Helicopter.Core
 
         public void Disconnect()
         {
-            StopPidSession();
             HelicopterController.Disconnect();
         }
 
@@ -98,9 +90,14 @@ namespace Helicopter.Core
         {
         }
 
+        public void DisableMotors()
+        {
+            HelicopterController.DisableMotors();
+        }
+
         public void StartPidSession()
         {
-            if (IsPidSessionAlive)
+            if (IsPidSessionRunning)
             {
                 throw new Exception("A PID session is currently ongoing. You can only start a new session once the previous one has finished.");
             }
@@ -110,97 +107,64 @@ namespace Helicopter.Core
             }
             else
             {
-                StartSession();
+                ResetSession();
+                sessionWorker.RunWorkerAsync();
                 HelicopterController.EnablePid();
             }
         }
 
         public void StopPidSession()
         {
-            if (IsPidSessionAlive)
+            if (sessionWorker.IsBusy)
             {
-                HelicopterController.DisablePid();
-                StopSession();
-                Session.PropertyChanged -= OnSessionPropertyChanged;
+                sessionWorker.CancelAsync();
             }
         }
 
-        private void StartSession()
+        private void InitializeSessionWorker()
         {
-            ResetSession();
-
-            if (!IsPidSessionAlive)
-            {
-                Session.PropertyChanged += OnSessionPropertyChanged;
-                sessionThread = new Thread(Session.Start);
-                sessionThread.Name = "PidSessionThread";
-                sessionThread.Start();
-
-                while (!IsPidSessionAlive)
-                {
-                    Thread.Sleep(10);
-                }
-            }
-            else
-            {
-                throw new Exception("A PID session is currently ongoing. You can only start a new session once the previous one has finished.");
-            }
+            sessionWorker = new BackgroundWorker();
+            sessionWorker.DoWork += new DoWorkEventHandler(SessionWorker_DoWork);
+            sessionWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(SessionWorker_RunWorkerCompleted);
+            sessionWorker.WorkerReportsProgress = false;
+            sessionWorker.WorkerSupportsCancellation = true;
         }
 
         private void ResetSession()
         {
-            isSessionComplete = false;
-            isSessionAborted = false;
+            Session.StartTime = DateTime.MinValue;
+            Session.EndTime = DateTime.MinValue;
+
+            Session.ClearControllerData();
+
+            IsPidSessionComplete = false;
+            IsPidSessionRunning = true;
         }
 
-        private void StopSession()
+        private void SessionWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (IsPidSessionAlive)
+            var worker = sender as BackgroundWorker;
+
+            Session.StartTime = DateTime.Now;
+
+            while (!worker.CancellationPending)
             {
-                log.DebugFormat("Stopping routine thread");
-                Session.Stop();
-                CleanUpThreadResources();
+                var timeStamp = DateTime.Now;
+
+                Session.TakeNewDataSamples(timeStamp);
+
+                Thread.Sleep(Session.RefreshIntervalMilliseconds);
             }
+
+            Session.EndTime = DateTime.Now;
+
+            e.Cancel = true;
         }
 
-        private void CleanUpThreadResources()
+        private void SessionWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            Session.PropertyChanged -= OnSessionPropertyChanged;
-            if (sessionThread.Join(INT_ThreadJoinTimeout))
-            {
-                sessionThread = null;
-                IsSessionComplete = true;
-                log.DebugFormat("Routine thread has been stopped");
-            }
-            else
-            {
-                log.DebugFormat("Could not stop {0}", sessionThread.Name);
-                KillRoutineThread();
-                //throw new Exception("Could not kill session thread");
-            }
-        }
-
-        private void KillRoutineThread()
-        {
-            log.DebugFormat("Forcibly killing routine thread");
-
-            if (sessionThread != null && sessionThread.IsAlive)
-            {
-                sessionThread.Abort();
-                //sessionThread = null;
-                IsSessionAborted = true;
-            }
-
-            if (sessionThread.IsAlive)
-            {
-                throw new Exception("Could not kill session thread");
-            }
-            log.DebugFormat("Routine thread has been forcibly killed");
-        }
-
-        public void DisableMotors()
-        {
-            HelicopterController.DisableMotors();
+            IsPidSessionRunning = false;
+            IsPidSessionComplete = true;
         }
 
         private void OnControllerPropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -5,122 +5,42 @@ using System.Threading;
 
 namespace Helicopter.Core.Sessions
 {
-    public class Session : INotifyPropertyChanged
+    public class Session
     {
-        private readonly object stopLock = new object();
-        private bool stopping;
-        private bool stopped;
-        private HelicopterController helicopterController;
         private YawController yaw;
         private TiltController tilt;
-        private int refreshIntervalMilliseconds;
 
         public Session(HelicopterController helicopterController, int refreshIntervalMilliseconds)
         {
-            this.helicopterController = helicopterController;
-            this.refreshIntervalMilliseconds = refreshIntervalMilliseconds;
             yaw = helicopterController.Yaw;
             tilt = helicopterController.Tilt;
+
+            YawDataSeries = new ControllerDataSeries(yaw);
+            TiltDataSeries = new ControllerDataSeries(tilt);
+
+            RefreshIntervalMilliseconds = refreshIntervalMilliseconds;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public int RefreshIntervalMilliseconds { get; private set; }
 
-        public SessionData SessionData { get; set; }
+        public DateTime StartTime { get; set; }
 
-        public DateTime StartTime { get; private set; }
+        public DateTime EndTime { get; set; }
 
-        public DateTime EndTime { get; private set; }
+        public ControllerDataSeries YawDataSeries { get; set; }
 
-        public bool Stopping
+        public ControllerDataSeries TiltDataSeries { get; set; }
+
+        public void TakeNewDataSamples(DateTime timeStamp)
         {
-            get
-            {
-                lock (stopLock)
-                {
-                    return stopping;
-                }
-            }
+            yaw.TakeNewDataSample(timeStamp);
+            tilt.TakeNewDataSample(timeStamp);
         }
 
-        public bool Stopped
+        public void ClearControllerData()
         {
-            get
-            {
-                lock (stopLock)
-                {
-                    return stopped;
-                }
-            }
-        }
-
-        public void Start()
-        {
-            SessionData = new SessionData(helicopterController);
-
-            Reset();
-
-            StartTime = DateTime.Now;
-
-            while (!Stopping)
-            {
-                yaw.RefreshValues();
-                tilt.RefreshValues();
-
-                var timeStamp = DateTime.Now;
-                SessionData.TimeStamps.Add(timeStamp);
-
-                yaw.TakeNewDataSample(timeStamp);
-                tilt.TakeNewDataSample(timeStamp);
-
-                var time = DateTime.Now;
-                while ((DateTime.Now - time).Milliseconds < refreshIntervalMilliseconds)
-                {
-                    if (Stopping)
-                    {
-                        break;
-                    }
-                    Thread.Sleep(10);
-                }
-            }
-
-            EndTime = DateTime.Now;
-            SetStopped();
-        }
-
-        public void Stop()
-        {
-            lock (stopLock)
-            {
-                stopping = true;
-            }
-        }
-
-        private void SetStopped()
-        {
-            lock (stopLock)
-            {
-                stopped = true;
-            }
-        }
-
-        private void Reset()
-        {
-            stopping = false;
-            stopped = false;
-
             yaw.ControllerData.Clear();
             tilt.ControllerData.Clear();
-
-            StartTime = DateTime.MinValue;
-            EndTime = DateTime.MinValue;
-        }
-
-        private void RaisePropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
     }
 }

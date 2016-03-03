@@ -29,12 +29,12 @@ namespace Helicopter.Core.Controller
             this.controllerChannel = controllerChannel;
             this.motorType = (MotorType)controllerChannel;
 
-            ControllerData = new List<ControllerData>();
+            ControllerData = new List<ControllerDataPoint>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public List<ControllerData> ControllerData { get; set; }
+        public List<ControllerDataPoint> ControllerData { get; set; }
 
         public MotorType MotorType { get; protected set; }
 
@@ -371,7 +371,9 @@ namespace Helicopter.Core.Controller
 
         public void TakeNewDataSample(DateTime timeStamp)
         {
-            var data = new ControllerData
+            RefreshValues();
+
+            var data = new ControllerDataPoint
             {
                 TimeStamp = timeStamp,
                 SetPoint = SetPoint,
