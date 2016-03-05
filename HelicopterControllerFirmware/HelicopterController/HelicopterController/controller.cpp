@@ -18,7 +18,7 @@ void initializeController()
 {
 	// The baud rate had to be dropped from 115200 to 38400 as going any higher resulted in data loss
 	// due to the firing of the external interrupt for the decode
-	Serial.begin(115200);
+	Serial.begin(19200);
 	Serial.println();
 	Serial.flush();
 
