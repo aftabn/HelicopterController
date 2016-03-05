@@ -46,7 +46,7 @@ namespace Helicopter.GUI
             if (helicopterViewModel.IsConnected)
             {
                 helicopterControllerStatusTextbox.Text = "Helicopter Controller Connected";
-                statusBarColor = new SolidColorBrush(Color.FromRgb(0x00, 0x7A, 0xCC)); // Blue
+                statusBarColor = new SolidColorBrush(Color.FromRgb(0x00, 0x7A, 0xCC)); // Visual Studio Blue
             }
             else
             {

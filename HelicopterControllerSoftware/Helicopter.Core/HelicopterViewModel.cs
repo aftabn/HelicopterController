@@ -351,6 +351,14 @@ namespace Helicopter.Core
                    },
                    x => IsConnected);
 
+            SetYawOutputPercentageCommand = new RelayCommand(
+                   x =>
+                   {
+                       var output = Convert.ToInt32(x);
+                       YawOutputPercentage = output;
+                   },
+                   x => IsConnected);
+
             SetYawProportionalGainCommand = new RelayCommand(
                    x =>
                    {
@@ -400,6 +408,14 @@ namespace Helicopter.Core
                    {
                        var setPoint = Convert.ToDouble(x);
                        TiltSetPoint = setPoint;
+                   },
+                   x => IsConnected);
+
+            SetTiltOutputPercentageCommand = new RelayCommand(
+                   x =>
+                   {
+                       var output = Convert.ToInt32(x);
+                       TiltOutputPercentage = output;
                    },
                    x => IsConnected);
 
