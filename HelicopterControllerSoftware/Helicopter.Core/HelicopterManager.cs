@@ -168,7 +168,16 @@ namespace Helicopter.Core
         private void SessionWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             IsSessionRunning = false;
-            IsSessionComplete = true;
+
+            if (e.Error != null)
+            {
+                HelicopterController.DisablePid();
+                throw new Exception(String.Format("Background worker stopped. {0}", e.Error.Message), e.Error.InnerException);
+            }
+            else
+            {
+                IsSessionComplete = true;
+            }
         }
 
         private void OnControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
