@@ -200,6 +200,7 @@ void scanSerialPort()
 	char tmpstr[100];
 
 	uint16_t heartBeatTimer = 0;
+	uint16_t potentiometerTimer = 0;
 
 	while (true)
 	{
@@ -210,6 +211,16 @@ void scanSerialPort()
 			{
 				heartBeatTimer = 0;
 				digitalWriteFast(HEARTBEAT_LED_PIN, !digitalReadFast(HEARTBEAT_LED_PIN));
+			}
+
+			// Update the potentiometer only if PID isn't on, since it will be updated in the block below
+			if (++potentiometerTimer >= 5000)
+			{
+				if (!isPidEnabled)
+				{
+					updatePotentiometerAngle();
+				}
+				potentiometerTimer = 0;
 			}
 
 			if (isPidCalculationNeeded)
