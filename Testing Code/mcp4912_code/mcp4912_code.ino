@@ -2,7 +2,7 @@
 #include <SPI.h>
  
 // Set Constants
-const int dacChipSelectPin = 10;      // set pin 9 as the chip select for the DAC:
+const int dacChipSelectPin = 9;      // set pin 9 as the chip select for the DAC:
 
 // Start setup function:
 void setup() {  
@@ -17,7 +17,7 @@ void setup() {
 
 // Start loop function:
 void loop() {  
-  setDac(200,0);
+  setDac(500,0);
   //setDac(4000,1);
 }// End of loop function.
 
