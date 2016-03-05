@@ -15,7 +15,7 @@ namespace Helicopter.Core.Controller
     {
         private const double DBL_DefaultTimeoutSeconds = 1;
         private const string STR_SerialDeviceName = "Arduino";
-        private const string STR_BluetoothDeviceName = "COM10";
+        private const string STR_BluetoothDeviceName = "Bluetooth";
 
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly List<string> receivedPackets = new List<string>();
