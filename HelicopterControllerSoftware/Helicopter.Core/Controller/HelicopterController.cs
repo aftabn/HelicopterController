@@ -256,6 +256,11 @@ namespace Helicopter.Core.Controller
             Tilt.Disable();
         }
 
+        public void ZeroYawAngle()
+        {
+            Yaw.ZeroAngle();
+        }
+
         public void RefreshPidLoopInterval()
         {
             PidLoopInterval = Microcontroller.GetPidLoopInterval();

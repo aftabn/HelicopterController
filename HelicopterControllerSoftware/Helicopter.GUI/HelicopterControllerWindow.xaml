@@ -112,6 +112,7 @@
                                 <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,0,0" Width="40"><Run Text="CCW" /></TextBlock>
                             </StackPanel>
                         </StackPanel>
+                        <Button Margin="5,5,5,5" Content="Zero Angle" Command="{Binding ZeroYawAngleCommand}" />
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Proportional Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
@@ -150,21 +151,6 @@
                                 <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawOutputRateLimitCommand}" CommandParameter="{Binding ElementName=setYawOutputRateLimitTextbox, Path=Text}" />
                                 <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawOutputRateLimitTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawOutputRateLimit}" />
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Margin="5,5,5,0">
-                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Driver Type" /></TextBlock>
-                            <StackPanel Orientation="Horizontal">
-                                <StackPanel.Resources>
-                                    <Util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
-                                    <Util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
-                                </StackPanel.Resources>
-                                <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsPidEnabled, Converter={StaticResource InverseBooleanConverter}}"
-                                             IsChecked="{Binding Path=YawMotorDriver, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:MotorDriver.AnalogVoltage}}" />
-                                <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="40"><Run Text="A.V." /></TextBlock>
-                                <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsPidEnabled, Converter={StaticResource InverseBooleanConverter}}"
-                                             IsChecked="{Binding Path=YawMotorDriver, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:MotorDriver.Frequency}}" />
-                                <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,0,0" Width="40"><Run Text="Freq." /></TextBlock>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>

@@ -210,6 +210,7 @@ namespace Helicopter.Core
         public ICommand DisableMotorsCommand { get; private set; }
 
         public ICommand GetYawAngleCommand { get; private set; }
+        public ICommand ZeroYawAngleCommand { get; private set; }
         public ICommand SetYawSetPointCommand { get; private set; }
         public ICommand SetYawProportionalGainCommand { get; private set; }
         public ICommand SetYawIntegralGainCommand { get; private set; }
@@ -343,6 +344,10 @@ namespace Helicopter.Core
                    x => yaw.RefreshCurrentAngle(),
                    x => IsConnected);
 
+            ZeroYawAngleCommand = new RelayCommand(
+                   x => yaw.ZeroAngle(),
+                   x => IsConnected && !IsPidEnabled);
+
             SetYawSetPointCommand = new RelayCommand(
                    x =>
                    {
@@ -357,7 +362,7 @@ namespace Helicopter.Core
                        var output = Convert.ToInt32(x);
                        YawOutputPercentage = output;
                    },
-                   x => IsConnected);
+                   x => IsConnected && !IsPidEnabled);
 
             SetYawProportionalGainCommand = new RelayCommand(
                    x =>
@@ -417,7 +422,7 @@ namespace Helicopter.Core
                        var output = Convert.ToInt32(x);
                        TiltOutputPercentage = output;
                    },
-                   x => IsConnected);
+                   x => IsConnected && !IsPidEnabled);
 
             SetTiltProportionalGainCommand = new RelayCommand(
                    x =>
