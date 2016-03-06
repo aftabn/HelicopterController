@@ -27,9 +27,9 @@ volatile int currentFrequency;
 const signed int encoderLookup[] = { 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 };
 byte encoderValues;
 
-volatile double pGains[MAX_NUM_CHANNELS];
-volatile double iGains[MAX_NUM_CHANNELS];
-volatile double dGains[MAX_NUM_CHANNELS];
+volatile double pGains[MAX_NUM_CHANNELS][NUM_DIRECTION_PROFILES];
+volatile double iGains[MAX_NUM_CHANNELS][NUM_DIRECTION_PROFILES];
+volatile double dGains[MAX_NUM_CHANNELS][NUM_DIRECTION_PROFILES];
 volatile double iWindupThresholds[MAX_NUM_CHANNELS];
 volatile int outputRateLimits[MAX_NUM_CHANNELS];
 volatile double setPoints[MAX_NUM_CHANNELS];
@@ -75,9 +75,13 @@ void initializePid(void)
 
 	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
 	{
-		pGains[channel] = DEFAULT_P_GAIN;
-		iGains[channel] = DEFAULT_I_GAIN;
-		dGains[channel] = DEFAULT_D_GAIN;
+		for (int profile = 0; profile < NUM_DIRECTION_PROFILES; profile++)
+		{
+			pGains[channel][profile] = DEFAULT_P_GAIN;
+			iGains[channel][profile] = DEFAULT_I_GAIN;
+			dGains[channel][profile] = DEFAULT_D_GAIN;
+		}
+
 		iWindupThresholds[channel] = DEFAULT_I_WINDUP_THRESH;
 		outputRateLimits[channel] = DEFAULT_OUTPUT_RATE_LIMIT;
 		setPoints[channel] = DEFAULT_SET_POINT;
@@ -191,7 +195,21 @@ void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOut
 	}
 
 	// Get new signed output from PID algorithm
-	newOutput += (int)(pGains[channel] * angleErrors[channel] + iGains[channel] * integratedAngleErrors[channel] - dGains[channel] * derivativeAnglesErrors[channel]);
+	if (channel == YAW_CHANNEL)
+	{
+		if (angleErrors[channel] > 0)
+		{
+			newOutput += (int)(pGains[channel][YAW_CW_DRECTION_PROFILE] * angleErrors[channel] + iGains[channel][YAW_CW_DRECTION_PROFILE] * integratedAngleErrors[channel] - dGains[channel][YAW_CW_DRECTION_PROFILE] * derivativeAnglesErrors[channel]);
+		}
+		else
+		{
+			newOutput += (int)(pGains[channel][YAW_CCW_DRECTION_PROFILE] * angleErrors[channel] + iGains[channel][YAW_CCW_DRECTION_PROFILE] * integratedAngleErrors[channel] - dGains[channel][YAW_CCW_DRECTION_PROFILE] * derivativeAnglesErrors[channel]);
+		}
+	}
+	else
+	{
+		newOutput += (int)(pGains[channel][TILT_DIRECTION_PROFILE] * angleErrors[channel] + iGains[channel][TILT_DIRECTION_PROFILE] * integratedAngleErrors[channel] - dGains[channel][TILT_DIRECTION_PROFILE] * derivativeAnglesErrors[channel]);
+	}
 
 	// Limit the amount the output can change by
 	if (abs(newOutput - currentOutput) > outputRateLimits[channel])

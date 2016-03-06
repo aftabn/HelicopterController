@@ -19,6 +19,13 @@ Author:	Aftab
 #define YAW_CHANNEL						0
 #define TILT_CHANNEL					1
 
+// Since the yaw motor does not output the same amount of force in both directions (due to propeller orientation),
+// there are 2 different PID profiles for yaw (one for each direction), and only one for tilt
+#define NUM_DIRECTION_PROFILES			2
+#define YAW_CW_DRECTION_PROFILE			0
+#define YAW_CCW_DRECTION_PROFILE		1
+#define TILT_DIRECTION_PROFILE			0
+
 #define ENCODER_TOTAL_RANGE_DEGREES		360.0
 #define ENCODER_PULSES_PER_REVOLUTION	400
 #define ENCODER_DEGREES_PER_PULSE		ENCODER_TOTAL_RANGE_DEGREES / ENCODER_PULSES_PER_REVOLUTION
@@ -77,6 +84,8 @@ Author:	Aftab
 #define TILT_OUTPUT_MIN					0
 #define TILT_OUTPUT_MAX					100
 
+#define TILT_OUTPUT_OFFSET				40
+
 #define PID_INTERVAL_MS_MIN				1		// Minimum timer 1 overflow is 1 ms
 #define PID_INTERVAL_MS_MAX				260		// Maximum timer 1 overflow is ~260 ms
 
@@ -106,9 +115,9 @@ extern volatile bool isSafetyOn;
 extern volatile int pidLoopInterval;
 extern volatile int currentFrequency;
 
-extern volatile double pGains[MAX_NUM_CHANNELS];
-extern volatile double iGains[MAX_NUM_CHANNELS];
-extern volatile double dGains[MAX_NUM_CHANNELS];
+extern volatile double pGains[MAX_NUM_CHANNELS][NUM_DIRECTION_PROFILES];
+extern volatile double iGains[MAX_NUM_CHANNELS][NUM_DIRECTION_PROFILES];
+extern volatile double dGains[MAX_NUM_CHANNELS][NUM_DIRECTION_PROFILES];
 extern volatile double iWindupThresholds[MAX_NUM_CHANNELS];
 extern volatile int outputRateLimits[MAX_NUM_CHANNELS];
 extern volatile double setPoints[MAX_NUM_CHANNELS];

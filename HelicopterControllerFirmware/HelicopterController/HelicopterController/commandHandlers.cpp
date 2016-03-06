@@ -283,21 +283,30 @@ void onCommandProportionalGain()
 	if (isChannelCorrect(gParameters[0]))
 	{
 		int channel = convertToInt(gParameters[0]);
-		double pGain = atof(gParameters[1]);
 
-		if (isReadCommand(gParameters[1]))
+		if (isProfileCorrect(gParameters[1]))
 		{
-			sendDouble(pGains[channel]);
-			sendAck();
-		}
-		else if (isDoubleWithinRange(pGain, P_GAIN_MIN, P_GAIN_MAX))
-		{
-			pGains[channel] = pGain;
-			sendAck();
+			int profile = convertToInt(gParameters[1]);
+			double pGain = atof(gParameters[2]);
+
+			if (isReadCommand(gParameters[2]))
+			{
+				sendDouble(pGains[channel][profile]);
+				sendAck();
+			}
+			else if (isDoubleWithinRange(pGain, P_GAIN_MIN, P_GAIN_MAX))
+			{
+				pGains[channel][profile] = pGain;
+				sendAck();
+			}
+			else
+			{
+				sendDoubleRangeError(P_GAIN_MIN, P_GAIN_MAX, NO_UNIT);
+			}
 		}
 		else
 		{
-			sendDoubleRangeError(P_GAIN_MIN, P_GAIN_MAX, NO_UNIT);
+			sendProfileError();
 		}
 	}
 	else
@@ -311,21 +320,30 @@ void onCommandIntegralGain()
 	if (isChannelCorrect(gParameters[0]))
 	{
 		int channel = convertToInt(gParameters[0]);
-		double iGain = atof(gParameters[1]);
 
-		if (isReadCommand(gParameters[1]))
+		if (isProfileCorrect(gParameters[1]))
 		{
-			sendDouble(iGains[channel]);
-			sendAck();
-		}
-		else if (isDoubleWithinRange(iGain, I_GAIN_MIN, P_GAIN_MAX))
-		{
-			iGains[channel] = iGain;
-			sendAck();
+			int profile = convertToInt(gParameters[1]);
+			double iGain = atof(gParameters[2]);
+
+			if (isReadCommand(gParameters[2]))
+			{
+				sendDouble(iGains[channel][profile]);
+				sendAck();
+			}
+			else if (isDoubleWithinRange(iGain, I_GAIN_MIN, P_GAIN_MAX))
+			{
+				iGains[channel][profile] = iGain;
+				sendAck();
+			}
+			else
+			{
+				sendDoubleRangeError(I_GAIN_MIN, I_GAIN_MAX, NO_UNIT);
+			}
 		}
 		else
 		{
-			sendDoubleRangeError(I_GAIN_MIN, I_GAIN_MAX, NO_UNIT);
+			sendProfileError();
 		}
 	}
 	else
@@ -339,21 +357,30 @@ void onCommandDerivativeGain()
 	if (isChannelCorrect(gParameters[0]))
 	{
 		int channel = convertToInt(gParameters[0]);
-		double dGain = atof(gParameters[1]);
 
-		if (isReadCommand(gParameters[1]))
+		if (isProfileCorrect(gParameters[1]))
 		{
-			sendDouble(dGains[channel]);
-			sendAck();
-		}
-		else if (isDoubleWithinRange(dGain, D_GAIN_MIN, D_GAIN_MAX))
-		{
-			dGains[channel] = dGain;
-			sendAck();
+			int profile = convertToInt(gParameters[1]);
+			double dGain = atof(gParameters[2]);
+
+			if (isReadCommand(gParameters[2]))
+			{
+				sendDouble(dGains[channel][profile]);
+				sendAck();
+			}
+			else if (isDoubleWithinRange(dGain, D_GAIN_MIN, D_GAIN_MAX))
+			{
+				dGains[channel][profile] = dGain;
+				sendAck();
+			}
+			else
+			{
+				sendDoubleRangeError(D_GAIN_MIN, D_GAIN_MAX, NO_UNIT);
+			}
 		}
 		else
 		{
-			sendDoubleRangeError(D_GAIN_MIN, D_GAIN_MAX, NO_UNIT);
+			sendProfileError();
 		}
 	}
 	else

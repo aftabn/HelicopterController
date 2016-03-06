@@ -72,6 +72,12 @@ void sendChannelError()
 	sendNack();
 }
 
+void sendProfileError()
+{
+	Serial.println(F("Invalid profile"));
+	sendNack();
+}
+
 void sendSyntaxError()
 {
 	Serial.println(F("Check syntax"));
@@ -167,6 +173,22 @@ bool isChannelCorrect(char* channelArg)
 	{
 		sprintf(channelStr, "%d", channel);
 		if (0 == stricmp(channelArg, channelStr))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool isProfileCorrect(char* profileArg)
+{
+	char profileStr[10];
+
+	for (int profile = 0; profile < NUM_DIRECTION_PROFILES; profile++)
+	{
+		sprintf(profileStr, "%d", profileStr);
+		if (0 == stricmp(profileArg, profileStr))
 		{
 			return true;
 		}
