@@ -19,9 +19,9 @@
 -->
 <Settings>
   <Helicopter ConnectionType="Bluetooth" PidThreadRefreshIntervalMilliseconds="100">
-    <Controller IsSafetyEnabled="true" PidLoopIntervalMilliseconds="250">
-      <Yaw IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="1" IntegralGain="0.25" DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="10" />
-      <Tilt IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="1" IntegralGain="0.25" DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="10" />
+    <Controller IsSafetyEnabled="true" PidLoopIntervalMilliseconds="50">
+      <Yaw IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="0.5" IntegralGain="0.25" DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="90" />
+      <Tilt IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="0.8" IntegralGain="0.6" DerivativeGain="0.3" IntegralWindupThreshold="30" OutputRateLimit="100" />
     </Controller>
   </Helicopter>
 </Settings>
