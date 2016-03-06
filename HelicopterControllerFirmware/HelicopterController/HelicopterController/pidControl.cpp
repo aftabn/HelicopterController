@@ -174,13 +174,24 @@ void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOut
 	}
 
 	// D term
-	derivativeAnglesErrors[channel] = (currentAngles[channel] - previousAngles[channel]) / pidLoopInterval / 1000.0;
+	derivativeAnglesErrors[channel] = (currentAngles[channel] - previousAngles[channel]) / (pidLoopInterval / 1000.0);
+
+	int newOutput = 0;
 
 	// Update previous angle for next calculation
 	previousAngles[channel] = currentAngles[channel];
 
+	// TODO: Refactor this later
+	if (channel == TILT_CHANNEL)
+	{
+		if (setPoints[channel] > -17)
+		{
+			newOutput += 40;
+		}
+	}
+
 	// Get new signed output from PID algorithm
-	int newOutput = (int)(pGains[channel] * angleErrors[channel] + iGains[channel] * integratedAngleErrors[channel] + dGains[channel] * derivativeAnglesErrors[channel]);
+	newOutput += (int)(pGains[channel] * angleErrors[channel] + iGains[channel] * integratedAngleErrors[channel] - dGains[channel] * derivativeAnglesErrors[channel]);
 
 	// Limit the amount the output can change by
 	if (abs(newOutput - currentOutput) > outputRateLimits[channel])
