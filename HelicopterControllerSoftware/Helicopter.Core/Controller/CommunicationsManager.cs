@@ -13,7 +13,8 @@ namespace Helicopter.Core.Controller
 {
     public class CommunicationsManager : INotifyPropertyChanged, IDisposable
     {
-        private const double DBL_DefaultTimeoutSeconds = 1;
+        private const double DBL_DefaultSerialTimeoutSeconds = 0.5;
+        private const double DBL_DefaultBluetoothTimeoutSeconds = 2.5;
         private const string STR_SerialDeviceName = "Arduino";
         private const string STR_BluetoothDeviceName = "Bluetooth";
 
@@ -192,7 +193,8 @@ namespace Helicopter.Core.Controller
 
         public Packet Write(string input)
         {
-            return Write(input, DBL_DefaultTimeoutSeconds);
+            var timeout = ConnectionType == ConnectionType.Serial ? DBL_DefaultSerialTimeoutSeconds : DBL_DefaultBluetoothTimeoutSeconds;
+            return Write(input, timeout);
         }
 
         public Packet Write(string input, double timeoutSeconds)
