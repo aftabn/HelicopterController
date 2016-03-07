@@ -7,7 +7,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.182"
+    ComputedModelVersion    "1.188"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -51,11 +51,11 @@ Model {
 	$ObjectID		5
 	$ClassName		"Simulink.EditorInfo"
 	IsActive		[1]
-	ViewObjType		"SimulinkTopLevel"
-	LoadSaveID		"0"
+	ViewObjType		"SimulinkSubsys"
+	LoadSaveID		"3"
 	Extents			[1566.0, 701.0]
-	ZoomFactor		[1.05]
-	Offset			[0.0, 0.0]
+	ZoomFactor		[1.0]
+	Offset			[369.95206125808886, 20.16536408335287]
       }
     }
   }
@@ -65,9 +65,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "Wyatt"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Fri Feb 19 23:13:17 2016"
-  RTWModifiedTimeStamp	  377824394
-  ModelVersionFormat	  "1.%<AutoIncrement:182>"
+  LastModifiedDate	  "Mon Mar 07 15:32:45 2016"
+  RTWModifiedTimeStamp	  379265561
+  ModelVersionFormat	  "1.%<AutoIncrement:188>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -993,7 +993,7 @@ Model {
   System {
     Name		    "SystemModel"
     Location		    [-8, -8, 1608, 868]
-    Open		    on
+    Open		    off
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
     ScreenColor		    "white"
@@ -1006,7 +1006,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "105"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "263"
+    SIDHighWatermark	    "266"
     Block {
       BlockType		      Scope
       Name		      "Altitude"
@@ -1048,7 +1048,7 @@ Model {
       System {
 	Name			"Control System"
 	Location		[-8, -8, 1608, 868]
-	Open			off
+	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -1079,29 +1079,124 @@ Model {
 	  }
 	}
 	Block {
-	  BlockType		  Reference
-	  Name			  "Altitude ADC"
-	  SID			  "230"
+	  BlockType		  SubSystem
+	  Name			  "Altitude Angle Sensor"
+	  SID			  "236"
 	  Ports			  [1, 1]
-	  Position		  [660, 225, 720, 275]
-	  ZOrder		  41
+	  Position		  [840, 232, 920, 268]
+	  ZOrder		  -95
 	  BlockMirror		  on
 	  BackgroundColor	  "yellow"
-	  AttributesFormatString  "(settings: %<NumberOfConverterBits>-bit converter\\nVmin: %<Vmin>, Vmax: %<Vmax>)"
-	  LibraryVersion	  "1.44"
-	  SourceBlock		  "simulink_extras/Additional\nDiscrete/Idealized ADC quantizer"
-	  SourceType		  "IdealADC"
-	  ContentPreviewEnabled	  off
-	  NumberOfConverterBits	  "ADC_bitwidth"
-	  Vmin			  "ground"
-	  Vmax			  "Vss"
-	  OutputDataType	  "int16"
-	  OutputNegativeValues	  off
+	  RequestExecContextInheritance	off
+	  Variant		  off
 	  Port {
 	    PortNumber		    1
 	    Name		    "(V)"
 	    RTWStorageClass	    "Auto"
 	    DataLoggingNameMode	    "SignalName"
+	  }
+	  System {
+	    Name		    "Altitude Angle Sensor"
+	    Location		    [-8, -8, 1608, 868]
+	    Open		    off
+	    ModelBrowserVisibility  off
+	    ModelBrowserWidth	    200
+	    ScreenColor		    "white"
+	    PaperOrientation	    "landscape"
+	    PaperPositionMode	    "auto"
+	    PaperType		    "usletter"
+	    PaperUnits		    "inches"
+	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
+	    TiledPageScale	    1
+	    ShowPageBoundaries	    off
+	    ZoomFactor		    "200"
+	    Block {
+	      BlockType		      Inport
+	      Name		      "Angle"
+	      SID		      "237"
+	      Position		      [45, 118, 75, 132]
+	      ZOrder		      47
+	      BackgroundColor	      "yellow"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Reference
+	      Name		      "Altitude ADC"
+	      SID		      "264"
+	      Ports		      [1, 1]
+	      Position		      [315, 100, 375, 150]
+	      ZOrder		      50
+	      BackgroundColor	      "yellow"
+	      AttributesFormatString  "(settings: %<NumberOfConverterBits>-bit converter\\nVmin: %<Vmin>, Vmax: %<Vmax>)"
+	      LibraryVersion	      "1.44"
+	      SourceBlock	      "simulink_extras/Additional\nDiscrete/Idealized ADC quantizer"
+	      SourceType	      "IdealADC"
+	      ContentPreviewEnabled   off
+	      NumberOfConverterBits   "ADC_bitwidth"
+	      Vmin		      "ground"
+	      Vmax		      "Vss"
+	      OutputDataType	      "int16"
+	      OutputNegativeValues    off
+	    }
+	    Block {
+	      BlockType		      Bias
+	      Name		      "Potentiometer\nBias"
+	      SID		      "235"
+	      Position		      [205, 110, 245, 140]
+	      ZOrder		      46
+	      BackgroundColor	      "yellow"
+	      Bias		      "potentiometerBias"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "Potentiometer\nGain"
+	      SID		      "234"
+	      Position		      [120, 110, 150, 140]
+	      ZOrder		      45
+	      BackgroundColor	      "yellow"
+	      Gain		      "potentiometerGain"
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "Voltage"
+	      SID		      "239"
+	      Position		      [425, 118, 455, 132]
+	      ZOrder		      49
+	      BackgroundColor	      "yellow"
+	      IconDisplay	      "Port number"
+	    }
+	    Line {
+	      ZOrder		      586
+	      SrcBlock		      "Potentiometer\nBias"
+	      SrcPort		      1
+	      DstBlock		      "Altitude ADC"
+	      DstPort		      1
+	    }
+	    Line {
+	      ZOrder		      585
+	      SrcBlock		      "Angle"
+	      SrcPort		      1
+	      DstBlock		      "Potentiometer\nGain"
+	      DstPort		      1
+	    }
+	    Line {
+	      ZOrder		      587
+	      SrcBlock		      "Potentiometer\nGain"
+	      SrcPort		      1
+	      DstBlock		      "Potentiometer\nBias"
+	      DstPort		      1
+	    }
+	    Line {
+	      ZOrder		      589
+	      SrcBlock		      "Altitude ADC"
+	      SrcPort		      1
+	      DstBlock		      "Voltage"
+	      DstPort		      1
+	    }
 	  }
 	}
 	Block {
@@ -1122,7 +1217,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Altitude Control Computer"
-	    Location		    [-8, 0, 1608, 876]
+	    Location		    [-8, -8, 1608, 868]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1389,7 +1484,7 @@ Model {
 	  Variant		  off
 	  System {
 	    Name		    "Altitude Motor"
-	    Location		    [793, 0, 1607, 867]
+	    Location		    [-8, -8, 1608, 868]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1401,7 +1496,7 @@ Model {
 	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
 	    TiledPageScale	    1
 	    ShowPageBoundaries	    off
-	    ZoomFactor		    "150"
+	    ZoomFactor		    "250"
 	    Block {
 	      BlockType		      Inport
 	      Name		      "Voltage In"
@@ -1596,6 +1691,18 @@ Model {
 	  rep_seq_y		  "Yaw(1,:)"
 	}
 	Block {
+	  BlockType		  Gain
+	  Name			  "Heli Torque"
+	  SID			  "266"
+	  Position		  [680, 190, 710, 220]
+	  ZOrder		  45
+	  BackgroundColor	  "red"
+	  Gain			  "mDrag"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
 	  BlockType		  TransferFcn
 	  Name			  "Helicopter\nDynamics\n(yaw)"
 	  SID			  "10"
@@ -1629,7 +1736,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Helicopter Dynamics\n(altitude)"
-	    Location		    [-8, 0, 1608, 876]
+	    Location		    [793, 0, 1607, 867]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1641,7 +1748,7 @@ Model {
 	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
 	    TiledPageScale	    1
 	    ShowPageBoundaries	    off
-	    ZoomFactor		    "150"
+	    ZoomFactor		    "124"
 	    Block {
 	      BlockType		      Inport
 	      Name		      "RPM"
@@ -1959,7 +2066,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Motor Control\nBoard (Altitude)"
-	    Location		    [793, 0, 1607, 867]
+	    Location		    [-8, -8, 1608, 868]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1971,7 +2078,7 @@ Model {
 	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
 	    TiledPageScale	    1
 	    ShowPageBoundaries	    off
-	    ZoomFactor		    "150"
+	    ZoomFactor		    "300"
 	    Block {
 	      BlockType		      Inport
 	      Name		      "Signal from Computer"
@@ -2051,7 +2158,7 @@ Model {
 	  }
 	  System {
 	    Name		    "Motor Control\nBoard (Yaw)"
-	    Location		    [-8, 0, 1608, 876]
+	    Location		    [793, 0, 1607, 867]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -2126,177 +2233,24 @@ Model {
 	  }
 	}
 	Block {
-	  BlockType		  SubSystem
-	  Name			  "Potentiometer\nfor angle measurement"
-	  SID			  "236"
-	  Ports			  [1, 1]
-	  Position		  [835, 232, 915, 268]
-	  ZOrder		  -95
-	  BlockMirror		  on
-	  BackgroundColor	  "yellow"
-	  RequestExecContextInheritance	off
-	  Variant		  off
-	  Port {
-	    PortNumber		    1
-	    Name		    "(V)"
-	    RTWStorageClass	    "Auto"
-	    DataLoggingNameMode	    "SignalName"
-	  }
-	  System {
-	    Name		    "Potentiometer\nfor angle measurement"
-	    Location		    [-8, -8, 1608, 868]
-	    Open		    off
-	    ModelBrowserVisibility  off
-	    ModelBrowserWidth	    200
-	    ScreenColor		    "white"
-	    PaperOrientation	    "landscape"
-	    PaperPositionMode	    "auto"
-	    PaperType		    "usletter"
-	    PaperUnits		    "inches"
-	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
-	    TiledPageScale	    1
-	    ShowPageBoundaries	    off
-	    ZoomFactor		    "175"
-	    Block {
-	      BlockType		      Inport
-	      Name		      "Angle"
-	      SID		      "237"
-	      Position		      [45, 118, 75, 132]
-	      ZOrder		      47
-	      BackgroundColor	      "yellow"
-	      IconDisplay	      "Port number"
-	    }
-	    Block {
-	      BlockType		      Bias
-	      Name		      "Bias"
-	      SID		      "235"
-	      Position		      [160, 110, 200, 140]
-	      ZOrder		      46
-	      BackgroundColor	      "yellow"
-	      Bias		      "potentiometerBias"
-	      SaturateOnIntegerOverflow	off
-	    }
-	    Block {
-	      BlockType		      Gain
-	      Name		      "Gain"
-	      SID		      "234"
-	      Position		      [105, 110, 135, 140]
-	      ZOrder		      45
-	      BackgroundColor	      "yellow"
-	      Gain		      "potentiometerGain"
-	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
-	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-	      SaturateOnIntegerOverflow	off
-	    }
-	    Block {
-	      BlockType		      Outport
-	      Name		      "Voltage"
-	      SID		      "239"
-	      Position		      [235, 118, 265, 132]
-	      ZOrder		      49
-	      BackgroundColor	      "yellow"
-	      IconDisplay	      "Port number"
-	    }
-	    Line {
-	      ZOrder		      586
-	      SrcBlock		      "Bias"
-	      SrcPort		      1
-	      DstBlock		      "Voltage"
-	      DstPort		      1
-	    }
-	    Line {
-	      ZOrder		      585
-	      SrcBlock		      "Angle"
-	      SrcPort		      1
-	      DstBlock		      "Gain"
-	      DstPort		      1
-	    }
-	    Line {
-	      ZOrder		      587
-	      SrcBlock		      "Gain"
-	      SrcPort		      1
-	      DstBlock		      "Bias"
-	      DstPort		      1
-	    }
-	  }
-	}
-	Block {
-	  BlockType		  Scope
-	  Name			  "Scope"
-	  SID			  "260"
-	  Ports			  [1]
-	  Position		  [1065, 424, 1095, 456]
+	  BlockType		  Sum
+	  Name			  "Sum6"
+	  SID			  "265"
+	  Ports			  [2, 1]
+	  Position		  [745, 515, 765, 535]
 	  ZOrder		  44
-	  ScopeSpecificationString "Simulink.scopes.TimeScopeBlockCfg('CurrentConfiguration', extmgr.ConfigurationSet(extmgr."
-	  "Configuration('Core','General UI',true),extmgr.Configuration('Core','Source UI',true),extmgr.Configuration('Sources"
-	  "','WiredSimulink',true,'DataLoggingVariableName','ScopeData1'),extmgr.Configuration('Visuals','Time Domain',true,'S"
-	  "erializedDisplays',{struct('MinYLimReal','-7.99251','MaxYLimReal','71.93262','YLabelReal','','MinYLimMag','0.00000'"
-	  ",'MaxYLimMag','71.93262','LegendVisibility','off','XGrid',true,'YGrid',true,'PlotMagPhase',false,'AxesColor',[0 0 0"
-	  "],'AxesTickColor',[0.686274509803922 0.686274509803922 0.686274509803922],'ColorOrder',[1 1 0.0666666666666667;0.07"
-	  "45098039215686 0.623529411764706 1;1 0.411764705882353 0.16078431372549;0.392156862745098 0.831372549019608 0.07450"
-	  "98039215686;0.717647058823529 0.274509803921569 1;0.0588235294117647 1 1;1 0.0745098039215686 0.650980392156863],'T"
-	  "itle','%<SignalLabel>','LinePropertiesCache',{{}},'UserDefinedChannelNames',{{}},'NumLines',1,'LineNames',{{'(deg)'"
-	  "}},'ShowContent',true,'Placement',1)},'DisplayPropertyDefaults',struct('MinYLimReal','-7.99251','MaxYLimReal','71.9"
-	  "3262','YLabelReal','','MinYLimMag','0.00000','MaxYLimMag','71.93262','LegendVisibility','off','XGrid',true,'YGrid',"
-	  "true,'PlotMagPhase',false,'AxesColor',[0 0 0],'AxesTickColor',[0.686274509803922 0.686274509803922 0.68627450980392"
-	  "2],'ColorOrder',[0.0745098039215686 0.623529411764706 1;1 0.411764705882353 0.16078431372549;1 1 0.0666666666666667"
-	  ";0.717647058823529 0.274509803921569 1;0.392156862745098 0.831372549019608 0.0745098039215686;0.0588235294117647 1 "
-	  "1;1 0.0745098039215686 0.650980392156863])),extmgr.Configuration('Tools','Plot Navigation',true),extmgr.Configurati"
-	  "on('Tools','Measurements',true,'Version','2015b')),'Version','2015b','Position',[1 41 1600 783])"
-	}
-	Block {
-	  BlockType		  Scope
-	  Name			  "Scope1"
-	  SID			  "261"
-	  Ports			  [1]
-	  Position		  [835, 744, 865, 776]
-	  ZOrder		  45
-	  ScopeSpecificationString "Simulink.scopes.TimeScopeBlockCfg('CurrentConfiguration', extmgr.ConfigurationSet(extmgr."
-	  "Configuration('Core','General UI',true),extmgr.Configuration('Core','Source UI',true),extmgr.Configuration('Sources"
-	  "','WiredSimulink',true,'DataLoggingVariableName','ScopeData2'),extmgr.Configuration('Visuals','Time Domain',true,'S"
-	  "erializedDisplays',{struct('MinYLimReal','-7.9875','MaxYLimReal','71.8875','YLabelReal','','MinYLimMag','0.00000','"
-	  "MaxYLimMag','71.8875','LegendVisibility','off','XGrid',true,'YGrid',true,'PlotMagPhase',false,'AxesColor',[0 0 0],'"
-	  "AxesTickColor',[0.686274509803922 0.686274509803922 0.686274509803922],'ColorOrder',[1 1 0.0666666666666667;0.07450"
-	  "98039215686 0.623529411764706 1;1 0.411764705882353 0.16078431372549;0.392156862745098 0.831372549019608 0.07450980"
-	  "39215686;0.717647058823529 0.274509803921569 1;0.0588235294117647 1 1;1 0.0745098039215686 0.650980392156863],'Titl"
-	  "e','%<SignalLabel>','LinePropertiesCache',{{}},'UserDefinedChannelNames',{{}},'NumLines',1,'LineNames',{{'(deg)'}},"
-	  "'ShowContent',true,'Placement',1)},'DisplayPropertyDefaults',struct('MinYLimReal','-7.9875','MaxYLimReal','71.8875'"
-	  ",'YLabelReal','','MinYLimMag','0.00000','MaxYLimMag','71.8875','LegendVisibility','off','XGrid',true,'YGrid',true,'"
-	  "PlotMagPhase',false,'AxesColor',[0 0 0],'AxesTickColor',[0.686274509803922 0.686274509803922 0.686274509803922],'Co"
-	  "lorOrder',[0.0745098039215686 0.623529411764706 1;1 0.411764705882353 0.16078431372549;1 1 0.0666666666666667;0.717"
-	  "647058823529 0.274509803921569 1;0.392156862745098 0.831372549019608 0.0745098039215686;0.0588235294117647 1 1;1 0."
-	  "0745098039215686 0.650980392156863])),extmgr.Configuration('Tools','Plot Navigation',true),extmgr.Configuration('To"
-	  "ols','Measurements',true,'Version','2015b')),'Version','2015b','Position',[2 42 798 774])"
-	}
-	Block {
-	  BlockType		  Scope
-	  Name			  "Scope2"
-	  SID			  "263"
-	  Ports			  [1]
-	  Position		  [835, 329, 865, 361]
-	  ZOrder		  46
-	  ScopeSpecificationString "Simulink.scopes.TimeScopeBlockCfg('CurrentConfiguration', extmgr.ConfigurationSet(extmgr."
-	  "Configuration('Core','General UI',true),extmgr.Configuration('Core','Source UI',true),extmgr.Configuration('Sources"
-	  "','WiredSimulink',true,'DataLoggingVariableName','ScopeData3'),extmgr.Configuration('Visuals','Time Domain',true,'S"
-	  "erializedDisplays',{struct('MinYLimReal','2.40302','MaxYLimReal','3.37284','YLabelReal','','MinYLimMag','2.40302','"
-	  "MaxYLimMag','3.37284','LegendVisibility','off','XGrid',true,'YGrid',true,'PlotMagPhase',false,'AxesColor',[0 0 0],'"
-	  "AxesTickColor',[0.686274509803922 0.686274509803922 0.686274509803922],'ColorOrder',[1 1 0.0666666666666667;0.07450"
-	  "98039215686 0.623529411764706 1;1 0.411764705882353 0.16078431372549;0.392156862745098 0.831372549019608 0.07450980"
-	  "39215686;0.717647058823529 0.274509803921569 1;0.0588235294117647 1 1;1 0.0745098039215686 0.650980392156863],'Titl"
-	  "e','%<SignalLabel>','LinePropertiesCache',{{}},'UserDefinedChannelNames',{{}},'NumLines',1,'LineNames',{{'(V)'}},'S"
-	  "howContent',true,'Placement',1)},'DisplayPropertyDefaults',struct('MinYLimReal','2.40302','MaxYLimReal','3.37284','"
-	  "YLabelReal','','MinYLimMag','2.40302','MaxYLimMag','3.37284','LegendVisibility','off','XGrid',true,'YGrid',true,'Pl"
-	  "otMagPhase',false,'AxesColor',[0 0 0],'AxesTickColor',[0.686274509803922 0.686274509803922 0.686274509803922],'Colo"
-	  "rOrder',[0.0745098039215686 0.623529411764706 1;1 0.411764705882353 0.16078431372549;1 1 0.0666666666666667;0.71764"
-	  "7058823529 0.274509803921569 1;0.392156862745098 0.831372549019608 0.0745098039215686;0.0588235294117647 1 1;1 0.07"
-	  "45098039215686 0.650980392156863])),extmgr.Configuration('Tools','Plot Navigation',true),extmgr.Configuration('Tool"
-	  "s','Measurements',true,'Version','2015b')),'Version','2015b','Position',[802 41 798 774])"
+	  ShowName		  off
+	  IconShape		  "round"
+	  Inputs		  "-+|"
+	  InputSameDT		  off
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
 	}
 	Block {
 	  BlockType		  Gain
 	  Name			  "Tail Torque"
 	  SID			  "119"
-	  Position		  [720, 510, 750, 540]
+	  Position		  [680, 510, 710, 540]
 	  ZOrder		  16
 	  BackgroundColor	  "red"
 	  Gain			  "tTorque"
@@ -2830,13 +2784,6 @@ Model {
 	  }
 	}
 	Line {
-	  ZOrder		  507
-	  SrcBlock		  "Tail Torque"
-	  SrcPort		  1
-	  DstBlock		  "Helicopter\nDynamics\n(yaw)"
-	  DstPort		  1
-	}
-	Line {
 	  Name			  "(deg)"
 	  ZOrder		  40
 	  Labels		  [1, 1]
@@ -2866,28 +2813,28 @@ Model {
 	  ZOrder		  504
 	  SrcBlock		  "Altitude Motor"
 	  SrcPort		  1
-	  DstBlock		  "Helicopter Dynamics\n(altitude)"
-	  DstPort		  1
+	  Points		  [56, 0]
+	  Branch {
+	    ZOrder		    655
+	    Points		    [0, 80]
+	    DstBlock		    "Heli Torque"
+	    DstPort		    1
+	  }
+	  Branch {
+	    ZOrder		    654
+	    DstBlock		    "Helicopter Dynamics\n(altitude)"
+	    DstPort		    1
+	  }
 	}
 	Line {
 	  Name			  "(deg)"
 	  ZOrder		  544
+	  Labels		  [1, 0]
 	  SrcBlock		  "Yaw Optical Encoder"
 	  SrcPort		  1
-	  Points		  [-56, 0]
-	  Branch {
-	    ZOrder		    646
-	    Points		    [0, 115]
-	    DstBlock		    "Scope1"
-	    DstPort		    1
-	  }
-	  Branch {
-	    ZOrder		    645
-	    Labels		    [1, 0]
-	    Points		    [-885, 0; 0, -105]
-	    DstBlock		    "Yaw Control Computer"
-	    DstPort		    2
-	  }
+	  Points		  [-941, 0; 0, -105]
+	  DstBlock		  "Yaw Control Computer"
+	  DstPort		  2
 	}
 	Line {
 	  Name			  "(V) [0,5]"
@@ -2934,32 +2881,13 @@ Model {
 	}
 	Line {
 	  Name			  "(V)"
-	  ZOrder		  589
-	  Labels		  [0, 0; 1, 0]
-	  SrcBlock		  "Altitude ADC"
+	  ZOrder		  643
+	  Labels		  [1, 1]
+	  SrcBlock		  "Altitude Angle Sensor"
 	  SrcPort		  1
-	  Points		  [-749, 0; 0, -110]
+	  Points		  [-895, 0]
 	  DstBlock		  "Altitude Control Computer"
 	  DstPort		  2
-	}
-	Line {
-	  Name			  "(V)"
-	  ZOrder		  581
-	  SrcBlock		  "Potentiometer\nfor angle measurement"
-	  SrcPort		  1
-	  Points		  [-17, 0]
-	  Branch {
-	    ZOrder		    648
-	    Points		    [0, 95]
-	    DstBlock		    "Scope2"
-	    DstPort		    1
-	  }
-	  Branch {
-	    ZOrder		    647
-	    Labels		    [1, 1]
-	    DstBlock		    "Altitude ADC"
-	    DstPort		    1
-	  }
 	}
 	Line {
 	  Name			  "(deg)"
@@ -2985,7 +2913,7 @@ Model {
 	  Branch {
 	    ZOrder		    602
 	    Points		    [0, 125]
-	    DstBlock		    "Potentiometer\nfor angle measurement"
+	    DstBlock		    "Altitude Angle Sensor"
 	    DstPort		    1
 	  }
 	}
@@ -3004,19 +2932,31 @@ Model {
 	  Branch {
 	    ZOrder		    524
 	    Labels		    [1, 1]
-	    Points		    [25, 0]
-	    Branch {
-	      ZOrder		      644
-	      Points		      [0, -85]
-	      DstBlock		      "Scope"
-	      DstPort		      1
-	    }
-	    Branch {
-	      ZOrder		      643
-	      DstBlock		      "Actual Yaw"
-	      DstPort		      1
-	    }
+	    DstBlock		    "Actual Yaw"
+	    DstPort		    1
 	  }
+	}
+	Line {
+	  ZOrder		  651
+	  SrcBlock		  "Tail Torque"
+	  SrcPort		  1
+	  DstBlock		  "Sum6"
+	  DstPort		  2
+	}
+	Line {
+	  ZOrder		  652
+	  SrcBlock		  "Sum6"
+	  SrcPort		  1
+	  DstBlock		  "Helicopter\nDynamics\n(yaw)"
+	  DstPort		  1
+	}
+	Line {
+	  ZOrder		  653
+	  SrcBlock		  "Heli Torque"
+	  SrcPort		  1
+	  Points		  [40, 0]
+	  DstBlock		  "Sum6"
+	  DstPort		  1
 	}
 	Annotation {
 	  SID			  "114"
@@ -3114,7 +3054,7 @@ Model {
 	}
 	Block {
 	  BlockType		  Inport
-	  Name			  "YawRad"
+	  Name			  "YawDeg"
 	  SID			  "53"
 	  Position		  [20, 73, 50, 87]
 	  ZOrder		  -2
@@ -3301,7 +3241,7 @@ Model {
 	}
 	Line {
 	  ZOrder		  2
-	  SrcBlock		  "YawRad"
+	  SrcBlock		  "YawDeg"
 	  SrcPort		  1
 	  DstBlock		  "Demux3"
 	  DstPort		  1
@@ -3566,23 +3506,23 @@ Model {
       ScopeSpecificationString "Simulink.scopes.TimeScopeBlockCfg('CurrentConfiguration', extmgr.ConfigurationSet(extm"
       "gr.Configuration('Core','General UI',true),extmgr.Configuration('Core','Source UI',true),extmgr.Configuration('S"
       "ources','WiredSimulink',true,'DataLoggingVariableName','ScopeData1','DataLoggingSaveFormat','StructureWithTime',"
-      "'DataLoggingLimitDataPoints',true,'DataLoggingDecimation','1','DataLoggingDecimateData',true),extmgr.Configurati"
-      "on('Visuals','Time Domain',true,'SerializedDisplays',{struct('MinYLimReal','-377.88466','MaxYLimReal','4114.3669"
-      "9','YLabelReal','','MinYLimMag',' 0.00000','MaxYLimMag','4114.36699','LegendVisibility','off','XGrid',true,'YGri"
-      "d',true,'PlotMagPhase',false,'AxesColor',[0 0 0],'AxesTickColor',[0.686274509803922 0.686274509803922 0.68627450"
-      "9803922],'ColorOrder',[1 1 0.0666666666666667;0.0745098039215686 0.623529411764706 1;1 0.411764705882353 0.16078"
-      "431372549;0.392156862745098 0.831372549019608 0.0745098039215686;0.717647058823529 0.274509803921569 1;0.0588235"
-      "294117647 1 1;1 0.0745098039215686 0.650980392156863],'Title','%<SignalLabel>','LinePropertiesCache',{{}},'UserD"
-      "efinedChannelNames',{{}},'NumLines',2,'LineNames',{{'Error Calc/1:1','Error Calc/1:2'}},'ShowContent',true,'Plac"
-      "ement',1)},'DisplayPropertyDefaults',struct('MinYLimReal','-377.88466','MaxYLimReal','4114.36699','YLabelReal','"
-      "','MinYLimMag',' 0.00000','MaxYLimMag','4114.36699','LegendVisibility','off','XGrid',true,'YGrid',true,'PlotMagP"
-      "hase',false,'AxesColor',[0 0 0],'AxesTickColor',[0.686274509803922 0.686274509803922 0.686274509803922],'ColorOr"
-      "der',[1 1 0.0666666666666667;0.0745098039215686 0.623529411764706 1;1 0.411764705882353 0.16078431372549;0.39215"
-      "6862745098 0.831372549019608 0.0745098039215686;0.717647058823529 0.274509803921569 1;0.0588235294117647 1 1;1 0"
-      ".0745098039215686 0.650980392156863],'Title','%<SignalLabel>','LinePropertiesCache',{{}},'UserDefinedChannelName"
-      "s',{{}},'NumLines',0,'LineNames',{{[]}},'ShowContent',true,'Placement',1),'TimeRangeSamples','25','TimeRangeFram"
-      "es','25'),extmgr.Configuration('Tools','Plot Navigation',true,'OnceAtStop',false,'PreviousAutoscale','XY'),extmg"
-      "r.Configuration('Tools','Measurements',true,'Version','2015b')),'Version','2015b','Location',[2 84 800 858])"
+      "'DataLoggingDecimation','1','DataLoggingDecimateData',true),extmgr.Configuration('Visuals','Time Domain',true,'S"
+      "erializedDisplays',{struct('MinYLimReal','-10.55778','MaxYLimReal','95.02006','YLabelReal','','MinYLimMag','0.00"
+      "000','MaxYLimMag','95.02006','LegendVisibility','Off','XGrid',true,'YGrid',true,'PlotMagPhase',false,'AxesColor'"
+      ",[0 0 0],'AxesTickColor',[0.686274509803922 0.686274509803922 0.686274509803922],'ColorOrder',[1 1 0.06666666666"
+      "66667;0.0745098039215686 0.623529411764706 1;1 0.411764705882353 0.16078431372549;0.392156862745098 0.8313725490"
+      "19608 0.0745098039215686;0.717647058823529 0.274509803921569 1;0.0588235294117647 1 1;1 0.0745098039215686 0.650"
+      "980392156863],'Title','%<SignalLabel>','LinePropertiesCache',{{}},'UserDefinedChannelNames',{{}},'NumLines',2,'L"
+      "ineNames',{{}},'ShowContent',true,'Placement',1)},'DisplayPropertyDefaults',struct('MinYLimReal','-10.55778','Ma"
+      "xYLimReal','95.02006','YLabelReal','','MinYLimMag','0.00000','MaxYLimMag','95.02006','LegendVisibility','Off','X"
+      "Grid',true,'YGrid',true,'PlotMagPhase',false,'AxesColor',[0 0 0],'AxesTickColor',[0.686274509803922 0.6862745098"
+      "03922 0.686274509803922],'ColorOrder',[1 1 0.0666666666666667;0.0745098039215686 0.623529411764706 1;1 0.4117647"
+      "05882353 0.16078431372549;0.392156862745098 0.831372549019608 0.0745098039215686;0.717647058823529 0.27450980392"
+      "1569 1;0.0588235294117647 1 1;1 0.0745098039215686 0.650980392156863],'Title','%<SignalLabel>','LinePropertiesCa"
+      "che',{{}},'UserDefinedChannelNames',{{}},'NumLines',0,'LineNames',{{[]}},'ShowContent',true,'Placement',1),'Time"
+      "RangeSamples','25','TimeRangeFrames','25'),extmgr.Configuration('Tools','Plot Navigation',true,'OnceAtStop',fals"
+      "e,'PreviousAutoscale','XY'),extmgr.Configuration('Tools','Measurements',true,'Version','2015b')),'Version','2015"
+      "b','Location',[2 84 800 858])"
     }
     Line {
       ZOrder		      1
