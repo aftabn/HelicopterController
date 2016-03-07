@@ -20,14 +20,14 @@ namespace Helicopter.Core.Settings
 
         public bool IsSafetyEnabled { get; set; }
 
-        public int PidLoopInterval { get; set; }
+        public int PidLoopIntervalMilliseconds { get; set; }
 
         public static HelicopterControllerSettings FromXmlElement(XElement controllerElement)
         {
             var controllerSetting = new HelicopterControllerSettings()
             {
                 IsSafetyEnabled = controllerElement.Attribute("IsSafetyEnabled").ParseOptionalBoolean(),
-                PidLoopInterval = controllerElement.Attribute("PidLoopInterval").ParseInt(),
+                PidLoopIntervalMilliseconds = controllerElement.Attribute("PidLoopIntervalMilliseconds").ParseInt(),
                 YawControllerSettings = YawControllerSettings.FromXmlElement(controllerElement.Element("Yaw")),
                 TiltControllerSettings = TiltControllerSettings.FromXmlElement(controllerElement.Element("Tilt")),
             };

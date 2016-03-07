@@ -1,4 +1,6 @@
-﻿using log4net;
+﻿using Helicopter.Core.Controller;
+using Libs.Utilities;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +23,10 @@ namespace Helicopter.Core.Settings
 
         public string XmlText { get; set; }
 
+        public int PidThreadRefreshIntervalMilliseconds { get; set; }
+
+        public ConnectionType ConnectionType { get; set; }
+
         /// <summary>
         /// Creates a settings file object
         /// </summary>
@@ -40,6 +46,8 @@ namespace Helicopter.Core.Settings
             var settingsElement = helicopterSettings.XDocument.Element("Settings");
             var helicopterElement = settingsElement.Element("Helicopter");
 
+            helicopterSettings.PidThreadRefreshIntervalMilliseconds = helicopterElement.Attribute("PidThreadRefreshIntervalMilliseconds").ParseInt();
+            helicopterSettings.ConnectionType = (ConnectionType)Enum.Parse(typeof(ConnectionType), helicopterElement.Attribute("ConnectionType").Value);
             helicopterSettings.ControllerSettings = HelicopterControllerSettings.FromXmlElement(helicopterElement.Element("Controller"));
 
             return helicopterSettings;

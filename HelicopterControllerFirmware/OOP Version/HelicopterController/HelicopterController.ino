@@ -4,24 +4,21 @@ Created: 1/10/2016 1:09:10 PM
 Author:	Aftab
 */
 
-#include "angleController.h"
 #include <SPI.h>
+#include <Streaming.h>
+#include <digitalWriteFast.h>
+#include "Arduino.h"
 #include "controller.h"
-#include "pidControl.h"
+
+Controller *controller;
 
 void setup()
 {
-	initializeController();
-	initializeSpi();
-	initializeAdc(); // Must be initialized after SPI
-	initializeDac(); // Must be initialized after SPI
-	initializeFrequencyOutput();
-	initializeQuadratureDecoder();
-	initializePotentiometerTimer();
-	initializePid();
+	controller = new Controller();
+	controller->initialize();
 }
 
 void loop()
 {
-	scanSerialPort();
+	controller->scanSerialPort();
 }

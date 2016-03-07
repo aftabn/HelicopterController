@@ -1,16 +1,20 @@
 ﻿using Helicopter.Core.Controller;
+using Helicopter.Core.Sessions;
 using Libs.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading;
 using System.Windows.Input;
 
 namespace Helicopter.Core
 {
     public class HelicopterViewModel : INotifyPropertyChanged, IDisposable
     {
-        private HelicopterManager helicopterManager;
         private HelicopterController helicopterController;
+        private YawController yaw;
+        private TiltController tilt;
         private bool isDeveloperMode;
         private string outputText;
 
@@ -18,12 +22,10 @@ namespace Helicopter.Core
         {
             this.isDeveloperMode = isDeveloperMode;
 
-            helicopterManager = new HelicopterManager();
-            helicopterController = helicopterManager.HelicopterController;
-
-            AngleControllers = new Dictionary<MotorType, AngleController>();
-            AngleControllers.Add(MotorType.Yaw, helicopterController.Yaw);
-            AngleControllers.Add(MotorType.Tilt, helicopterController.Tilt);
+            HelicopterManager = new HelicopterManager();
+            helicopterController = HelicopterManager.HelicopterController;
+            yaw = helicopterController.Yaw;
+            tilt = helicopterController.Tilt;
 
             OutputText = String.Empty;
 
@@ -32,11 +34,17 @@ namespace Helicopter.Core
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Dictionary<MotorType, AngleController> AngleControllers { get; set; }
+        public HelicopterManager HelicopterManager { get; private set; }
 
         public bool IsDeveloperMode { get { return isDeveloperMode; } }
 
         public bool IsConnected { get { return helicopterController.IsConnected; } }
+
+        public ConnectionType ConnectionType
+        {
+            get { return HelicopterManager.ConnectionType; }
+            set { HelicopterManager.ConnectionType = value; }
+        }
 
         public bool IsPidEnabled { get { return helicopterController.IsPidEnabled; } }
 
@@ -52,109 +60,127 @@ namespace Helicopter.Core
 
         public double YawCurrentAngle
         {
-            get { return AngleControllers[MotorType.Yaw].CurrentAngle; }
+            get { return yaw.CurrentAngle; }
         }
 
         public double YawSetPoint
         {
-            get { return AngleControllers[MotorType.Yaw].SetPoint; }
-            set { AngleControllers[MotorType.Yaw].SetSetPoint(value); }
+            get { return yaw.SetPoint; }
+            set { yaw.SetSetPoint(value); }
         }
 
         public double YawProportionalGain
         {
-            get { return AngleControllers[MotorType.Yaw].ProportionalGain; }
-            set { AngleControllers[MotorType.Yaw].SetProportionalGain(value); }
+            get { return yaw.ProportionalGain; }
+            set { yaw.SetProportionalGain(value); }
         }
 
         public double YawIntegralGain
         {
-            get { return AngleControllers[MotorType.Yaw].IntegralGain; }
-            set { AngleControllers[MotorType.Yaw].SetIntegralGain(value); }
+            get { return yaw.IntegralGain; }
+            set { yaw.SetIntegralGain(value); }
         }
 
         public double YawDerivativeGain
         {
-            get { return AngleControllers[MotorType.Yaw].DerivativeGain; }
-            set { AngleControllers[MotorType.Yaw].SetDerivativeGain(value); }
+            get { return yaw.DerivativeGain; }
+            set { yaw.SetDerivativeGain(value); }
         }
 
         public double YawIntegralWindupThreshold
         {
-            get { return AngleControllers[MotorType.Yaw].IntegralWindupThreshold; }
-            set { AngleControllers[MotorType.Yaw].SetIntegralWindupThreshold(value); }
+            get { return yaw.IntegralWindupThreshold; }
+            set { yaw.SetIntegralWindupThreshold(value); }
+        }
+
+        public int YawOutputRateLimit
+        {
+            get { return yaw.OutputRateLimit; }
+            set { yaw.SetOutputRateLimit(value); }
         }
 
         public int YawOutputPercentage
         {
-            get { return AngleControllers[MotorType.Yaw].OutputPercentage; }
-            set { AngleControllers[MotorType.Yaw].SetOutputPercentage(value); }
+            get { return yaw.OutputPercentage; }
+            set { yaw.SetOutputPercentage(value); }
         }
 
         public Direction YawDirection
         {
-            get { return AngleControllers[MotorType.Yaw].Direction; }
-            set { AngleControllers[MotorType.Yaw].SetDirection(value); }
+            get { return yaw.Direction; }
+            set { yaw.SetDirection(value); }
         }
 
         public MotorDriver YawMotorDriver
         {
-            get { return AngleControllers[MotorType.Yaw].MotorDriver; }
-            set { AngleControllers[MotorType.Yaw].SetMotorDriver(value); }
+            get { return yaw.MotorDriver; }
+            set { yaw.SetMotorDriver(value); }
         }
 
         public double TiltCurrentAngle
         {
-            get { return AngleControllers[MotorType.Tilt].CurrentAngle; }
+            get { return tilt.CurrentAngle; }
         }
 
         public double TiltSetPoint
         {
-            get { return AngleControllers[MotorType.Tilt].SetPoint; }
-            set { AngleControllers[MotorType.Tilt].SetSetPoint(value); }
+            get { return tilt.SetPoint; }
+            set { tilt.SetSetPoint(value); }
         }
 
         public double TiltProportionalGain
         {
-            get { return AngleControllers[MotorType.Tilt].ProportionalGain; }
-            set { AngleControllers[MotorType.Tilt].SetProportionalGain(value); }
+            get { return tilt.ProportionalGain; }
+            set { tilt.SetProportionalGain(value); }
         }
 
         public double TiltIntegralGain
         {
-            get { return AngleControllers[MotorType.Tilt].IntegralGain; }
-            set { AngleControllers[MotorType.Tilt].SetIntegralGain(value); }
+            get { return tilt.IntegralGain; }
+            set { tilt.SetIntegralGain(value); }
         }
 
         public double TiltDerivativeGain
         {
-            get { return AngleControllers[MotorType.Tilt].DerivativeGain; }
-            set { AngleControllers[MotorType.Tilt].SetDerivativeGain(value); }
+            get { return tilt.DerivativeGain; }
+            set { tilt.SetDerivativeGain(value); }
         }
 
         public double TiltIntegralWindupThreshold
         {
-            get { return AngleControllers[MotorType.Tilt].IntegralWindupThreshold; }
-            set { AngleControllers[MotorType.Tilt].SetIntegralWindupThreshold(value); }
+            get { return tilt.IntegralWindupThreshold; }
+            set { tilt.SetIntegralWindupThreshold(value); }
+        }
+
+        public int TiltOutputRateLimit
+        {
+            get { return tilt.OutputRateLimit; }
+            set { tilt.SetOutputRateLimit(value); }
         }
 
         public int TiltOutputPercentage
         {
-            get { return AngleControllers[MotorType.Tilt].OutputPercentage; }
-            set { AngleControllers[MotorType.Tilt].SetOutputPercentage(value); }
+            get { return tilt.OutputPercentage; }
+            set { tilt.SetOutputPercentage(value); }
         }
 
         public Direction TiltDirection
         {
-            get { return AngleControllers[MotorType.Tilt].Direction; }
-            set { AngleControllers[MotorType.Tilt].SetDirection(value); }
+            get { return tilt.Direction; }
+            set { tilt.SetDirection(value); }
         }
 
         public MotorDriver TiltMotorDriver
         {
-            get { return AngleControllers[MotorType.Tilt].MotorDriver; }
-            set { AngleControllers[MotorType.Tilt].SetMotorDriver(value); }
+            get { return tilt.MotorDriver; }
+            set { tilt.SetMotorDriver(value); }
         }
+
+        public Session PidSession { get { return HelicopterManager.Session; } }
+
+        public bool IsPidSessionRunning { get { return HelicopterManager.IsSessionRunning; } }
+
+        public bool IsPidSessionComplete { get { return HelicopterManager.IsSessionComplete; } }
 
         public string OutputText
         {
@@ -174,6 +200,8 @@ namespace Helicopter.Core
         public ICommand DisconnectCommand { get; private set; }
         public ICommand GetControllerInfoCommand { get; private set; }
 
+        public ICommand StartPidSessionCommand { get; private set; }
+        public ICommand StopPidSessionCommand { get; private set; }
         public ICommand EnablePidCommand { get; private set; }
         public ICommand DisablePidCommand { get; private set; }
         public ICommand EnableSafetyCommand { get; private set; }
@@ -182,11 +210,13 @@ namespace Helicopter.Core
         public ICommand DisableMotorsCommand { get; private set; }
 
         public ICommand GetYawAngleCommand { get; private set; }
+        public ICommand ZeroYawAngleCommand { get; private set; }
         public ICommand SetYawSetPointCommand { get; private set; }
         public ICommand SetYawProportionalGainCommand { get; private set; }
         public ICommand SetYawIntegralGainCommand { get; private set; }
         public ICommand SetYawDerivativeGainCommand { get; private set; }
         public ICommand SetYawIntegralWindupThresholdCommand { get; private set; }
+        public ICommand SetYawOutputRateLimitCommand { get; private set; }
         public ICommand SetYawOutputPercentageCommand { get; private set; }
         public ICommand SetYawDirectionCommand { get; private set; }
         public ICommand SetYawMotorDriverCommand { get; private set; }
@@ -196,6 +226,7 @@ namespace Helicopter.Core
         public ICommand SetTiltIntegralGainCommand { get; private set; }
         public ICommand SetTiltDerivativeGainCommand { get; private set; }
         public ICommand SetTiltIntegralWindupThresholdCommand { get; private set; }
+        public ICommand SetTiltOutputRateLimitCommand { get; private set; }
         public ICommand SetTiltOutputPercentageCommand { get; private set; }
         public ICommand SetTiltDirectionCommand { get; private set; }
         public ICommand SetTiltMotorDriverCommand { get; private set; }
@@ -206,8 +237,8 @@ namespace Helicopter.Core
 
         public void Connect()
         {
-            helicopterManager.PropertyChanged += OnHelicopterManagerPropertyChanged;
-            helicopterManager.Connect();
+            HelicopterManager.PropertyChanged += OnHelicopterManagerPropertyChanged;
+            HelicopterManager.Connect();
 
             var text = String.Format("Connected to {0}", helicopterController.ControllerIdentity);
             UpdateOutputTextbox(text);
@@ -215,8 +246,8 @@ namespace Helicopter.Core
 
         public void Disconnect()
         {
-            helicopterManager.Disconnect();
-            helicopterManager.PropertyChanged -= OnHelicopterManagerPropertyChanged;
+            HelicopterManager.Disconnect();
+            HelicopterManager.PropertyChanged -= OnHelicopterManagerPropertyChanged;
             UpdateOutputTextbox(String.Format("Disconnected from helicopter controller"));
         }
 
@@ -244,6 +275,22 @@ namespace Helicopter.Core
                        UpdateOutputTextbox(text);
                    },
                    x => IsConnected);
+
+            StartPidSessionCommand = new RelayCommand(
+                   x =>
+                   {
+                       HelicopterManager.StartSession();
+                       UpdateOutputTextbox(String.Format("PID session has started"));
+                   },
+                   x => IsConnected && !IsPidEnabled && !IsPidSessionRunning);
+
+            StopPidSessionCommand = new RelayCommand(
+                   x =>
+                   {
+                       HelicopterManager.StopSession();
+                       UpdateOutputTextbox(String.Format("PID session has stopped"));
+                   },
+                   x => IsConnected && IsPidEnabled && IsPidSessionRunning);
 
             EnablePidCommand = new RelayCommand(
                    x =>
@@ -288,14 +335,18 @@ namespace Helicopter.Core
             DisableMotorsCommand = new RelayCommand(
                    x =>
                    {
-                       helicopterManager.DisableMotors();
+                       HelicopterManager.DisableMotors();
                        UpdateOutputTextbox(String.Format("Disabled motors"));
                    },
                    x => IsConnected);
 
             GetYawAngleCommand = new RelayCommand(
-                   x => AngleControllers[MotorType.Yaw].RefreshCurrentAngle(),
+                   x => yaw.RefreshCurrentAngle(),
                    x => IsConnected);
+
+            ZeroYawAngleCommand = new RelayCommand(
+                   x => yaw.ZeroAngle(),
+                   x => IsConnected && !IsPidEnabled);
 
             SetYawSetPointCommand = new RelayCommand(
                    x =>
@@ -304,6 +355,14 @@ namespace Helicopter.Core
                        YawSetPoint = setPoint;
                    },
                    x => IsConnected);
+
+            SetYawOutputPercentageCommand = new RelayCommand(
+                   x =>
+                   {
+                       var output = Convert.ToInt32(x);
+                       YawOutputPercentage = output;
+                   },
+                   x => IsConnected && !IsPidEnabled);
 
             SetYawProportionalGainCommand = new RelayCommand(
                    x =>
@@ -337,16 +396,16 @@ namespace Helicopter.Core
                    },
                    x => IsConnected);
 
-            SetYawOutputPercentageCommand = new RelayCommand(
+            SetYawOutputRateLimitCommand = new RelayCommand(
                    x =>
                    {
-                       var output = Convert.ToInt32(x);
-                       YawOutputPercentage = output;
+                       var outputRateLimit = Convert.ToInt32(x);
+                       YawOutputRateLimit = outputRateLimit;
                    },
-                   x => IsConnected && !IsPidEnabled);
+                   x => IsConnected);
 
             GetTiltAngleCommand = new RelayCommand(
-                   x => AngleControllers[MotorType.Tilt].RefreshCurrentAngle(),
+                   x => tilt.RefreshCurrentAngle(),
                    x => IsConnected);
 
             SetTiltSetPointCommand = new RelayCommand(
@@ -356,6 +415,14 @@ namespace Helicopter.Core
                        TiltSetPoint = setPoint;
                    },
                    x => IsConnected);
+
+            SetTiltOutputPercentageCommand = new RelayCommand(
+                   x =>
+                   {
+                       var output = Convert.ToInt32(x);
+                       TiltOutputPercentage = output;
+                   },
+                   x => IsConnected && !IsPidEnabled);
 
             SetTiltProportionalGainCommand = new RelayCommand(
                    x =>
@@ -389,13 +456,13 @@ namespace Helicopter.Core
                    },
                    x => IsConnected);
 
-            SetTiltOutputPercentageCommand = new RelayCommand(
+            SetTiltOutputRateLimitCommand = new RelayCommand(
                    x =>
                    {
-                       var output = Convert.ToInt32(x);
-                       TiltOutputPercentage = output;
+                       var outputRateLimit = Convert.ToInt32(x);
+                       TiltOutputRateLimit = outputRateLimit;
                    },
-                   x => IsConnected && !IsPidEnabled);
+                   x => IsConnected);
         }
 
         private void UpdateOutputTextbox(string text)

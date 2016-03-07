@@ -9,7 +9,7 @@
         xmlns:Controller="clr-namespace:Helicopter.Core.Controller;assembly=Helicopter.Core"
         mc:Ignorable="d"
         Title="Helicopter Controller Software"
-        Height="600" Width="800"
+        Height="733.419" Width="1500"
         MinHeight="500" MinWidth="600"
         Loaded="WindowLoaded"
 	    Closing="OnWindowClosing">
@@ -33,7 +33,7 @@
             </StatusBarItem>
         </StatusBar>
         <TabControl x:Name="controllerTabs">
-            <TabItem x:Name="ControllerTab" Header="Helicopter Controller">
+            <TabItem x:Name="operatorTab" Header="Operator">
                 <DockPanel x:Name="mainDockPanel">
                     <StackPanel DockPanel.Dock="Left" Margin="5" Width="150"></StackPanel>
                     <StackPanel DockPanel.Dock="Left" Margin="5" Width="150"></StackPanel>
@@ -42,9 +42,28 @@
             <TabItem x:Name="DeveloperTab" Header="Developer">
                 <DockPanel x:Name="developerDockPanel">
                     <StackPanel DockPanel.Dock="Left"  Margin="5,10,5,5" Width="150">
+                        <StackPanel Margin="5,5,5,0">
+                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Connection Type:" /></TextBlock>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel.Resources>
+                                    <Util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+                                    <Util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+                                </StackPanel.Resources>
+                                <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsConnected, Converter={StaticResource InverseBooleanConverter}}"
+                                             IsChecked="{Binding Path=ConnectionType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:ConnectionType.Serial}}" />
+                                <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="35"><Run Text="Serial" /></TextBlock>
+                                <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsConnected, Converter={StaticResource InverseBooleanConverter}}"
+                                             IsChecked="{Binding Path=ConnectionType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:ConnectionType.Bluetooth}}" />
+                                <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,0,0" Width="55"><Run Text="Bluetooth" /></TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                        <Separator Margin="5,5,5,10" />
                         <Button Margin="5,0,5,5" Content="Controller Info" Command="{Binding GetControllerInfoCommand}" />
                         <Button Margin="5,0,5,5" Content="Disable Motors" Command="{Binding DisableMotorsCommand}" />
                         <Button Margin="5,0,5,5" Content="Refresh Values" Command="{Binding RefreshValuesCommand}" />
+                        <Separator Margin="5,5,5,10" />
+                        <Button Margin="5,0,5,5" Content="Start PID Session" Command="{Binding StartPidSessionCommand}" />
+                        <Button Margin="5,0,5,5" Content="Stop PID Session" Command="{Binding StopPidSessionCommand}" />
                         <Separator Margin="5,5,5,10" />
                         <Button Margin="5,0,5,5" Content="Enable PID" Command="{Binding EnablePidCommand}" />
                         <Button Margin="5,0,5,5" Content="Disable PID" Command="{Binding DisablePidCommand}" />
@@ -93,6 +112,7 @@
                                 <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,0,0" Width="40"><Run Text="CCW" /></TextBlock>
                             </StackPanel>
                         </StackPanel>
+                        <Button Margin="5,5,5,5" Content="Zero Angle" Command="{Binding ZeroYawAngleCommand}" />
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Proportional Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
@@ -126,18 +146,11 @@
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
-                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Driver Type" /></TextBlock>
+                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Output Rate Limit" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <StackPanel.Resources>
-                                    <Util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
-                                    <Util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
-                                </StackPanel.Resources>
-                                <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsPidEnabled, Converter={StaticResource InverseBooleanConverter}}"
-                                             IsChecked="{Binding Path=YawMotorDriver, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:MotorDriver.AnalogVoltage}}" />
-                                <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="40"><Run Text="A.V." /></TextBlock>
-                                <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsPidEnabled, Converter={StaticResource InverseBooleanConverter}}"
-                                             IsChecked="{Binding Path=YawMotorDriver, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:MotorDriver.Frequency}}" />
-                                <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,0,0" Width="40"><Run Text="Freq." /></TextBlock>
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawOutputRateLimitCommand}" CommandParameter="{Binding ElementName=setYawOutputRateLimitTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawOutputRateLimitTextbox" />
+                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawOutputRateLimit}" />
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
@@ -215,6 +228,14 @@
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
+                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Output Rate Limit" /></TextBlock>
+                            <StackPanel Orientation="Horizontal">
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltOutputRateLimitCommand}" CommandParameter="{Binding ElementName=setTiltOutputRateLimitTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltOutputRateLimitTextbox" />
+                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltOutputRateLimit}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Driver Type" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel.Resources>
@@ -230,11 +251,12 @@
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
+                    <Border x:Name="controllerOutputPanel" BorderBrush="Gray" BorderThickness="1" Margin="5,0" Width="295" DockPanel.Dock="Left">
+                        <TextBox x:Name="controllerOutputTextbox" TextWrapping="WrapWithOverflow" Background="LightGray" Padding="5" IsReadOnly="True" Text="{Binding OutputText}" />
+                    </Border>
                 </DockPanel>
             </TabItem>
         </TabControl>
-        <Border x:Name="controllerOutputPanel" BorderBrush="Gray" BorderThickness="1" Margin="5">
-            <TextBox x:Name="controllerOutputTextbox" TextWrapping="WrapWithOverflow" Background="LightGray" Padding="5" IsReadOnly="True" Text="{Binding OutputText}" />
-        </Border>
+        <local:RealTimePidChart x:Name="pidChart" />
     </DockPanel>
 </Window>

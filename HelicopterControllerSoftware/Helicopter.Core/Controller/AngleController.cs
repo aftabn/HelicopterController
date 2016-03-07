@@ -1,6 +1,8 @@
-﻿using Helicopter.Core.Settings;
+﻿using Helicopter.Core.Sessions;
+using Helicopter.Core.Settings;
 using log4net;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Helicopter.Core.Controller
@@ -26,9 +28,13 @@ namespace Helicopter.Core.Controller
         {
             this.controllerChannel = controllerChannel;
             this.motorType = (MotorType)controllerChannel;
+
+            ControllerData = new List<ControllerDataPoint>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public List<ControllerDataPoint> ControllerData { get; set; }
 
         public MotorType MotorType { get; protected set; }
 
@@ -363,11 +369,33 @@ namespace Helicopter.Core.Controller
             MotorDriver = motorDriver;
         }
 
+        public void TakeNewDataSample(DateTime timeStamp)
+        {
+            RefreshValues();
+
+            var data = new ControllerDataPoint
+            {
+                TimeStamp = timeStamp,
+                SetPoint = SetPoint,
+                CurrentAngle = CurrentAngle,
+                ProportionalGain = ProportionalGain,
+                IntegralGain = IntegralGain,
+                DerivativeGain = DerivativeGain,
+                IntegralWindupThreshold = IntegralWindupThreshold,
+                OutputRateLimit = OutputRateLimit
+            };
+
+            ControllerData.Add(data);
+
+            // This is needed in order for PID graphs to update
+            RaisePropertyChanged("ControllerData");
+        }
+
         private void RaisePropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(String.Format("{0}{1}", MotorType, propertyName)));
             }
         }
     }

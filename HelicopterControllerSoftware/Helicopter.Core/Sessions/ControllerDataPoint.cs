@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Helicopter.Core.Sessions
 {
-    public class AngleControllerData
+    public class ControllerDataPoint
     {
-        public AngleControllerData()
+        public ControllerDataPoint()
         {
-            ControllerData = new List<ControllerData>();
         }
+
+        public DateTime TimeStamp { get; set; }
+
+        public double SetPoint { get; set; }
+
+        public double CurrentAngle { get; set; }
 
         public double ProportionalGain { get; set; }
 
@@ -22,7 +23,5 @@ namespace Helicopter.Core.Sessions
         public double IntegralWindupThreshold { get; set; }
 
         public int OutputRateLimit { get; set; }
-
-        public List<ControllerData> ControllerData { get; set; }
     }
 }

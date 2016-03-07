@@ -1,125 +1,196 @@
 /*
 Name: controller.cpp
-Created: 1/10/2016 1:09:10 PM
+Created: 1/10/2016
 Author:	Aftab
 */
 
+#include <digitalWriteFast.h>
+#include <SPI.h>
 #include "Arduino.h"
-#include "globals.h"
-#include "util.h"
 #include "controller.h"
-#include "commandHandlers.h"
+#include "utility.h"
+#include "commandHandler.h"
 
-char lineBuffer[INT_LINE_SIZE_MAX + 1];
+const double Controller::DBL_FirmwareVersion = 1.07;
 
-void initializeController()
+Controller::Controller()
 {
-	Serial.begin(115200);
-
-	pinMode(HEARTBEAT_LED_PIN, OUTPUT);
+	dac = new Dac();
+	adc = new Adc();
+	frequencyGenerator = new FrequencyGenerator();
+	potentiometer = new Potentiometer(adc);
+	encoder = Encoder::getEncoder();
+	yaw = new Yaw(dac, encoder);
+	tilt = new Tilt(dac, frequencyGenerator, potentiometer);
+	pidController = PidController::getPidController(yaw, tilt);
 }
 
-void processCommand(char *command)
+Controller::~Controller()
+{
+	delete dac;
+	PidController::destruct();
+}
+
+void Controller::initialize()
+{
+	isSafetyOn = true;
+	isVerboseMode = &(pidController->isVerboseMode);
+
+	Serial.begin(115200);
+	Serial.println();
+	Serial.flush();
+
+	pinModeFast(Utility::PIN_HeartbeatLed, OUTPUT);
+
+	initializeSpi();
+	adc->initialize();
+	dac->initialize();
+	frequencyGenerator->initialize();
+	potentiometer->initialize();
+	encoder->initialize();
+	yaw->initialize();
+	tilt->initialize();
+	pidController->initialize();
+}
+
+void Controller::initializeSpi(void)
+{
+	SPI.begin();
+	SPI.setBitOrder(MSBFIRST);
+	SPI.setDataMode(SPI_MODE0);
+}
+
+void Controller::updateHeartbeat()
+{
+	if (++heartbeatCounter >= 65535)
+	{
+		heartbeatCounter = 0;
+		digitalWriteFast(Utility::PIN_HeartbeatLed, !digitalReadFast(Utility::PIN_HeartbeatLed));
+	}
+}
+
+void Controller::processCommand(char *command)
 {
 	if (0 == strcmp(command, "*IDN?"))
 	{
-		onCommandIdentity();
+		CommandHandler::onCommandIdentity();
 	}
 	else if (0 == strcmp(command, "ECHO"))
 	{
-		onCommandEcho();
+		CommandHandler::onCommandEcho();
 	}
-	else if (0 == strcmp(command, "SYS"))
+	else if (0 == strcmp(command, "CHANGELOG"))
 	{
-		onCommandSystem();
+		CommandHandler::onCommandChangelog();
+	}
+	else if (0 == strcmp(command, "VER"))
+	{
+		CommandHandler::onCommandFirmwareVersion(&DBL_FirmwareVersion);
 	}
 	else if (0 == strcmp(command, "PID"))
 	{
-		onCommandPidControl();
+		CommandHandler::onCommandPidControl(pidController);
 	}
-	else if (0 == strcmp(command, "DEBUG"))
+	else if (0 == strcmp(command, "VERBOSE"))
 	{
-		onCommandDebug();
+		CommandHandler::onCommandVerbose(isVerboseMode);
 	}
 	else if (0 == strcmp(command, "SAFETY"))
 	{
-		onCommandSafety();
+		CommandHandler::onCommandSafety(&isSafetyOn);
 	}
-	else if (0 == strcmp(command, "OUT"))
+	else if (0 == strcmp(command, "O"))
 	{
-		onCommandOutput();
+		CommandHandler::onCommandOutput(pidController);
 	}
-	else if (0 == strcmp(command, "DIR"))
+	else if (0 == strcmp(command, "DC"))
 	{
-		onCommandDirection();
+		CommandHandler::onCommandDirection(pidController);
 	}
-	else if (0 == strcmp(command, "DRIVER"))
+	else if (0 == strcmp(command, "DV"))
 	{
-		onCommandMotorDriver();
+		CommandHandler::onCommandMotorDriver(pidController);
 	}
 	else if (0 == strcmp(command, "P"))
 	{
-		onCommandProportionalGain();
+		CommandHandler::onCommandProportionalGain(pidController);
 	}
 	else if (0 == strcmp(command, "I"))
 	{
-		onCommandIntegralGain();
+		CommandHandler::onCommandIntegralGain(pidController);
 	}
 	else if (0 == strcmp(command, "D"))
 	{
-		onCommandDerivativeGain();
+		CommandHandler::onCommandDerivativeGain(pidController);
 	}
-	else if (0 == strcmp(command, "LOOP"))
+	else if (0 == strcmp(command, "L"))
 	{
-		onCommandLoopInterval();
+		CommandHandler::onCommandLoopInterval(pidController);
+	}
+	else if (0 == strcmp(command, "W"))
+	{
+		CommandHandler::onCommandIntegralWindup(pidController);
+	}
+	else if (0 == strcmp(command, "R"))
+	{
+		CommandHandler::onCommandIntegralWindup(pidController);
 	}
 	else if (0 == strcmp(command, "SP"))
 	{
-		onCommandSetPoint();
+		CommandHandler::onCommandSetPoint(pidController);
 	}
-	else if (0 == strcmp(command, "ANGLE"))
+	else if (0 == strcmp(command, "A"))
 	{
-		onCommandAngle();
+		CommandHandler::onCommandAngle(pidController);
+	}
+	else if (0 == strcmp(command, "Z"))
+	{
+		CommandHandler::onCommandZeroEncoderAngle(encoder);
 	}
 	else if (0 == strcmp(command, "ADC"))
 	{
-		onCommandAdc();
+		CommandHandler::onCommandAdc(adc);
 	}
 	else if (0 == strcmp(command, "DAC"))
 	{
-		onCommandDacVoltage();
+		CommandHandler::onCommandDacVoltage(&isSafetyOn, dac);
 	}
-	else if (0 == strcmp(command, "FREQ"))
+	else if (0 == strcmp(command, "F"))
 	{
-		onCommandFrequencyOutput();
+		CommandHandler::onCommandFrequencyOutput(&isSafetyOn, frequencyGenerator);
 	}
 	else if (0 == strcmp(command, "STATE"))
 	{
-		onCommandState();
+		CommandHandler::onCommandState(&isSafetyOn, isVerboseMode, pidController, dac, frequencyGenerator);
 	}
-	else if (0 == strcmp(command, "TEST"))
-	{
-		onCommandTest();
-	}
+	////else if (0 == strcmp(command, "'"))
+	////{
+	////	processLine(lastCommand);
+	////}
 	else if (0 == strcmp(command, "HELP"))
 	{
-		onCommandHelp();
+		CommandHandler::onCommandHelp();
 	}
 	else
 	{
-		handleCommandUnknown(command);
+		CommandHandler::handleCommandUnknown(command);
 	}
-}
 
-void clearParameters()
-{
-	for (int i = 0; i < INT_PARAMETER_COUNT_MAX; i++)
+	/*if (!(0 == strcmp(command, "'")))
 	{
-		strcpy(gParameters[i], "");
+		sprintf(lastCommand, "%s", lineBuffer);
+	}*/
+}
+
+void Controller::clearParameters()
+{
+	for (int i = 0; i < Utility::INT_ParameterCountMax; i++)
+	{
+		strcpy(CommandHandler::gParameters[i], "");
 	}
 }
 
-void processParameters(char *parameterString)
+void Controller::processParameters(char *parameterString)
 {
 	clearParameters();
 
@@ -135,21 +206,21 @@ void processParameters(char *parameterString)
 		while (NULL != token)
 		{
 			// copy parameters into the global parameter variables
-			strcpy(gParameters[i++], token);
+			strcpy(CommandHandler::gParameters[i++], token);
 			token = strtok(NULL, delimiter);
 		}
 	}
 }
 
-void processLine(char *line)
+void Controller::processLine(char *line)
 {
-	char buffer[256];
+	char buffer[100];
 	const char delimiter[] = " ";
 	char *commandString = NULL;
 	char *remainingString = NULL;
 
 	strcpy(buffer, line);
-	upperCaseString(buffer);
+	Utility::upperCaseString(buffer);
 
 	// get first token
 	commandString = strtok(buffer, delimiter);
@@ -166,30 +237,24 @@ void processLine(char *line)
 	}
 }
 
-void scanSerialPort()
+void Controller::scanSerialPort()
 {
-	char incomingChar;
 	uint8_t linePointer = 0;
-	char tmpstr[256];
-
-	long heartBeatTimer = 0;
-	long refreshAngleTimer = 0;
+	char incomingChar;
+	char tmpstr[100];
 
 	while (true)
 	{
 		// Use this to toggle heartbeat LED when not receiving characters
 		while (Serial.available() <= 0)
 		{
-			if (++refreshAngleTimer >= 5000)
-			{
-				refreshAngleTimer = 0;
-				updatePotentiometerAngle();
-			}
+			updateHeartbeat();
 
-			if (++heartBeatTimer >= 250000)
+			if (pidController->isPidCalculationNeeded)
 			{
-				heartBeatTimer = 0;
-				digitalWrite(HEARTBEAT_LED_PIN, !digitalRead(HEARTBEAT_LED_PIN));
+				potentiometer->updateAngle();
+				pidController->executePidCalculation();
+				pidController->isPidCalculationNeeded = false;
 			}
 		}
 
@@ -197,7 +262,7 @@ void scanSerialPort()
 
 		if (incomingChar)
 		{
-			if (incomingChar == '\n')  // 13 = \r
+			if (incomingChar == '\n') // End of input
 			{
 				lineBuffer[linePointer] = 0;
 				linePointer = 0;
@@ -206,17 +271,17 @@ void scanSerialPort()
 				Serial.println(tmpstr);
 				processLine(lineBuffer);
 			}
-			else if (incomingChar == '\r') // 10 = \n
+			else if (incomingChar == '\r') // Discard the carriage return
 			{
 			}
-			else
+			else // Store any other characters in the buffer
 			{
 				lineBuffer[linePointer++] = incomingChar;
 				lineBuffer[linePointer] = 0;
 
-				if (linePointer >= INT_LINE_SIZE_MAX - 1)
+				if (linePointer >= Utility::INT_LineSizeMax - 1)
 				{
-					linePointer = INT_LINE_SIZE_MAX - 1;
+					linePointer = Utility::INT_LineSizeMax - 1;
 					lineBuffer[linePointer] = 0;
 				}
 			}

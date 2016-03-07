@@ -7,15 +7,13 @@ Author:	Aftab
 #ifndef _GLOBALS_h
 #define _GLOBALS_h
 
-#define CONTROLLER_NAME				"Arduino Helicopter Controller"
-#define FIRMWARE_VERSION			1.05
+#define FIRMWARE_VERSION			1.06
 
 #define MAX_NUM_CHANNELS			2
 
-#define INT_LINE_SIZE_MAX			255
+#define INT_LINE_SIZE_MAX			100
 #define INT_PARAMETER_COUNT_MAX		3
 #define INT_PARAMETER_LENGTH_MAX	20
-#define INT_DESCRIPTION_MAX			60
 
 // TODO: These need to be changed once hardware is finalized
 #define ENCODER_CHA_PIN				4

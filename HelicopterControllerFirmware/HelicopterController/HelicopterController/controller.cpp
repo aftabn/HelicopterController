@@ -5,6 +5,7 @@ Author:	Aftab
 */
 
 #include "Arduino.h"
+#include <digitalWriteFast.h>
 #include "globals.h"
 #include "util.h"
 #include "controller.h"
@@ -15,9 +16,13 @@ char lineBuffer[INT_LINE_SIZE_MAX + 1];
 
 void initializeController()
 {
-	Serial.begin(115200);
+	// The baud rate had to be dropped from 115200 to 38400 as going any higher resulted in data loss
+	// due to the firing of the external interrupt for the decode
+	Serial.begin(19200);
+	Serial.println();
+	Serial.flush();
 
-	pinMode(HEARTBEAT_LED_PIN, OUTPUT);
+	pinModeFast(HEARTBEAT_LED_PIN, OUTPUT);
 }
 
 void processCommand(char *command)
@@ -50,15 +55,15 @@ void processCommand(char *command)
 	{
 		onCommandSafety();
 	}
-	else if (0 == strcmp(command, "OUT"))
+	else if (0 == strcmp(command, "O"))
 	{
 		onCommandOutput();
 	}
-	else if (0 == strcmp(command, "DIR"))
+	else if (0 == strcmp(command, "DC"))
 	{
 		onCommandDirection();
 	}
-	else if (0 == strcmp(command, "DRIVER"))
+	else if (0 == strcmp(command, "DV"))
 	{
 		onCommandMotorDriver();
 	}
@@ -74,15 +79,15 @@ void processCommand(char *command)
 	{
 		onCommandDerivativeGain();
 	}
-	else if (0 == strcmp(command, "LOOP"))
+	else if (0 == strcmp(command, "LI"))
 	{
 		onCommandLoopInterval();
 	}
-	else if (0 == strcmp(command, "WINDUP"))
+	else if (0 == strcmp(command, "IW"))
 	{
 		onCommandIntegralWindup();
 	}
-	else if (0 == strcmp(command, "RATE"))
+	else if (0 == strcmp(command, "RL"))
 	{
 		onCommandIntegralWindup();
 	}
@@ -90,9 +95,13 @@ void processCommand(char *command)
 	{
 		onCommandSetPoint();
 	}
-	else if (0 == strcmp(command, "ANGLE"))
+	else if (0 == strcmp(command, "A"))
 	{
 		onCommandAngle();
+	}
+	else if (0 == strcmp(command, "Z"))
+	{
+		onCommandZeroEncoderAngle();
 	}
 	else if (0 == strcmp(command, "ADC"))
 	{
@@ -102,7 +111,7 @@ void processCommand(char *command)
 	{
 		onCommandDacVoltage();
 	}
-	else if (0 == strcmp(command, "FREQ"))
+	else if (0 == strcmp(command, "F"))
 	{
 		onCommandFrequencyOutput();
 	}
@@ -188,26 +197,37 @@ void scanSerialPort()
 {
 	char incomingChar;
 	uint8_t linePointer = 0;
-	char tmpstr[256];
+	char tmpstr[100];
 
-	long heartBeatTimer = 0;
-	long refreshAngleTimer = 0;
+	uint16_t heartBeatTimer = 0;
+	uint16_t potentiometerTimer = 0;
 
 	while (true)
 	{
 		// Use this to toggle heartbeat LED when not receiving characters
 		while (Serial.available() <= 0)
 		{
-			if (++refreshAngleTimer >= 5000)
-			{
-				refreshAngleTimer = 0;
-				updatePotentiometerAngle();
-			}
-
-			if (++heartBeatTimer >= 250000)
+			if (++heartBeatTimer >= 65535)
 			{
 				heartBeatTimer = 0;
-				digitalWrite(HEARTBEAT_LED_PIN, !digitalRead(HEARTBEAT_LED_PIN));
+				digitalWriteFast(HEARTBEAT_LED_PIN, !digitalReadFast(HEARTBEAT_LED_PIN));
+			}
+
+			// Update the potentiometer only if PID isn't on, since it will be updated in the block below
+			if (++potentiometerTimer >= 5000)
+			{
+				if (!isPidEnabled)
+				{
+					updatePotentiometerAngle();
+				}
+				potentiometerTimer = 0;
+			}
+
+			if (isPidCalculationNeeded)
+			{
+				updatePotentiometerAngle();
+				executePidCalculation();
+				isPidCalculationNeeded = false;
 			}
 		}
 
@@ -215,7 +235,7 @@ void scanSerialPort()
 
 		if (incomingChar)
 		{
-			if (incomingChar == '\n')  // 13 = \r
+			if (incomingChar == '\n') // End of input
 			{
 				lineBuffer[linePointer] = 0;
 				linePointer = 0;
@@ -224,10 +244,10 @@ void scanSerialPort()
 				Serial.println(tmpstr);
 				processLine(lineBuffer);
 			}
-			else if (incomingChar == '\r') // 10 = \n
+			else if (incomingChar == '\r') // Discard the carriage return
 			{
 			}
-			else
+			else // Store any other characters in the buffer
 			{
 				lineBuffer[linePointer++] = incomingChar;
 				lineBuffer[linePointer] = 0;

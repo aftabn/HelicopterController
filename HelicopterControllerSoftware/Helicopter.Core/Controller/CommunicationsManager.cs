@@ -13,9 +13,10 @@ namespace Helicopter.Core.Controller
 {
     public class CommunicationsManager : INotifyPropertyChanged, IDisposable
     {
-        private const double DBL_DefaultTimeoutSeconds = 1;
-        private const string STR_MainDeviceName = "Arduino";
-        private const string STR_BluetoothDeviceName = "COM10";
+        private const double DBL_DefaultSerialTimeoutSeconds = 0.5;
+        private const double DBL_DefaultBluetoothTimeoutSeconds = 2.5;
+        private const string STR_SerialDeviceName = "Arduino";
+        private const string STR_BluetoothDeviceName = "Bluetooth";
 
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly List<string> receivedPackets = new List<string>();
@@ -24,14 +25,16 @@ namespace Helicopter.Core.Controller
         private readonly object serialPortLock = new object();
         private readonly object receivedPacketsLock = new object();
 
+        private ConnectionType connectionType;
         private SerialPort serialPort;
-        private string serialPortBuffer;
+        private string deviceName;
+        private string serialPortBuffer = String.Empty;
         private string comPort = String.Empty;
         private bool isConnected;
 
-        public CommunicationsManager()
+        public CommunicationsManager(ConnectionType defaultConnectionType)
         {
-            serialPortBuffer = String.Empty;
+            ConnectionType = defaultConnectionType;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -49,6 +52,23 @@ namespace Helicopter.Core.Controller
                 {
                     isConnected = value;
                     RaisePropertyChanged("IsConnected");
+                }
+            }
+        }
+
+        public ConnectionType ConnectionType
+        {
+            get
+            {
+                return connectionType;
+            }
+
+            set
+            {
+                if (value != connectionType)
+                {
+                    connectionType = value;
+                    RaisePropertyChanged("ConnectionType");
                 }
             }
         }
@@ -95,12 +115,14 @@ namespace Helicopter.Core.Controller
                 return;
             }
 
+            SetDeviceName();
+
             var serialPorts = GetSerialPortDescriptions();
             string potentialPort = String.Empty;
             string comPort = String.Empty;
             foreach (string port in serialPorts)
             {
-                if (port.Contains(STR_MainDeviceName))
+                if (port.Contains(deviceName))
                 {
                     potentialPort = port;
                     comPort = potentialPort.Substring(potentialPort.IndexOf("COM"));
@@ -110,16 +132,19 @@ namespace Helicopter.Core.Controller
             }
             if (comPort != String.Empty)
             {
-                serialPort = new SerialPort(comPort, 115200, Parity.None, 8, StopBits.One);
+                serialPort = new SerialPort(comPort, 19200, Parity.None, 8, StopBits.One);
                 serialPort.DataReceived += OnDataReceived;
                 serialPort.Open();
                 IsConnected = true;
 
-                InitializeArduino();
+                if (ConnectionType == ConnectionType.Serial)
+                {
+                    InitializeArduino();
+                }
             }
             else
             {
-                throw new Exception(String.Format("Device \"{0}\" is not listed on the COM ports", STR_MainDeviceName));
+                throw new Exception(String.Format("Device \"{0}\" is not listed on the COM ports", deviceName));
             }
         }
 
@@ -149,14 +174,27 @@ namespace Helicopter.Core.Controller
             // It apprears that there needs to be some delay after connecting to the Arduino
             // probably due to serial port initialization on its end
             Thread.Sleep(750);
-            serialPort.Write("\r\n"); // Flushes whatever characters are already in the comport
+            serialPort.Write("\r\n"); // Flushes whatever characters are already in the Arduino serial buffer
             Thread.Sleep(750);
             ClearBuffer();
         }
 
+        private void SetDeviceName()
+        {
+            if (ConnectionType == ConnectionType.Serial)
+            {
+                deviceName = STR_SerialDeviceName;
+            }
+            else if (ConnectionType == ConnectionType.Bluetooth)
+            {
+                deviceName = STR_BluetoothDeviceName;
+            }
+        }
+
         public Packet Write(string input)
         {
-            return Write(input, DBL_DefaultTimeoutSeconds);
+            var timeout = ConnectionType == ConnectionType.Serial ? DBL_DefaultSerialTimeoutSeconds : DBL_DefaultBluetoothTimeoutSeconds;
+            return Write(input, timeout);
         }
 
         public Packet Write(string input, double timeoutSeconds)

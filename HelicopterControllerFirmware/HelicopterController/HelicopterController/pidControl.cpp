@@ -5,13 +5,18 @@ Author:	Aftab
 */
 
 #include <SPI\SPI.h>
+#include <digitalWriteFast.h>
+#include <Streaming.h>
 #include "util.h"
 #include "pidControl.h"
 
-const byte adcChannelLookup[ADC_CHANNEL_MAX - ADC_CHANNEL_MIN + 1] = { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+const byte adcChannelLookup[] = { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
 const int minMotorOutput[MAX_NUM_CHANNELS] = { YAW_OUTPUT_MIN, TILT_OUTPUT_MIN };
 const int maxMotorOutput[MAX_NUM_CHANNELS] = { YAW_OUTPUT_MAX, TILT_OUTPUT_MAX };
+const double minSetPoint[MAX_NUM_CHANNELS] = { YAW_SET_POINT_MIN, TILT_SET_POINT_MIN };
+const double maxSetPoint[MAX_NUM_CHANNELS] = { YAW_SET_POINT_MAX, TILT_SET_POINT_MAX };
 
+volatile bool isPidCalculationNeeded;
 volatile bool isPidEnabled;
 volatile bool isVerboseMode;
 volatile bool isSafetyOn;
@@ -19,7 +24,8 @@ volatile bool isSafetyOn;
 volatile int pidLoopInterval;
 volatile int currentFrequency;
 
-volatile bool previousEncoderA, previousEncoderB;
+const signed int encoderLookup[] = { 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 };
+byte encoderValues;
 
 volatile double pGains[MAX_NUM_CHANNELS];
 volatile double iGains[MAX_NUM_CHANNELS];
@@ -39,98 +45,20 @@ double integratedAngleErrors[MAX_NUM_CHANNELS];
 double derivativeAnglesErrors[MAX_NUM_CHANNELS];
 
 // This is the ISR that runs the PID algorithm
-ISR(TIMER1_OVF_vect)
+ISR(TIMER1_COMPA_vect)
 {
 	if (isPidEnabled)
 	{
-		for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
-		{
-			int percentageOutput;
-			Direction direction;
-
-			// Updates the direction and the output
-			updatePidMotorOutputs(channel, &direction, &percentageOutput);
-
-			// Makes the necessary hardware output changes based on driver type
-			applyMotorOutputs(channel, direction, percentageOutput);
-
-			if (isVerboseMode)
-			{
-				char tmpstr[70];
-				char setpoint[8];
-				char angle[8];
-
-				dtostrf(setPoints[channel], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, setpoint);
-				dtostrf(currentAngles[channel], MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, angle);
-
-				sprintf(tmpstr, "[CH%d] SP: %s deg, Output: %d %%, Angle: %s deg", channel, setpoint, currentOutputs[channel], angle);
-
-				Serial.println(tmpstr);
-			}
-		}
+		isPidCalculationNeeded = true;
 	}
 }
 
+// Taken and modified from: http://www.mkesc.co.uk/ise.pdf
 static void quadratureDecoderISR(void)
 {
-	bool currentEncoderA, currentEncoderB;
-	bool isForward, isError = false;
-
-	currentEncoderA = (bool)digitalRead(ENCODER_CHA_PIN);
-	currentEncoderB = (bool)digitalRead(ENCODER_CHB_PIN);
-
-	if (!previousEncoderA && !previousEncoderB) {
-		if (currentEncoderA && !currentEncoderB) {
-			isForward = true;
-		}
-		else if (!currentEncoderA && currentEncoderB) {
-			isForward = false;
-		}
-		else {
-			isError = true;
-		}
-	}
-	else if (previousEncoderA && !previousEncoderB) {
-		if (currentEncoderA && currentEncoderB) {
-			isForward = true;
-		}
-		else if (!currentEncoderA && !currentEncoderB) {
-			isForward = false;
-		}
-		else {
-			isError = true;
-		}
-	}
-	else if (previousEncoderA && previousEncoderB) {
-		if (!currentEncoderA && currentEncoderB) {
-			isForward = true;
-		}
-		else if (currentEncoderA && !currentEncoderB) {
-			isForward = false;
-		}
-		else {
-			isError = true;
-		}
-	}
-	else if (!previousEncoderA && previousEncoderB) {
-		if (!currentEncoderA && !currentEncoderB) {
-			isForward = true;
-		}
-		else if (currentEncoderA && currentEncoderB) {
-			isForward = false;
-		}
-		else {
-			isError = true;
-		}
-	}
-
-	if (!isError)
-	{
-		currentAngles[ENCODER_CHANNEL] += isForward ? 1 : -1;
-	}
-
-	previousEncoderA = currentEncoderA;
-	previousEncoderB = currentEncoderB;
+	encoderValues <<= 2;
+	encoderValues |= ((digitalReadFast(ENCODER_CHA_PIN) << 1) | digitalReadFast(ENCODER_CHB_PIN));
+	currentAngles[ENCODER_CHANNEL] += encoderLookup[encoderValues & 0x0F] * ENCODER_DEGREES_PER_PULSE;
 }
 
 void initializeSpi(void)
@@ -143,7 +71,7 @@ void initializeSpi(void)
 void initializePid(void)
 {
 	pidLoopInterval = DEFAULT_PID_INTERVAL_MS;
-	isSafetyOn = false; // TODO: Change this later
+	isSafetyOn = true;
 
 	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
 	{
@@ -161,18 +89,17 @@ void initializePid(void)
 
 void initializeFrequencyOutput(void)
 {
-	const int dummyChannel = 0; // Only one frequency output so channel doesn't matter during initialization
+	const int dummyChannel = 0; // Only one frequency output so channel doesn't matter
 
-	pinMode(FREQUENCY_OUTPUT_PIN, OUTPUT);
+	pinModeFast(FREQUENCY_OUTPUT_PIN, OUTPUT);
 	setFrequency(dummyChannel, MOTOR_MIN_FREQUENCY);
 }
 
 void initializeQuadratureDecoder(void)
 {
-	pinMode(ENCODER_CHA_PIN, INPUT);
-	pinMode(ENCODER_CHB_PIN, INPUT);
-	previousEncoderA = (bool)digitalRead(ENCODER_CHA_PIN);
-	previousEncoderB = (bool)digitalRead(ENCODER_CHB_PIN);
+	pinModeFast(ENCODER_CHA_PIN, INPUT);
+	pinModeFast(ENCODER_CHB_PIN, INPUT);
+	encoderValues = (digitalReadFast(ENCODER_CHA_PIN) << 1) | digitalReadFast(ENCODER_CHB_PIN);
 
 	// Sets ISR for external interrupt on pin 2
 	attachInterrupt(0, quadratureDecoderISR, RISING);
@@ -180,16 +107,16 @@ void initializeQuadratureDecoder(void)
 
 void initializeAdc(void)
 {
-	pinMode(ADC_CHIP_SELECT_PIN, OUTPUT);
-	digitalWrite(ADC_CHIP_SELECT_PIN, LOW);
-	digitalWrite(ADC_CHIP_SELECT_PIN, HIGH);
+	pinModeFast(ADC_CHIP_SELECT_PIN, OUTPUT);
+	digitalWriteFast(ADC_CHIP_SELECT_PIN, LOW);
+	digitalWriteFast(ADC_CHIP_SELECT_PIN, HIGH);
 }
 
 void initializeDac(void)
 {
-	pinMode(DAC_CHIP_SELECT_PIN, OUTPUT);
-	digitalWrite(DAC_CHIP_SELECT_PIN, LOW);
-	digitalWrite(DAC_CHIP_SELECT_PIN, HIGH);
+	pinModeFast(DAC_CHIP_SELECT_PIN, OUTPUT);
+	digitalWriteFast(DAC_CHIP_SELECT_PIN, LOW);
+	digitalWriteFast(DAC_CHIP_SELECT_PIN, HIGH);
 
 	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
 	{
@@ -205,19 +132,40 @@ void initializePidTimer(int numMilliseconds)
 	TCCR1B = 0;								// same for TCCR1B
 	TCNT1 = 0;								// initialize counter value to 0
 	OCR1A = 250 * numMilliseconds - 1;		// compare match register (16MHz/64/1000 = 250) * numMilliseconds - 1
+	TCCR1B |= (1 << WGM12);					// CTC mode
 	TCCR1B |= (1 << CS11) | (1 << CS10);	// 64 prescaler
-	TIMSK1 |= (1 << TOIE1);					// enable timer overflow interrupt
+	TIMSK1 |= (1 << OCIE1A);				// enable timer overflow interrupt
 	interrupts();							// enable all interrupts
 }
 
-void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOutput)
+void executePidCalculation()
+{
+	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
+	{
+		int percentageOutput;
+		Direction direction;
+
+		// Updates the direction and the output
+		updatePidMotorOutputs(channel, &direction, &percentageOutput);
+
+		// Makes the necessary hardware output changes based on driver type
+		applyMotorOutputs(channel, direction, percentageOutput);
+
+		if (isVerboseMode)
+		{
+			// Format is: "[CH%d] SP: %s deg, Output: %d %%, Angle: %s deg"
+			Serial << F("[CH") << channel << F("] SP: ") << setPoints[channel] << F("deg, Output: ") << currentOutputs[channel] << F("%, Angle: ") << currentAngles[channel] << F(" degs") << NEWLINE;
+		}
+	}
+}
+
+void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOutput)
 {
 	// Get output as a signed value from -100 to 100 based on direction for easier calculations
-	int currentOutput = directions[channel] == Clockwise ? currentOutputs[channel] : -1 * currentOutputs[channel];
-	double currentAngle = currentAngles[channel];
+	int currentOutput = currentOutputs[channel] * (directions[channel] == Clockwise ? 1 : -1);
 
 	// P term
-	angleErrors[channel] = setPoints[channel] - currentAngle;
+	angleErrors[channel] = setPoints[channel] - currentAngles[channel];
 
 	// I term
 	if (abs(angleErrors[channel]) < iWindupThresholds[channel])
@@ -226,13 +174,24 @@ void updatePidMotorOutputs(int channel, Direction* direction, int* percentageOut
 	}
 
 	// D term
-	derivativeAnglesErrors[channel] = (currentAngle - previousAngles[channel]) / pidLoopInterval / 1000.0;
+	derivativeAnglesErrors[channel] = (currentAngles[channel] - previousAngles[channel]) / (pidLoopInterval / 1000.0);
+
+	int newOutput = 0;
 
 	// Update previous angle for next calculation
-	previousAngles[channel] = currentAngle;
+	previousAngles[channel] = currentAngles[channel];
+
+	// TODO: Refactor this later
+	if (channel == TILT_CHANNEL)
+	{
+		if (setPoints[channel] > -17)
+		{
+			newOutput += 40;
+		}
+	}
 
 	// Get new signed output from PID algorithm
-	int newOutput = (int)(pGains[channel] * angleErrors[channel] + iGains[channel] * integratedAngleErrors[channel] + dGains[channel] * derivativeAnglesErrors[channel]);
+	newOutput += (int)(pGains[channel] * angleErrors[channel] + iGains[channel] * integratedAngleErrors[channel] - dGains[channel] * derivativeAnglesErrors[channel]);
 
 	// Limit the amount the output can change by
 	if (abs(newOutput - currentOutput) > outputRateLimits[channel])
@@ -315,10 +274,10 @@ void setDacVoltage(int channel, double voltage)
 	}
 
 	noInterrupts();
-	digitalWrite(DAC_CHIP_SELECT_PIN, LOW);
+	digitalWriteFast(DAC_CHIP_SELECT_PIN, LOW);
 	SPI.transfer(primaryByte);
 	SPI.transfer(secondaryByte);
-	digitalWrite(DAC_CHIP_SELECT_PIN, HIGH);
+	digitalWriteFast(DAC_CHIP_SELECT_PIN, HIGH);
 	interrupts();
 
 	currentVoltages[channel] = voltage;
@@ -327,7 +286,7 @@ void setDacVoltage(int channel, double voltage)
 void setFrequency(int channel, int frequency)
 {
 	tone(FREQUENCY_OUTPUT_PIN, frequency);
-	digitalWrite(FREQUENCY_DIRECTION_PIN, directions[channel] == Clockwise ? HIGH : LOW);
+	digitalWriteFast(FREQUENCY_DIRECTION_PIN, directions[channel] == Clockwise ? HIGH : LOW);
 
 	currentFrequency = frequency;
 }
@@ -365,11 +324,11 @@ int getAdcValue(int channel)
 
 	noInterrupts();
 	SPI.beginTransaction(MCP3008);
-	digitalWrite(ADC_CHIP_SELECT_PIN, LOW);
+	digitalWriteFast(ADC_CHIP_SELECT_PIN, LOW);
 	SPI.transfer(0x01);									// Start Bit
 	dataMSB = SPI.transfer(readAddress << 4) & 0x03;	// Send readAddress and receive MSB data, masked to two bits
 	dataLSB = SPI.transfer(JUNK);						// Push junk data and get LSB byte return
-	digitalWrite(ADC_CHIP_SELECT_PIN, HIGH);
+	digitalWriteFast(ADC_CHIP_SELECT_PIN, HIGH);
 	SPI.endTransaction();
 	interrupts();
 
@@ -411,18 +370,16 @@ void updatePotentiometerAngle(void)
 	currentAngles[POTENTIOMETER_CHANNEL] = angle;
 }
 
+void zeroEncoderAngle()
+{
+	currentAngles[YAW_CHANNEL] = 0;
+}
+
 void disableMotors()
 {
 	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
 	{
-		if (motorDriverTypes[channel] == AnalogVoltage)
-		{
-			setDacVoltage(channel, MOTOR_IDLE_VOLTAGE);
-		}
-		else if (motorDriverTypes[channel] == Frequency)
-		{
-			setFrequency(channel, MOTOR_MIN_FREQUENCY);
-		}
+		applyMotorOutputs(channel, directions[channel], 0);
 	}
 }
 

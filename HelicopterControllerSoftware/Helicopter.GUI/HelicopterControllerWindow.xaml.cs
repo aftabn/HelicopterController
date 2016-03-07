@@ -1,7 +1,13 @@
 ﻿using Helicopter.Core;
+using Helicopter.Core.Sessions;
+using LiveCharts;
+using LiveCharts.CoreComponents;
 using log4net;
+using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace Helicopter.GUI
@@ -22,10 +28,16 @@ namespace Helicopter.GUI
             helicopterViewModel.PropertyChanged += OnViewModelPropertyChanged;
 
             InitializeComponent();
+            SetVisibilty();
             SetBindingForControls();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private void SetVisibilty()
+        {
+            controllerOutputPanel.Visibility = Visibility.Collapsed;
+        }
 
         private void UpdateStatusBar()
         {
@@ -34,7 +46,7 @@ namespace Helicopter.GUI
             if (helicopterViewModel.IsConnected)
             {
                 helicopterControllerStatusTextbox.Text = "Helicopter Controller Connected";
-                statusBarColor = new SolidColorBrush(Color.FromRgb(0x00, 0x7A, 0xCC)); // Blue
+                statusBarColor = new SolidColorBrush(Color.FromRgb(0x00, 0x7A, 0xCC)); // Visual Studio Blue
             }
             else
             {
@@ -43,6 +55,29 @@ namespace Helicopter.GUI
             }
 
             statusBar.Background = statusBarColor;
+        }
+
+        private void SetBindingForControls()
+        {
+            menuHeader.DataContext = helicopterViewModel;
+            optionsToolbar.DataContext = helicopterViewModel;
+            controllerTabs.DataContext = helicopterViewModel;
+            controllerOutputPanel.DataContext = helicopterViewModel;
+        }
+
+        private void StartPidCharting()
+        {
+            pidChart.StartNewSession(helicopterViewModel.HelicopterManager.Session);
+        }
+
+        private void StopPidCharting()
+        {
+            pidChart.EndSession();
+        }
+
+        private void WindowLoaded(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Data.CollectionViewSource helicopterViewModelSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("helicopterViewModelSource")));
         }
 
         private void OnWindowClosing(object sender, CancelEventArgs e)
@@ -58,6 +93,7 @@ namespace Helicopter.GUI
 
                     if (helicopterViewModel.IsConnected)
                     {
+                        helicopterViewModel.HelicopterManager.StopSession();
                         helicopterViewModel.Disconnect();
                     }
 
@@ -65,24 +101,22 @@ namespace Helicopter.GUI
             }
         }
 
-        private void SetBindingForControls()
-        {
-            menuHeader.DataContext = helicopterViewModel;
-            optionsToolbar.DataContext = helicopterViewModel;
-            controllerTabs.DataContext = helicopterViewModel;
-            controllerOutputPanel.DataContext = helicopterViewModel;
-        }
-
-        private void WindowLoaded(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Data.CollectionViewSource helicopterViewModelSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("helicopterViewModelSource")));
-        }
-
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsConnected")
             {
                 UpdateStatusBar();
+            }
+            else if (e.PropertyName == "IsSessionRunning")
+            {
+                if (helicopterViewModel.IsPidSessionRunning)
+                {
+                    StartPidCharting();
+                }
+                else
+                {
+                    StopPidCharting();
+                }
             }
             else if (e.PropertyName == "OutputText")
             {

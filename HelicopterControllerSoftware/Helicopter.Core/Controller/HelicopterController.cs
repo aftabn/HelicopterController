@@ -16,9 +16,9 @@ namespace Helicopter.Core.Controller
         private string changelog;
         private int pidLoopInterval;
 
-        public HelicopterController()
+        public HelicopterController(ConnectionType connectionType)
         {
-            Microcontroller.Initialize();
+            Microcontroller.Initialize(connectionType);
             communicationsManager = Microcontroller.GetInstanceOfCommunicationManager();
             communicationsManager.PropertyChanged += OnCommunicationManagerPropertyChanged;
 
@@ -37,6 +37,12 @@ namespace Helicopter.Core.Controller
             {
                 return Microcontroller.IsConnected;
             }
+        }
+
+        public ConnectionType ConnectionType
+        {
+            get { return communicationsManager.ConnectionType; }
+            set { communicationsManager.ConnectionType = value; }
         }
 
         public string ControllerIdentity
@@ -179,6 +185,8 @@ namespace Helicopter.Core.Controller
 
         private void InitializeController()
         {
+            Microcontroller.DisableVerboseMode();
+
             DisablePid();
             EnableSafety();
 
@@ -206,7 +214,7 @@ namespace Helicopter.Core.Controller
                 DisableSafety();
             }
 
-            SetPidLoopInterval(settings.PidLoopInterval);
+            SetPidLoopInterval(settings.PidLoopIntervalMilliseconds);
             Yaw.LoadSettings(settings.YawControllerSettings);
             Tilt.LoadSettings(settings.TiltControllerSettings);
         }
@@ -248,6 +256,11 @@ namespace Helicopter.Core.Controller
             Tilt.Disable();
         }
 
+        public void ZeroYawAngle()
+        {
+            Yaw.ZeroAngle();
+        }
+
         public void RefreshPidLoopInterval()
         {
             PidLoopInterval = Microcontroller.GetPidLoopInterval();
@@ -261,10 +274,7 @@ namespace Helicopter.Core.Controller
 
         private void OnAngleControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var angleController = sender as AngleController;
-            string propertyChanged = String.Format("{0}{1}", angleController.MotorType, e.PropertyName);
-
-            RaisePropertyChanged(propertyChanged);
+            RaisePropertyChanged(e.PropertyName);
         }
 
         private void OnCommunicationManagerPropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -5,6 +5,7 @@ Author:	Aftab
 */
 
 #include <avr\pgmspace.h>
+#include <Streaming.h>
 #include "globals.h"
 #include "util.h"
 
@@ -23,90 +24,46 @@ void sendAck()
 	Serial.println(F("OK"));
 }
 
-void sendError(const char* str)
-{
-	Serial.println(str);
-	sendNack();
-}
-
 void sendInt(int num)
 {
-	char tmpstr[20];
-	sprintf(tmpstr, "%d", num);
-	Serial.println(tmpstr);
+	Serial << num << NEWLINE;
 }
 
-// Using dtostrf instead of sprintf as it works better on embedded systems and doesn't
-// require the full version of stdlib
-// Source: http://blog.protoneer.co.nz/arduino-float-to-string-that-actually-works/
-void sendDouble(double num, int numDecimals)
+void sendDouble(double num)
 {
-	char tmpstr[20];
-	dtostrf(num, MIN_NUMBER_FLOAT_CHARS, numDecimals, tmpstr);
-	Serial.println(tmpstr);
+	Serial << num << NEWLINE;
 }
 
 void sendOnOffStatus(bool isOn)
 {
-	if (isOn)
-	{
-		Serial.println(F("ON"));
-	}
-	else
-	{
-		Serial.println(F("OFF"));
-	}
+	Serial << (isOn ? F("ON") : F("OFF")) << NEWLINE;
 }
 
 void sendOneOrZeroStatus(bool isHigh)
 {
-	char tmpstr[3];
-	sprintf(tmpstr, "%d", isHigh ? 1 : 0);
-	Serial.println(tmpstr);
+	Serial << (isHigh ? 1 : 0) << NEWLINE;
 }
 
 void sendDirectionStatus(Direction direction)
 {
-	if (direction == Clockwise)
-	{
-		Serial.println(F("Clockwise"));
-	}
-	else if (direction == CounterClockwise)
-	{
-		Serial.println(F("CounterClockwise"));
-	}
+	Serial << (direction == Clockwise ? F("CW") : F("CCW")) << NEWLINE;
 }
 
 void sendMotorDriverStatus(MotorDriverType motorDriverType)
 {
-	if (motorDriverType == AnalogVoltage)
-	{
-		Serial.println(F("AnalogVoltage"));
-	}
-	else if (motorDriverType == Frequency)
-	{
-		Serial.println(F("Frequency"));
-	}
+	Serial << (motorDriverType == AnalogVoltage ? F("AV") : F("F")) << NEWLINE;
 }
 
 void sendIntRangeError(int lowerLimit, int upperLimit, char* unit)
 {
-	char tmpstr[50];
-	sprintf(tmpstr, "Value must be between %d%s and %d%s", lowerLimit, unit, upperLimit, unit);
-	sendError(tmpstr);
+	Serial << F("Value must be between ") << lowerLimit << unit << F(" and ") << upperLimit << unit << NEWLINE;
+	sendNack();
 }
 
 void sendDoubleRangeError(double lowerLimit, double upperLimit, char* unit)
 {
-	char lowerLimitStr[10];
-	char upperLimitStr[10];
-	char tmpstr[50];
-
-	dtostrf(lowerLimit, MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, lowerLimitStr);
-	dtostrf(upperLimit, MIN_NUMBER_FLOAT_CHARS, DEFAULT_NUM_DECIMALS, upperLimitStr);
-	sprintf(tmpstr, "Value must be between %s%s and %s%s", lowerLimitStr, unit, upperLimitStr, unit);
-
-	sendError(tmpstr);
+	Serial << F("Value must be between ") << lowerLimit << unit << F(" and ") << upperLimit << unit << NEWLINE;
+	sendNack();
 }
 
 void sendChannelError()
@@ -141,13 +98,13 @@ void sendOneOrZeroError()
 
 void sendDirectionError()
 {
-	Serial.println(F("Value must be CW or CCW"));
+	Serial.println(F("Value must be CLOCKWISE / CW or COUNTERCLOCKWISE / CCW"));
 	sendNack();
 }
 
 void sendMotorDriverError()
 {
-	Serial.println(F("Value must be ANALOGVOLTAGE or FREQUENCY"));
+	Serial.println(F("Value must be ANALOGVOLTAGE / AV or FREQUENCY / F"));
 	sendNack();
 }
 
@@ -166,25 +123,25 @@ bool isOffCommandArg(char* arg)
 bool isClockwiseCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "CLOCKWISE") || 0 == stricmp(arg, "CW") || 0 == stricmp(arg, "0"));
+	return (0 == stricmp(arg, "CLOCKWISE") || 0 == stricmp(arg, "CW"));
 }
 
 bool isCounterClockwiseCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "COUNTERCLOCKWISE") || 0 == stricmp(arg, "CCW") || 0 == stricmp(arg, "1"));
+	return (0 == stricmp(arg, "COUNTERCLOCKWISE") || 0 == stricmp(arg, "CCW"));
 }
 
 bool isAnalogVoltageCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "ANALOGVOLTAGE") || 0 == stricmp(arg, "0"));
+	return (0 == stricmp(arg, "ANALOGVOLTAGE") || 0 == stricmp(arg, "AV"));
 }
 
 bool isFrequencyCommandArg(char* arg)
 {
 	upperCaseString(arg);
-	return (0 == stricmp(arg, "FREQUENCY") || 0 == stricmp(arg, "1"));
+	return (0 == stricmp(arg, "FREQUENCY") || 0 == stricmp(arg, "F"));
 }
 
 bool isReadCommand(char* arg)
@@ -204,7 +161,7 @@ bool isDoubleWithinRange(double number, double lowerLimit, double upperLimit)
 
 bool isChannelCorrect(char* channelArg)
 {
-	char channelStr[3];
+	char channelStr[10];
 
 	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
 	{

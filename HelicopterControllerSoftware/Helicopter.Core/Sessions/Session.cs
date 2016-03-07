@@ -1,89 +1,65 @@
 ﻿using Helicopter.Core.Controller;
 using System;
 using System.ComponentModel;
+using System.Threading;
 
 namespace Helicopter.Core.Sessions
 {
-    public class Session : INotifyPropertyChanged
+    public class Session : INotifyPropertyChanged, IDisposable
     {
-        private readonly object stopLock = new object();
-        private bool stopping;
-        private bool stopped;
-        private volatile bool isSessionComplete;
-        private HelicopterController helicopterController;
+        private YawController yaw;
+        private TiltController tilt;
 
-        public Session()
+        public Session(HelicopterController helicopterController, int refreshIntervalMilliseconds)
         {
-            SessionData = new SessionData();
+            yaw = helicopterController.Yaw;
+            tilt = helicopterController.Tilt;
+
+            YawDataSeries = new ControllerDataSeries(yaw);
+            TiltDataSeries = new ControllerDataSeries(tilt);
+
+            RefreshIntervalMilliseconds = refreshIntervalMilliseconds;
+
+            YawDataSeries.PropertyChanged += OnDataSeriesPropertyChanged;
+            TiltDataSeries.PropertyChanged += OnDataSeriesPropertyChanged;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public event EventHandler<EventArgs> ErrorMessageReceived = delegate { };
+        public int RefreshIntervalMilliseconds { get; private set; }
 
-        public SessionData SessionData { get; set; }
+        public DateTime StartTime { get; set; }
 
-        public DateTime StartTime { get; private set; }
+        public DateTime EndTime { get; set; }
 
-        public DateTime EndTime { get; private set; }
+        public ControllerDataSeries YawDataSeries { get; set; }
 
-        public bool IsSessionComplete
+        public ControllerDataSeries TiltDataSeries { get; set; }
+
+        public void Dispose()
         {
-            get
-            {
-                return isSessionComplete;
-            }
+            YawDataSeries.PropertyChanged -= OnDataSeriesPropertyChanged;
+            TiltDataSeries.PropertyChanged -= OnDataSeriesPropertyChanged;
 
-            set
-            {
-                if (value != isSessionComplete)
-                {
-                    isSessionComplete = value;
-                    RaisePropertyChanged("IsSessionComplete");
-                }
-            }
+            YawDataSeries = null;
+            TiltDataSeries = null;
         }
 
-        public bool Stopping
+        public void TakeNewDataSamples(DateTime timeStamp)
         {
-            get
-            {
-                lock (stopLock)
-                {
-                    return stopping;
-                }
-            }
+            yaw.TakeNewDataSample(timeStamp);
+            tilt.TakeNewDataSample(timeStamp);
         }
 
-        public bool Stopped
+        public void ClearControllerData()
         {
-            get
-            {
-                lock (stopLock)
-                {
-                    return stopped;
-                }
-            }
+            yaw.ControllerData.Clear();
+            tilt.ControllerData.Clear();
         }
 
-        public void StartRoutine()
+        private void OnDataSeriesPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-        }
-
-        public void Stop()
-        {
-            lock (stopLock)
-            {
-                stopping = true;
-            }
-        }
-
-        private void SetStopped()
-        {
-            lock (stopLock)
-            {
-                stopped = true;
-            }
+            RaisePropertyChanged(e.PropertyName);
         }
 
         private void RaisePropertyChanged(string propertyName)
@@ -92,13 +68,6 @@ namespace Helicopter.Core.Sessions
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
-        }
-
-        //TODO: Can probably remove this later
-        private void RaiseErrorMessageReceived(EventArgs e)
-        {
-            EventHandler<EventArgs> handler = ErrorMessageReceived;
-            handler(this, e);
         }
     }
 }

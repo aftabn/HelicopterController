@@ -14,5 +14,11 @@ namespace Helicopter.Core.Controller
         {
             MotorType = motorType;
         }
+
+        public void ZeroAngle()
+        {
+            Microcontroller.ZeroEncoderAngle();
+            RefreshCurrentAngle();
+        }
     }
 }

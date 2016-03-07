@@ -11,16 +11,17 @@ namespace Helicopter.Core.Controller
         private const string STR_ProportionalGainCommand = "P";
         private const string STR_IntegralGainCommand = "I";
         private const string STR_DerivativeGainCommand = "D";
-        private const string STR_IntegralWindupCommand = "WINDUP";
-        private const string STR_OutputRateLimitCommand = "RATE";
-        private const string STR_PidLoopIntervalCommand = "LOOP";
-        private const string STR_MotorOutputCommand = "OUT";
+        private const string STR_IntegralWindupCommand = "IW";
+        private const string STR_OutputRateLimitCommand = "RL";
+        private const string STR_PidLoopIntervalCommand = "LI";
+        private const string STR_MotorOutputCommand = "O";
         private const string STR_AngleSetPointCommand = "SP";
-        private const string STR_AngleCommand = "ANGLE";
-        private const string STR_DirectionCommand = "DIR";
-        private const string STR_MotorDriverCommand = "DRIVER";
+        private const string STR_AngleCommand = "A";
+        private const string STR_ZeroEncoderAngleCommand = "Z";
+        private const string STR_DirectionCommand = "DC";
+        private const string STR_MotorDriverCommand = "DV";
         private const string STR_DacVoltageCommand = "DAC";
-        private const string STR_FrequencyOutputCommand = "FREQ";
+        private const string STR_FrequencyOutputCommand = "F";
         private const string STR_AdcReadCommand = "ADC";
         private const string STR_PidControlCommand = "PID";
         private const string STR_SafetyCommand = "SAFETY";
@@ -40,9 +41,9 @@ namespace Helicopter.Core.Controller
             }
         }
 
-        public static void Initialize()
+        public static void Initialize(ConnectionType connectionType)
         {
-            communicationsManager = new CommunicationsManager();
+            communicationsManager = new CommunicationsManager(connectionType);
         }
 
         public static void Connect()
@@ -117,6 +118,13 @@ namespace Helicopter.Core.Controller
         {
             string command = String.Format("{0} {1}", STR_AngleCommand, channel);
             return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
+        }
+
+        // TODO: Add this to the GUI
+        public static void ZeroEncoderAngle()
+        {
+            string command = String.Format("{0}", STR_ZeroEncoderAngleCommand);
+            communicationsManager.Write(command);
         }
 
         public static int GetPidLoopInterval()
@@ -219,7 +227,18 @@ namespace Helicopter.Core.Controller
             string command = String.Format("{0} {1}", STR_DirectionCommand, channel);
             string direction = communicationsManager.Write(command).ReturnValue;
 
-            return (Direction)Enum.Parse(typeof(Direction), direction);
+            if (direction == "CW")
+            {
+                return Direction.Clockwise;
+            }
+            else if (direction == "CCW")
+            {
+                return Direction.CounterClockwise;
+            }
+            else
+            {
+                throw new Exception(String.Format("Returned direction [{0}] is not valid", direction));
+            }
         }
 
         public static void SetMotorDirection(int channel, Direction direction)
@@ -233,7 +252,18 @@ namespace Helicopter.Core.Controller
             string command = String.Format("{0} {1}", STR_MotorDriverCommand, channel);
             string motorDriver = communicationsManager.Write(command).ReturnValue;
 
-            return (MotorDriver)Enum.Parse(typeof(MotorDriver), motorDriver);
+            if (motorDriver == "AV")
+            {
+                return MotorDriver.AnalogVoltage;
+            }
+            else if (motorDriver == "F")
+            {
+                return MotorDriver.Frequency;
+            }
+            else
+            {
+                throw new Exception(String.Format("Returned motor driver type [{0}] is not valid", motorDriver));
+            }
         }
 
         public static void SetMotorDriver(int channel, MotorDriver motorDriver)

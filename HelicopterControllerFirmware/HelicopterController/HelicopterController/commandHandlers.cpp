@@ -5,6 +5,7 @@ Author:	Aftab
 */
 
 #include <avr\pgmspace.h>
+#include <Streaming.h>
 #include "globals.h"
 #include "util.h"
 #include "commandHandlers.h"
@@ -12,7 +13,7 @@ Author:	Aftab
 
 void onCommandIdentity()
 {
-	Serial.println(CONTROLLER_NAME);
+	Serial.println(F("Arduino Helicopter Controller"));
 	sendAck();
 }
 
@@ -33,7 +34,7 @@ void onCommandChangelog()
 {
 	if (isReadCommand(gParameters[0]))
 	{
-		Serial.println(F("Added ADC sampling to reduce noise"));
+		Serial.println(F("Fixed outputs not updating from disabling PID"));
 		sendAck();
 	}
 	else
@@ -46,7 +47,7 @@ void onCommandVersion()
 {
 	if (isReadCommand(gParameters[0]))
 	{
-		sendDouble(FIRMWARE_VERSION, DEFAULT_NUM_DECIMALS);
+		sendDouble(FIRMWARE_VERSION);
 		sendAck();
 	}
 	else
@@ -170,11 +171,13 @@ void onCommandOutput()
 	}
 }
 
+// Allows the reading or changing of direction for specified motor, but only allows change in
+// direction if the change results in a percentage change of less than the outputRateLimit
 void onCommandDirection()
 {
 	if (isChannelCorrect(gParameters[0]))
 	{
-		int channel = convertToInt(gParameters[0]);
+		byte channel = convertToInt(gParameters[0]);
 
 		if (isReadCommand(gParameters[1]))
 		{
@@ -183,21 +186,33 @@ void onCommandDirection()
 		}
 		else if (!isPidEnabled)
 		{
-			const int output = currentOutputs[channel];
+			int output = currentOutputs[channel];
+			int outputRateLimit = outputRateLimits[channel];
+			Direction direction;
 
 			if (isClockwiseCommandArg(gParameters[1]))
 			{
-				applyMotorOutputs(channel, Clockwise, output);
-				sendAck();
+				direction = Direction::Clockwise;
 			}
 			else if (isCounterClockwiseCommandArg(gParameters[1]))
 			{
-				applyMotorOutputs(channel, CounterClockwise, output);
-				sendAck();
+				direction = Direction::CounterClockwise;
 			}
 			else
 			{
 				sendDirectionError();
+				return;
+			}
+
+			if (direction != directions[channel] && output > outputRateLimit / 2)
+			{
+				Serial << F("Cannot make a change to output by more than ") << outputRateLimit << F("%") << NEWLINE;
+				sendNack();
+			}
+			else
+			{
+				applyMotorOutputs(channel, direction, output);
+				sendAck();
 			}
 		}
 		else
@@ -216,34 +231,45 @@ void onCommandMotorDriver()
 {
 	if (isChannelCorrect(gParameters[0]))
 	{
-		int channel = convertToInt(gParameters[0]);
+		byte channel = convertToInt(gParameters[0]);
 
 		if (isReadCommand(gParameters[1]))
 		{
 			sendMotorDriverStatus(motorDriverTypes[channel]);
 			sendAck();
 		}
-		else if (!isPidEnabled)
+		else
 		{
-			if (isAnalogVoltageCommandArg(gParameters[1]))
+			if (!isPidEnabled)
 			{
-				motorDriverTypes[channel] = AnalogVoltage;
-				sendAck();
-			}
-			else if (isFrequencyCommandArg(gParameters[1]))
-			{
-				motorDriverTypes[channel] = Frequency;
-				sendAck();
+				if (isAnalogVoltageCommandArg(gParameters[1]))
+				{
+					motorDriverTypes[channel] = AnalogVoltage;
+					sendAck();
+				}
+				else if (isFrequencyCommandArg(gParameters[1]))
+				{
+					if (channel == TILT_CHANNEL)
+					{
+						motorDriverTypes[channel] = Frequency;
+						sendAck();
+					}
+					else
+					{
+						Serial.println(F("Yaw (Channel 1) can only be set to Analog Voltage"));
+						sendNack();
+					}
+				}
+				else
+				{
+					sendMotorDriverError();
+				}
 			}
 			else
 			{
-				sendMotorDriverError();
+				Serial.println(F("Cannot change driver type while PID control is on."));
+				sendNack();
 			}
-		}
-		else
-		{
-			Serial.println(F("Cannot change driver type while PID control is on."));
-			sendNack();
 		}
 	}
 	else
@@ -261,7 +287,7 @@ void onCommandProportionalGain()
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(pGains[channel], DEFAULT_NUM_DECIMALS);
+			sendDouble(pGains[channel]);
 			sendAck();
 		}
 		else if (isDoubleWithinRange(pGain, P_GAIN_MIN, P_GAIN_MAX))
@@ -289,7 +315,7 @@ void onCommandIntegralGain()
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(iGains[channel], DEFAULT_NUM_DECIMALS);
+			sendDouble(iGains[channel]);
 			sendAck();
 		}
 		else if (isDoubleWithinRange(iGain, I_GAIN_MIN, P_GAIN_MAX))
@@ -317,7 +343,7 @@ void onCommandDerivativeGain()
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(dGains[channel], DEFAULT_NUM_DECIMALS);
+			sendDouble(dGains[channel]);
 			sendAck();
 		}
 		else if (isDoubleWithinRange(dGain, D_GAIN_MIN, D_GAIN_MAX))
@@ -345,17 +371,17 @@ void onCommandSetPoint()
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(setPoints[channel], DEFAULT_NUM_DECIMALS);
+			sendDouble(setPoints[channel]);
 			sendAck();
 		}
-		else if (isDoubleWithinRange(setPoint, SET_POINT_MIN, SET_POINT_MAX))
+		else if (isDoubleWithinRange(setPoint, minSetPoint[channel], maxSetPoint[channel]))
 		{
 			setPoints[channel] = setPoint;
 			sendAck();
 		}
 		else
 		{
-			sendDoubleRangeError(SET_POINT_MIN, SET_POINT_MAX, DEGREES_UNIT);
+			sendDoubleRangeError(minSetPoint[channel], maxSetPoint[channel], DEGREES_UNIT);
 		}
 	}
 	else
@@ -401,7 +427,7 @@ void onCommandIntegralWindup()
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(iWindupThresholds[channel], DEFAULT_NUM_DECIMALS);
+			sendDouble(iWindupThresholds[channel]);
 			sendAck();
 		}
 		else if (isDoubleWithinRange(windup, I_WINDUP_THRESH_MIN, I_WINDUP_THRESH_MAX))
@@ -456,7 +482,7 @@ void onCommandAngle()
 
 		if (isReadCommand(gParameters[1]))
 		{
-			sendDouble(currentAngles[channel], DEFAULT_NUM_DECIMALS);
+			sendDouble(currentAngles[channel]);
 			sendAck();
 		}
 		else
@@ -470,6 +496,19 @@ void onCommandAngle()
 	}
 }
 
+void onCommandZeroEncoderAngle()
+{
+	if (isReadCommand(gParameters[1]))
+	{
+		zeroEncoderAngle();
+		sendAck();
+	}
+	else
+	{
+		sendReadOnlyError();
+	}
+}
+
 void onCommandAdc()
 {
 	int adcChannel = convertToInt(gParameters[0]);
@@ -477,7 +516,7 @@ void onCommandAdc()
 	if (isIntWithinRange(adcChannel, ADC_CHANNEL_MIN, ADC_CHANNEL_MAX))
 	{
 		double voltage = getSampledAdcVoltage(adcChannel);
-		sendDouble(voltage, THREE_DECIMALS);
+		sendDouble(voltage);
 		sendAck();
 	}
 	else
@@ -490,30 +529,33 @@ void onCommandDacVoltage()
 {
 	if (isChannelCorrect(gParameters[0]))
 	{
-		if (!isSafetyOn)
-		{
-			int channel = convertToInt(gParameters[0]);
-			double voltage = atof(gParameters[1]);
+		byte channel = convertToInt(gParameters[0]);
+		double voltage = atof(gParameters[1]);
 
-			if (isReadCommand(gParameters[1]))
-			{
-				sendDouble(currentVoltages[channel], DEFAULT_NUM_DECIMALS);
-				sendAck();
-			}
-			else if (isDoubleWithinRange(voltage, MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE))
-			{
-				setDacVoltage(channel, voltage);
-				sendAck();
-			}
-			else
-			{
-				sendDoubleRangeError(MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE, VOLTAGE_UNIT);
-			}
+		if (isReadCommand(gParameters[1]))
+		{
+			sendDouble(currentVoltages[channel]);
+			sendAck();
 		}
 		else
 		{
-			Serial.println(F("Cannot change DAC voltage while safety is on."));
-			sendNack();
+			if (!isSafetyOn)
+			{
+				if (isDoubleWithinRange(voltage, MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE))
+				{
+					setDacVoltage(channel, voltage);
+					sendAck();
+				}
+				else
+				{
+					sendDoubleRangeError(MOTOR_MIN_VOLTAGE, MOTOR_MAX_VOLTAGE, VOLTAGE_UNIT);
+				}
+			}
+			else
+			{
+				Serial.println(F("Cannot change voltage while safety is on."));
+				sendNack();
+			}
 		}
 	}
 	else
@@ -522,33 +564,46 @@ void onCommandDacVoltage()
 	}
 }
 
+// This command is complex because it only allows setting of frequency for channel 1
+// This is because only the tilt motor can be controlled by frequency
 void onCommandFrequencyOutput()
 {
 	if (isChannelCorrect(gParameters[0]))
 	{
-		if (!isSafetyOn)
-		{
-			int channel = convertToInt(gParameters[0]);
-			int frequency = convertToInt(gParameters[1]);
+		byte channel = convertToInt(gParameters[0]);
+		int frequency = convertToInt(gParameters[1]);
 
+		if (channel == TILT_CHANNEL)
+		{
 			if (isReadCommand(gParameters[1]))
 			{
 				sendInt(currentFrequency);
 				sendAck();
 			}
-			else if (isIntWithinRange(frequency, MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY))
-			{
-				setFrequency(channel, frequency);
-				sendAck();
-			}
 			else
 			{
-				sendIntRangeError(MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY, HERTZ_UNIT);
+				if (!isSafetyOn)
+				{
+					if (isIntWithinRange(frequency, MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY))
+					{
+						setFrequency(channel, frequency);
+						sendAck();
+					}
+					else
+					{
+						sendIntRangeError(MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY, HERTZ_UNIT);
+					}
+				}
+				else
+				{
+					Serial.println(F("Cannot change frequency output while safety is on."));
+					sendNack();
+				}
 			}
 		}
 		else
 		{
-			Serial.println(F("Cannot change frequency output while safety is on."));
+			Serial.println(F("Changing or reading of frequency only applies to channel 1"));
 			sendNack();
 		}
 	}
@@ -572,16 +627,18 @@ void onCommandHelp()
 	Serial.println(F("Command: P \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value\r\nDescription: Gets or sets PGain for selected channel's PID control loop\r\n"));
 	Serial.println(F("Command: I \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value\r\nDescription: Gets or sets IGain for selected channel's PID control loop\r\n"));
 	Serial.println(F("Command: D \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value\r\nDescription: Gets or sets DGain for selected channel's PID control loop\r\n"));
-	Serial.println(F("Command: WINDUP \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value\r\nDescription: Gets or sets integral windup for selected channel's PID control loop\r\n"));
-	Serial.println(F("Command: LOOP \r\nArg: None or Value in milliseconds\r\nDescription: Gets or sets interval for PID control loop\r\n"));
+	Serial.println(F("Command: IW \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value\r\nDescription: Gets or sets integral windup for selected channel's PID control loop\r\n"));
+	Serial.println(F("Command: RL \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value\r\nDescription: Gets or sets the rate of change limit for selected channel's output\r\n"));
+	Serial.println(F("Command: LI \r\nArg: None or Value in milliseconds\r\nDescription: Gets or sets the PID control loop interval\r\n"));
 
-	Serial.println(F("Command: OUT \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value in percent\r\nDescription: Gets or sets the percentage motor output for the selected channel\r\n"));
+	Serial.println(F("Command: O \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value in percent\r\nDescription: Gets or sets the percentage motor output for the selected channel\r\n"));
 	Serial.println(F("Command: SP \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value in degrees\r\nDescription: Gets or sets the set point angle for the designated motor\r\n"));
-	Serial.println(F("Command: ANGLE \r\nArg: Channel (0 or 1) \r\nDescription: Gets the angle for the selected channel\r\n"));
-	Serial.println(F("Command: DIR \r\nArg1: Channel (0 or 1) \r\nArg2: None, or Value (CW, CCW)\r\nDescription: Gets or sets the motor direction for the selected channel\r\n"));
-	Serial.println(F("Command: DRIVER \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value (Analog, Frequency)\r\nDescription: Gets or sets the motor driver type for the selected channel\r\n"));
+	Serial.println(F("Command: A \r\nArg: Channel (0 or 1) \r\nDescription: Gets the angle for the selected channel\r\n"));
+	Serial.println(F("Command: Z \r\nDescription: Zeroes the encoder angle on channel 0 (yaw)\r\n"));
+	Serial.println(F("Command: DC \r\nArg1: Channel (0 or 1) \r\nArg2: None, or Value (CW, CCW)\r\nDescription: Gets or sets the motor direction for the selected channel\r\n"));
+	Serial.println(F("Command: DV \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value (Analog, Frequency)\r\nDescription: Gets or sets the motor driver type for the selected channel\r\n"));
 	Serial.println(F("Command: DAC \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value in volts\r\nDescription: Gets or sets the DAC voltage for selected channel\r\n"));
-	Serial.println(F("Command: FREQ \r\nArg: None or Value in Hertz\r\nDescription: Gets or sets the frequency output\r\n"));
+	Serial.println(F("Command: F \r\nArg: None or Value in Hertz\r\nDescription: Gets or sets the frequency output\r\n"));
 	Serial.println(F("Command: ADC \r\nArg: Channel (0 to 7) \r\nDescription: Reads the voltage from the selected ADC channel\r\n"));
 
 	Serial.println(F("Command: PID \r\nArg: ON or OFF \r\nDescription: Enables or disables PID loop control\r\n"));
