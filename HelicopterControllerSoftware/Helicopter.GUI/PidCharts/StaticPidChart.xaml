@@ -37,13 +37,13 @@
         <s:SciChartSurface x:Name="sciChart" Grid.Column="1" ChartTitle="Pid Session">
             <s:SciChartSurface.RenderableSeries>
 
-                <s:FastLineRenderableSeries x:Name="yawSetPointSeries" Stroke="Orange" AntiAliasing="True" StrokeThickness="2" />
+                <s:FastLineRenderableSeries x:Name="yawSetPointSeries" Stroke="Orange" AntiAliasing="True" StrokeDashArray="10,5" StrokeThickness="2" />
 
-                <s:FastLineRenderableSeries x:Name="yawAngleSeries" Stroke="DarkOrange" AntiAliasing="True" StrokeDashArray="10,5" StrokeThickness="2" />
+                <s:FastLineRenderableSeries x:Name="yawAngleSeries" Stroke="DarkOrange" AntiAliasing="True" StrokeThickness="2" />
 
-                <s:FastLineRenderableSeries x:Name="tiltSetPointSeries" Stroke="LightBlue" AntiAliasing="True" StrokeThickness="2" />
+                <s:FastLineRenderableSeries x:Name="tiltSetPointSeries" Stroke="LightBlue" AntiAliasing="True" StrokeDashArray="10,5" StrokeThickness="2" />
 
-                <s:FastLineRenderableSeries x:Name="tiltAngleSeries" Stroke="SteelBlue" AntiAliasing="True" StrokeDashArray="10,5" StrokeThickness="2" />
+                <s:FastLineRenderableSeries x:Name="tiltAngleSeries" Stroke="SteelBlue" AntiAliasing="True" StrokeThickness="2" />
 
                 <!--  Demonstrates a 1pixel dashed line  -->
                 <!--<s:FastLineRenderableSeries Name="Series1" AntiAliasing="True" DataSeries="{Binding Series1}" StrokeDashArray="3,3" StrokeThickness="1" />-->

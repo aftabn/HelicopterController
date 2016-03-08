@@ -41,9 +41,9 @@ namespace Helicopter.GUI.PidCharts
             var yawAngles = session.YawDataSeries.ControllerData.Select(x => x.CurrentAngle);
             var yawSetPoints = session.YawDataSeries.ControllerData.Select(x => x.SetPoint);
 
-            var tiltTimes = session.YawDataSeries.ControllerData.Select(x => (x.TimeStamp - session.StartTime).TotalSeconds);
-            var tiltAngles = session.YawDataSeries.ControllerData.Select(x => x.CurrentAngle);
-            var tiltSetPoints = session.YawDataSeries.ControllerData.Select(x => x.SetPoint);
+            var tiltTimes = session.TiltDataSeries.ControllerData.Select(x => (x.TimeStamp - session.StartTime).TotalSeconds);
+            var tiltAngles = session.TiltDataSeries.ControllerData.Select(x => x.CurrentAngle);
+            var tiltSetPoints = session.TiltDataSeries.ControllerData.Select(x => x.SetPoint);
 
             this.yawAngles.Append(yawTimes, yawAngles);
             this.yawSetPoints.Append(yawTimes, yawSetPoints);
