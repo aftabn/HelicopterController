@@ -19,16 +19,23 @@ namespace Helicopter.Core
         private TiltController tilt;
         private ObservableCollection<DatabaseRow> displayedRecords;
         private bool isDeveloperMode;
+        private bool isDatabaseConnected;
         private string outputText;
 
         public HelicopterViewModel(bool isDeveloperMode)
         {
             this.isDeveloperMode = isDeveloperMode;
 
+            IsDatabaseConnected = DatabaseManager.IsDatabaseAlive();
             HelicopterManager = new HelicopterManager();
             helicopterController = HelicopterManager.HelicopterController;
             yaw = helicopterController.Yaw;
             tilt = helicopterController.Tilt;
+
+            //if (IsDatabaseConnected)
+            //{
+            //    DisplayedRecords = DatabaseManager.GetQueriedRecords(IsSearchingById, SelectedRecordId, SelectedDate);
+            //}
 
             OutputText = String.Empty;
 
@@ -39,29 +46,44 @@ namespace Helicopter.Core
 
         public HelicopterManager HelicopterManager { get; private set; }
 
-        //public ObservableCollection<DatabaseRow> DisplayedRecords
-        //{
-        //    get
-        //    {
-        //        return displayedRecords;
-        //    }
+        public ObservableCollection<DatabaseRow> DisplayedRecords
+        {
+            get
+            {
+                return displayedRecords;
+            }
 
-        //    set
-        //    {
-        //        displayedRecords = value;
-        //        RaisePropertyChanged("DisplayedRecords");
-        //    }
-        //}
+            set
+            {
+                displayedRecords = value;
+                RaisePropertyChanged("DisplayedRecords");
+            }
+        }
 
-        //public DatabaseRow SelectedRecord { get; set; }
+        public DatabaseRow SelectedRecord { get; set; }
 
-        //public int SelectedRecordId { get; set; }
+        public int SelectedRecordId { get; set; }
 
-        //public DateTime SelectedDate { get; set; }
+        public DateTime SelectedDate { get; set; }
 
-        //public bool IsSearchingById { get; set; }
+        public bool IsSearchingById { get; set; }
 
-        //public bool IsDatabaseConnected { get; set; }
+        public bool IsDatabaseConnected
+        {
+            get
+            {
+                return isDatabaseConnected;
+            }
+
+            set
+            {
+                if (value != isDatabaseConnected)
+                {
+                    isDatabaseConnected = value;
+                    RaisePropertyChanged("IsDatabaseConnected");
+                }
+            }
+        }
 
         public bool IsDeveloperMode { get { return isDeveloperMode; } }
 
@@ -545,7 +567,14 @@ namespace Helicopter.Core
 
         private void OnHelicopterManagerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            RaisePropertyChanged(e.PropertyName);
+            if (e.PropertyName == "IsSessionRequestingStop")
+            {
+                HelicopterManager.StopSession();
+            }
+            else
+            {
+                RaisePropertyChanged(e.PropertyName);
+            }
         }
 
         private void RaisePropertyChanged(string propertyName)
