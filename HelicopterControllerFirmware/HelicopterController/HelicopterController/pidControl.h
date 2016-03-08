@@ -54,7 +54,7 @@ Author:	Aftab
 #define MOTOR_MAX_FREQUENCY				30000	// Corresponds to 30000 RPM
 #define MOTOR_MIN_FREQUENCY				0		// Corresponds to 0 RPM
 
-#define P_GAIN_MIN						0.01
+#define P_GAIN_MIN						0.0
 #define P_GAIN_MAX						10.0
 
 #define I_GAIN_MIN						0.0

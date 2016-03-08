@@ -183,11 +183,11 @@ bool isChannelCorrect(char* channelArg)
 
 bool isProfileCorrect(char* profileArg)
 {
-	char profileStr[10];
+	char profileStr[3];
 
 	for (int profile = 0; profile < NUM_DIRECTION_PROFILES; profile++)
 	{
-		sprintf(profileStr, "%d", profileStr);
+		sprintf(profileStr, "%d", profile);
 		if (0 == stricmp(profileArg, profileStr))
 		{
 			return true;
