@@ -162,39 +162,39 @@ namespace Helicopter.Core.Controller
             communicationsManager.Write(command);
         }
 
-        public static double GetProportionalGain(int channel)
+        public static double GetProportionalGain(int channel, int profile)
         {
-            string command = String.Format("{0} {1}", STR_ProportionalGainCommand, channel);
+            string command = String.Format("{0} {1} {2}", STR_ProportionalGainCommand, channel, profile);
             return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
         }
 
-        public static void SetProportionalGain(int channel, double pGain)
+        public static void SetProportionalGain(int channel, int profile, double pGain)
         {
-            string command = String.Format("{0} {1} {2}", STR_ProportionalGainCommand, channel, pGain);
+            string command = String.Format("{0} {1} {2} {3}", STR_ProportionalGainCommand, channel, profile, pGain);
             communicationsManager.Write(command);
         }
 
-        public static double GetIntegralGain(int channel)
+        public static double GetIntegralGain(int channel, int profile)
         {
-            string command = String.Format("{0} {1}", STR_IntegralGainCommand, channel);
+            string command = String.Format("{0} {1} {2}", STR_IntegralGainCommand, channel, profile);
             return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
         }
 
-        public static void SetIntegralGain(int channel, double iGain)
+        public static void SetIntegralGain(int channel, int profile, double iGain)
         {
-            string command = String.Format("{0} {1} {2}", STR_IntegralGainCommand, channel, iGain);
+            string command = String.Format("{0} {1} {2} {3}", STR_IntegralGainCommand, channel, profile, iGain);
             communicationsManager.Write(command);
         }
 
-        public static double GetDerivativeGain(int channel)
+        public static double GetDerivativeGain(int channel, int profile)
         {
-            string command = String.Format("{0} {1}", STR_DerivativeGainCommand, channel);
+            string command = String.Format("{0} {1} {2}", STR_DerivativeGainCommand, channel, profile);
             return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
         }
 
-        public static void SetDerivativeGain(int channel, double dGain)
+        public static void SetDerivativeGain(int channel, int profile, double dGain)
         {
-            string command = String.Format("{0} {1} {2}", STR_DerivativeGainCommand, channel, dGain);
+            string command = String.Format("{0} {1} {2} {3}", STR_DerivativeGainCommand, channel, profile, dGain);
             communicationsManager.Write(command);
         }
 

@@ -32,6 +32,8 @@ namespace Helicopter.Core.Sessions
 
         public DateTime EndTime { get; set; }
 
+        public string Comment { get; set; }
+
         public ControllerDataSeries YawDataSeries { get; set; }
 
         public ControllerDataSeries TiltDataSeries { get; set; }

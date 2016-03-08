@@ -17,11 +17,7 @@ namespace Helicopter.Core.Settings
 
         public MotorDriver MotorDriver { get; protected set; }
 
-        public double ProportionalGain { get; protected set; }
-
-        public double IntegralGain { get; protected set; }
-
-        public double DerivativeGain { get; protected set; }
+        public Dictionary<DirectionProfile, PidProfile> PidProfiles { get; protected set; }
 
         public double IntegralWindupThreshold { get; protected set; }
 

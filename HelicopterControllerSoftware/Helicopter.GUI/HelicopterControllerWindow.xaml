@@ -9,8 +9,8 @@
         xmlns:Controller="clr-namespace:Helicopter.Core.Controller;assembly=Helicopter.Core"
         mc:Ignorable="d"
         Title="Helicopter Controller Software"
-        Height="733.419" Width="1500"
-        MinHeight="500" MinWidth="600"
+        Height="750" Width="1500"
+        MinHeight="750" MinWidth="600"
         Loaded="WindowLoaded"
 	    Closing="OnWindowClosing">
     <Window.Resources>
@@ -31,6 +31,10 @@
             <StatusBarItem>
                 <TextBlock x:Name="helicopterControllerStatusTextbox" Padding="10,2,10,2"><Run Text="Helicopter Controller Status" /></TextBlock>
             </StatusBarItem>
+            <!--<Separator Width="1" HorizontalAlignment="Center" Background="DarkGray" Margin="5,3,5,3" />
+            <StatusBarItem>
+                <TextBlock x:Name="databaseLiveTextBlock" Padding="5,2,5,2"><Run Text="Database Status" /></TextBlock>
+            </StatusBarItem>-->
         </StatusBar>
         <TabControl x:Name="controllerTabs">
             <TabItem x:Name="operatorTab" Header="Operator">
@@ -59,6 +63,7 @@
                         </StackPanel>
                         <Separator Margin="5,5,5,10" />
                         <Button Margin="5,0,5,5" Content="Controller Info" Command="{Binding GetControllerInfoCommand}" />
+                        <Button Margin="5,0,5,5" Content="Zero Yaw Angle" Command="{Binding ZeroYawAngleCommand}" />
                         <Button Margin="5,0,5,5" Content="Disable Motors" Command="{Binding DisableMotorsCommand}" />
                         <Button Margin="5,0,5,5" Content="Refresh Values" Command="{Binding RefreshValuesCommand}" />
                         <Separator Margin="5,5,5,10" />
@@ -112,29 +117,53 @@
                                 <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,0,0" Width="40"><Run Text="CCW" /></TextBlock>
                             </StackPanel>
                         </StackPanel>
-                        <Button Margin="5,5,5,5" Content="Zero Angle" Command="{Binding ZeroYawAngleCommand}" />
                         <StackPanel Margin="5,5,5,0">
-                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Proportional Gain" /></TextBlock>
+                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="CW Proportional Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawProportionalGainCommand}" CommandParameter="{Binding ElementName=setYawProportionalGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawProportionalGainTextbox" />
-                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawProportionalGain}" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCWProportionalGainCommand}" CommandParameter="{Binding ElementName=setYawCWProportionalGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawCWProportionalGainTextbox" />
+                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawCWProportionalGain}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
-                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Integral Gain" /></TextBlock>
+                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="CW Integral Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawIntegralGainCommand}" CommandParameter="{Binding ElementName=setYawIntegralGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawIntegralGainTextbox" />
-                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawIntegralGain}" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCWIntegralGainCommand}" CommandParameter="{Binding ElementName=setYawCWIntegralGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawCWIntegralGainTextbox" />
+                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawCWIntegralGain}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
-                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Derivative Gain" /></TextBlock>
+                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="CW Derivative Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawDerivativeGainCommand}" CommandParameter="{Binding ElementName=setYawDerivativeGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawDerivativeGainTextbox" />
-                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawDerivativeGain}" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCWDerivativeGainCommand}" CommandParameter="{Binding ElementName=setYawCWDerivativeGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawCWDerivativeGainTextbox" />
+                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawCWDerivativeGain}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <Separator Margin="5,10,5,0" />
+                        <StackPanel Margin="5,5,5,0">
+                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="CCW Proportional Gain" /></TextBlock>
+                            <StackPanel Orientation="Horizontal">
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCCWProportionalGainCommand}" CommandParameter="{Binding ElementName=setYawCCWProportionalGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawCCWProportionalGainTextbox" />
+                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawCCWProportionalGain}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Margin="5,5,5,0">
+                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="CCW Integral Gain" /></TextBlock>
+                            <StackPanel Orientation="Horizontal">
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCCWIntegralGainCommand}" CommandParameter="{Binding ElementName=setYawCCWIntegralGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawCCWIntegralGainTextbox" />
+                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawCCWIntegralGain}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Margin="5,5,5,0">
+                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="CCW Derivative Gain" /></TextBlock>
+                            <StackPanel Orientation="Horizontal">
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCCWDerivativeGainCommand}" CommandParameter="{Binding ElementName=setYawCCWDerivativeGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawCCWDerivativeGainTextbox" />
+                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawCCWDerivativeGain}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
@@ -198,25 +227,25 @@
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Proportional Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltProportionalGainCommand}" CommandParameter="{Binding ElementName=setTiltProportionalGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltProportionalGainTextbox" />
-                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltProportionalGain}" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltCWProportionalGainCommand}" CommandParameter="{Binding ElementName=setTiltCWProportionalGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltCWProportionalGainTextbox" />
+                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltCWProportionalGain}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Integral Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltIntegralGainCommand}" CommandParameter="{Binding ElementName=setTiltIntegralGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltIntegralGainTextbox" />
-                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltIntegralGain}" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltCWIntegralGainCommand}" CommandParameter="{Binding ElementName=setTiltCWIntegralGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltCWIntegralGainTextbox" />
+                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltCWIntegralGain}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Derivative Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltDerivativeGainCommand}" CommandParameter="{Binding ElementName=setTiltDerivativeGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltDerivativeGainTextbox" />
-                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltDerivativeGain}" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltCWDerivativeGainCommand}" CommandParameter="{Binding ElementName=setTiltCWDerivativeGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltCWDerivativeGainTextbox" />
+                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltCWDerivativeGain}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
@@ -256,6 +285,54 @@
                     </Border>
                 </DockPanel>
             </TabItem>
+            <!--<TabItem x:Name="historyTab" Header="History">
+                <DockPanel x:Name="databaseDockPanel" Width="1000">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                        <GroupBox Header="Search By" Margin="0,0,0,5">
+                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                <RadioButton x:Name="recordIdRadioButton" VerticalAlignment="Center" Content="by Id" Margin="20,0,10,0" IsChecked="{Binding IsSearchingById}" />
+                                <TextBox  Width="100" Margin="10,0,10,0" Text="{Binding SelectedRecordId, UpdateSourceTrigger=LostFocus}" />
+                                <RadioButton x:Name="dateRadioButton" IsChecked="True"  VerticalAlignment="Center" Content="by Date" Margin="10,0,10,0" />
+                                <DatePicker Margin="10,0,20,0" SelectedDate="{Binding SelectedDate, Mode=TwoWay}" DisplayDate="{Binding SelectedDate}"></DatePicker>
+                            </StackPanel>
+                        </GroupBox>
+                        <Button Width="120" Margin="10,9,0,7" FontSize="14" FontWeight="SemiBold" Command="{Binding SearchForRecordsCommand}"
+								CommandParameter="{Binding ElementName=recordIdRadioButton, Path=IsChecked}">Search</Button>
+                    </StackPanel>
+                    <DataGrid x:Name="databaseDataGrid" AutoGenerateColumns="False" IsReadOnly="True" DockPanel.Dock="Top" ColumnWidth="Auto"
+							Background="LightGray" ItemsSource="{Binding DisplayedRecords}" SelectedItem="{Binding SelectedRecord}">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Padding" Value="3" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                            <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}"
+													BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                                <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
+                            <DataGridTextColumn Header="Software Build" Binding="{Binding SoftwareBuild}" />
+                            <DataGridTextColumn Header="Part Number" Binding="{Binding PartNumber}" />
+                            <DataGridTextColumn Header="Lot Number" Binding="{Binding LotNumber}" />
+                            <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate}" />
+                            <DataGridCheckBoxColumn Header="Successful?" Binding="{Binding IsSuccessful}" />
+                            <DataGridTextColumn Header="Relative Time" Binding="{Binding Relative}" />
+                            <DataGridTextColumn Header="Operator" Binding="{Binding Operator}" />
+                            <DataGridTextColumn Header="Comments" Binding="{Binding Comments}" />
+                            <DataGridTextColumn Header="Messages" Binding="{Binding Messages}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>-->
         </TabControl>
         <local:RealTimePidChart x:Name="pidChart" />
     </DockPanel>

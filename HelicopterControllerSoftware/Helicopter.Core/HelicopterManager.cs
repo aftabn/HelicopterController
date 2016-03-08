@@ -82,8 +82,7 @@ namespace Helicopter.Core
 
         public void Connect()
         {
-            HelicopterController.Connect();
-            HelicopterController.LoadSettings(helicopterSettings.ControllerSettings);
+            HelicopterController.Connect(helicopterSettings.ControllerSettings);
         }
 
         public void Disconnect()

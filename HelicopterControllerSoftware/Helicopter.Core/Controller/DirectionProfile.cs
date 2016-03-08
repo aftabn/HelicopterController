@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Helicopter.Core.Controller
 {
-    public enum Direction
+    public enum DirectionProfile
     {
-        Clockwise = 0, CounterClockwise = 1
+        CW = 0, CCW = 1
     }
 }

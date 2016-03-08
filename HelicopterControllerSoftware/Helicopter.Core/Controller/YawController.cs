@@ -13,6 +13,15 @@ namespace Helicopter.Core.Controller
         public YawController() : base((int)motorType)
         {
             MotorType = motorType;
+
+            PidProfiles = new Dictionary<DirectionProfile, PidProfile>
+            {
+                { DirectionProfile.CW, new PidProfile { DirectionProfile = DirectionProfile.CW } },
+                { DirectionProfile.CCW, new PidProfile{ DirectionProfile = DirectionProfile.CCW } }
+            };
+
+            PidProfiles[DirectionProfile.CW].PropertyChanged += OnPidValuesPropertyChanged;
+            PidProfiles[DirectionProfile.CCW].PropertyChanged += OnPidValuesPropertyChanged;
         }
 
         public void ZeroAngle()

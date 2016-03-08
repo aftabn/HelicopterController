@@ -3,7 +3,9 @@ using Helicopter.Core.Settings;
 using log4net;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Helicopter.Core.Controller
 {
@@ -15,9 +17,6 @@ namespace Helicopter.Core.Controller
         private Direction direction;
         private MotorDriver motorDriver;
         private bool isEnabled;
-        private double proportionalGain;
-        private double integralGain;
-        private double derivativeGain;
         private double integralWindupThreshold;
         private int outputRateLimit;
         private double setPoint;
@@ -38,56 +37,7 @@ namespace Helicopter.Core.Controller
 
         public MotorType MotorType { get; protected set; }
 
-        public double ProportionalGain
-        {
-            get
-            {
-                return proportionalGain;
-            }
-
-            set
-            {
-                if (value != proportionalGain)
-                {
-                    proportionalGain = value;
-                    RaisePropertyChanged("ProportionalGain");
-                }
-            }
-        }
-
-        public double IntegralGain
-        {
-            get
-            {
-                return integralGain;
-            }
-
-            set
-            {
-                if (value != integralGain)
-                {
-                    integralGain = value;
-                    RaisePropertyChanged("IntegralGain");
-                }
-            }
-        }
-
-        public double DerivativeGain
-        {
-            get
-            {
-                return derivativeGain;
-            }
-
-            set
-            {
-                if (value != derivativeGain)
-                {
-                    derivativeGain = value;
-                    RaisePropertyChanged("DerivativeGain");
-                }
-            }
-        }
+        public Dictionary<DirectionProfile, PidProfile> PidProfiles { get; set; }
 
         public double IntegralWindupThreshold
         {
@@ -225,28 +175,14 @@ namespace Helicopter.Core.Controller
             }
         }
 
-        public void Initialize()
-        {
-            RefreshCurrentAngle();
-            RefreshOutputPercentage();
-            RefreshDirection();
-            RefreshProportionalGain();
-            RefreshIntegralGain();
-            RefreshDerivativeGain();
-            RefreshIntegralWindupThreshold();
-            RefreshSetPoint();
-            RefreshMotorDriver();
-        }
-
         public void LoadSettings(AngleControllerSettings settings)
         {
             IsEnabled = settings.IsEnabled;
             SetMotorDriver(settings.MotorDriver);
-            SetProportionalGain(settings.ProportionalGain);
-            SetIntegralGain(settings.IntegralGain);
-            SetDerivativeGain(settings.DerivativeGain);
             SetIntegralWindupThreshold(settings.IntegralWindupThreshold);
             SetOutputRateLimit(settings.OutputRateLimit);
+
+            settings.PidProfiles.Values.ToList().ForEach(profile => SetPidValuesFromProfile(profile));
         }
 
         public void Dispose()
@@ -258,7 +194,18 @@ namespace Helicopter.Core.Controller
             SetOutputPercentage(0);
         }
 
-        public void RefreshValues()
+        public void RefreshAllValues()
+        {
+            RefreshSetPoint();
+            RefreshCurrentAngle();
+            RefreshOutputPercentage();
+            RefreshDirection();
+            RefreshIntegralWindupThreshold();
+            RefreshMotorDriver();
+            RefreshPidValues();
+        }
+
+        public void RefreshProcessValues()
         {
             RefreshCurrentAngle();
             RefreshOutputPercentage();
@@ -280,19 +227,19 @@ namespace Helicopter.Core.Controller
             Direction = Microcontroller.GetMotorDirection(controllerChannel);
         }
 
-        public void RefreshProportionalGain()
+        public void RefreshProportionalGain(DirectionProfile profile)
         {
-            ProportionalGain = Microcontroller.GetProportionalGain(controllerChannel);
+            PidProfiles[profile].ProportionalGain = Microcontroller.GetProportionalGain(controllerChannel, (int)profile);
         }
 
-        public void RefreshIntegralGain()
+        public void RefreshIntegralGain(DirectionProfile profile)
         {
-            IntegralGain = Microcontroller.GetIntegralGain(controllerChannel);
+            PidProfiles[profile].IntegralGain = Microcontroller.GetIntegralGain(controllerChannel, (int)profile);
         }
 
-        public void RefreshDerivativeGain()
+        public void RefreshDerivativeGain(DirectionProfile profile)
         {
-            DerivativeGain = Microcontroller.GetDerivativeGain(controllerChannel);
+            PidProfiles[profile].DerivativeGain = Microcontroller.GetDerivativeGain(controllerChannel, (int)profile);
         }
 
         public void RefreshIntegralWindupThreshold()
@@ -327,22 +274,23 @@ namespace Helicopter.Core.Controller
             Direction = direction;
         }
 
-        public void SetProportionalGain(double pGain)
+        public void SetProportionalGain(DirectionProfile profile, double pGain)
         {
-            Microcontroller.SetProportionalGain(controllerChannel, pGain);
-            ProportionalGain = pGain;
+            Microcontroller.SetProportionalGain(controllerChannel, (int)profile, pGain);
+            // PidProfiles.Single(x => x.Key == profile).Value.ProportionalGain = pGain;
+            PidProfiles[profile].ProportionalGain = pGain;
         }
 
-        public void SetIntegralGain(double iGain)
+        public void SetIntegralGain(DirectionProfile profile, double iGain)
         {
-            Microcontroller.SetIntegralGain(controllerChannel, iGain);
-            IntegralGain = iGain;
+            Microcontroller.SetIntegralGain(controllerChannel, (int)profile, iGain);
+            PidProfiles[profile].IntegralGain = iGain;
         }
 
-        public void SetDerivativeGain(double dGain)
+        public void SetDerivativeGain(DirectionProfile profile, double dGain)
         {
-            Microcontroller.SetDerivativeGain(controllerChannel, dGain);
-            DerivativeGain = dGain;
+            Microcontroller.SetDerivativeGain(controllerChannel, (int)profile, dGain);
+            PidProfiles[profile].DerivativeGain = dGain;
         }
 
         public void SetIntegralWindupThreshold(double iWindupThreshold)
@@ -371,24 +319,38 @@ namespace Helicopter.Core.Controller
 
         public void TakeNewDataSample(DateTime timeStamp)
         {
-            RefreshValues();
+            RefreshProcessValues();
 
-            var data = new ControllerDataPoint
-            {
-                TimeStamp = timeStamp,
-                SetPoint = SetPoint,
-                CurrentAngle = CurrentAngle,
-                ProportionalGain = ProportionalGain,
-                IntegralGain = IntegralGain,
-                DerivativeGain = DerivativeGain,
-                IntegralWindupThreshold = IntegralWindupThreshold,
-                OutputRateLimit = OutputRateLimit
-            };
+            var data = new ControllerDataPoint(timeStamp, SetPoint, CurrentAngle);
 
             ControllerData.Add(data);
 
             // This is needed in order for PID graphs to update
             RaisePropertyChanged("ControllerData");
+        }
+
+        protected void OnPidValuesPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(e.PropertyName);
+        }
+
+        private void SetPidValuesFromProfile(PidProfile pidProfile)
+        {
+            var directionProfile = pidProfile.DirectionProfile;
+
+            SetProportionalGain(directionProfile, pidProfile.ProportionalGain);
+            SetIntegralGain(directionProfile, pidProfile.IntegralGain);
+            SetDerivativeGain(directionProfile, pidProfile.DerivativeGain);
+        }
+
+        private void RefreshPidValues()
+        {
+            foreach (var profile in PidProfiles.Values)
+            {
+                RefreshProportionalGain(profile.DirectionProfile);
+                RefreshIntegralGain(profile.DirectionProfile);
+                RefreshDerivativeGain(profile.DirectionProfile);
+            }
         }
 
         private void RaisePropertyChanged(string propertyName)

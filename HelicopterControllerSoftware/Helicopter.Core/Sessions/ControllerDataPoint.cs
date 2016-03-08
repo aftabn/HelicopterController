@@ -4,8 +4,11 @@ namespace Helicopter.Core.Sessions
 {
     public class ControllerDataPoint
     {
-        public ControllerDataPoint()
+        public ControllerDataPoint(DateTime timeStamp, double setPoint, double currentAngle)
         {
+            TimeStamp = timeStamp;
+            SetPoint = setPoint;
+            CurrentAngle = currentAngle;
         }
 
         public DateTime TimeStamp { get; set; }
@@ -13,15 +16,5 @@ namespace Helicopter.Core.Sessions
         public double SetPoint { get; set; }
 
         public double CurrentAngle { get; set; }
-
-        public double ProportionalGain { get; set; }
-
-        public double IntegralGain { get; set; }
-
-        public double DerivativeGain { get; set; }
-
-        public double IntegralWindupThreshold { get; set; }
-
-        public int OutputRateLimit { get; set; }
     }
 }

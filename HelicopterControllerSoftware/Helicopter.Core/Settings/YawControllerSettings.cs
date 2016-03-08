@@ -12,16 +12,23 @@ namespace Helicopter.Core.Settings
     {
         public static YawControllerSettings FromXmlElement(System.Xml.Linq.XElement angleControllerElement)
         {
-            return new YawControllerSettings()
+            var cwProfileElement = angleControllerElement.Elements("PidProfile").Where(x => x.Attribute("Direction").Value == DirectionProfile.CW.ToString()).Single();
+            var ccwProfileElement = angleControllerElement.Elements("PidProfile").Where(x => x.Attribute("Direction").Value == DirectionProfile.CCW.ToString()).Single();
+
+            var settings = new YawControllerSettings()
             {
                 IsEnabled = angleControllerElement.Attribute("IsEnabled").ParseOptionalBoolean(),
                 MotorDriver = (MotorDriver)Enum.Parse(typeof(MotorDriver), angleControllerElement.Attribute("MotorDriver").Value),
-                ProportionalGain = angleControllerElement.Attribute("ProportionalGain").ParseDouble(),
-                IntegralGain = angleControllerElement.Attribute("IntegralGain").ParseDouble(),
-                DerivativeGain = angleControllerElement.Attribute("DerivativeGain").ParseDouble(),
                 IntegralWindupThreshold = angleControllerElement.Attribute("IntegralWindupThreshold").ParseDouble(),
                 OutputRateLimit = angleControllerElement.Attribute("OutputRateLimit").ParseInt(),
+                PidProfiles = new Dictionary<DirectionProfile, PidProfile>
+                {
+                    {DirectionProfile.CW, PidProfile.FromXmlElement(cwProfileElement) },
+                    {DirectionProfile.CCW, PidProfile.FromXmlElement(ccwProfileElement) }
+                },
             };
+
+            return settings;
         }
     }
 }

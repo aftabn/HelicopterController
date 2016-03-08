@@ -28,7 +28,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <ext:SciChartInteractionToolbar TargetSurface="{Binding ElementName=sciChartSurface}" />
+        <!--<ext:SciChartInteractionToolbar TargetSurface="{Binding ElementName=sciChartSurface}" />-->
 
         <!--  Define a SciChartSurface with RolloverModifier  -->
         <s:SciChartSurface x:Name="sciChartSurface" Grid.Column="1" ChartTitle="Pid Tuning Chart">

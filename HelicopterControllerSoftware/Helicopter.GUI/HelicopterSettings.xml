@@ -16,12 +16,19 @@
       • IntegralWindupThreshold is how close the angle must be to the set point before integral gain kicks in
       • OutputRateLimit is has the max rate at which the output can change per PID loop execution
       • Proportional, Integral and Derivative gains are the PID constants used to tune the controller
+        • These are separated into a clockwise and/or clockwise profile, since the motors do not output the same
+          amount of thrust in both directions
 -->
 <Settings>
-  <Helicopter ConnectionType="Bluetooth" PidThreadRefreshIntervalMilliseconds="100">
+  <Helicopter ConnectionType="Serial" PidThreadRefreshIntervalMilliseconds="100">
     <Controller IsSafetyEnabled="true" PidLoopIntervalMilliseconds="50">
-      <Yaw IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="0.5" IntegralGain="0.25" DerivativeGain="0" IntegralWindupThreshold="30" OutputRateLimit="90" />
-      <Tilt IsEnabled="true" MotorDriver="AnalogVoltage" ProportionalGain="0.8" IntegralGain="0.6" DerivativeGain="0.3" IntegralWindupThreshold="30" OutputRateLimit="100" />
+      <Yaw IsEnabled="true" MotorDriver="AnalogVoltage" IntegralWindupThreshold="90" OutputRateLimit="100">
+        <PidProfile Direction="CW" ProportionalGain="0.5" IntegralGain="0.25" DerivativeGain="0" />
+        <PidProfile Direction="CCW" ProportionalGain="0.1" IntegralGain="0.1" DerivativeGain="0.1" />
+      </Yaw>
+      <Tilt IsEnabled="true" MotorDriver="AnalogVoltage" IntegralWindupThreshold="45" OutputRateLimit="100">
+        <PidProfile Direction="CW" ProportionalGain="0.8" IntegralGain="0.6" DerivativeGain="0.3" />
+      </Tilt>
     </Controller>
   </Helicopter>
 </Settings>

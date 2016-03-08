@@ -30,11 +30,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
@@ -47,6 +56,9 @@
   <ItemGroup>
     <Compile Include="Controller\AngleController.cs" />
     <Compile Include="Controller\ConnectionType.cs" />
+    <Compile Include="Controller\DirectionProfile.cs" />
+    <Compile Include="Controller\PidProfile.cs" />
+    <Compile Include="DatabaseManager.cs" />
     <Compile Include="Sessions\ControllerDataPoint.cs" />
     <Compile Include="Controller\Direction.cs" />
     <Compile Include="Controller\HelicopterController.cs" />
@@ -70,10 +82,15 @@
     <Compile Include="StartupOptions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\Helicopter.Model\Helicopter.Model.csproj">
+      <Project>{1703bb16-f73e-4727-8caf-cc4892f70904}</Project>
+      <Name>Helicopter.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libs.Utilities\Libs.Utilities.csproj">
       <Project>{5c11855c-8094-4020-bbd5-841f2824172d}</Project>
       <Name>Libs.Utilities</Name>

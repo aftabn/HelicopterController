@@ -1,8 +1,10 @@
 ﻿using Helicopter.Core.Controller;
 using Helicopter.Core.Sessions;
+using Helicopter.Model;
 using Libs.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -15,6 +17,7 @@ namespace Helicopter.Core
         private HelicopterController helicopterController;
         private YawController yaw;
         private TiltController tilt;
+        private ObservableCollection<DatabaseRow> displayedRecords;
         private bool isDeveloperMode;
         private string outputText;
 
@@ -35,6 +38,30 @@ namespace Helicopter.Core
         public event PropertyChangedEventHandler PropertyChanged;
 
         public HelicopterManager HelicopterManager { get; private set; }
+
+        //public ObservableCollection<DatabaseRow> DisplayedRecords
+        //{
+        //    get
+        //    {
+        //        return displayedRecords;
+        //    }
+
+        //    set
+        //    {
+        //        displayedRecords = value;
+        //        RaisePropertyChanged("DisplayedRecords");
+        //    }
+        //}
+
+        //public DatabaseRow SelectedRecord { get; set; }
+
+        //public int SelectedRecordId { get; set; }
+
+        //public DateTime SelectedDate { get; set; }
+
+        //public bool IsSearchingById { get; set; }
+
+        //public bool IsDatabaseConnected { get; set; }
 
         public bool IsDeveloperMode { get { return isDeveloperMode; } }
 
@@ -69,22 +96,40 @@ namespace Helicopter.Core
             set { yaw.SetSetPoint(value); }
         }
 
-        public double YawProportionalGain
+        public double YawCWProportionalGain
         {
-            get { return yaw.ProportionalGain; }
-            set { yaw.SetProportionalGain(value); }
+            get { return yaw.PidProfiles[DirectionProfile.CW].ProportionalGain; }
+            set { yaw.SetProportionalGain(DirectionProfile.CW, value); }
         }
 
-        public double YawIntegralGain
+        public double YawCWIntegralGain
         {
-            get { return yaw.IntegralGain; }
-            set { yaw.SetIntegralGain(value); }
+            get { return yaw.PidProfiles[DirectionProfile.CW].IntegralGain; }
+            set { yaw.SetIntegralGain(DirectionProfile.CW, value); }
         }
 
-        public double YawDerivativeGain
+        public double YawCWDerivativeGain
         {
-            get { return yaw.DerivativeGain; }
-            set { yaw.SetDerivativeGain(value); }
+            get { return yaw.PidProfiles[DirectionProfile.CW].DerivativeGain; }
+            set { yaw.SetDerivativeGain(DirectionProfile.CW, value); }
+        }
+
+        public double YawCCWProportionalGain
+        {
+            get { return yaw.PidProfiles[DirectionProfile.CCW].ProportionalGain; }
+            set { yaw.SetProportionalGain(DirectionProfile.CCW, value); }
+        }
+
+        public double YawCCWIntegralGain
+        {
+            get { return yaw.PidProfiles[DirectionProfile.CCW].IntegralGain; }
+            set { yaw.SetIntegralGain(DirectionProfile.CCW, value); }
+        }
+
+        public double YawCCWDerivativeGain
+        {
+            get { return yaw.PidProfiles[DirectionProfile.CCW].DerivativeGain; }
+            set { yaw.SetDerivativeGain(DirectionProfile.CCW, value); }
         }
 
         public double YawIntegralWindupThreshold
@@ -128,22 +173,22 @@ namespace Helicopter.Core
             set { tilt.SetSetPoint(value); }
         }
 
-        public double TiltProportionalGain
+        public double TiltCWProportionalGain
         {
-            get { return tilt.ProportionalGain; }
-            set { tilt.SetProportionalGain(value); }
+            get { return tilt.PidProfiles[DirectionProfile.CW].ProportionalGain; }
+            set { tilt.SetProportionalGain(DirectionProfile.CW, value); }
         }
 
-        public double TiltIntegralGain
+        public double TiltCWIntegralGain
         {
-            get { return tilt.IntegralGain; }
-            set { tilt.SetIntegralGain(value); }
+            get { return tilt.PidProfiles[DirectionProfile.CW].IntegralGain; }
+            set { tilt.SetIntegralGain(DirectionProfile.CW, value); }
         }
 
-        public double TiltDerivativeGain
+        public double TiltCWDerivativeGain
         {
-            get { return tilt.DerivativeGain; }
-            set { tilt.SetDerivativeGain(value); }
+            get { return tilt.PidProfiles[DirectionProfile.CW].DerivativeGain; }
+            set { tilt.SetDerivativeGain(DirectionProfile.CW, value); }
         }
 
         public double TiltIntegralWindupThreshold
@@ -212,9 +257,12 @@ namespace Helicopter.Core
         public ICommand GetYawAngleCommand { get; private set; }
         public ICommand ZeroYawAngleCommand { get; private set; }
         public ICommand SetYawSetPointCommand { get; private set; }
-        public ICommand SetYawProportionalGainCommand { get; private set; }
-        public ICommand SetYawIntegralGainCommand { get; private set; }
-        public ICommand SetYawDerivativeGainCommand { get; private set; }
+        public ICommand SetYawCWProportionalGainCommand { get; private set; }
+        public ICommand SetYawCWIntegralGainCommand { get; private set; }
+        public ICommand SetYawCWDerivativeGainCommand { get; private set; }
+        public ICommand SetYawCCWProportionalGainCommand { get; private set; }
+        public ICommand SetYawCCWIntegralGainCommand { get; private set; }
+        public ICommand SetYawCCWDerivativeGainCommand { get; private set; }
         public ICommand SetYawIntegralWindupThresholdCommand { get; private set; }
         public ICommand SetYawOutputRateLimitCommand { get; private set; }
         public ICommand SetYawOutputPercentageCommand { get; private set; }
@@ -222,9 +270,9 @@ namespace Helicopter.Core
         public ICommand SetYawMotorDriverCommand { get; private set; }
         public ICommand GetTiltAngleCommand { get; private set; }
         public ICommand SetTiltSetPointCommand { get; private set; }
-        public ICommand SetTiltProportionalGainCommand { get; private set; }
-        public ICommand SetTiltIntegralGainCommand { get; private set; }
-        public ICommand SetTiltDerivativeGainCommand { get; private set; }
+        public ICommand SetTiltCWProportionalGainCommand { get; private set; }
+        public ICommand SetTiltCWIntegralGainCommand { get; private set; }
+        public ICommand SetTiltCWDerivativeGainCommand { get; private set; }
         public ICommand SetTiltIntegralWindupThresholdCommand { get; private set; }
         public ICommand SetTiltOutputRateLimitCommand { get; private set; }
         public ICommand SetTiltOutputPercentageCommand { get; private set; }
@@ -364,27 +412,51 @@ namespace Helicopter.Core
                    },
                    x => IsConnected && !IsPidEnabled);
 
-            SetYawProportionalGainCommand = new RelayCommand(
+            SetYawCWProportionalGainCommand = new RelayCommand(
                    x =>
                    {
                        var pGain = Convert.ToDouble(x);
-                       YawProportionalGain = pGain;
+                       YawCWProportionalGain = pGain;
                    },
                    x => IsConnected);
 
-            SetYawIntegralGainCommand = new RelayCommand(
+            SetYawCWIntegralGainCommand = new RelayCommand(
                    x =>
                    {
                        var iGain = Convert.ToDouble(x);
-                       YawIntegralGain = iGain;
+                       YawCWIntegralGain = iGain;
                    },
                    x => IsConnected);
 
-            SetYawDerivativeGainCommand = new RelayCommand(
+            SetYawCWDerivativeGainCommand = new RelayCommand(
                    x =>
                    {
                        var dGain = Convert.ToDouble(x);
-                       YawDerivativeGain = dGain;
+                       YawCWDerivativeGain = dGain;
+                   },
+                   x => IsConnected);
+
+            SetYawCCWProportionalGainCommand = new RelayCommand(
+                   x =>
+                   {
+                       var pGain = Convert.ToDouble(x);
+                       YawCCWProportionalGain = pGain;
+                   },
+                   x => IsConnected);
+
+            SetYawCCWIntegralGainCommand = new RelayCommand(
+                   x =>
+                   {
+                       var iGain = Convert.ToDouble(x);
+                       YawCCWIntegralGain = iGain;
+                   },
+                   x => IsConnected);
+
+            SetYawCCWDerivativeGainCommand = new RelayCommand(
+                   x =>
+                   {
+                       var dGain = Convert.ToDouble(x);
+                       YawCCWDerivativeGain = dGain;
                    },
                    x => IsConnected);
 
@@ -424,27 +496,27 @@ namespace Helicopter.Core
                    },
                    x => IsConnected && !IsPidEnabled);
 
-            SetTiltProportionalGainCommand = new RelayCommand(
+            SetTiltCWProportionalGainCommand = new RelayCommand(
                    x =>
                    {
                        var pGain = Convert.ToDouble(x);
-                       TiltProportionalGain = pGain;
+                       TiltCWProportionalGain = pGain;
                    },
                    x => IsConnected);
 
-            SetTiltIntegralGainCommand = new RelayCommand(
+            SetTiltCWIntegralGainCommand = new RelayCommand(
                    x =>
                    {
                        var iGain = Convert.ToDouble(x);
-                       TiltIntegralGain = iGain;
+                       TiltCWIntegralGain = iGain;
                    },
                    x => IsConnected);
 
-            SetTiltDerivativeGainCommand = new RelayCommand(
+            SetTiltCWDerivativeGainCommand = new RelayCommand(
                    x =>
                    {
                        var dGain = Convert.ToDouble(x);
-                       TiltDerivativeGain = dGain;
+                       TiltCWDerivativeGain = dGain;
                    },
                    x => IsConnected);
 

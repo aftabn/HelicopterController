@@ -151,11 +151,12 @@ namespace Helicopter.Core.Controller
 
         public TiltController Tilt { get; private set; }
 
-        public void Connect()
+        public void Connect(HelicopterControllerSettings settings)
         {
             if (!IsConnected)
             {
                 Microcontroller.Connect();
+                LoadSettings(settings);
                 InitializeController();
             }
             else
@@ -194,9 +195,6 @@ namespace Helicopter.Core.Controller
             FirmwareVersion = Microcontroller.GetFirmwareVersion();
             Changelog = Microcontroller.GetChangelog();
 
-            Yaw.Initialize();
-            Tilt.Initialize();
-
             if (PidLoopInterval != 0)
             {
                 PidLoopInterval = Microcontroller.GetPidLoopInterval();
@@ -217,6 +215,9 @@ namespace Helicopter.Core.Controller
             SetPidLoopInterval(settings.PidLoopIntervalMilliseconds);
             Yaw.LoadSettings(settings.YawControllerSettings);
             Tilt.LoadSettings(settings.TiltControllerSettings);
+
+            Yaw.RefreshAllValues();
+            Tilt.RefreshAllValues();
         }
 
         public void EnablePid()
@@ -245,8 +246,8 @@ namespace Helicopter.Core.Controller
 
         public void RefreshValues()
         {
-            Yaw.RefreshValues();
-            Tilt.RefreshValues();
+            Yaw.RefreshProcessValues();
+            Tilt.RefreshProcessValues();
         }
 
         public void DisableMotors()
