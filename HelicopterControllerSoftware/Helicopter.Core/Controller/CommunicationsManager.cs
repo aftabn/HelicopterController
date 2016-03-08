@@ -14,7 +14,7 @@ namespace Helicopter.Core.Controller
     public class CommunicationsManager : INotifyPropertyChanged, IDisposable
     {
         private const double DBL_DefaultSerialTimeoutSeconds = 0.5;
-        private const double DBL_DefaultBluetoothTimeoutSeconds = 2.5;
+        private const double DBL_DefaultBluetoothTimeoutSeconds = 3;
         private const string STR_SerialDeviceName = "Arduino";
         private const string STR_BluetoothDeviceName = "Bluetooth";
 
