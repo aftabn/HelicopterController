@@ -186,6 +186,14 @@ void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOut
 	previousAngles[channel] = currentAngles[channel];
 
 	// TODO: Refactor this later
+	if (channel == YAW_CHANNEL)
+	{
+		if (angleErrors[channel] > 0)
+		{
+			newOutput += 30;
+		}
+	}
+
 	if (channel == TILT_CHANNEL)
 	{
 		if (setPoints[channel] > -17)

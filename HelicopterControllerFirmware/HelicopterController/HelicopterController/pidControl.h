@@ -32,7 +32,7 @@ Author:	Aftab
 
 #define POT_TOTAL_RANGE_DEGREES			290.0
 #define POT_DEGREES_PER_VOLT			POT_TOTAL_RANGE_DEGREES / ARDUINO_VSS
-#define POT_IDLE_VOLTAGE				3.08		// Voltage when the helicopter is balanced
+#define POT_IDLE_VOLTAGE				3.09		// Voltage when the helicopter is balanced
 
 #define ADC_REFERENCE_VOLTAGE			ARDUINO_VSS
 #define ADC_RESOLUTION					1023
