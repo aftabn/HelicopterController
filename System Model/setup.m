@@ -18,8 +18,8 @@ constants;  % Assign physical constants
 % CONTROLLER & AMPLIFIER
 % ======================
 % PID Controller
-mPID = [1E-20, 0, 0];
-tPID = [0,0,0];
+mPID = [0, 0, 0];
+tPID = [0.01,0,0.1];
 
 % Bias
 CurrentDriverBias = Vss/2;
@@ -93,7 +93,7 @@ altSaturation = 45;
 % Tail Torque (Nm/RPM)
 tTorque = TPtr * G * yawArmLength;  % Kgm/s^2 / RPM * m = Nm/RPM
 
-tHeliDynNum = [0 0 1]; 
+tHeliDynNum = DegPerRad; 
 tHeliDynDen = [J2h B2h 0];   % Rotational Inertia / Air R
 yawSaturation = 180;
 
