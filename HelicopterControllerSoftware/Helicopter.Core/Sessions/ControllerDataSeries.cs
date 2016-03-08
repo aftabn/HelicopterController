@@ -2,9 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Helicopter.Core.Sessions
 {
@@ -20,15 +17,54 @@ namespace Helicopter.Core.Sessions
             this.angleController = angleController;
             angleController.PropertyChanged += OnAngleControllerPropertyChanged;
 
-            Name = angleController.MotorType.ToString();
             ControllerData = angleController.ControllerData;
+
+            MotorType = angleController.MotorType;
+            MotorDriver = angleController.MotorDriver;
+
+            foreach (var profile in angleController.PidProfiles.Values)
+            {
+                if (profile.DirectionProfile == DirectionProfile.CW)
+                {
+                    CWProportionalGain = profile.ProportionalGain;
+                    CWIntegralGain = profile.IntegralGain;
+                    CWDerivativeGain = profile.DerivativeGain;
+                }
+                else
+                {
+                    CCWProportionalGain = profile.ProportionalGain;
+                    CCWIntegralGain = profile.IntegralGain;
+                    CCWDerivativeGain = profile.DerivativeGain;
+                }
+            }
+
+            IWindupThreshold = angleController.IntegralWindupThreshold;
+            OutputRateLimit = angleController.OutputRateLimit;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public List<ControllerDataPoint> ControllerData { get; set; }
 
-        public string Name { get; set; }
+        public MotorType MotorType { get; set; }
+
+        public MotorDriver MotorDriver { get; set; }
+
+        public double CWProportionalGain { get; set; }
+
+        public double CWIntegralGain { get; set; }
+
+        public double CWDerivativeGain { get; set; }
+
+        public double CCWProportionalGain { get; set; }
+
+        public double CCWIntegralGain { get; set; }
+
+        public double CCWDerivativeGain { get; set; }
+
+        public double IWindupThreshold { get; set; }
+
+        public double OutputRateLimit { get; set; }
 
         public void Dispose()
         {

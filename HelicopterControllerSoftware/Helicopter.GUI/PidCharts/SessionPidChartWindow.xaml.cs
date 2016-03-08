@@ -24,7 +24,34 @@ namespace Helicopter.GUI.PidCharts
         {
             InitializeComponent();
 
+            UpdateGui(session);
             staticPidChart.LoadNewData(session);
+        }
+
+        private void UpdateGui(Session session)
+        {
+            var yaw = session.YawDataSeries;
+            var tilt = session.TiltDataSeries;
+
+            sessionStartTimeTextBlock.Text = session.StartTime.ToString();
+            sessionEndTimeTextBlock.Text = session.EndTime.ToString();
+
+            yawCWPGainTextBlock.Text = yaw.CWProportionalGain.ToString();
+            yawCWIGainTextBlock.Text = yaw.CWIntegralGain.ToString();
+            yawCWDGainTextBlock.Text = yaw.CWDerivativeGain.ToString();
+            yawCCWPGainTextBlock.Text = yaw.CCWProportionalGain.ToString();
+            yawCCWIGainTextBlock.Text = yaw.CCWIntegralGain.ToString();
+            yawCCWDGainTextBlock.Text = yaw.CCWDerivativeGain.ToString();
+            yawOutputRateLimitTextBlock.Text = yaw.OutputRateLimit.ToString();
+            yawDriverType.Text = yaw.MotorDriver.ToString();
+
+            tiltPGainTextBlock.Text = tilt.CWProportionalGain.ToString();
+            tiltIGainTextBlock.Text = tilt.CWIntegralGain.ToString();
+            tiltDGainTextBlock.Text = tilt.CWDerivativeGain.ToString();
+            tiltOutputRateLimitTextBlock.Text = tilt.OutputRateLimit.ToString();
+            tiltDriverType.Text = tilt.MotorDriver.ToString();
+
+            sessionComment.Text = session.Comment;
         }
     }
 }
