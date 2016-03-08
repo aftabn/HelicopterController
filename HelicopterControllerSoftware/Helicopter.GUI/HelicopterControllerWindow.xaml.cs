@@ -1,5 +1,6 @@
 ﻿using Helicopter.Core;
 using Helicopter.Core.Sessions;
+using Helicopter.GUI.PidCharts;
 using LiveCharts;
 using LiveCharts.CoreComponents;
 using log4net;
@@ -8,6 +9,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Helicopter.GUI
@@ -20,6 +22,7 @@ namespace Helicopter.GUI
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly StartupOptions startupOptions;
         private HelicopterViewModel helicopterViewModel;
+        private SessionPidChartWindow sessionPidChartWindow;
 
         public HelicopterControllerWindow(StartupOptions startupOptions)
         {
@@ -43,14 +46,40 @@ namespace Helicopter.GUI
         {
             SolidColorBrush statusBarColor;
 
+            //if (helicopterViewModel.IsConnected)
+            //{
+            //    helicopterControllerStatusTextbox.Text = "Helicopter Controller Connected";
+            //    statusBarColor = new SolidColorBrush(Color.FromRgb(0x00, 0x7A, 0xCC)); // Visual Studio Blue
+            //}
+            //else
+            //{
+            //    helicopterControllerStatusTextbox.Text = "Helicopter Controller Not Connected";
+            //    statusBarColor = Brushes.Firebrick;
+            //}
+
             if (helicopterViewModel.IsConnected)
             {
                 helicopterControllerStatusTextbox.Text = "Helicopter Controller Connected";
-                statusBarColor = new SolidColorBrush(Color.FromRgb(0x00, 0x7A, 0xCC)); // Visual Studio Blue
+
+                if (helicopterViewModel.IsDatabaseConnected)
+                {
+                    databaseLiveTextBlock.Text = "Database Connected";
+                    statusBarColor = new SolidColorBrush(Color.FromRgb(0x00, 0x7A, 0xCC)); // Visual Studio Blue
+                }
+                else
+                {
+                    statusBarColor = Brushes.DarkGoldenrod;
+                }
+            }
+            else if (helicopterViewModel.IsDatabaseConnected)
+            {
+                databaseLiveTextBlock.Text = "Database Connected";
+                statusBarColor = Brushes.DarkGoldenrod;
             }
             else
             {
                 helicopterControllerStatusTextbox.Text = "Helicopter Controller Not Connected";
+                databaseLiveTextBlock.Text = "Database Not Connected";
                 statusBarColor = Brushes.Firebrick;
             }
 
@@ -63,6 +92,23 @@ namespace Helicopter.GUI
             optionsToolbar.DataContext = helicopterViewModel;
             controllerTabs.DataContext = helicopterViewModel;
             controllerOutputPanel.DataContext = helicopterViewModel;
+        }
+
+        private void InitializeDatabaseDataGrid()
+        {
+            Style rowStyle = new Style(typeof(DataGridRow));
+            rowStyle.Setters.Add(new EventSetter(DataGridRow.MouseDoubleClickEvent, new MouseButtonEventHandler(OnRowDoubleClick)));
+            databaseDataGrid.RowStyle = rowStyle;
+        }
+
+        private void OnRowDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var recordId = helicopterViewModel.SelectedRecord != null ? helicopterViewModel.SelectedRecord.Id : -1;
+            //var session = DatabaseManager.CreateSessionFromRecordId(recordId);
+
+            //dataChart = new DataChart();
+            //dataChart.LoadCreepData(session);
+            //dataChart.Show();
         }
 
         private void StartPidCharting()
@@ -103,7 +149,7 @@ namespace Helicopter.GUI
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsConnected")
+            if (e.PropertyName == "IsConnected" || e.PropertyName == "IsDatabaseConnected")
             {
                 UpdateStatusBar();
             }
@@ -118,10 +164,28 @@ namespace Helicopter.GUI
                     StopPidCharting();
                 }
             }
+            else if (e.PropertyName == "IsSessionComplete")
+            {
+                if (helicopterViewModel.HelicopterManager.IsSessionComplete)
+                {
+                    sessionPidChartWindow = new SessionPidChartWindow(helicopterViewModel.HelicopterManager.Session);
+                    sessionPidChartWindow.Show();
+                }
+            }
             else if (e.PropertyName == "OutputText")
             {
                 controllerOutputTextbox.ScrollToEnd();
             }
+        }
+
+        private void OnHistoryTabGotFocus(object sender, RoutedEventArgs e)
+        {
+            pidChart.Visibility = Visibility.Hidden;
+        }
+
+        private void OnHistoryTabLostFocus(object sender, RoutedEventArgs e)
+        {
+            pidChart.Visibility = Visibility.Visible;
         }
     }
 }

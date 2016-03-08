@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{31A262F1-213A-4C9C-B0F5-D0B74F20AD1B}</ProjectGuid>
+    <ProjectGuid>{1703BB16-F73E-4727-8CAF-CC4892F70904}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Helicopter.Core</RootNamespace>
-    <AssemblyName>Helicopter.Core</AssemblyName>
+    <RootNamespace>Helicopter.Model</RootNamespace>
+    <AssemblyName>Helicopter.Model</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -38,14 +38,11 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,49 +51,61 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller\AngleController.cs" />
-    <Compile Include="Controller\ConnectionType.cs" />
-    <Compile Include="Controller\DirectionProfile.cs" />
-    <Compile Include="Controller\PidProfile.cs" />
-    <Compile Include="DatabaseManager.cs" />
-    <Compile Include="Sessions\ControllerDataPoint.cs" />
-    <Compile Include="Controller\Direction.cs" />
-    <Compile Include="Controller\HelicopterController.cs" />
-    <Compile Include="HelicopterManager.cs" />
-    <Compile Include="HelicopterViewModel.cs" />
-    <Compile Include="Controller\Microcontroller.cs" />
-    <Compile Include="Controller\CommunicationsManager.cs" />
-    <Compile Include="Controller\MotorDriver.cs" />
-    <Compile Include="Controller\MotorType.cs" />
-    <Compile Include="Controller\Packet.cs" />
+    <Compile Include="ControllerRecord.cs">
+      <DependentUpon>HelicopterModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DatabaseRow.cs" />
+    <Compile Include="HelicopterModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HelicopterModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HelicopterModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HelicopterModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HelicopterModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HelicopterModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="MeasurementRecord.cs">
+      <DependentUpon>HelicopterModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controller\TiltController.cs" />
-    <Compile Include="Controller\YawController.cs" />
-    <Compile Include="Sessions\ControllerDataSeries.cs" />
-    <Compile Include="Sessions\Session.cs" />
-    <Compile Include="Settings\AngleControllerSettings.cs" />
-    <Compile Include="Settings\HelicopterControllerSettings.cs" />
-    <Compile Include="Settings\HelicopterSettings.cs" />
-    <Compile Include="Settings\TiltControllerSettings.cs" />
-    <Compile Include="Settings\YawControllerSettings.cs" />
-    <Compile Include="StartupOptions.cs" />
+    <Compile Include="SessionRecord.cs">
+      <DependentUpon>HelicopterModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsRecord.cs">
+      <DependentUpon>HelicopterModel.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <EntityDeploy Include="HelicopterModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>HelicopterModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="HelicopterModel.edmx.diagram">
+      <DependentUpon>HelicopterModel.edmx</DependentUpon>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Database\" />
+    <Content Include="HelicopterModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>HelicopterModel.edmx</DependentUpon>
+      <LastGenOutput>HelicopterModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="HelicopterModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>HelicopterModel.edmx</DependentUpon>
+      <LastGenOutput>HelicopterModel.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Helicopter.Model\Helicopter.Model.csproj">
-      <Project>{1703bb16-f73e-4727-8caf-cc4892f70904}</Project>
-      <Name>Helicopter.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libs.Utilities\Libs.Utilities.csproj">
-      <Project>{5c11855c-8094-4020-bbd5-841f2824172d}</Project>
-      <Name>Libs.Utilities</Name>
-    </ProjectReference>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

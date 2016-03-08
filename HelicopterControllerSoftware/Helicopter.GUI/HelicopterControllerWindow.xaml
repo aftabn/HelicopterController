@@ -31,10 +31,10 @@
             <StatusBarItem>
                 <TextBlock x:Name="helicopterControllerStatusTextbox" Padding="10,2,10,2"><Run Text="Helicopter Controller Status" /></TextBlock>
             </StatusBarItem>
-            <!--<Separator Width="1" HorizontalAlignment="Center" Background="DarkGray" Margin="5,3,5,3" />
+            <Separator Width="1" HorizontalAlignment="Center" Background="DarkGray" Margin="5,3,5,3" />
             <StatusBarItem>
                 <TextBlock x:Name="databaseLiveTextBlock" Padding="5,2,5,2"><Run Text="Database Status" /></TextBlock>
-            </StatusBarItem>-->
+            </StatusBarItem>
         </StatusBar>
         <TabControl x:Name="controllerTabs">
             <TabItem x:Name="operatorTab" Header="Operator">
@@ -285,8 +285,8 @@
                     </Border>
                 </DockPanel>
             </TabItem>
-            <!--<TabItem x:Name="historyTab" Header="History">
-                <DockPanel x:Name="databaseDockPanel" Width="1000">
+            <TabItem x:Name="historyTab" Header="History" GotFocus="OnHistoryTabGotFocus" LostFocus="OnHistoryTabLostFocus">
+                <DockPanel x:Name="databaseDockPanel">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                         <GroupBox Header="Search By" Margin="0,0,0,5">
                             <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
@@ -332,7 +332,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
-            </TabItem>-->
+            </TabItem>
         </TabControl>
         <local:RealTimePidChart x:Name="pidChart" />
     </DockPanel>

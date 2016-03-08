@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helicopter.Core", "Helicopt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libs.Utilities", "Libs.Utilities\Libs.Utilities.csproj", "{5C11855C-8094-4020-BBD5-841F2824172D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helicopter.Model", "Helicopter.Model\Helicopter.Model.csproj", "{1703BB16-F73E-4727-8CAF-CC4892F70904}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{5C11855C-8094-4020-BBD5-841F2824172D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C11855C-8094-4020-BBD5-841F2824172D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C11855C-8094-4020-BBD5-841F2824172D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1703BB16-F73E-4727-8CAF-CC4892F70904}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1703BB16-F73E-4727-8CAF-CC4892F70904}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1703BB16-F73E-4727-8CAF-CC4892F70904}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1703BB16-F73E-4727-8CAF-CC4892F70904}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

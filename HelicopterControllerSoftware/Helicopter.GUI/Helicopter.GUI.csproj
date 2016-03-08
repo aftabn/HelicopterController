@@ -86,6 +86,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="PidCharts\SessionPidChartWindow.xaml.cs">
+      <DependentUpon>SessionPidChartWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PidCharts\StaticPidChart.xaml.cs">
+      <DependentUpon>StaticPidChart.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RealTimePidChart.xaml.cs">
       <DependentUpon>RealTimePidChart.xaml</DependentUpon>
     </Compile>
@@ -101,6 +107,14 @@
       <DependentUpon>HelicopterControllerWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PidCharts\SessionPidChartWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PidCharts\StaticPidChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="RealTimePidChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -1,0 +1,105 @@
+﻿<Window x:Class="Helicopter.GUI.PidCharts.SessionPidChartWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Helicopter.GUI.PidCharts"
+        mc:Ignorable="d"
+        Title="SessionPidChartWindow" Height="800" Width="1500">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Left" Margin="5,0,5,5" Width="200">
+            <TextBlock TextAlignment="Center" Margin="0,5,0,0"><Run Text="Session Info" /></TextBlock>
+            <Separator Margin="5,2,5,0" />
+
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="Start Time:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" x:Name="sessionStartTime" />
+            </StackPanel>
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="End Time:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" x:Name="sessionEndtime" />
+            </StackPanel>
+
+            <TextBlock TextAlignment="Center" Margin="0,15,0,0"><Run Text="Yaw Controller" /></TextBlock>
+            <Separator Margin="10,2,10,0" />
+
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal" Width="190">
+                <StackPanel Width="95">
+                    <TextBlock TextAlignment="Center"><Run Text="Clockwise" /></TextBlock>
+                    <Separator Margin="5,2,5,0" />
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock Background="White" Margin="15,0,5,0" TextAlignment="Left" Text="P-Gain:" Width="40" />
+                        <TextBlock Background="White" Margin="0,0,5,0" TextAlignment="Right" x:Name="yawCWPGainTextBlock" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock Background="White" Margin="15,0,5,0" TextAlignment="Left" Text="I-Gain:" Width="40" />
+                        <TextBlock Background="White" Margin="0,0,5,0" TextAlignment="Right" x:Name="yawCWIGainTextBlock" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock Background="White" Margin="15,0,5,0" TextAlignment="Left" Text="D-Gain:" Width="40" />
+                        <TextBlock Background="White" Margin="0,0,5,0" TextAlignment="Right" x:Name="yawCWDGainTextBlock" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Width="95">
+                    <TextBlock TextAlignment="Center"><Run Text="CounterClockwise" /></TextBlock>
+                    <Separator Margin="10,2,10,0" />
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock Background="White" Margin="15,0,5,0" TextAlignment="Left" Text="P-Gain:" Width="40" />
+                        <TextBlock Background="White" Margin="0,0,5,0" TextAlignment="Right" x:Name="yawCCWPGainTextBlock" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock Background="White" Margin="15,0,5,0" TextAlignment="Left" Text="I-Gain:" Width="40" />
+                        <TextBlock Background="White" Margin="0,0,5,0" TextAlignment="Right" x:Name="yawCCWIGainTextBlock" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock Background="White" Margin="15,0,5,0" TextAlignment="Left" Text="D-Gain:" Width="40" />
+                        <TextBlock Background="White" Margin="0,0,5,0" TextAlignment="Right" x:Name="yawCCWDGainTextBlock" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="I-Windup Thresh:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="yawWindupTextBlock" />
+            </StackPanel>
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="Output Rate Limit:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="yawOutputRateLimitTextBlock" />
+            </StackPanel>
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="Driver Type:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="yawDriverType" />
+            </StackPanel>
+
+            <TextBlock TextAlignment="Center" Margin="0,15,0,0"><Run Text="Tilt Controller" /></TextBlock>
+            <Separator Margin="10,2,10,0" />
+
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="P-Gain:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltWindupTextBlock" />
+            </StackPanel>
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="I-Gain:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltOutputRateLimitTextBlock" />
+            </StackPanel>
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="D-Gain:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltDriverType" />
+            </StackPanel>
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="I-Windup Thresh:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltPGainTextBlock" />
+            </StackPanel>
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="Output Rate Limit:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltIGainTextBlock" />
+            </StackPanel>
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="Driver Type:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltDGainTextBlock" />
+            </StackPanel>
+            <TextBox Background="White" Margin="5,30,5,0" Height="208" TextWrapping="Wrap" Text="" x:Name="sessionComment" />
+            <Button Margin="88,5,0,0" Width="100">Save Comment</Button>
+        </StackPanel>
+        <local:StaticPidChart x:Name="staticPidChart" />
+    </DockPanel>
+</Window>
