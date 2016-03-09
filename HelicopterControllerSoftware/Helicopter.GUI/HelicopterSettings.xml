@@ -23,11 +23,11 @@
   <Helicopter ConnectionType="Bluetooth" PidThreadRefreshIntervalMilliseconds="100">
     <Controller IsSafetyEnabled="true" PidLoopIntervalMilliseconds="50">
       <Yaw IsEnabled="true" MotorDriver="AnalogVoltage" IntegralWindupThreshold="90" OutputRateLimit="100">
-        <PidProfile Direction="CW" ProportionalGain="0.05" IntegralGain="0" DerivativeGain="0" />
-        <PidProfile Direction="CCW" ProportionalGain="0.5" IntegralGain="0.5" DerivativeGain="0.2" />
+        <PidProfile Direction="CW" ProportionalGain="0.6" IntegralGain="0.5" DerivativeGain="0" />
+        <PidProfile Direction="CCW" ProportionalGain="0.6" IntegralGain="0.5" DerivativeGain="0.25" />
       </Yaw>
       <Tilt IsEnabled="true" MotorDriver="AnalogVoltage" IntegralWindupThreshold="45" OutputRateLimit="100">
-        <PidProfile Direction="CW" ProportionalGain="0.6" IntegralGain="0.3" DerivativeGain="0.15" />
+        <PidProfile Direction="CW" ProportionalGain="0.6" IntegralGain="0.35" DerivativeGain="0.16" />
       </Tilt>
     </Controller>
   </Helicopter>

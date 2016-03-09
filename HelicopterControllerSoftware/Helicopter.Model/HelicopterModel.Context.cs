@@ -26,8 +26,8 @@ namespace Helicopter.Model
         }
     
         public virtual DbSet<MeasurementRecord> MeasurementRecords { get; set; }
+        public virtual DbSet<SessionRecord> SessionRecords { get; set; }
         public virtual DbSet<SettingsRecord> SettingsRecords { get; set; }
         public virtual DbSet<ControllerRecord> ControllerRecords { get; set; }
-        public virtual DbSet<SessionRecord> SessionRecords { get; set; }
     }
 }

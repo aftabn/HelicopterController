@@ -320,15 +320,18 @@
                         </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
-                            <DataGridTextColumn Header="Software Build" Binding="{Binding SoftwareBuild}" />
-                            <DataGridTextColumn Header="Part Number" Binding="{Binding PartNumber}" />
-                            <DataGridTextColumn Header="Lot Number" Binding="{Binding LotNumber}" />
-                            <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate}" />
-                            <DataGridCheckBoxColumn Header="Successful?" Binding="{Binding IsSuccessful}" />
+                            <DataGridTextColumn Header="Yaw CW P-Gain" Binding="{Binding YawCWProportionalGain}" />
+                            <DataGridTextColumn Header="Yaw CW I-Gain" Binding="{Binding YawCWIntegralGain}" />
+                            <DataGridTextColumn Header="Yaw CW D-Gain" Binding="{Binding YawCWDerivativeGain}" />
+                            <DataGridTextColumn Header="Yaw CCW P-Gain" Binding="{Binding YawCCWProportionalGain}" />
+                            <DataGridTextColumn Header="Yaw CCW I-Gain" Binding="{Binding YawCCWIntegralGain}" />
+                            <DataGridTextColumn Header="Yaw CCW D-Gain" Binding="{Binding YawCCWDerivativeGain}" />
+                            <DataGridTextColumn Header="Tilt P-Gain" Binding="{Binding TiltCWProportionalGain}" />
+                            <DataGridTextColumn Header="Tilt I-Gain" Binding="{Binding TiltCWIntegralGain}" />
+                            <DataGridTextColumn Header="Tilt D-Gain" Binding="{Binding TiltCWDerivativeGain}" />
                             <DataGridTextColumn Header="Relative Time" Binding="{Binding Relative}" />
-                            <DataGridTextColumn Header="Operator" Binding="{Binding Operator}" />
-                            <DataGridTextColumn Header="Comments" Binding="{Binding Comments}" />
-                            <DataGridTextColumn Header="Messages" Binding="{Binding Messages}" Width="*" />
+                            <DataGridTextColumn Header="StartTime" Binding="{Binding StartTime}" />
+                            <DataGridTextColumn Header="Comments" Binding="{Binding Comments}" Width="*" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>

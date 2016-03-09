@@ -2,6 +2,7 @@
 using Helicopter.Core.Sessions;
 using Helicopter.Core.Settings;
 using Helicopter.Model;
+using Libs.Utilities;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -89,7 +90,87 @@ namespace Helicopter.Core
             }
         }
 
-        public static int UpdateSettingsRecord(HelicopterSettings settings, HelicopterModelEntities context)
+        public static void UpdateSessionComment(int recordId, string comment)
+        {
+            using (var context = new HelicopterModelEntities())
+            {
+                var sessionRecord = context.SessionRecords.Single(x => x.Id == recordId);
+                sessionRecord.Comment = comment;
+                context.SaveChanges();
+            }
+        }
+
+        public static SessionRecord GetSessionRecord(int recordId, HelicopterModelEntities context)
+        {
+            return context.SessionRecords.SingleOrDefault(x => x.Id == recordId);
+        }
+
+        public static SessionRecord CreateNewSessionRecord(Session session, HelicopterSettings settings)
+        {
+            SessionRecord sessionRecord;
+            var yaw = session.YawDataSeries;
+            var tilt = session.TiltDataSeries;
+
+            using (var context = new HelicopterModelEntities())
+            {
+                var settingsRecordId = UpdateSettingsRecord(settings, context);
+
+                sessionRecord = new SessionRecord
+                {
+                    SettingsId = settingsRecordId,
+                    StartTime = session.StartTime,
+                    EndTime = session.EndTime,
+                    Comment = String.Empty
+                };
+
+                var yawRecord = new ControllerRecord
+                {
+                    MotorType = yaw.MotorType.ToString(),
+                    DriverType = yaw.MotorDriver.ToString(),
+                    CWProportionalGain = yaw.CWProportionalGain,
+                    CWIntegralGain = yaw.CWIntegralGain,
+                    CWDerivativeGain = yaw.CWDerivativeGain,
+                    CCWProportionalGain = yaw.CCWProportionalGain,
+                    CCWIntegralGain = yaw.CCWIntegralGain,
+                    CCWDerivativeGain = yaw.CCWDerivativeGain,
+                    IntegralWindupThreshold = yaw.IWindupThreshold,
+                    OutputRateLimit = yaw.OutputRateLimit,
+                    MeasurementRecords = yaw.ControllerData.Select(x => new MeasurementRecord
+                    {
+                        TimeStamp = x.TimeStamp,
+                        SetPoint = x.SetPoint,
+                        CurrentAngle = x.CurrentAngle
+                    }).ToList()
+                };
+
+                var tiltRecord = new ControllerRecord
+                {
+                    MotorType = tilt.MotorType.ToString(),
+                    DriverType = tilt.MotorDriver.ToString(),
+                    CWProportionalGain = tilt.CWProportionalGain,
+                    CWIntegralGain = tilt.CWIntegralGain,
+                    CWDerivativeGain = tilt.CWDerivativeGain,
+                    IntegralWindupThreshold = tilt.IWindupThreshold,
+                    OutputRateLimit = tilt.OutputRateLimit,
+                    MeasurementRecords = tilt.ControllerData.Select(x => new MeasurementRecord
+                    {
+                        TimeStamp = x.TimeStamp,
+                        SetPoint = x.SetPoint,
+                        CurrentAngle = x.CurrentAngle
+                    }).ToList()
+                };
+
+                sessionRecord.ControllerRecords.Add(yawRecord);
+                sessionRecord.ControllerRecords.Add(tiltRecord);
+
+                context.SessionRecords.Add(sessionRecord);
+                context.SaveChanges();
+            }
+
+            return sessionRecord;
+        }
+
+        private static int UpdateSettingsRecord(HelicopterSettings settings, HelicopterModelEntities context)
         {
             var hash = DatabaseManager.GetSHA1Hash(settings.XmlText);
             var settingsRecord = context.SettingsRecords.SingleOrDefault(x => x.Hash == hash);
@@ -124,8 +205,8 @@ namespace Helicopter.Core
             {
                 foreach (var record in records)
                 {
-                    var yawRecord = record.ControllerRecords.Single(x => x.Name == MotorType.Yaw.ToString());
-                    var tiltRecord = record.ControllerRecords.Single(x => x.Name == MotorType.Tilt.ToString());
+                    var yawRecord = record.ControllerRecords.Single(x => x.MotorType == MotorType.Yaw.ToString());
+                    var tiltRecord = record.ControllerRecords.Single(x => x.MotorType == MotorType.Tilt.ToString());
 
                     var row = new DatabaseRow
                     {
@@ -140,7 +221,7 @@ namespace Helicopter.Core
                         TiltCWProportionalGain = (double)tiltRecord.CWProportionalGain,
                         TiltCWIntegralGain = (double)tiltRecord.CWIntegralGain,
                         TiltCWDerivativeGain = (double)tiltRecord.CWDerivativeGain,
-                        //Relative = RelativeTime.GetTimeAgoString(record.StartDate, DateTime.Now),
+                        Relative = RelativeTime.GetTimeAgoString(record.StartTime, DateTime.Now),
                         Comments = record.Comment
                     };
 

@@ -32,11 +32,6 @@ namespace Helicopter.Core
             yaw = helicopterController.Yaw;
             tilt = helicopterController.Tilt;
 
-            //if (IsDatabaseConnected)
-            //{
-            //    DisplayedRecords = DatabaseManager.GetQueriedRecords(IsSearchingById, SelectedRecordId, SelectedDate);
-            //}
-
             OutputText = String.Empty;
 
             InitializeRelayCommands();
@@ -267,6 +262,8 @@ namespace Helicopter.Core
         public ICommand DisconnectCommand { get; private set; }
         public ICommand GetControllerInfoCommand { get; private set; }
 
+        public ICommand SearchForRecordsCommand { get; private set; }
+
         public ICommand StartPidSessionCommand { get; private set; }
         public ICommand StopPidSessionCommand { get; private set; }
         public ICommand EnablePidCommand { get; private set; }
@@ -325,6 +322,15 @@ namespace Helicopter.Core
         {
         }
 
+        public void InitializeDatabase()
+        {
+            if (IsDatabaseConnected)
+            {
+                SelectedDate = DateTime.Now;
+                DisplayedRecords = DatabaseManager.GetQueriedRecords(IsSearchingById, SelectedRecordId, SelectedDate);
+            }
+        }
+
         private void InitializeRelayCommands()
         {
             ConnectCommand = new RelayCommand(
@@ -345,6 +351,10 @@ namespace Helicopter.Core
                        UpdateOutputTextbox(text);
                    },
                    x => IsConnected);
+
+            SearchForRecordsCommand = new RelayCommand(
+                x => DisplayedRecords = DatabaseManager.GetQueriedRecords(IsSearchingById, SelectedRecordId, SelectedDate),
+                x => IsDatabaseConnected);
 
             StartPidSessionCommand = new RelayCommand(
                    x =>

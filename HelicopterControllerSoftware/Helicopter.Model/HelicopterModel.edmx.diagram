@@ -4,12 +4,12 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="64bc04839e5c4a5f9eed63c3084a1a99" Name="Diagram1">
-        <EntityTypeShape EntityType="HelicopterModelModel.MeasurementRecord" Width="1.5" PointX="8.5" PointY="5.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="HelicopterModelModel.SettingsRecord" Width="1.5" PointX="10.875" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="HelicopterModelModel.ControllerRecord" Width="1.5" PointX="6.125" PointY="2.875" />
-        <EntityTypeShape EntityType="HelicopterModelModel.SessionRecord" Width="1.5" PointX="8.5" PointY="1.75" />
+      <Diagram DiagramId="64bc04839e5c4a5f9eed63c3084a1a99" Name="Diagram1" ZoomLevel="82">
+        <EntityTypeShape EntityType="HelicopterModelModel.MeasurementRecord" Width="1.5" PointX="9.625" PointY="5.25" />
+        <EntityTypeShape EntityType="HelicopterModelModel.SessionRecord" Width="1.5" PointX="9.625" PointY="2.25" />
+        <EntityTypeShape EntityType="HelicopterModelModel.SettingsRecord" Width="1.5" PointX="11.625" PointY="1" />
         <AssociationConnector Association="HelicopterModelModel.SettingsRecordSessionRecord" />
+        <EntityTypeShape EntityType="HelicopterModelModel.ControllerRecord" Width="1.5" PointX="7.5" PointY="3.125" />
         <AssociationConnector Association="HelicopterModelModel.SessionRecordControllerRecord" />
         <AssociationConnector Association="HelicopterModelModel.ControllerRecordMeasurementRecord" />
         </Diagram>

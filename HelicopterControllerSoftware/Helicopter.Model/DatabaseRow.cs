@@ -11,6 +11,7 @@ namespace Helicopter.Model
         public int Id { get; set; }
 
         public DateTime StartTime { get; set; }
+        public string Relative { get; set; }
 
         public double YawCWProportionalGain { get; set; }
         public double YawCWIntegralGain { get; set; }

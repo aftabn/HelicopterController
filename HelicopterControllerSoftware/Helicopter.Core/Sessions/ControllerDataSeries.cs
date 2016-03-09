@@ -64,7 +64,7 @@ namespace Helicopter.Core.Sessions
 
         public double IWindupThreshold { get; set; }
 
-        public double OutputRateLimit { get; set; }
+        public int OutputRateLimit { get; set; }
 
         public void Dispose()
         {

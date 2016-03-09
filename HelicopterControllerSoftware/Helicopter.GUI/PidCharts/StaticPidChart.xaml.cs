@@ -1,4 +1,5 @@
-﻿using Helicopter.Core.Sessions;
+﻿using Helicopter.Core.Controller;
+using Helicopter.Core.Sessions;
 using Helicopter.Model;
 using SciChart.Charting.Model.DataSeries;
 using SciChart.Examples.ExternalDependencies.Common;
@@ -35,15 +36,18 @@ namespace Helicopter.GUI.PidCharts
             InitializeComponent();
         }
 
-        public void LoadNewData(Session session)
+        public void LoadNewData(SessionRecord sessionRecord)
         {
-            var yawTimes = session.YawDataSeries.ControllerData.Select(x => (x.TimeStamp - session.StartTime).TotalSeconds);
-            var yawAngles = session.YawDataSeries.ControllerData.Select(x => x.CurrentAngle);
-            var yawSetPoints = session.YawDataSeries.ControllerData.Select(x => x.SetPoint);
+            var yaw = sessionRecord.ControllerRecords.Single(x => x.MotorType == MotorType.Yaw.ToString());
+            var tilt = sessionRecord.ControllerRecords.Single(x => x.MotorType == MotorType.Tilt.ToString());
 
-            var tiltTimes = session.TiltDataSeries.ControllerData.Select(x => (x.TimeStamp - session.StartTime).TotalSeconds);
-            var tiltAngles = session.TiltDataSeries.ControllerData.Select(x => x.CurrentAngle);
-            var tiltSetPoints = session.TiltDataSeries.ControllerData.Select(x => x.SetPoint);
+            var yawTimes = yaw.MeasurementRecords.Select(x => (x.TimeStamp - sessionRecord.StartTime).TotalSeconds);
+            var yawAngles = yaw.MeasurementRecords.Select(x => x.CurrentAngle);
+            var yawSetPoints = yaw.MeasurementRecords.Select(x => x.SetPoint);
+
+            var tiltTimes = tilt.MeasurementRecords.Select(x => (x.TimeStamp - sessionRecord.StartTime).TotalSeconds);
+            var tiltAngles = tilt.MeasurementRecords.Select(x => x.CurrentAngle);
+            var tiltSetPoints = tilt.MeasurementRecords.Select(x => x.SetPoint);
 
             this.yawAngles.Append(yawTimes, yawAngles);
             this.yawSetPoints.Append(yawTimes, yawSetPoints);
@@ -54,10 +58,6 @@ namespace Helicopter.GUI.PidCharts
             yawSetPointSeries.DataSeries = this.yawSetPoints;
             tiltAngleSeries.DataSeries = this.tiltAngles;
             tiltSetPointSeries.DataSeries = this.tiltSetPoints;
-        }
-
-        public void LoadNewData(SessionRecord sessionRecord)
-        {
         }
     }
 }

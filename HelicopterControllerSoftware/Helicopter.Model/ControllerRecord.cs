@@ -22,7 +22,7 @@ namespace Helicopter.Model
     
         public int Id { get; set; }
         public int SessionId { get; set; }
-        public string Name { get; set; }
+        public string MotorType { get; set; }
         public string DriverType { get; set; }
         public double CWProportionalGain { get; set; }
         public double CWIntegralGain { get; set; }

@@ -1,4 +1,7 @@
-﻿using Helicopter.Core.Sessions;
+﻿using Helicopter.Core;
+using Helicopter.Core.Controller;
+using Helicopter.Core.Sessions;
+using Helicopter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,38 +23,52 @@ namespace Helicopter.GUI.PidCharts
     /// </summary>
     public partial class SessionPidChartWindow : Window
     {
-        public SessionPidChartWindow(Session session)
+        private SessionRecord sessionRecord;
+
+        public SessionPidChartWindow(SessionRecord sessionRecord)
         {
+            this.sessionRecord = sessionRecord;
+
             InitializeComponent();
 
-            UpdateGui(session);
-            staticPidChart.LoadNewData(session);
+            UpdateGui(sessionRecord);
+            staticPidChart.LoadNewData(sessionRecord);
         }
 
-        private void UpdateGui(Session session)
+        private void UpdateGui(SessionRecord sessionRecord)
         {
-            var yaw = session.YawDataSeries;
-            var tilt = session.TiltDataSeries;
+            using (var context = new HelicopterModelEntities())
+            {
+                var yaw = sessionRecord.ControllerRecords.Single(x => x.MotorType == MotorType.Yaw.ToString());
+                var tilt = sessionRecord.ControllerRecords.Single(x => x.MotorType == MotorType.Tilt.ToString());
 
-            sessionStartTimeTextBlock.Text = session.StartTime.ToString();
-            sessionEndTimeTextBlock.Text = session.EndTime.ToString();
+                sessionStartTimeTextBlock.Text = sessionRecord.StartTime.ToString();
+                sessionEndTimeTextBlock.Text = sessionRecord.EndTime.ToString();
 
-            yawCWPGainTextBlock.Text = yaw.CWProportionalGain.ToString();
-            yawCWIGainTextBlock.Text = yaw.CWIntegralGain.ToString();
-            yawCWDGainTextBlock.Text = yaw.CWDerivativeGain.ToString();
-            yawCCWPGainTextBlock.Text = yaw.CCWProportionalGain.ToString();
-            yawCCWIGainTextBlock.Text = yaw.CCWIntegralGain.ToString();
-            yawCCWDGainTextBlock.Text = yaw.CCWDerivativeGain.ToString();
-            yawOutputRateLimitTextBlock.Text = yaw.OutputRateLimit.ToString();
-            yawDriverType.Text = yaw.MotorDriver.ToString();
+                yawCWPGainTextBlock.Text = yaw.CWProportionalGain.ToString();
+                yawCWIGainTextBlock.Text = yaw.CWIntegralGain.ToString();
+                yawCWDGainTextBlock.Text = yaw.CWDerivativeGain.ToString();
+                yawCCWPGainTextBlock.Text = yaw.CCWProportionalGain.ToString();
+                yawCCWIGainTextBlock.Text = yaw.CCWIntegralGain.ToString();
+                yawCCWDGainTextBlock.Text = yaw.CCWDerivativeGain.ToString();
+                yawWindupTextBlock.Text = yaw.IntegralWindupThreshold.ToString();
+                yawOutputRateLimitTextBlock.Text = yaw.OutputRateLimit.ToString();
+                yawDriverType.Text = yaw.DriverType;
 
-            tiltPGainTextBlock.Text = tilt.CWProportionalGain.ToString();
-            tiltIGainTextBlock.Text = tilt.CWIntegralGain.ToString();
-            tiltDGainTextBlock.Text = tilt.CWDerivativeGain.ToString();
-            tiltOutputRateLimitTextBlock.Text = tilt.OutputRateLimit.ToString();
-            tiltDriverType.Text = tilt.MotorDriver.ToString();
+                tiltPGainTextBlock.Text = tilt.CWProportionalGain.ToString();
+                tiltIGainTextBlock.Text = tilt.CWIntegralGain.ToString();
+                tiltDGainTextBlock.Text = tilt.CWDerivativeGain.ToString();
+                tiltWindupTextBlock.Text = yaw.IntegralWindupThreshold.ToString();
+                tiltOutputRateLimitTextBlock.Text = tilt.OutputRateLimit.ToString();
+                tiltDriverType.Text = tilt.DriverType;
 
-            sessionComment.Text = session.Comment;
+                sessionComment.Text = sessionRecord.Comment;
+            }
+        }
+
+        private void OnSaveCommentButtonClick(object sender, RoutedEventArgs e)
+        {
+            DatabaseManager.UpdateSessionComment(sessionRecord.Id, sessionComment.Text);
         }
     }
 }

@@ -9,10 +9,10 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SessionId" Type="int" Nullable="false" />
-          <Property Name="Name" Type="nchar" MaxLength="10" Nullable="false" />
-          <Property Name="DriverType" Type="nchar" MaxLength="20" Nullable="false" />
+          <Property Name="MotorType" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="DriverType" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="CWProportionalGain" Type="float" Nullable="false" />
           <Property Name="CWIntegralGain" Type="float" Nullable="false" />
           <Property Name="CWDerivativeGain" Type="float" Nullable="false" />
@@ -26,7 +26,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ControllerId" Type="int" Nullable="false" />
           <Property Name="TimeStamp" Type="datetime" Nullable="false" />
           <Property Name="SetPoint" Type="float" Nullable="false" />
@@ -36,7 +36,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SettingsId" Type="int" Nullable="false" />
           <Property Name="StartTime" Type="datetime" Nullable="false" />
           <Property Name="EndTime" Type="datetime" Nullable="false" />
@@ -46,7 +46,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Created" Type="datetime" Nullable="false" />
           <Property Name="Hash" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Text" Type="nvarchar(max)" Nullable="false" />
@@ -61,36 +61,15 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="HelicopterModelModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="MeasurementRecord">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="ControllerId" Type="Int32" Nullable="false" />
-          <Property Name="TimeStamp" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="SetPoint" Type="Double" Nullable="false" />
-          <Property Name="CurrentAngle" Type="Double" Nullable="false" />
-          <NavigationProperty Name="ControllerRecord" Relationship="HelicopterModelModel.ControllerRecordMeasurementRecord" FromRole="MeasurementRecord" ToRole="ControllerRecord" />
-        </EntityType>
-        <EntityType Name="SettingsRecord">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Hash" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="SessionRecords" Relationship="HelicopterModelModel.SettingsRecordSessionRecord" FromRole="SettingsRecord" ToRole="SessionRecord" />
-        </EntityType>
         <EntityContainer Name="HelicopterModelEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="MeasurementRecords" EntityType="Self.MeasurementRecord" />
-          <EntitySet Name="SettingsRecords" EntityType="Self.SettingsRecord" />
-          <EntitySet Name="ControllerRecords" EntityType="HelicopterModelModel.ControllerRecord" />
+          <EntitySet Name="MeasurementRecords" EntityType="HelicopterModelModel.MeasurementRecord" />
           <EntitySet Name="SessionRecords" EntityType="HelicopterModelModel.SessionRecord" />
+          <EntitySet Name="SettingsRecords" EntityType="HelicopterModelModel.SettingsRecord" />
           <AssociationSet Name="SettingsRecordSessionRecord" Association="HelicopterModelModel.SettingsRecordSessionRecord">
             <End Role="SettingsRecord" EntitySet="SettingsRecords" />
             <End Role="SessionRecord" EntitySet="SessionRecords" />
           </AssociationSet>
+          <EntitySet Name="ControllerRecords" EntityType="HelicopterModelModel.ControllerRecord" />
           <AssociationSet Name="SessionRecordControllerRecord" Association="HelicopterModelModel.SessionRecordControllerRecord">
             <End Role="SessionRecord" EntitySet="SessionRecords" />
             <End Role="ControllerRecord" EntitySet="ControllerRecords" />
@@ -100,36 +79,38 @@
             <End Role="MeasurementRecord" EntitySet="MeasurementRecords" />
           </AssociationSet>
         </EntityContainer>
-        <EntityType Name="ControllerRecord">
+        <EntityType Name="MeasurementRecord">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="SessionId" Type="Int32" Nullable="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
-          <Property Name="DriverType" Type="String" Nullable="false" MaxLength="20" FixedLength="true" Unicode="true" />
-          <Property Name="CWProportionalGain" Type="Double" Nullable="false" />
-          <Property Name="CWIntegralGain" Type="Double" Nullable="false" />
-          <Property Name="CWDerivativeGain" Type="Double" Nullable="false" />
-          <Property Name="CCWProportionalGain" Type="Double" />
-          <Property Name="CCWIntegralGain" Type="Double" />
-          <Property Name="CCWDerivativeGain" Type="Double" />
-          <Property Name="IntegralWindupThreshold" Type="Double" Nullable="false" />
-          <Property Name="OutputRateLimit" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="SessionRecord" Relationship="HelicopterModelModel.SessionRecordControllerRecord" FromRole="ControllerRecord" ToRole="SessionRecord" />
-          <NavigationProperty Name="MeasurementRecords" Relationship="HelicopterModelModel.ControllerRecordMeasurementRecord" FromRole="ControllerRecord" ToRole="MeasurementRecord" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ControllerId" Type="Int32" Nullable="false" />
+          <Property Name="TimeStamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="SetPoint" Type="Double" Nullable="false" />
+          <Property Name="CurrentAngle" Type="Double" Nullable="false" />
+          <NavigationProperty Name="ControllerRecord" Relationship="HelicopterModelModel.ControllerRecordMeasurementRecord" FromRole="MeasurementRecord" ToRole="ControllerRecord" />
         </EntityType>
         <EntityType Name="SessionRecord">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="SettingsId" Type="Int32" Nullable="false" />
           <Property Name="StartTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="EndTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Comment" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="SettingsRecord" Relationship="HelicopterModelModel.SettingsRecordSessionRecord" FromRole="SessionRecord" ToRole="SettingsRecord" />
           <NavigationProperty Name="ControllerRecords" Relationship="HelicopterModelModel.SessionRecordControllerRecord" FromRole="SessionRecord" ToRole="ControllerRecord" />
+        </EntityType>
+        <EntityType Name="SettingsRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Hash" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Text" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="SessionRecords" Relationship="HelicopterModelModel.SettingsRecordSessionRecord" FromRole="SettingsRecord" ToRole="SessionRecord" />
         </EntityType>
         <Association Name="SettingsRecordSessionRecord">
           <End Type="HelicopterModelModel.SettingsRecord" Role="SettingsRecord" Multiplicity="1" />
@@ -143,6 +124,25 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ControllerRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SessionId" Type="Int32" Nullable="false" />
+          <Property Name="MotorType" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="DriverType" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CWProportionalGain" Type="Double" Nullable="false" />
+          <Property Name="CWIntegralGain" Type="Double" Nullable="false" />
+          <Property Name="CWDerivativeGain" Type="Double" Nullable="false" />
+          <Property Name="CCWProportionalGain" Type="Double" />
+          <Property Name="CCWIntegralGain" Type="Double" />
+          <Property Name="CCWDerivativeGain" Type="Double" />
+          <Property Name="IntegralWindupThreshold" Type="Double" Nullable="false" />
+          <Property Name="OutputRateLimit" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SessionRecord" Relationship="HelicopterModelModel.SessionRecordControllerRecord" FromRole="ControllerRecord" ToRole="SessionRecord" />
+          <NavigationProperty Name="MeasurementRecords" Relationship="HelicopterModelModel.ControllerRecordMeasurementRecord" FromRole="ControllerRecord" ToRole="MeasurementRecord" />
+        </EntityType>
         <Association Name="SessionRecordControllerRecord">
           <End Type="HelicopterModelModel.SessionRecord" Role="SessionRecord" Multiplicity="1" />
           <End Type="HelicopterModelModel.ControllerRecord" Role="ControllerRecord" Multiplicity="*" />
@@ -176,21 +176,32 @@
           <EntitySetMapping Name="MeasurementRecords">
             <EntityTypeMapping TypeName="HelicopterModelModel.MeasurementRecord">
               <MappingFragment StoreEntitySet="MeasurementRecord">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="ControllerId" ColumnName="ControllerId" />
-                <ScalarProperty Name="TimeStamp" ColumnName="TimeStamp" />
-                <ScalarProperty Name="SetPoint" ColumnName="SetPoint" />
                 <ScalarProperty Name="CurrentAngle" ColumnName="CurrentAngle" />
+                <ScalarProperty Name="SetPoint" ColumnName="SetPoint" />
+                <ScalarProperty Name="TimeStamp" ColumnName="TimeStamp" />
+                <ScalarProperty Name="ControllerId" ColumnName="ControllerId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SessionRecords">
+            <EntityTypeMapping TypeName="HelicopterModelModel.SessionRecord">
+              <MappingFragment StoreEntitySet="SessionRecord">
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="SettingsId" ColumnName="SettingsId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="SettingsRecords">
             <EntityTypeMapping TypeName="HelicopterModelModel.SettingsRecord">
               <MappingFragment StoreEntitySet="SettingsRecord">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Created" ColumnName="Created" />
-                <ScalarProperty Name="Hash" ColumnName="Hash" />
                 <ScalarProperty Name="Text" ColumnName="Text" />
+                <ScalarProperty Name="Hash" ColumnName="Hash" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -206,19 +217,8 @@
                 <ScalarProperty Name="CWIntegralGain" ColumnName="CWIntegralGain" />
                 <ScalarProperty Name="CWProportionalGain" ColumnName="CWProportionalGain" />
                 <ScalarProperty Name="DriverType" ColumnName="DriverType" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="MotorType" ColumnName="MotorType" />
                 <ScalarProperty Name="SessionId" ColumnName="SessionId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SessionRecords">
-            <EntityTypeMapping TypeName="HelicopterModelModel.SessionRecord">
-              <MappingFragment StoreEntitySet="SessionRecord">
-                <ScalarProperty Name="Comment" ColumnName="Comment" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
-                <ScalarProperty Name="SettingsId" ColumnName="SettingsId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

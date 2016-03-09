@@ -1,6 +1,7 @@
 ﻿using Helicopter.Core;
 using Helicopter.Core.Sessions;
 using Helicopter.GUI.PidCharts;
+using Helicopter.Model;
 using LiveCharts;
 using LiveCharts.CoreComponents;
 using log4net;
@@ -31,8 +32,9 @@ namespace Helicopter.GUI
             helicopterViewModel.PropertyChanged += OnViewModelPropertyChanged;
 
             InitializeComponent();
-            SetVisibilty();
             SetBindingForControls();
+            InitializeDatabaseDataGrid();
+            SetVisibilty();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -92,6 +94,7 @@ namespace Helicopter.GUI
             optionsToolbar.DataContext = helicopterViewModel;
             controllerTabs.DataContext = helicopterViewModel;
             controllerOutputPanel.DataContext = helicopterViewModel;
+            databaseDataGrid.DataContext = helicopterViewModel;
         }
 
         private void InitializeDatabaseDataGrid()
@@ -99,16 +102,20 @@ namespace Helicopter.GUI
             Style rowStyle = new Style(typeof(DataGridRow));
             rowStyle.Setters.Add(new EventSetter(DataGridRow.MouseDoubleClickEvent, new MouseButtonEventHandler(OnRowDoubleClick)));
             databaseDataGrid.RowStyle = rowStyle;
+
+            helicopterViewModel.InitializeDatabase();
         }
 
         private void OnRowDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var recordId = helicopterViewModel.SelectedRecord != null ? helicopterViewModel.SelectedRecord.Id : -1;
-            //var session = DatabaseManager.CreateSessionFromRecordId(recordId);
 
-            //dataChart = new DataChart();
-            //dataChart.LoadCreepData(session);
-            //dataChart.Show();
+            using (var context = new HelicopterModelEntities())
+            {
+                var sessionRecord = DatabaseManager.GetSessionRecord(recordId, context);
+                sessionPidChartWindow = new SessionPidChartWindow(sessionRecord);
+                sessionPidChartWindow.Show();
+            }
         }
 
         private void StartPidCharting()
@@ -143,6 +150,11 @@ namespace Helicopter.GUI
                         helicopterViewModel.Disconnect();
                     }
 
+                    if (sessionPidChartWindow != null)
+                    {
+                        sessionPidChartWindow.Close();
+                    }
+
                     break;
             }
         }
@@ -168,7 +180,8 @@ namespace Helicopter.GUI
             {
                 if (helicopterViewModel.HelicopterManager.IsSessionComplete)
                 {
-                    sessionPidChartWindow = new SessionPidChartWindow(helicopterViewModel.HelicopterManager.Session);
+                    var sessionRecord = DatabaseManager.CreateNewSessionRecord(helicopterViewModel.HelicopterManager.Session, helicopterViewModel.HelicopterManager.HelicopterSettings);
+                    sessionPidChartWindow = new SessionPidChartWindow(sessionRecord);
                     sessionPidChartWindow.Show();
                 }
             }

@@ -11,7 +11,6 @@ namespace Helicopter.Core
     public class HelicopterManager : INotifyPropertyChanged, IDisposable
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private HelicopterSettings helicopterSettings;
         private BackgroundWorker sessionWorker;
         private bool isSessionRunning;
         private bool isSessionComplete;
@@ -19,15 +18,17 @@ namespace Helicopter.Core
 
         public HelicopterManager()
         {
-            helicopterSettings = HelicopterSettings.Load();
+            HelicopterSettings = HelicopterSettings.Load();
 
-            HelicopterController = new HelicopterController(helicopterSettings.ConnectionType);
+            HelicopterController = new HelicopterController(HelicopterSettings.ConnectionType);
             HelicopterController.PropertyChanged += OnControllerPropertyChanged;
 
             InitializeSessionWorker();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public HelicopterSettings HelicopterSettings { get; private set; }
 
         public HelicopterController HelicopterController { get; private set; }
 
@@ -100,7 +101,7 @@ namespace Helicopter.Core
 
         public void Connect()
         {
-            HelicopterController.Connect(helicopterSettings.ControllerSettings);
+            HelicopterController.Connect(HelicopterSettings.ControllerSettings);
         }
 
         public void Disconnect()
@@ -163,7 +164,7 @@ namespace Helicopter.Core
         private void InitializeSessionWorker()
         {
             sessionWorker = new BackgroundWorker();
-            sessionWorker.DoWork += new DoWorkEventHandler(SessionWorker_DoWork);
+            sessionWorker.DoWork += new DoWorkEventHandler(SessionWorker_DoDemoWork);
             sessionWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(SessionWorker_RunWorkerCompleted);
             sessionWorker.WorkerReportsProgress = false;
             sessionWorker.WorkerSupportsCancellation = true;
@@ -171,7 +172,7 @@ namespace Helicopter.Core
 
         private void ResetSession()
         {
-            Session = new Session(HelicopterController, helicopterSettings.PidThreadRefreshIntervalMilliseconds);
+            Session = new Session(HelicopterController, HelicopterSettings.PidThreadRefreshIntervalMilliseconds);
             Session.ClearControllerData();
 
             IsSessionComplete = false;
@@ -214,6 +215,8 @@ namespace Helicopter.Core
             Session.StartTime = DateTime.Now;
 
             HelicopterController.EnablePid();
+            yaw.SetIntegralWindupThreshold(100);
+            tilt.SetIntegralWindupThreshold(100);
 
             int steadyStateCount = 0;
 
@@ -231,7 +234,7 @@ namespace Helicopter.Core
                     steadyStateCount = 0;
                 }
 
-                if (steadyStateCount >= 5)
+                if (steadyStateCount >= 4)
                 {
                     steadyStateCount = 0;
                     break;
@@ -262,7 +265,7 @@ namespace Helicopter.Core
                     steadyStateCount = 0;
                 }
 
-                if (steadyStateCount >= 5)
+                if (steadyStateCount >= 4)
                 {
                     steadyStateCount = 0;
                     break;
@@ -286,10 +289,10 @@ namespace Helicopter.Core
         private void SessionWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             IsSessionRunning = false;
+            HelicopterController.DisablePid();
 
             if (e.Error != null)
             {
-                HelicopterController.DisablePid();
                 throw new Exception(String.Format("Background worker stopped. {0}", e.Error.Message), e.Error.InnerException);
             }
             else

@@ -75,30 +75,30 @@
 
             <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
                 <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="P-Gain:" />
-                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltWindupTextBlock" />
-            </StackPanel>
-            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
-                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="I-Gain:" />
-                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltOutputRateLimitTextBlock" />
-            </StackPanel>
-            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
-                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="D-Gain:" />
-                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltDriverType" />
-            </StackPanel>
-            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
-                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="I-Windup Thresh:" />
                 <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltPGainTextBlock" />
             </StackPanel>
             <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
-                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="Output Rate Limit:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="I-Gain:" />
                 <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltIGainTextBlock" />
             </StackPanel>
             <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
-                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="Driver Type:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="D-Gain:" />
                 <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltDGainTextBlock" />
             </StackPanel>
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="I-Windup Thresh:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltWindupTextBlock" />
+            </StackPanel>
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="Output Rate Limit:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltOutputRateLimitTextBlock" />
+            </StackPanel>
+            <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Center" Text="Driver Type:" />
+                <TextBlock Background="White" Margin="0,0,5,0" Width="95" TextAlignment="Left" x:Name="tiltDriverType" />
+            </StackPanel>
             <TextBox Background="White" Margin="5,30,5,0" Height="208" TextWrapping="Wrap" Text="" x:Name="sessionComment" />
-            <Button Margin="88,5,0,0" Width="100">Save Comment</Button>
+            <Button Margin="88,5,0,0" Width="100" Click="OnSaveCommentButtonClick" >Save Comment</Button>
         </StackPanel>
         <local:StaticPidChart x:Name="staticPidChart" />
     </DockPanel>
