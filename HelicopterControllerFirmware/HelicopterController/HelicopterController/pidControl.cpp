@@ -188,10 +188,10 @@ void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOut
 	// TODO: Refactor this later
 	if (channel == YAW_CHANNEL)
 	{
-		if (angleErrors[channel] > 0)
-		{
-			newOutput += 30;
-		}
+		//if (angleErrors[channel] > 5) //Change this to 2 (or something similar); when set to 5 it doesn't counteract the torque from the alt motor properly. (Used to be 5)
+		//{
+		//	newOutput += 15;
+		//}
 	}
 
 	if (channel == TILT_CHANNEL)
