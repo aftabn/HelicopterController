@@ -11,7 +11,8 @@ namespace Helicopter.Core
     public class HelicopterManager : INotifyPropertyChanged, IDisposable
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private BackgroundWorker sessionWorker;
+        private BackgroundWorker tuningWorker;
+        private BackgroundWorker demoWorker;
         private bool isSessionRunning;
         private bool isSessionComplete;
         private bool isSessionRequestingStop;
@@ -23,7 +24,8 @@ namespace Helicopter.Core
             HelicopterController = new HelicopterController(HelicopterSettings.ConnectionType);
             HelicopterController.PropertyChanged += OnControllerPropertyChanged;
 
-            InitializeSessionWorker();
+            InitializeTuningSessionWorker();
+            InitializeDemoSessionWorker();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -120,32 +122,32 @@ namespace Helicopter.Core
 
         public void StartSession()
         {
-            if (IsSessionRunning)
-            {
-                throw new Exception("A PID session is currently ongoing. You can only start a new session once the previous one has finished.");
-            }
-            else if (HelicopterController.IsPidEnabled)
-            {
-                throw new Exception("PID is already enabled.");
-            }
-            else
-            {
-                ResetSession();
-                sessionWorker.RunWorkerAsync();
-            }
+            InitializeSession();
+            tuningWorker.RunWorkerAsync();
         }
 
         public void StopSession()
         {
-            HelicopterController.DisablePid();
-            if (sessionWorker.IsBusy)
+            //HelicopterController.DisablePid();
+
+            if (tuningWorker.IsBusy)
             {
-                sessionWorker.CancelAsync();
+                tuningWorker.CancelAsync();
+            }
+            else if (demoWorker.IsBusy)
+            {
+                demoWorker.CancelAsync();
             }
         }
 
         public void StartDemo()
         {
+            InitializeSession();
+            demoWorker.RunWorkerAsync();
+        }
+
+        private void InitializeSession()
+        {
             if (IsSessionRunning)
             {
                 throw new Exception("A PID session is currently ongoing. You can only start a new session once the previous one has finished.");
@@ -154,20 +156,26 @@ namespace Helicopter.Core
             {
                 throw new Exception("PID is already enabled.");
             }
-            else
-            {
-                ResetSession();
-                sessionWorker.RunWorkerAsync();
-            }
+
+            ResetSession();
         }
 
-        private void InitializeSessionWorker()
+        private void InitializeTuningSessionWorker()
         {
-            sessionWorker = new BackgroundWorker();
-            sessionWorker.DoWork += new DoWorkEventHandler(SessionWorker_DoDemoWork);
-            sessionWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(SessionWorker_RunWorkerCompleted);
-            sessionWorker.WorkerReportsProgress = false;
-            sessionWorker.WorkerSupportsCancellation = true;
+            tuningWorker = new BackgroundWorker();
+            tuningWorker.DoWork += new DoWorkEventHandler(SessionWorker_DoWork);
+            tuningWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(SessionWorker_RunWorkerCompleted);
+            tuningWorker.WorkerReportsProgress = false;
+            tuningWorker.WorkerSupportsCancellation = true;
+        }
+
+        private void InitializeDemoSessionWorker()
+        {
+            demoWorker = new BackgroundWorker();
+            demoWorker.DoWork += new DoWorkEventHandler(SessionWorker_DoDemoWork);
+            demoWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(SessionWorker_RunWorkerCompleted);
+            demoWorker.WorkerReportsProgress = false;
+            demoWorker.WorkerSupportsCancellation = true;
         }
 
         private void ResetSession()
@@ -181,6 +189,7 @@ namespace Helicopter.Core
 
         private void SessionWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            var tilt = HelicopterController.Tilt;
             var worker = sender as BackgroundWorker;
 
             HelicopterController.EnablePid();
@@ -196,8 +205,30 @@ namespace Helicopter.Core
                 Thread.Sleep(Session.RefreshIntervalMilliseconds);
             }
 
-            Session.EndTime = DateTime.Now;
+            HelicopterController.DisablePid();
+            tilt.SetOutputPercentage(41);
+            tilt.SetSetPoint(-21);
 
+            int steadyStateCount = 0;
+            var startDropTime = DateTime.Now;
+
+            while (steadyStateCount < 2 && (DateTime.Now - startDropTime).TotalSeconds < 3)
+            {
+                Session.TakeNewDataSamples(DateTime.Now);
+
+                if (Math.Abs(tilt.CurrentAngle - tilt.SetPoint) < 2)
+                {
+                    steadyStateCount++;
+                }
+                else
+                {
+                    steadyStateCount = 0;
+                }
+
+                Thread.Sleep(Session.RefreshIntervalMilliseconds);
+            }
+
+            Session.EndTime = DateTime.Now;
             e.Cancel = true;
         }
 
@@ -222,8 +253,7 @@ namespace Helicopter.Core
 
             while (!worker.CancellationPending)
             {
-                var timeStamp = DateTime.Now;
-                Session.TakeNewDataSamples(timeStamp);
+                Session.TakeNewDataSamples(DateTime.Now);
 
                 if (Math.Abs(tilt.CurrentAngle - tilt.SetPoint) < 2)
                 {
@@ -280,7 +310,38 @@ namespace Helicopter.Core
                 e.Cancel = true;
             }
 
-            tilt.SetSetPoint(-22);
+            HelicopterController.DisablePid();
+            tilt.SetOutputPercentage(41);
+            tilt.SetSetPoint(-21);
+
+            while (!worker.CancellationPending)
+            {
+                var timeStamp = DateTime.Now;
+                Session.TakeNewDataSamples(timeStamp);
+
+                if (Math.Abs(tilt.CurrentAngle - tilt.SetPoint) < 2)
+                {
+                    steadyStateCount++;
+                }
+                else
+                {
+                    steadyStateCount = 0;
+                }
+
+                if (steadyStateCount >= 2)
+                {
+                    steadyStateCount = 0;
+                    break;
+                }
+
+                Thread.Sleep(Session.RefreshIntervalMilliseconds);
+            }
+
+            if (worker.CancellationPending)
+            {
+                Session.EndTime = DateTime.Now;
+                e.Cancel = true;
+            }
 
             Session.EndTime = DateTime.Now;
             IsSessionRequestingStop = true;
