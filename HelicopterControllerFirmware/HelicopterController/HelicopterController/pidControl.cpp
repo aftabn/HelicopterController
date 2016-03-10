@@ -171,6 +171,26 @@ void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOut
 	// P term
 	angleErrors[channel] = setPoints[channel] - currentAngles[channel];
 
+	// TODO: Put this in a function
+	// This scales the integrated error based on the igain of the direction its moving in
+	if (channel == YAW_CHANNEL)
+	{
+		if (previousAngles[channel] > setPoints[channel])
+		{
+			if (currentAngles[YAW_CHANNEL] < setPoints[YAW_CHANNEL])
+			{
+				integratedAngleErrors[YAW_CHANNEL] *= iGains[YAW_CHANNEL][YAW_CCW_DRECTION_PROFILE] / iGains[YAW_CHANNEL][YAW_CW_DRECTION_PROFILE];
+			}
+		}
+		else
+		{
+			if (currentAngles[YAW_CHANNEL] > setPoints[YAW_CHANNEL])
+			{
+				integratedAngleErrors[YAW_CHANNEL] *= iGains[YAW_CHANNEL][YAW_CW_DRECTION_PROFILE] / iGains[YAW_CHANNEL][YAW_CCW_DRECTION_PROFILE];
+			}
+		}
+	}
+
 	// I term
 	if (abs(angleErrors[channel]) < iWindupThresholds[channel])
 	{
@@ -241,8 +261,15 @@ void applyMotorOutputs(int channel, Direction direction, int percentageOutput)
 	}
 	else if (motorDriverTypes[channel] == Frequency)
 	{
-		int frequency = adjustOutputToFrequency(percentageOutput);
-		setFrequency(channel, frequency);
+		if (percentageOutput != 0)
+		{
+			int frequency = adjustOutputToFrequency(percentageOutput);
+			setFrequency(channel, frequency);
+		}
+		else
+		{
+			disableFrequency();
+		}
 	}
 
 	currentOutputs[channel] = percentageOutput;
@@ -399,6 +426,12 @@ void disableMotors()
 	{
 		applyMotorOutputs(channel, directions[channel], 0);
 	}
+}
+
+void disableFrequency()
+{
+	noTone(FREQUENCY_OUTPUT_PIN);
+	currentFrequency = 0;
 }
 
 void enablePid()

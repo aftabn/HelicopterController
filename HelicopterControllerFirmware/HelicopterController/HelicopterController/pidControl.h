@@ -169,5 +169,6 @@ void setDacVoltage(int channel, double voltage);
 //	 hardware to control one motor.
 // Channel is only used to determine which motor is the frequency motor
 void setFrequency(int channel, uint16_t frequency);
+void disableFrequency(void);
 
 #endif
