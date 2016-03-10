@@ -113,7 +113,7 @@ extern volatile bool isVerboseMode;
 extern volatile bool isSafetyOn;
 
 extern volatile int pidLoopInterval;
-extern volatile int currentFrequency;
+extern volatile uint16_t currentFrequency;
 
 extern volatile double pGains[MAX_NUM_CHANNELS][NUM_DIRECTION_PROFILES];
 extern volatile double iGains[MAX_NUM_CHANNELS][NUM_DIRECTION_PROFILES];
@@ -148,7 +148,7 @@ void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOut
 void applyMotorOutputs(int channel, Direction direction, int percentageOutput);
 
 double adjustOutputToVoltage(Direction direction, int percentageOutput);
-int adjustOutputToFrequency(int percentageOutput);
+uint16_t adjustOutputToFrequency(int percentageOutput);
 
 double getSampledAdcVoltage(int channel);
 double getSampledAdcVoltage(int channel, uint8_t numSamples);
@@ -168,6 +168,6 @@ void setDacVoltage(int channel, double voltage);
 // For this project, ONLY ONE MOTOR can use frequency control as the current implementation only has enough
 //	 hardware to control one motor.
 // Channel is only used to determine which motor is the frequency motor
-void setFrequency(int channel, int frequency);
+void setFrequency(int channel, uint16_t frequency);
 
 #endif

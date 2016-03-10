@@ -46,5 +46,6 @@ bool isDoubleWithinRange(double number, double lowerLimit, double upperLimit);
 void upperCaseString(char *str);
 int stricmp(const char *p1, const char *p2);
 int convertToInt(char *str);
+int convertToUint(char *str);
 
 #endif

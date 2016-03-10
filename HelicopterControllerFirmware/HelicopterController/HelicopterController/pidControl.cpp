@@ -22,7 +22,7 @@ volatile bool isVerboseMode;
 volatile bool isSafetyOn;
 
 volatile int pidLoopInterval;
-volatile int currentFrequency;
+volatile uint16_t currentFrequency;
 
 const signed int encoderLookup[] = { 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 };
 byte encoderValues;
@@ -182,17 +182,9 @@ void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOut
 
 	int newOutput = 0;
 
+	// TODO: Refactor all this
 	// Update previous angle for next calculation
 	previousAngles[channel] = currentAngles[channel];
-
-	// TODO: Refactor this later
-	if (channel == YAW_CHANNEL)
-	{
-		//if (angleErrors[channel] > 5) //Change this to 2 (or something similar); when set to 5 it doesn't counteract the torque from the alt motor properly. (Used to be 5)
-		//{
-		//	newOutput += 15;
-		//}
-	}
 
 	if (channel == TILT_CHANNEL)
 	{
@@ -266,9 +258,9 @@ double adjustOutputToVoltage(Direction direction, int percentageOutput)
 	return voltage;
 }
 
-int adjustOutputToFrequency(int percentageOutput)
+uint16_t adjustOutputToFrequency(int percentageOutput)
 {
-	int frequency = (MOTOR_MAX_FREQUENCY - MOTOR_MIN_FREQUENCY) * percentageOutput / 100.0;
+	uint16_t frequency = (MOTOR_MAX_FREQUENCY - MOTOR_MIN_FREQUENCY) * percentageOutput / 100.0;
 	return frequency;
 }
 
@@ -309,7 +301,7 @@ void setDacVoltage(int channel, double voltage)
 	currentVoltages[channel] = voltage;
 }
 
-void setFrequency(int channel, int frequency)
+void setFrequency(int channel, uint16_t frequency)
 {
 	tone(FREQUENCY_OUTPUT_PIN, frequency);
 	digitalWriteFast(FREQUENCY_DIRECTION_PIN, directions[channel] == Clockwise ? HIGH : LOW);

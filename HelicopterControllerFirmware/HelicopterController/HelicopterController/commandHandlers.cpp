@@ -34,7 +34,7 @@ void onCommandChangelog()
 {
 	if (isReadCommand(gParameters[0]))
 	{
-		Serial.println(F("Fixed outputs not updating from disabling PID"));
+		Serial.println(F("Fixed frequency being int instead of uint"));
 		sendAck();
 	}
 	else
@@ -598,7 +598,7 @@ void onCommandFrequencyOutput()
 	if (isChannelCorrect(gParameters[0]))
 	{
 		byte channel = convertToInt(gParameters[0]);
-		int frequency = convertToInt(gParameters[1]);
+		uint16_t frequency = convertToUint(gParameters[1]);
 
 		if (channel == TILT_CHANNEL)
 		{

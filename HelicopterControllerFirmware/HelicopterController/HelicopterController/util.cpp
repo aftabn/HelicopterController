@@ -232,3 +232,12 @@ int convertToInt(char *str)
 	num = strtol(str, &ptr, 10);
 	return (int)num;
 }
+
+int convertToUint(char *str)
+{
+	char *ptr;
+	long num;
+
+	num = strtol(str, &ptr, 10);
+	return (uint16_t)num;
+}
