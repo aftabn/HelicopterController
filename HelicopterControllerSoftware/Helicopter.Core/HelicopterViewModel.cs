@@ -264,8 +264,9 @@ namespace Helicopter.Core
 
         public ICommand SearchForRecordsCommand { get; private set; }
 
-        public ICommand StartPidSessionCommand { get; private set; }
-        public ICommand StopPidSessionCommand { get; private set; }
+        public ICommand StartTuningSessionCommand { get; private set; }
+        public ICommand StartDemoSessionCommand { get; private set; }
+        public ICommand StopSessionCommand { get; private set; }
         public ICommand EnablePidCommand { get; private set; }
         public ICommand DisablePidCommand { get; private set; }
         public ICommand EnableSafetyCommand { get; private set; }
@@ -356,7 +357,7 @@ namespace Helicopter.Core
                 x => DisplayedRecords = DatabaseManager.GetQueriedRecords(IsSearchingById, SelectedRecordId, SelectedDate),
                 x => IsDatabaseConnected);
 
-            StartPidSessionCommand = new RelayCommand(
+            StartTuningSessionCommand = new RelayCommand(
                    x =>
                    {
                        HelicopterManager.StartSession();
@@ -364,7 +365,15 @@ namespace Helicopter.Core
                    },
                    x => IsConnected && !IsPidEnabled && !IsPidSessionRunning);
 
-            StopPidSessionCommand = new RelayCommand(
+            StartDemoSessionCommand = new RelayCommand(
+                   x =>
+                   {
+                       HelicopterManager.StartDemo();
+                       UpdateOutputTextbox(String.Format("PID session has started"));
+                   },
+                   x => IsConnected && !IsPidEnabled && !IsPidSessionRunning);
+
+            StopSessionCommand = new RelayCommand(
                    x =>
                    {
                        HelicopterManager.StopSession();

@@ -34,7 +34,7 @@ namespace Helicopter.GUI
             InitializeComponent();
             SetBindingForControls();
             InitializeDatabaseDataGrid();
-            SetVisibilty();
+            //SetVisibilty();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

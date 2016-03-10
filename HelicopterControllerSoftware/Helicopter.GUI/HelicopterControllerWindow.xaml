@@ -39,8 +39,10 @@
         <TabControl x:Name="controllerTabs">
             <TabItem x:Name="operatorTab" Header="Operator">
                 <DockPanel x:Name="mainDockPanel">
-                    <StackPanel DockPanel.Dock="Left" Margin="5" Width="150"></StackPanel>
-                    <StackPanel DockPanel.Dock="Left" Margin="5" Width="150"></StackPanel>
+                    <StackPanel DockPanel.Dock="Left" Margin="5" Width="200">
+                        <Button Margin="6,10,6,0" FontSize="25" FontWeight="SemiBold" Height="50" Command="{Binding StartDemoSessionCommand}">Start Demo</Button>
+                        <Button Margin="6,10,6,0" Height="50" FontSize="25" FontWeight="SemiBold" Command="{Binding StopSessionCommand}">Stop</Button>
+                    </StackPanel>
                 </DockPanel>
             </TabItem>
             <TabItem x:Name="DeveloperTab" Header="Developer">
@@ -67,8 +69,11 @@
                         <Button Margin="5,0,5,5" Content="Disable Motors" Command="{Binding DisableMotorsCommand}" />
                         <Button Margin="5,0,5,5" Content="Refresh Values" Command="{Binding RefreshValuesCommand}" />
                         <Separator Margin="5,5,5,10" />
-                        <Button Margin="5,0,5,5" Content="Start PID Session" Command="{Binding StartPidSessionCommand}" />
-                        <Button Margin="5,0,5,5" Content="Stop PID Session" Command="{Binding StopPidSessionCommand}" />
+                        <Button Margin="5,0,5,5" Content="Start PID Session" Command="{Binding StartDemoSessionCommand}" />
+                        <Button Margin="5,0,5,5" Content="Stop PID Session" Command="{Binding StopSessionCommand}" />
+                        <Separator Margin="5,5,5,10" />
+                        <Button Margin="5,0,5,5" Content="Start PID Session" Command="{Binding StartTuningSessionCommand}" />
+                        <Button Margin="5,0,5,5" Content="Stop PID Session" Command="{Binding StopSessionCommand}" />
                         <Separator Margin="5,5,5,10" />
                         <Button Margin="5,0,5,5" Content="Enable PID" Command="{Binding EnablePidCommand}" />
                         <Button Margin="5,0,5,5" Content="Disable PID" Command="{Binding DisablePidCommand}" />
