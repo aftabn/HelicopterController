@@ -23,7 +23,7 @@ namespace Helicopter.GUI.PidCharts
     /// </summary>
     public partial class SessionPidChartWindow : Window
     {
-        private SessionRecord sessionRecord;
+        private readonly SessionRecord sessionRecord;
 
         public SessionPidChartWindow(SessionRecord sessionRecord)
         {
@@ -33,6 +33,9 @@ namespace Helicopter.GUI.PidCharts
 
             UpdateGui(sessionRecord);
             staticPidChart.LoadNewData(sessionRecord);
+
+            sessionComment.Focus();
+            sessionComment.CaretIndex = sessionComment.Text.Length;
         }
 
         private void UpdateGui(SessionRecord sessionRecord)
@@ -66,9 +69,12 @@ namespace Helicopter.GUI.PidCharts
             }
         }
 
-        private void OnSaveCommentButtonClick(object sender, RoutedEventArgs e)
+        private void OnSaveCommentButtonClick(object sender, KeyEventArgs key)
         {
-            DatabaseManager.UpdateSessionComment(sessionRecord.Id, sessionComment.Text);
+            if (key.Key == Key.Enter)
+            {
+                DatabaseManager.UpdateSessionComment(sessionRecord.Id, sessionComment.Text);
+            }
         }
     }
 }
