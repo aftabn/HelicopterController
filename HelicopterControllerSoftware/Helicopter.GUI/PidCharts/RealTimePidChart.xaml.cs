@@ -16,7 +16,6 @@
 
 using Helicopter.Core.Sessions;
 using SciChart.Charting.Model.DataSeries;
-using SciChart.Examples.ExternalDependencies.Data;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
@@ -54,14 +53,14 @@ namespace Helicopter.GUI
             ClearDataSeries();
 
             yawAngles = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = "Yaw Angle" };
-            yawSetPoints = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = " Yaw Set Point" };
+            yawSetPoints = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = "Yaw Set Point" };
             tiltAngles = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = "Tilt Angle" };
             tiltSetPoints = new XyDataSeries<double, double>() { FifoCapacity = FifoSampleSize, SeriesName = "Tilt Set Point" };
 
-            yawAngleSeries.DataSeries = yawAngles;
-            yawSetPointSeries.DataSeries = yawSetPoints;
-            tiltAngleSeries.DataSeries = tiltAngles;
-            tiltSetPointSeries.DataSeries = tiltSetPoints;
+            YawAngleSeries.DataSeries = yawAngles;
+            YawSetPointSeries.DataSeries = yawSetPoints;
+            TiltAngleSeries.DataSeries = tiltAngles;
+            TiltSetPointSeries.DataSeries = tiltSetPoints;
         }
 
         public void EndSession()
@@ -74,7 +73,7 @@ namespace Helicopter.GUI
 
         private void ClearDataSeries()
         {
-            using (sciChartSurface.SuspendUpdates())
+            using (SciChartSurface.SuspendUpdates())
             {
                 if (yawAngles != null)
                 {
@@ -98,7 +97,7 @@ namespace Helicopter.GUI
                 double setPoint = newDataPoint.SetPoint;
 
                 // Suspending updates ensures we only get one redraw after both series have been appended to
-                using (sciChartSurface.SuspendUpdates())
+                using (SciChartSurface.SuspendUpdates())
                 {
                     yawAngles.Append(time, angle);
                     yawSetPoints.Append(time, setPoint);
@@ -114,7 +113,7 @@ namespace Helicopter.GUI
                 double setPoint = newDataPoint.SetPoint;
 
                 // Suspending updates ensures we only get one redraw after both series have been appended to
-                using (sciChartSurface.SuspendUpdates())
+                using (SciChartSurface.SuspendUpdates())
                 {
                     tiltAngles.Append(time, angle);
                     tiltSetPoints.Append(time, setPoint);

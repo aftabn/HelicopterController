@@ -2,8 +2,6 @@
 using Helicopter.Core.Sessions;
 using Helicopter.GUI.PidCharts;
 using Helicopter.Model;
-using LiveCharts;
-using LiveCharts.CoreComponents;
 using log4net;
 using System;
 using System.ComponentModel;
@@ -34,14 +32,14 @@ namespace Helicopter.GUI
             InitializeComponent();
             SetBindingForControls();
             InitializeDatabaseDataGrid();
-            //SetVisibilty();
+            SetVisibilty();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void SetVisibilty()
         {
-            controllerOutputPanel.Visibility = Visibility.Collapsed;
+            ControllerOutputPanel.Visibility = Visibility.Collapsed;
         }
 
         private void UpdateStatusBar()
@@ -61,11 +59,11 @@ namespace Helicopter.GUI
 
             if (helicopterViewModel.IsConnected)
             {
-                helicopterControllerStatusTextbox.Text = "Helicopter Controller Connected";
+                HelicopterControllerStatusTextbox.Text = "Helicopter Controller Connected";
 
                 if (helicopterViewModel.IsDatabaseConnected)
                 {
-                    databaseLiveTextBlock.Text = "Database Connected";
+                    DatabaseLiveTextBlock.Text = "Database Connected";
                     statusBarColor = new SolidColorBrush(Color.FromRgb(0x00, 0x7A, 0xCC)); // Visual Studio Blue
                 }
                 else
@@ -75,33 +73,33 @@ namespace Helicopter.GUI
             }
             else if (helicopterViewModel.IsDatabaseConnected)
             {
-                databaseLiveTextBlock.Text = "Database Connected";
+                DatabaseLiveTextBlock.Text = "Database Connected";
                 statusBarColor = Brushes.DarkGoldenrod;
             }
             else
             {
-                helicopterControllerStatusTextbox.Text = "Helicopter Controller Not Connected";
-                databaseLiveTextBlock.Text = "Database Not Connected";
+                HelicopterControllerStatusTextbox.Text = "Helicopter Controller Not Connected";
+                DatabaseLiveTextBlock.Text = "Database Not Connected";
                 statusBarColor = Brushes.Firebrick;
             }
 
-            statusBar.Background = statusBarColor;
+            StatusBar.Background = statusBarColor;
         }
 
         private void SetBindingForControls()
         {
-            menuHeader.DataContext = helicopterViewModel;
-            optionsToolbar.DataContext = helicopterViewModel;
-            controllerTabs.DataContext = helicopterViewModel;
-            controllerOutputPanel.DataContext = helicopterViewModel;
-            databaseDataGrid.DataContext = helicopterViewModel;
+            MenuHeader.DataContext = helicopterViewModel;
+            OptionsToolbar.DataContext = helicopterViewModel;
+            ControllerTabs.DataContext = helicopterViewModel;
+            ControllerOutputPanel.DataContext = helicopterViewModel;
+            DatabaseDataGrid.DataContext = helicopterViewModel;
         }
 
         private void InitializeDatabaseDataGrid()
         {
             Style rowStyle = new Style(typeof(DataGridRow));
             rowStyle.Setters.Add(new EventSetter(DataGridRow.MouseDoubleClickEvent, new MouseButtonEventHandler(OnRowDoubleClick)));
-            databaseDataGrid.RowStyle = rowStyle;
+            DatabaseDataGrid.RowStyle = rowStyle;
 
             helicopterViewModel.InitializeDatabase();
         }
@@ -120,12 +118,12 @@ namespace Helicopter.GUI
 
         private void StartPidCharting()
         {
-            pidChart.StartNewSession(helicopterViewModel.HelicopterManager.Session);
+            PidChart.StartNewSession(helicopterViewModel.HelicopterManager.Session);
         }
 
         private void StopPidCharting()
         {
-            pidChart.EndSession();
+            PidChart.EndSession();
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -187,18 +185,18 @@ namespace Helicopter.GUI
             }
             else if (e.PropertyName == "OutputText")
             {
-                controllerOutputTextbox.ScrollToEnd();
+                ControllerOutputTextbox.ScrollToEnd();
             }
         }
 
         private void OnHistoryTabGotFocus(object sender, RoutedEventArgs e)
         {
-            pidChart.Visibility = Visibility.Hidden;
+            PidChart.Visibility = Visibility.Hidden;
         }
 
         private void OnHistoryTabLostFocus(object sender, RoutedEventArgs e)
         {
-            pidChart.Visibility = Visibility.Visible;
+            PidChart.Visibility = Visibility.Visible;
         }
     }
 }

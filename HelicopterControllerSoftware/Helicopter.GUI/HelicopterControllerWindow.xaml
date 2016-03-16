@@ -4,9 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Helicopter.GUI"
-        xmlns:Util="clr-namespace:Libs.Utilities;assembly=Libs.Utilities"
-        xmlns:Core="clr-namespace:Helicopter.Core;assembly=Helicopter.Core"
-        xmlns:Controller="clr-namespace:Helicopter.Core.Controller;assembly=Helicopter.Core"
+        xmlns:util="clr-namespace:Libs.Utilities;assembly=Libs.Utilities"
+        xmlns:core="clr-namespace:Helicopter.Core;assembly=Helicopter.Core"
+        xmlns:controller="clr-namespace:Helicopter.Core.Controller;assembly=Helicopter.Core"
+        xmlns:pidCharts="clr-namespace:Helicopter.GUI.PidCharts;assembly=Helicopter.GUI"
         mc:Ignorable="d"
         Title="Helicopter Controller Software"
         Height="750" Width="1500"
@@ -14,31 +15,31 @@
         Loaded="WindowLoaded"
 	    Closing="OnWindowClosing">
     <Window.Resources>
-        <CollectionViewSource x:Key="helicopterViewModelSource" d:DesignSource="{d:DesignInstance {x:Type Core:HelicopterViewModel}, CreateList=True}" />
+        <CollectionViewSource x:Key="helicopterViewModelSource" d:DesignSource="{d:DesignInstance {x:Type core:HelicopterViewModel}, CreateList=True}" />
     </Window.Resources>
     <DockPanel>
-        <Menu x:Name="menuHeader" DockPanel.Dock="Top" Height="30" IsMainMenu="True">
+        <Menu x:Name="MenuHeader" DockPanel.Dock="Top" Height="30" IsMainMenu="True">
             <MenuItem Header="File" Margin="5,5,5,5">
-                <MenuItem x:Name="loadSettingsFileItem" Header="Load Settings" Command="{Binding LoadSettingsFileCommand}" />
+                <MenuItem x:Name="LoadSettingsFileItem" Header="Load Settings" Command="{Binding LoadSettingsFileCommand}" />
             </MenuItem>
             <MenuItem Header="Tools" Margin="5,5,5,5" />
         </Menu>
-        <ToolBar x:Name="optionsToolbar" DockPanel.Dock="Top" Height="28" Background="WhiteSmoke">
+        <ToolBar x:Name="OptionsToolbar" DockPanel.Dock="Top" Height="28" Background="WhiteSmoke">
             <Button Margin="3,0,3,0" BorderThickness="1" BorderBrush="DarkGray" Padding="15,2,15,2" Content="Connect" Command="{Binding ConnectCommand}" />
             <Button Margin="3,0,3,0" BorderThickness="1" BorderBrush="DarkGray" Padding="15,2,15,2" Content="Disconnect" Command="{Binding DisconnectCommand}" />
         </ToolBar>
-        <StatusBar x:Name="statusBar" DockPanel.Dock="Bottom" Background="Firebrick" Foreground="White" Height="27">
+        <StatusBar x:Name="StatusBar" DockPanel.Dock="Bottom" Background="Firebrick" Foreground="White" Height="27">
             <StatusBarItem>
-                <TextBlock x:Name="helicopterControllerStatusTextbox" Padding="10,2,10,2"><Run Text="Helicopter Controller Status" /></TextBlock>
+                <TextBlock x:Name="HelicopterControllerStatusTextbox" Padding="10,2,10,2"><Run Text="Helicopter Controller Status" /></TextBlock>
             </StatusBarItem>
             <Separator Width="1" HorizontalAlignment="Center" Background="DarkGray" Margin="5,3,5,3" />
             <StatusBarItem>
-                <TextBlock x:Name="databaseLiveTextBlock" Padding="5,2,5,2"><Run Text="Database Status" /></TextBlock>
+                <TextBlock x:Name="DatabaseLiveTextBlock" Padding="5,2,5,2"><Run Text="Database Status" /></TextBlock>
             </StatusBarItem>
         </StatusBar>
-        <TabControl x:Name="controllerTabs">
-            <TabItem x:Name="operatorTab" Header="Operator">
-                <DockPanel x:Name="mainDockPanel">
+        <TabControl x:Name="ControllerTabs">
+            <TabItem x:Name="OperatorTab" Header="Operator">
+                <DockPanel x:Name="MainDockPanel">
                     <StackPanel DockPanel.Dock="Left" Margin="5" Width="200">
                         <Button Margin="6,10,6,0" FontSize="25" FontWeight="SemiBold" Height="50" Command="{Binding StartDemoSessionCommand}">Start Demo</Button>
                         <Button Margin="6,10,6,0" Height="50" FontSize="25" FontWeight="SemiBold" Command="{Binding StopSessionCommand}">Stop</Button>
@@ -46,20 +47,20 @@
                 </DockPanel>
             </TabItem>
             <TabItem x:Name="DeveloperTab" Header="Developer">
-                <DockPanel x:Name="developerDockPanel">
+                <DockPanel x:Name="DeveloperDockPanel">
                     <StackPanel DockPanel.Dock="Left"  Margin="5,10,5,5" Width="150">
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Connection Type:" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel.Resources>
-                                    <Util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
-                                    <Util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+                                    <util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+                                    <util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
                                 </StackPanel.Resources>
                                 <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsConnected, Converter={StaticResource InverseBooleanConverter}}"
-                                             IsChecked="{Binding Path=ConnectionType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:ConnectionType.Serial}}" />
+                                             IsChecked="{Binding Path=ConnectionType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static controller:ConnectionType.Serial}}" />
                                 <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="35"><Run Text="Serial" /></TextBlock>
                                 <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsConnected, Converter={StaticResource InverseBooleanConverter}}"
-                                             IsChecked="{Binding Path=ConnectionType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:ConnectionType.Bluetooth}}" />
+                                             IsChecked="{Binding Path=ConnectionType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static controller:ConnectionType.Bluetooth}}" />
                                 <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,0,0" Width="55"><Run Text="Bluetooth" /></TextBlock>
                             </StackPanel>
                         </StackPanel>
@@ -69,11 +70,11 @@
                         <Button Margin="5,0,5,5" Content="Disable Motors" Command="{Binding DisableMotorsCommand}" />
                         <Button Margin="5,0,5,5" Content="Refresh Values" Command="{Binding RefreshValuesCommand}" />
                         <Separator Margin="5,5,5,10" />
-                        <Button Margin="5,0,5,5" Content="Start PID Session" Command="{Binding StartDemoSessionCommand}" />
-                        <Button Margin="5,0,5,5" Content="Stop PID Session" Command="{Binding StopSessionCommand}" />
+                        <Button Margin="5,0,5,5" Content="Start Demo Session" Command="{Binding StartDemoSessionCommand}" />
+                        <Button Margin="5,0,5,5" Content="Stop Demo Session" Command="{Binding StopSessionCommand}" />
                         <Separator Margin="5,5,5,10" />
-                        <Button Margin="5,0,5,5" Content="Start PID Session" Command="{Binding StartTuningSessionCommand}" />
-                        <Button Margin="5,0,5,5" Content="Stop PID Session" Command="{Binding StopSessionCommand}" />
+                        <Button Margin="5,0,5,5" Content="Start Tuning Session" Command="{Binding StartTuningSessionCommand}" />
+                        <Button Margin="5,0,5,5" Content="Stop Tuning Session" Command="{Binding StopSessionCommand}" />
                         <Separator Margin="5,5,5,10" />
                         <Button Margin="5,0,5,5" Content="Enable PID" Command="{Binding EnablePidCommand}" />
                         <Button Margin="5,0,5,5" Content="Disable PID" Command="{Binding DisablePidCommand}" />
@@ -94,16 +95,16 @@
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Angle Set Point" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawSetPointCommand}" CommandParameter="{Binding ElementName=setYawSetPointTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawSetPointTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawSetPointCommand}" CommandParameter="{Binding ElementName=SetYawSetPointTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetYawSetPointTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawSetPoint}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Output Percentage" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawOutputPercentageCommand}" CommandParameter="{Binding ElementName=setYawOutputPercentageTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawOutputPercentageTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawOutputPercentageCommand}" CommandParameter="{Binding ElementName=SetYawOutputPercentageTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetYawOutputPercentageTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawOutputPercentage}" />
                             </StackPanel>
                         </StackPanel>
@@ -111,38 +112,38 @@
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Direction" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel.Resources>
-                                    <Util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
-                                    <Util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+                                    <util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+                                    <util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
                                 </StackPanel.Resources>
                                 <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsPidEnabled, Converter={StaticResource InverseBooleanConverter}}"
-                                             IsChecked="{Binding Path=YawDirection, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:Direction.Clockwise}}" />
+                                             IsChecked="{Binding Path=YawDirection, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static controller:Direction.Clockwise}}" />
                                 <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="40"><Run Text="CW" /></TextBlock>
                                 <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsPidEnabled, Converter={StaticResource InverseBooleanConverter}}"
-                                             IsChecked="{Binding Path=YawDirection, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:Direction.CounterClockwise}}" />
+                                             IsChecked="{Binding Path=YawDirection, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static controller:Direction.CounterClockwise}}" />
                                 <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,0,0" Width="40"><Run Text="CCW" /></TextBlock>
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="CW Proportional Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCWProportionalGainCommand}" CommandParameter="{Binding ElementName=setYawCWProportionalGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawCWProportionalGainTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCWProportionalGainCommand}" CommandParameter="{Binding ElementName=SetYawCwProportionalGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetYawCwProportionalGainTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawCWProportionalGain}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="CW Integral Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCWIntegralGainCommand}" CommandParameter="{Binding ElementName=setYawCWIntegralGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawCWIntegralGainTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCWIntegralGainCommand}" CommandParameter="{Binding ElementName=SetYawCwIntegralGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetYawCwIntegralGainTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawCWIntegralGain}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="CW Derivative Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCWDerivativeGainCommand}" CommandParameter="{Binding ElementName=setYawCWDerivativeGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawCWDerivativeGainTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCWDerivativeGainCommand}" CommandParameter="{Binding ElementName=SetYawCwDerivativeGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetYawCwDerivativeGainTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawCWDerivativeGain}" />
                             </StackPanel>
                         </StackPanel>
@@ -150,40 +151,40 @@
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="CCW Proportional Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCCWProportionalGainCommand}" CommandParameter="{Binding ElementName=setYawCCWProportionalGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawCCWProportionalGainTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCCWProportionalGainCommand}" CommandParameter="{Binding ElementName=SetYawCcwProportionalGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetYawCcwProportionalGainTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawCCWProportionalGain}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="CCW Integral Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCCWIntegralGainCommand}" CommandParameter="{Binding ElementName=setYawCCWIntegralGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawCCWIntegralGainTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCCWIntegralGainCommand}" CommandParameter="{Binding ElementName=SetYawCcwIntegralGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetYawCcwIntegralGainTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawCCWIntegralGain}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="CCW Derivative Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCCWDerivativeGainCommand}" CommandParameter="{Binding ElementName=setYawCCWDerivativeGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawCCWDerivativeGainTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawCCWDerivativeGainCommand}" CommandParameter="{Binding ElementName=SetYawCcwDerivativeGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetYawCcwDerivativeGainTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawCCWDerivativeGain}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Integral Windup Thresh." /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawIntegralWindupThresholdCommand}" CommandParameter="{Binding ElementName=setYawIntegralWindupThresholdTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawIntegralWindupThresholdTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawIntegralWindupThresholdCommand}" CommandParameter="{Binding ElementName=SetYawIntegralWindupThresholdTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetYawIntegralWindupThresholdTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawIntegralWindupThreshold}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Output Rate Limit" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawOutputRateLimitCommand}" CommandParameter="{Binding ElementName=setYawOutputRateLimitTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setYawOutputRateLimitTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawOutputRateLimitCommand}" CommandParameter="{Binding ElementName=SetYawOutputRateLimitTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetYawOutputRateLimitTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawOutputRateLimit}" />
                             </StackPanel>
                         </StackPanel>
@@ -201,16 +202,16 @@
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Angle Set Point" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltSetPointCommand}" CommandParameter="{Binding ElementName=setTiltSetPointTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="3,0,3,0" Width="45" x:Name="setTiltSetPointTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltSetPointCommand}" CommandParameter="{Binding ElementName=SetTiltSetPointTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="3,0,3,0" Width="45" x:Name="SetTiltSetPointTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Margin="3,0,3,0" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltSetPoint}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Output Percentage" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltOutputPercentageCommand}" CommandParameter="{Binding ElementName=setTiltOutputPercentageTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltOutputPercentageTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltOutputPercentageCommand}" CommandParameter="{Binding ElementName=SetTiltOutputPercentageTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetTiltOutputPercentageTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltOutputPercentage}" />
                             </StackPanel>
                         </StackPanel>
@@ -218,54 +219,54 @@
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Direction" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel.Resources>
-                                    <Util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
-                                    <Util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+                                    <util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+                                    <util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
                                 </StackPanel.Resources>
                                 <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsPidEnabled, Converter={StaticResource InverseBooleanConverter}}"
-                                             IsChecked="{Binding Path=TiltDirection, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:Direction.Clockwise}}" />
+                                             IsChecked="{Binding Path=TiltDirection, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static controller:Direction.Clockwise}}" />
                                 <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="40"><Run Text="CW" /></TextBlock>
                                 <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsPidEnabled, Converter={StaticResource InverseBooleanConverter}}"
-                                             IsChecked="{Binding Path=TiltDirection, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:Direction.CounterClockwise}}" />
+                                             IsChecked="{Binding Path=TiltDirection, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static controller:Direction.CounterClockwise}}" />
                                 <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,0,0" Width="40"><Run Text="CCW" /></TextBlock>
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Proportional Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltCWProportionalGainCommand}" CommandParameter="{Binding ElementName=setTiltCWProportionalGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltCWProportionalGainTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltCWProportionalGainCommand}" CommandParameter="{Binding ElementName=SetTiltCwProportionalGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetTiltCwProportionalGainTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltCWProportionalGain}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Integral Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltCWIntegralGainCommand}" CommandParameter="{Binding ElementName=setTiltCWIntegralGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltCWIntegralGainTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltCWIntegralGainCommand}" CommandParameter="{Binding ElementName=SetTiltCwIntegralGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetTiltCwIntegralGainTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltCWIntegralGain}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Derivative Gain" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltCWDerivativeGainCommand}" CommandParameter="{Binding ElementName=setTiltCWDerivativeGainTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltCWDerivativeGainTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltCWDerivativeGainCommand}" CommandParameter="{Binding ElementName=SetTiltCwDerivativeGainTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetTiltCwDerivativeGainTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltCWDerivativeGain}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Integral Windup Thresh." /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltIntegralWindupThresholdCommand}" CommandParameter="{Binding ElementName=setTiltIntegralWindupThresholdTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltIntegralWindupThresholdTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltIntegralWindupThresholdCommand}" CommandParameter="{Binding ElementName=SetTiltIntegralWindupThresholdTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetTiltIntegralWindupThresholdTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltIntegralWindupThreshold}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="5,5,5,0">
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Output Rate Limit" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltOutputRateLimitCommand}" CommandParameter="{Binding ElementName=setTiltOutputRateLimitTextbox, Path=Text}" />
-                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="setTiltOutputRateLimitTextbox" />
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetTiltOutputRateLimitCommand}" CommandParameter="{Binding ElementName=SetTiltOutputRateLimitTextbox, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetTiltOutputRateLimitTextbox" />
                                 <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=TiltOutputRateLimit}" />
                             </StackPanel>
                         </StackPanel>
@@ -273,38 +274,38 @@
                             <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Driver Type" /></TextBlock>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel.Resources>
-                                    <Util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
-                                    <Util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+                                    <util:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+                                    <util:InverseBooleanConverter x:Key="InverseBooleanConverter" />
                                 </StackPanel.Resources>
                                 <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsPidEnabled, Converter={StaticResource InverseBooleanConverter}}"
-                                             IsChecked="{Binding Path=TiltMotorDriver, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:MotorDriver.AnalogVoltage}}" />
+                                             IsChecked="{Binding Path=TiltMotorDriver, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static controller:MotorDriver.AnalogVoltage}}" />
                                 <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="40"><Run Text="A.V." /></TextBlock>
                                 <RadioButton Margin="0,2,0,0" IsEnabled="{Binding Path=IsPidEnabled, Converter={StaticResource InverseBooleanConverter}}"
-                                             IsChecked="{Binding Path=TiltMotorDriver, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Controller:MotorDriver.Frequency}}" />
+                                             IsChecked="{Binding Path=TiltMotorDriver, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static controller:MotorDriver.Frequency}}" />
                                 <TextBlock VerticalAlignment="Center" Height="20" Margin="5,0,0,0" Width="40"><Run Text="Freq." /></TextBlock>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
-                    <Border x:Name="controllerOutputPanel" BorderBrush="Gray" BorderThickness="1" Margin="5,0" Width="295" DockPanel.Dock="Left">
-                        <TextBox x:Name="controllerOutputTextbox" TextWrapping="WrapWithOverflow" Background="LightGray" Padding="5" IsReadOnly="True" Text="{Binding OutputText}" />
+                    <Border x:Name="ControllerOutputPanel" BorderBrush="Gray" BorderThickness="1" Margin="5,0" Width="295" DockPanel.Dock="Left">
+                        <TextBox x:Name="ControllerOutputTextbox" TextWrapping="WrapWithOverflow" Background="LightGray" Padding="5" IsReadOnly="True" Text="{Binding OutputText}" />
                     </Border>
                 </DockPanel>
             </TabItem>
-            <TabItem x:Name="historyTab" Header="History" GotFocus="OnHistoryTabGotFocus" LostFocus="OnHistoryTabLostFocus">
-                <DockPanel x:Name="databaseDockPanel">
+            <TabItem x:Name="HistoryTab" Header="History" GotFocus="OnHistoryTabGotFocus" LostFocus="OnHistoryTabLostFocus">
+                <DockPanel x:Name="DatabaseDockPanel">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                         <GroupBox Header="Search By" Margin="0,0,0,5">
                             <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                <RadioButton x:Name="recordIdRadioButton" VerticalAlignment="Center" Content="by Id" Margin="20,0,10,0" IsChecked="{Binding IsSearchingById}" />
+                                <RadioButton x:Name="RecordIdRadioButton" VerticalAlignment="Center" Content="by Id" Margin="20,0,10,0" IsChecked="{Binding IsSearchingById}" />
                                 <TextBox  Width="100" Margin="10,0,10,0" Text="{Binding SelectedRecordId, UpdateSourceTrigger=LostFocus}" />
-                                <RadioButton x:Name="dateRadioButton" IsChecked="True"  VerticalAlignment="Center" Content="by Date" Margin="10,0,10,0" />
+                                <RadioButton x:Name="DateRadioButton" IsChecked="True"  VerticalAlignment="Center" Content="by Date" Margin="10,0,10,0" />
                                 <DatePicker Margin="10,0,20,0" SelectedDate="{Binding SelectedDate, Mode=TwoWay}" DisplayDate="{Binding SelectedDate}"></DatePicker>
                             </StackPanel>
                         </GroupBox>
                         <Button Width="120" Margin="10,9,0,7" FontSize="14" FontWeight="SemiBold" Command="{Binding SearchForRecordsCommand}"
-								CommandParameter="{Binding ElementName=recordIdRadioButton, Path=IsChecked}">Search</Button>
+								CommandParameter="{Binding ElementName=RecordIdRadioButton, Path=IsChecked}">Search</Button>
                     </StackPanel>
-                    <DataGrid x:Name="databaseDataGrid" AutoGenerateColumns="False" IsReadOnly="True" DockPanel.Dock="Top" ColumnWidth="Auto"
+                    <DataGrid x:Name="DatabaseDataGrid" AutoGenerateColumns="False" IsReadOnly="True" DockPanel.Dock="Top" ColumnWidth="Auto"
 							Background="LightGray" ItemsSource="{Binding DisplayedRecords}" SelectedItem="{Binding SelectedRecord}">
                         <DataGrid.Resources>
                             <Style TargetType="DataGridCell">
@@ -342,6 +343,6 @@
                 </DockPanel>
             </TabItem>
         </TabControl>
-        <local:RealTimePidChart x:Name="pidChart" />
+        <local:RealTimePidChart x:Name="PidChart" />
     </DockPanel>
 </Window>

@@ -119,7 +119,7 @@ namespace Helicopter.Core.Controller
 
             var serialPorts = GetSerialPortDescriptions();
             string potentialPort = String.Empty;
-            string comPort = String.Empty;
+            comPort = String.Empty;
             foreach (string port in serialPorts)
             {
                 if (port.Contains(deviceName))

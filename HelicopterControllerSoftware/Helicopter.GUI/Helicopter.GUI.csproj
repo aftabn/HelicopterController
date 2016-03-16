@@ -43,10 +43,6 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="LiveCharts, Version=0.6.4.0, Culture=neutral, PublicKeyToken=bc51a8d89213f1fa, processorArchitecture=MSIL">
-      <HintPath>..\packages\LiveCharts.0.6.4.0\lib\net452\LiveCharts.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -92,7 +88,7 @@
     <Compile Include="PidCharts\StaticPidChart.xaml.cs">
       <DependentUpon>StaticPidChart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RealTimePidChart.xaml.cs">
+    <Compile Include="PidCharts\RealTimePidChart.xaml.cs">
       <DependentUpon>RealTimePidChart.xaml</DependentUpon>
     </Compile>
     <Page Include="HelicopterControllerWindow.xaml">
@@ -115,7 +111,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RealTimePidChart.xaml">
+    <Page Include="PidCharts\RealTimePidChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -166,6 +162,7 @@
   <ItemGroup>
     <Content Include="HelicopterSettings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

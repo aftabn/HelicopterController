@@ -29,7 +29,7 @@ namespace Helicopter.GUI.PidCharts
         public StaticPidChart()
         {
             yawAngles = new XyDataSeries<double, double>() { SeriesName = "Yaw Angle" };
-            yawSetPoints = new XyDataSeries<double, double>() { SeriesName = " Yaw Set Point" };
+            yawSetPoints = new XyDataSeries<double, double>() { SeriesName = "Yaw Set Point" };
             tiltAngles = new XyDataSeries<double, double>() { SeriesName = "Tilt Angle" };
             tiltSetPoints = new XyDataSeries<double, double>() { SeriesName = "Tilt Set Point" };
 
