@@ -202,18 +202,21 @@ void scaleIntegratedError(int channel)
 {
 	if (channel == YAW_CHANNEL)
 	{
-		if (previousAngles[channel] > setPoints[channel])
+		if (iGains[YAW_CHANNEL][YAW_CW_DRECTION_PROFILE] > 0 && iGains[YAW_CHANNEL][YAW_CCW_DRECTION_PROFILE] > 0)
 		{
-			if (currentAngles[YAW_CHANNEL] < setPoints[YAW_CHANNEL])
+			if (previousAngles[channel] > setPoints[channel])
 			{
-				integratedAngleErrors[YAW_CHANNEL] *= iGains[YAW_CHANNEL][YAW_CCW_DRECTION_PROFILE] / iGains[YAW_CHANNEL][YAW_CW_DRECTION_PROFILE];
+				if (currentAngles[YAW_CHANNEL] < setPoints[YAW_CHANNEL])
+				{
+					integratedAngleErrors[YAW_CHANNEL] *= iGains[YAW_CHANNEL][YAW_CCW_DRECTION_PROFILE] / iGains[YAW_CHANNEL][YAW_CW_DRECTION_PROFILE];
+				}
 			}
-		}
-		else
-		{
-			if (currentAngles[YAW_CHANNEL] > setPoints[YAW_CHANNEL])
+			else
 			{
-				integratedAngleErrors[YAW_CHANNEL] *= iGains[YAW_CHANNEL][YAW_CW_DRECTION_PROFILE] / iGains[YAW_CHANNEL][YAW_CCW_DRECTION_PROFILE];
+				if (currentAngles[YAW_CHANNEL] > setPoints[YAW_CHANNEL])
+				{
+					integratedAngleErrors[YAW_CHANNEL] *= iGains[YAW_CHANNEL][YAW_CW_DRECTION_PROFILE] / iGains[YAW_CHANNEL][YAW_CCW_DRECTION_PROFILE];
+				}
 			}
 		}
 	}
