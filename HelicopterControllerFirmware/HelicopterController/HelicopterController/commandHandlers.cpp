@@ -177,7 +177,7 @@ void onCommandDirection()
 {
 	if (isChannelCorrect(gParameters[0]))
 	{
-		byte channel = convertToInt(gParameters[0]);
+		uint8_t channel = convertToInt(gParameters[0]);
 
 		if (isReadCommand(gParameters[1]))
 		{
@@ -231,7 +231,7 @@ void onCommandMotorDriver()
 {
 	if (isChannelCorrect(gParameters[0]))
 	{
-		byte channel = convertToInt(gParameters[0]);
+		uint8_t channel = convertToInt(gParameters[0]);
 
 		if (isReadCommand(gParameters[1]))
 		{
@@ -556,7 +556,7 @@ void onCommandDacVoltage()
 {
 	if (isChannelCorrect(gParameters[0]))
 	{
-		byte channel = convertToInt(gParameters[0]);
+		uint8_t channel = convertToInt(gParameters[0]);
 		double voltage = atof(gParameters[1]);
 
 		if (isReadCommand(gParameters[1]))
@@ -597,7 +597,7 @@ void onCommandFrequencyOutput()
 {
 	if (isChannelCorrect(gParameters[0]))
 	{
-		byte channel = convertToInt(gParameters[0]);
+		uint8_t channel = convertToInt(gParameters[0]);
 		uint16_t frequency = convertToUint(gParameters[1]);
 
 		if (channel == TILT_CHANNEL)
@@ -613,7 +613,7 @@ void onCommandFrequencyOutput()
 				{
 					if (isIntWithinRange(frequency, MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY))
 					{
-						setFrequency(channel, frequency);
+						setFrequency(frequency);
 						sendAck();
 					}
 					else

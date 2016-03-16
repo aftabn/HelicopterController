@@ -145,15 +145,18 @@ void resetPidValues(void);
 
 void executePidCalculation(void);
 void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOutput);
+void scaleIntegratedError(int channel);
+void calculateNewOutput(int channel, int &newOutput);
+void constrainOutput(int channel, int &newOutput, int &currentOutput);
 void applyMotorOutputs(int channel, Direction direction, int percentageOutput);
 
 double adjustOutputToVoltage(Direction direction, int percentageOutput);
 uint16_t adjustOutputToFrequency(int percentageOutput);
 
-double getSampledAdcVoltage(int channel);
-double getSampledAdcVoltage(int channel, uint8_t numSamples);
-double getAdcVoltage(int channel);
-int getAdcValue(int channel);
+double getSampledAdcVoltage(int adcChannel);
+double getSampledAdcVoltage(int adcChannel, uint8_t numSamples);
+double getAdcVoltage(int adcChannel);
+int getAdcValue(int adcChannel);
 double convertAdcValueToVoltage(int adcValue);
 
 double convertPotentiometerVoltageToAngle(double voltage);
@@ -167,8 +170,7 @@ void setDacVoltage(int channel, double voltage);
 
 // For this project, ONLY ONE MOTOR can use frequency control as the current implementation only has enough
 //	 hardware to control one motor.
-// Channel is only used to determine which motor is the frequency motor
-void setFrequency(int channel, uint16_t frequency);
+void setFrequency(uint16_t frequency);
 void disableFrequency(void);
 
 #endif

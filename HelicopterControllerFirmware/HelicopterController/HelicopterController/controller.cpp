@@ -16,7 +16,7 @@ char lineBuffer[INT_LINE_SIZE_MAX + 1];
 
 void initializeController()
 {
-	// The baud rate had to be dropped from 115200 to 38400 as going any higher resulted in data loss
+	// The baud rate had to be dropped from 115200 to 19200 as going any higher resulted in data loss
 	// due to the firing of the external interrupt for the decode
 	Serial.begin(19200);
 	Serial.println();
@@ -152,7 +152,7 @@ void processParameters(char *parameterString)
 
 	if (NULL != parameterString && strlen(parameterString))
 	{
-		int i = 0;
+		uint8_t i = 0;
 		const char delimiter[] = " ";
 		char *token;
 

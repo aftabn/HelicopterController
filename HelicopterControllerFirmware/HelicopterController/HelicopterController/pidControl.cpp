@@ -10,7 +10,7 @@ Author:	Aftab
 #include "util.h"
 #include "pidControl.h"
 
-const byte adcChannelLookup[] = { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+const uint8_t adcChannelLookup[] = { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
 const int minMotorOutput[MAX_NUM_CHANNELS] = { YAW_OUTPUT_MIN, TILT_OUTPUT_MIN };
 const int maxMotorOutput[MAX_NUM_CHANNELS] = { YAW_OUTPUT_MAX, TILT_OUTPUT_MAX };
 const double minSetPoint[MAX_NUM_CHANNELS] = { YAW_SET_POINT_MIN, TILT_SET_POINT_MIN };
@@ -25,7 +25,7 @@ volatile int pidLoopInterval;
 volatile uint16_t currentFrequency;
 
 const signed int encoderLookup[] = { 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 };
-byte encoderValues;
+uint8_t encoderValues;
 
 volatile double pGains[MAX_NUM_CHANNELS][NUM_DIRECTION_PROFILES];
 volatile double iGains[MAX_NUM_CHANNELS][NUM_DIRECTION_PROFILES];
@@ -93,10 +93,8 @@ void initializePid(void)
 
 void initializeFrequencyOutput(void)
 {
-	const int dummyChannel = 0; // Only one frequency output so channel doesn't matter
-
 	pinModeFast(FREQUENCY_OUTPUT_PIN, OUTPUT);
-	setFrequency(dummyChannel, MOTOR_MIN_FREQUENCY);
+	setFrequency(MOTOR_MIN_FREQUENCY);
 }
 
 void initializeQuadratureDecoder(void)
@@ -168,11 +166,40 @@ void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOut
 	// Get output as a signed value from -100 to 100 based on direction for easier calculations
 	int currentOutput = currentOutputs[channel] * (directions[channel] == Clockwise ? 1 : -1);
 
-	// P term
-	angleErrors[channel] = setPoints[channel] - currentAngles[channel];
+	angleErrors[channel] = setPoints[channel] - currentAngles[channel]; // P Error
 
-	// TODO: Put this in a function
-	// This scales the integrated error based on the igain of the direction its moving in
+	scaleIntegratedError(channel);
+	if (abs(angleErrors[channel]) < iWindupThresholds[channel]) // I Error
+	{
+		integratedAngleErrors[channel] = integratedAngleErrors[channel] + angleErrors[channel] * pidLoopInterval / 1000.0;
+	}
+
+	derivativeAnglesErrors[channel] = (currentAngles[channel] - previousAngles[channel]) / (pidLoopInterval / 1000.0); // D Error
+
+	int newOutput = 0;
+
+	previousAngles[channel] = currentAngles[channel]; // Update previous angle
+
+	if (channel == TILT_CHANNEL)
+	{
+		if (setPoints[channel] > -17) // TODO: Move this value to a #define
+		{
+			newOutput += TILT_OUTPUT_OFFSET; // Any value above this results in upwards motion. This makes PID linear for tilt
+		}
+	}
+
+	// Get new signed output from PID algorithm
+	calculateNewOutput(channel, newOutput);
+	constrainOutput(channel, newOutput, currentOutput);
+
+	// Apply the changes and switch output back to between 0 and 100 %
+	*percentageOutput = abs(newOutput);
+	*direction = newOutput > 0 ? Clockwise : CounterClockwise;
+}
+
+// Scales the error if there is a direction switch and there are different iGains across profiles
+void scaleIntegratedError(int channel)
+{
 	if (channel == YAW_CHANNEL)
 	{
 		if (previousAngles[channel] > setPoints[channel])
@@ -190,31 +217,10 @@ void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOut
 			}
 		}
 	}
+}
 
-	// I term
-	if (abs(angleErrors[channel]) < iWindupThresholds[channel])
-	{
-		integratedAngleErrors[channel] = integratedAngleErrors[channel] + angleErrors[channel] * pidLoopInterval / 1000.0;
-	}
-
-	// D term
-	derivativeAnglesErrors[channel] = (currentAngles[channel] - previousAngles[channel]) / (pidLoopInterval / 1000.0);
-
-	int newOutput = 0;
-
-	// TODO: Refactor all this
-	// Update previous angle for next calculation
-	previousAngles[channel] = currentAngles[channel];
-
-	if (channel == TILT_CHANNEL)
-	{
-		if (setPoints[channel] > -17)
-		{
-			newOutput += 40;
-		}
-	}
-
-	// Get new signed output from PID algorithm
+void calculateNewOutput(int channel, int &newOutput)
+{
 	if (channel == YAW_CHANNEL)
 	{
 		if (angleErrors[channel] > 0)
@@ -230,8 +236,10 @@ void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOut
 	{
 		newOutput += (int)(pGains[channel][TILT_DIRECTION_PROFILE] * angleErrors[channel] + iGains[channel][TILT_DIRECTION_PROFILE] * integratedAngleErrors[channel] - dGains[channel][TILT_DIRECTION_PROFILE] * derivativeAnglesErrors[channel]);
 	}
+}
 
-	// Limit the amount the output can change by
+void constrainOutput(int channel, int &newOutput, int &currentOutput)
+{
 	if (abs(newOutput - currentOutput) > outputRateLimits[channel])
 	{
 		if (newOutput > currentOutput)
@@ -246,10 +254,6 @@ void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOut
 
 	// Constrain the output between the upper and lower bounds
 	newOutput = max(min(newOutput, maxMotorOutput[channel]), minMotorOutput[channel]);
-
-	// Apply the changes and switch output back to between 0 and 100 %
-	*percentageOutput = abs(newOutput);
-	*direction = newOutput > 0 ? Clockwise : CounterClockwise;
 }
 
 void applyMotorOutputs(int channel, Direction direction, int percentageOutput)
@@ -264,7 +268,7 @@ void applyMotorOutputs(int channel, Direction direction, int percentageOutput)
 		if (percentageOutput != 0)
 		{
 			int frequency = adjustOutputToFrequency(percentageOutput);
-			setFrequency(channel, frequency);
+			setFrequency(frequency);
 		}
 		else
 		{
@@ -306,8 +310,8 @@ void setDacVoltage(int channel, double voltage)
 	// Bit Significance: 1st = channel, 2nd = bypasses input buffer, 3rd = output gain x1, 4th = active low SHDN, LSBs don't matter
 	int defaultDacRegister = 0B00110000;					//
 	int secondByteMask = 0b0000000011111111;				// For selecting last 8 bits
-	byte primaryByte = (value >> 6) | defaultDacRegister;	// Isolates the 2 MSB for ORing
-	byte secondaryByte = (value << 2) & secondByteMask;		// Isolates the 8 LSB
+	uint8_t primaryByte = (value >> 6) | defaultDacRegister;	// Isolates the 2 MSB for ORing
+	uint8_t secondaryByte = (value << 2) & secondByteMask;		// Isolates the 8 LSB
 
 	// Sets the MSB in the primaryByte to determine the DAC to be set, DAC A=0, DAC B=1
 	switch (channel) {
@@ -328,26 +332,27 @@ void setDacVoltage(int channel, double voltage)
 	currentVoltages[channel] = voltage;
 }
 
-void setFrequency(int channel, uint16_t frequency)
+// Can only be used with tilt channel
+void setFrequency(uint16_t frequency)
 {
 	tone(FREQUENCY_OUTPUT_PIN, frequency);
-	digitalWriteFast(FREQUENCY_DIRECTION_PIN, directions[channel] == Clockwise ? HIGH : LOW);
+	digitalWriteFast(FREQUENCY_DIRECTION_PIN, directions[TILT_CHANNEL] == Clockwise ? HIGH : LOW);
 
 	currentFrequency = frequency;
 }
 
-double getSampledAdcVoltage(int channel)
+double getSampledAdcVoltage(int adcChannel)
 {
-	return getSampledAdcVoltage(channel, DEFAULT_NUM_ADC_SAMPLES);
+	return getSampledAdcVoltage(adcChannel, DEFAULT_NUM_ADC_SAMPLES);
 }
 
-double getSampledAdcVoltage(int channel, uint8_t numSamples)
+double getSampledAdcVoltage(int adcChannel, uint8_t numSamples)
 {
 	double adcVoltage = 0;
 
 	for (int i = 0; i < numSamples; i++)
 	{
-		adcVoltage += getAdcVoltage(channel);
+		adcVoltage += getAdcVoltage(adcChannel);
 	}
 
 	adcVoltage /= numSamples;
@@ -358,14 +363,14 @@ double getSampledAdcVoltage(int channel, uint8_t numSamples)
 // Unlike the other functions, the MCP3008 ADC has 8 channels, which means
 // the input parameter can be between 0 and 7
 // Source for code: https://rheingoldheavy.com/mcp3008-tutorial-02-sampling-dc-voltage/
-int getAdcValue(int channel)
+int getAdcValue(int adcChannel)
 {
 	SPISettings MCP3008(2000000, MSBFIRST, SPI_MODE0);
 
-	byte readAddress = adcChannelLookup[channel];
-	byte dataMSB = 0;
-	byte dataLSB = 0;
-	byte JUNK = 0x00;
+	uint8_t readAddress = adcChannelLookup[adcChannel];
+	uint8_t dataMSB = 0;
+	uint8_t dataLSB = 0;
+	uint8_t JUNK = 0x00;
 
 	noInterrupts();
 	SPI.beginTransaction(MCP3008);
@@ -382,9 +387,9 @@ int getAdcValue(int channel)
 	return adcValue;
 }
 
-double getAdcVoltage(int channel)
+double getAdcVoltage(int adcChannel)
 {
-	int adcValue = getAdcValue(channel);
+	int adcValue = getAdcValue(adcChannel);
 	double voltage = convertAdcValueToVoltage(adcValue);
 	return voltage;
 }
@@ -422,10 +427,9 @@ void zeroEncoderAngle()
 
 void disableMotors()
 {
-	for (int channel = 0; channel < MAX_NUM_CHANNELS; channel++)
-	{
-		applyMotorOutputs(channel, directions[channel], 0);
-	}
+	setDacVoltage(YAW_CHANNEL, MOTOR_IDLE_VOLTAGE);
+	setDacVoltage(TILT_CHANNEL, MOTOR_IDLE_VOLTAGE);
+	disableFrequency();
 }
 
 void disableFrequency()
