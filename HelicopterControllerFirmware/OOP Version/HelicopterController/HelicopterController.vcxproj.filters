@@ -51,6 +51,9 @@
     <ClCompile Include="pidController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="frequencyGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.HelicopterController.vsarduino.h">
@@ -74,9 +77,6 @@
     <ClInclude Include="potentiometer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="motorEnums.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="encoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -90,6 +90,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pidController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="motor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="frequencyGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
