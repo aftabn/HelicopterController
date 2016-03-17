@@ -18,7 +18,7 @@ namespace Helicopter.Core.Controller
         private const string STR_SerialDeviceName = "Arduino";
         private const string STR_BluetoothDeviceName = "Bluetooth";
 
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly List<string> receivedPackets = new List<string>();
 
         private readonly object serialPortBufferLock = new object();
@@ -75,7 +75,7 @@ namespace Helicopter.Core.Controller
 
         public static List<string> GetSerialPortDescriptions()
         {
-            log.Debug("Find serial ports with descriptive names.");
+            Log.Debug("Find serial ports with descriptive names.");
             var list = new List<string>();
 
             try
@@ -90,7 +90,7 @@ namespace Helicopter.Core.Controller
 
                             if (managementObjectCollection["Caption"].ToString().Contains("(COM"))
                             {
-                                log.DebugFormat("Found COM device >{0}<", connectionDescription);
+                                Log.DebugFormat("Found COM device >{0}<", connectionDescription);
                                 list.Add(connectionDescription);
                             }
                         }
@@ -99,7 +99,7 @@ namespace Helicopter.Core.Controller
             }
             catch (ManagementException ex)
             {
-                log.Error(ex.Message);
+                Log.Error(ex.Message);
                 throw;
             }
 
@@ -108,7 +108,7 @@ namespace Helicopter.Core.Controller
 
         public void Connect()
         {
-            log.Debug("Connecting...");
+            Log.Debug("Connecting...");
 
             if (IsConnected)
             {
@@ -118,14 +118,11 @@ namespace Helicopter.Core.Controller
             SetDeviceName();
 
             var serialPorts = GetSerialPortDescriptions();
-            string potentialPort = String.Empty;
-            comPort = String.Empty;
-            foreach (string port in serialPorts)
+            foreach (var port in serialPorts)
             {
                 if (port.Contains(deviceName))
                 {
-                    potentialPort = port;
-                    comPort = potentialPort.Substring(potentialPort.IndexOf("COM"));
+                    comPort = port.Substring(port.IndexOf("COM"));
                     comPort = comPort.Substring(0, comPort.Length - 1);
                     break;
                 }
@@ -150,7 +147,7 @@ namespace Helicopter.Core.Controller
 
         public void Disconnect()
         {
-            log.Debug("Disconnecting...");
+            Log.Debug("Disconnecting...");
 
             if (IsConnected)
             {
@@ -206,13 +203,13 @@ namespace Helicopter.Core.Controller
                 try
                 {
                     serialPort.Write(input + "\r\n");
-                    log.DebugFormat("{0}\r\n");
+                    Log.DebugFormat("Sending <{0}>\r\n", input);
                 }
                 catch (IOException e)
                 {
-                    var message = String.Format("Command {0} failed to send - could not communicate with the microcontroller.{0}The program will now terminate.", input, Environment.NewLine);
-                    log.Debug(e.Message);
-                    log.Debug(message);
+                    var message = String.Format("Command {0} failed to send - could not communicate with the microcontroller.{1}The program will now terminate.", input, Environment.NewLine);
+                    Log.Debug(e.Message);
+                    Log.Debug(message);
                     throw new Exception(message);
                 }
 
@@ -250,7 +247,7 @@ namespace Helicopter.Core.Controller
 
             while ((DateTime.Now - startTime).TotalSeconds < timeoutSeconds)
             {
-                if (receivedPackets.Count() > 0)
+                if (receivedPackets.Any())
                 {
                     Packet packet;
 
@@ -263,7 +260,7 @@ namespace Helicopter.Core.Controller
                     {
                         var message = String.Format("Microcontroller returned \"{0}\" from command {1}. ", packet.ReturnValue, input);
 
-                        log.Debug(message);
+                        Log.Debug(message);
                         throw new Exception(message);
                     }
 
@@ -310,7 +307,7 @@ namespace Helicopter.Core.Controller
                 catch (Exception ex)
                 {
                     var msg = String.Format("Exception reading byte from serial buffer. {0}", ex.Message);
-                    log.Error(msg);
+                    Log.Error(msg);
                     throw new Exception(msg);
                 }
             }
