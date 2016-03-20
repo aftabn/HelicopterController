@@ -54,23 +54,6 @@ GenerateClassCluster=0
 DocumentUniqueId=BFITVVSS
 
 [Document2]
-DocumentPath=Potentiometer.SchDoc
-AnnotationEnabled=1
-AnnotateStartValue=1
-AnnotationIndexControlEnabled=0
-AnnotateSuffix=
-AnnotateScope=All
-AnnotateOrder=-1
-DoLibraryUpdate=1
-DoDatabaseUpdate=1
-ClassGenCCAutoEnabled=1
-ClassGenCCAutoRoomEnabled=1
-ClassGenNCAutoScope=None
-DItemRevisionGUID=
-GenerateClassCluster=0
-DocumentUniqueId=RQIRLCPJ
-
-[Document3]
 DocumentPath=Quadrature Decoder.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -87,7 +70,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=BRTFHFXR
 
-[Document4]
+[Document3]
 DocumentPath=ADC.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -104,7 +87,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=NINJAWUA
 
-[Document5]
+[Document4]
 DocumentPath=BluetoothModule.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -121,7 +104,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=CUCSABVI
 
-[Document6]
+[Document5]
 DocumentPath=DAC.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -138,8 +121,8 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=KILYJCFT
 
-[Document7]
-DocumentPath=Encoder.SchDoc
+[Document6]
+DocumentPath=ADUM7441.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
@@ -153,7 +136,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=VNIIIYWE
+DocumentUniqueId=PGBYBHTP
 
 [Configuration1]
 Name=Default Configuration
