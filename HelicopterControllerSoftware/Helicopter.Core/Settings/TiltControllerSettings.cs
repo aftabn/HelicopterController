@@ -12,7 +12,7 @@ namespace Helicopter.Core.Settings
     {
         public static TiltControllerSettings FromXmlElement(System.Xml.Linq.XElement angleControllerElement)
         {
-            var cwProfileElement = angleControllerElement.Elements("PidProfile").Where(x => x.Attribute("Direction").Value == DirectionProfile.CW.ToString()).Single();
+            var cwProfileElement = angleControllerElement.Elements("PidProfile").Single(x => x.Attribute("Direction").Value == DirectionProfile.CW.ToString());
 
             var settings = new TiltControllerSettings()
             {

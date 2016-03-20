@@ -1,27 +1,15 @@
 ﻿using Helicopter.Core;
 using Helicopter.Core.Controller;
-using Helicopter.Core.Sessions;
 using Helicopter.Model;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Helicopter.GUI.PidCharts
 {
     /// <summary>
     /// Interaction logic for SessionPidChartWindow.xaml
     /// </summary>
-    public partial class SessionPidChartWindow : Window
+    public partial class SessionPidChartWindow
     {
         private readonly SessionRecord sessionRecord;
 
@@ -32,10 +20,10 @@ namespace Helicopter.GUI.PidCharts
             InitializeComponent();
 
             UpdateGui(sessionRecord);
-            staticPidChart.LoadNewData(sessionRecord);
+            StaticPidChart.LoadNewData(sessionRecord);
 
-            sessionComment.Focus();
-            sessionComment.CaretIndex = sessionComment.Text.Length;
+            SessionComment.Focus();
+            SessionComment.CaretIndex = SessionComment.Text.Length;
         }
 
         private void UpdateGui(SessionRecord sessionRecord)
@@ -45,27 +33,27 @@ namespace Helicopter.GUI.PidCharts
                 var yaw = sessionRecord.ControllerRecords.Single(x => x.MotorType == MotorType.Yaw.ToString());
                 var tilt = sessionRecord.ControllerRecords.Single(x => x.MotorType == MotorType.Tilt.ToString());
 
-                sessionStartTimeTextBlock.Text = sessionRecord.StartTime.ToString();
-                sessionEndTimeTextBlock.Text = sessionRecord.EndTime.ToString();
+                SessionStartTimeTextBlock.Text = sessionRecord.StartTime.ToString();
+                SessionEndTimeTextBlock.Text = sessionRecord.EndTime.ToString();
 
-                yawCWPGainTextBlock.Text = yaw.CWProportionalGain.ToString();
-                yawCWIGainTextBlock.Text = yaw.CWIntegralGain.ToString();
-                yawCWDGainTextBlock.Text = yaw.CWDerivativeGain.ToString();
-                yawCCWPGainTextBlock.Text = yaw.CCWProportionalGain.ToString();
-                yawCCWIGainTextBlock.Text = yaw.CCWIntegralGain.ToString();
-                yawCCWDGainTextBlock.Text = yaw.CCWDerivativeGain.ToString();
-                yawWindupTextBlock.Text = yaw.IntegralWindupThreshold.ToString();
-                yawOutputRateLimitTextBlock.Text = yaw.OutputRateLimit.ToString();
-                yawDriverType.Text = yaw.DriverType;
+                YawCWPGainTextBlock.Text = yaw.CWProportionalGain.ToString();
+                YawCWIGainTextBlock.Text = yaw.CWIntegralGain.ToString();
+                YawCWDGainTextBlock.Text = yaw.CWDerivativeGain.ToString();
+                YawCCWPGainTextBlock.Text = yaw.CCWProportionalGain.ToString();
+                YawCCWIGainTextBlock.Text = yaw.CCWIntegralGain.ToString();
+                YawCCWDGainTextBlock.Text = yaw.CCWDerivativeGain.ToString();
+                YawWindupTextBlock.Text = yaw.IntegralWindupThreshold.ToString();
+                YawOutputRateLimitTextBlock.Text = yaw.OutputRateLimit.ToString();
+                YawDriverType.Text = yaw.DriverType;
 
-                tiltPGainTextBlock.Text = tilt.CWProportionalGain.ToString();
-                tiltIGainTextBlock.Text = tilt.CWIntegralGain.ToString();
-                tiltDGainTextBlock.Text = tilt.CWDerivativeGain.ToString();
-                tiltWindupTextBlock.Text = yaw.IntegralWindupThreshold.ToString();
-                tiltOutputRateLimitTextBlock.Text = tilt.OutputRateLimit.ToString();
-                tiltDriverType.Text = tilt.DriverType;
+                TiltPGainTextBlock.Text = tilt.CWProportionalGain.ToString();
+                TiltIGainTextBlock.Text = tilt.CWIntegralGain.ToString();
+                TiltDGainTextBlock.Text = tilt.CWDerivativeGain.ToString();
+                TiltWindupTextBlock.Text = yaw.IntegralWindupThreshold.ToString();
+                TiltOutputRateLimitTextBlock.Text = tilt.OutputRateLimit.ToString();
+                TiltDriverType.Text = tilt.DriverType;
 
-                sessionComment.Text = sessionRecord.Comment;
+                SessionComment.Text = sessionRecord.Comment;
             }
         }
 
@@ -73,7 +61,7 @@ namespace Helicopter.GUI.PidCharts
         {
             if (key.Key == Key.Enter)
             {
-                DatabaseManager.UpdateSessionComment(sessionRecord.Id, sessionComment.Text);
+                DatabaseManager.UpdateSessionComment(sessionRecord.Id, SessionComment.Text);
             }
         }
     }

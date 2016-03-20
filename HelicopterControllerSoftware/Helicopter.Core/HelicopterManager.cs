@@ -10,7 +10,7 @@ namespace Helicopter.Core
 {
     public class HelicopterManager : INotifyPropertyChanged, IDisposable
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private BackgroundWorker tuningWorker;
         private BackgroundWorker demoWorker;
         private bool isSessionRunning;
@@ -36,13 +36,7 @@ namespace Helicopter.Core
 
         public Session Session { get; private set; }
 
-        public bool IsConnected
-        {
-            get
-            {
-                return HelicopterController.IsConnected;
-            }
-        }
+        public bool IsConnected => HelicopterController.IsConnected;
 
         public ConnectionType ConnectionType
         {
@@ -59,11 +53,10 @@ namespace Helicopter.Core
 
             private set
             {
-                if (value != isSessionRunning)
-                {
-                    isSessionRunning = value;
-                    RaisePropertyChanged("IsSessionRunning");
-                }
+                if (value == isSessionRunning) return;
+
+                isSessionRunning = value;
+                RaisePropertyChanged("IsSessionRunning");
             }
         }
 
@@ -76,11 +69,10 @@ namespace Helicopter.Core
 
             private set
             {
-                if (value != isSessionComplete)
-                {
-                    isSessionComplete = value;
-                    RaisePropertyChanged("IsSessionComplete");
-                }
+                if (value == isSessionComplete) return;
+
+                isSessionComplete = value;
+                RaisePropertyChanged("IsSessionComplete");
             }
         }
 
@@ -93,11 +85,10 @@ namespace Helicopter.Core
 
             private set
             {
-                if (value != isSessionRequestingStop)
-                {
-                    isSessionRequestingStop = value;
-                    RaisePropertyChanged("IsSessionRequestingStop");
-                }
+                if (value == isSessionRequestingStop) return;
+
+                isSessionRequestingStop = value;
+                RaisePropertyChanged("IsSessionRequestingStop");
             }
         }
 
@@ -128,8 +119,6 @@ namespace Helicopter.Core
 
         public void StopSession()
         {
-            //HelicopterController.DisablePid();
-
             if (tuningWorker.IsBusy)
             {
                 tuningWorker.CancelAsync();
@@ -163,8 +152,8 @@ namespace Helicopter.Core
         private void InitializeTuningSessionWorker()
         {
             tuningWorker = new BackgroundWorker();
-            tuningWorker.DoWork += new DoWorkEventHandler(SessionWorker_DoWork);
-            tuningWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(SessionWorker_RunWorkerCompleted);
+            tuningWorker.DoWork += SessionWorker_DoWork;
+            tuningWorker.RunWorkerCompleted += SessionWorker_RunWorkerCompleted;
             tuningWorker.WorkerReportsProgress = false;
             tuningWorker.WorkerSupportsCancellation = true;
         }
@@ -172,8 +161,8 @@ namespace Helicopter.Core
         private void InitializeDemoSessionWorker()
         {
             demoWorker = new BackgroundWorker();
-            demoWorker.DoWork += new DoWorkEventHandler(SessionWorker_DoDemoWork);
-            demoWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(SessionWorker_RunWorkerCompleted);
+            demoWorker.DoWork += SessionWorker_DoDemoWork;
+            demoWorker.RunWorkerCompleted += SessionWorker_RunWorkerCompleted;
             demoWorker.WorkerReportsProgress = false;
             demoWorker.WorkerSupportsCancellation = true;
         }
@@ -209,7 +198,7 @@ namespace Helicopter.Core
             tilt.SetOutputPercentage(41);
             tilt.SetSetPoint(-21);
 
-            int steadyStateCount = 0;
+            var steadyStateCount = 0;
             var startDropTime = DateTime.Now;
 
             while (steadyStateCount < 2 && (DateTime.Now - startDropTime).TotalSeconds < 3)
@@ -249,7 +238,7 @@ namespace Helicopter.Core
             yaw.SetIntegralWindupThreshold(100);
             tilt.SetIntegralWindupThreshold(100);
 
-            int steadyStateCount = 0;
+            var steadyStateCount = 0;
 
             while (!worker.CancellationPending)
             {
@@ -354,82 +343,13 @@ namespace Helicopter.Core
 
             if (e.Error != null)
             {
-                throw new Exception(String.Format("Background worker stopped. {0}", e.Error.Message), e.Error.InnerException);
+                throw new Exception($"Background worker stopped. {e.Error.Message}", e.Error.InnerException);
             }
             else
             {
                 IsSessionComplete = true;
             }
         }
-
-        //private void OnMaintainForceValueButton(object sender, EventArgs e)
-        //{
-        //    int count = 0;
-
-        //    //keep track of packets
-        //    try
-        //    {
-        //        //Intializing time values from GUI
-        //        var holdTime = Convert.ToInt16(holdTimeTextbox.Text);
-        //        var stretchTime = Convert.ToInt16(stretchTimeTextbox.Text);
-        //        var startTime = DateTime.Now;
-        //        double timeDifference;
-
-        //        //Opening csv file for logging data and creating data column headers
-        //        var csv = new StringBuilder();
-        //        var filePath = @"C:\ProgramData\Kardium\DynamixelServoTestInterface\loadCellData.csv";
-        //        if (!File.Exists(filePath))
-        //        {
-        //            File.Create(filePath).Close();
-        //        }
-
-        //        var columnHeaders = String.Format("Time (s),Force (N){0}", Environment.NewLine);
-        //        csv.Append(columnHeaders);
-
-        //        //starting stretch
-        //        timeDifference = (DateTime.Now - startTime).TotalSeconds;
-        //        while (timeDifference < holdTime)
-        //        {
-        //            timeDifference = (DateTime.Now - startTime).TotalSeconds;
-        //            CloseForceGap();
-        //            WriteLoadCellDataToCSVFile(csv, timeDifference);
-        //            WaitInSeconds(0.1);
-        //            count++;
-        //        }
-
-        //        UpdateOutputTextbox(String.Format("Done maintaining force for {0}s. Starting relax phase", holdTime));
-
-        //        startTime = DateTime.Now;
-        //        timeDifference = (DateTime.Now - startTime).TotalSeconds;
-        //        while (timeDifference < stretchTime)
-        //        {
-        //            timeDifference = (DateTime.Now - startTime).TotalSeconds;
-        //            GetAndDisplayForceControllerInfo();
-        //            WriteLoadCellDataToCSVFile(csv, timeDifference);
-        //            WaitInSeconds(0.1);
-        //        }
-
-        //        UpdateOutputTextbox("Done stretch test");
-
-        //        File.WriteAllText(filePath, csv.ToString());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        DisplayExceptionMessage(ex);
-        //    }
-        //    finally
-        //    {
-        //        UpdateOutputTextbox(String.Format("Close force gap called {0} times", count));
-        //    }
-        //}
-
-        //private void WriteLoadCellDataToCSVFile(StringBuilder csv, double time)
-        //{
-        //    var force = Convert.ToDouble(getForceTextbox.Text);
-        //    var temperature = dynamixelManager.Servos[currentServoId].Temperature;
-        //    var newDataPoint = String.Format("{0:0.##},{1},{2}{3}", time, force, temperature, Environment.NewLine);
-        //    csv.Append(newDataPoint);
-        //}
 
         private void OnControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -438,10 +358,7 @@ namespace Helicopter.Core
 
         private void RaisePropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -48,11 +48,10 @@ namespace Helicopter.Core.Controller
 
             private set
             {
-                if (value != isConnected)
-                {
-                    isConnected = value;
-                    RaisePropertyChanged("IsConnected");
-                }
+                if (value == isConnected) return;
+
+                isConnected = value;
+                RaisePropertyChanged("IsConnected");
             }
         }
 
@@ -141,7 +140,7 @@ namespace Helicopter.Core.Controller
             }
             else
             {
-                throw new Exception(String.Format("Device \"{0}\" is not listed on the COM ports", deviceName));
+                throw new Exception($"Device \"{deviceName}\" is not listed on the COM ports");
             }
         }
 
@@ -207,7 +206,8 @@ namespace Helicopter.Core.Controller
                 }
                 catch (IOException e)
                 {
-                    var message = String.Format("Command {0} failed to send - could not communicate with the microcontroller.{1}The program will now terminate.", input, Environment.NewLine);
+                    var message = $"Command {input} failed to send - could not communicate with the microcontroller.{Environment.NewLine}" +
+                                  $"The program will now terminate.";
                     Log.Debug(e.Message);
                     Log.Debug(message);
                     throw new Exception(message);
@@ -258,7 +258,7 @@ namespace Helicopter.Core.Controller
 
                     if (packet.Terminator == "ERROR")
                     {
-                        var message = String.Format("Microcontroller returned \"{0}\" from command {1}. ", packet.ReturnValue, input);
+                        var message = $"Microcontroller returned \"{packet.ReturnValue}\" from command {input}. ";
 
                         Log.Debug(message);
                         throw new Exception(message);
@@ -269,7 +269,7 @@ namespace Helicopter.Core.Controller
 
                 Thread.Sleep(2);
             }
-            throw new TimeoutException(String.Format("ComPort timed out waiting for response to input {0}.", input));
+            throw new TimeoutException($"ComPort timed out waiting for response to input {input}.");
         }
 
         private void AddByteToBuffer(string newChar)
@@ -306,7 +306,7 @@ namespace Helicopter.Core.Controller
                 }
                 catch (Exception ex)
                 {
-                    var msg = String.Format("Exception reading byte from serial buffer. {0}", ex.Message);
+                    var msg = $"Exception reading byte from serial buffer. {ex.Message}";
                     Log.Error(msg);
                     throw new Exception(msg);
                 }
@@ -315,10 +315,7 @@ namespace Helicopter.Core.Controller
 
         private void RaisePropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

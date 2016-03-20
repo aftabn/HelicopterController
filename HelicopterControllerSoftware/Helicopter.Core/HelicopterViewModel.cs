@@ -2,6 +2,7 @@
 using Helicopter.Core.Sessions;
 using Helicopter.Model;
 using Libs.Utilities;
+using log4net.Config;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,25 +15,19 @@ namespace Helicopter.Core
 {
     public class HelicopterViewModel : INotifyPropertyChanged, IDisposable
     {
-        private HelicopterController helicopterController;
-        private YawController yaw;
-        private TiltController tilt;
+        private readonly HelicopterController helicopterController;
+        private readonly YawController yaw;
+        private readonly TiltController tilt;
         private ObservableCollection<DatabaseRow> displayedRecords;
-        private bool isDeveloperMode;
         private bool isDatabaseConnected;
-        private string outputText;
 
-        public HelicopterViewModel(bool isDeveloperMode)
+        public HelicopterViewModel()
         {
-            this.isDeveloperMode = isDeveloperMode;
-
             IsDatabaseConnected = DatabaseManager.IsDatabaseAlive();
             HelicopterManager = new HelicopterManager();
             helicopterController = HelicopterManager.HelicopterController;
             yaw = helicopterController.Yaw;
             tilt = helicopterController.Tilt;
-
-            OutputText = String.Empty;
 
             InitializeRelayCommands();
         }
@@ -80,9 +75,7 @@ namespace Helicopter.Core
             }
         }
 
-        public bool IsDeveloperMode { get { return isDeveloperMode; } }
-
-        public bool IsConnected { get { return helicopterController.IsConnected; } }
+        public bool IsConnected => helicopterController.IsConnected;
 
         public ConnectionType ConnectionType
         {
@@ -90,22 +83,19 @@ namespace Helicopter.Core
             set { HelicopterManager.ConnectionType = value; }
         }
 
-        public bool IsPidEnabled { get { return helicopterController.IsPidEnabled; } }
+        public bool IsPidEnabled => helicopterController.IsPidEnabled;
 
-        public bool IsSafetyEnabled { get { return helicopterController.IsSafetyEnabled; } }
+        public bool IsSafetyEnabled => helicopterController.IsSafetyEnabled;
 
-        public string ControllerIdentity { get { return helicopterController.ControllerIdentity; } }
+        public string ControllerIdentity => helicopterController.ControllerIdentity;
 
-        public double FirmwareVersion { get { return helicopterController.FirmwareVersion; } }
+        public double FirmwareVersion => helicopterController.FirmwareVersion;
 
-        public string Changelog { get { return helicopterController.Changelog; } }
+        public string Changelog => helicopterController.Changelog;
 
-        public double PidLoopInterval { get { return helicopterController.PidLoopInterval; } }
+        public double PidLoopInterval => helicopterController.PidLoopInterval;
 
-        public double YawCurrentAngle
-        {
-            get { return yaw.CurrentAngle; }
-        }
+        public double YawCurrentAngle => yaw.CurrentAngle;
 
         public double YawSetPoint
         {
@@ -179,10 +169,7 @@ namespace Helicopter.Core
             set { yaw.SetMotorDriver(value); }
         }
 
-        public double TiltCurrentAngle
-        {
-            get { return tilt.CurrentAngle; }
-        }
+        public double TiltCurrentAngle => tilt.CurrentAngle;
 
         public double TiltSetPoint
         {
@@ -238,25 +225,11 @@ namespace Helicopter.Core
             set { tilt.SetMotorDriver(value); }
         }
 
-        public Session PidSession { get { return HelicopterManager.Session; } }
+        public Session PidSession => HelicopterManager.Session;
 
-        public bool IsPidSessionRunning { get { return HelicopterManager.IsSessionRunning; } }
+        public bool IsPidSessionRunning => HelicopterManager.IsSessionRunning;
 
-        public bool IsPidSessionComplete { get { return HelicopterManager.IsSessionComplete; } }
-
-        public string OutputText
-        {
-            get
-            {
-                return outputText;
-            }
-
-            set
-            {
-                outputText = value;
-                RaisePropertyChanged("OutputText");
-            }
-        }
+        public bool IsPidSessionComplete => HelicopterManager.IsSessionComplete;
 
         public ICommand ConnectCommand { get; private set; }
         public ICommand DisconnectCommand { get; private set; }
@@ -286,8 +259,6 @@ namespace Helicopter.Core
         public ICommand SetYawIntegralWindupThresholdCommand { get; private set; }
         public ICommand SetYawOutputRateLimitCommand { get; private set; }
         public ICommand SetYawOutputPercentageCommand { get; private set; }
-        public ICommand SetYawDirectionCommand { get; private set; }
-        public ICommand SetYawMotorDriverCommand { get; private set; }
         public ICommand GetTiltAngleCommand { get; private set; }
         public ICommand SetTiltSetPointCommand { get; private set; }
         public ICommand SetTiltCWProportionalGainCommand { get; private set; }
@@ -296,8 +267,6 @@ namespace Helicopter.Core
         public ICommand SetTiltIntegralWindupThresholdCommand { get; private set; }
         public ICommand SetTiltOutputRateLimitCommand { get; private set; }
         public ICommand SetTiltOutputPercentageCommand { get; private set; }
-        public ICommand SetTiltDirectionCommand { get; private set; }
-        public ICommand SetTiltMotorDriverCommand { get; private set; }
 
         public ICommand SetYawDacVoltageCommand { get; private set; }
         public ICommand SetTiltDacVoltageCommand { get; private set; }
@@ -308,15 +277,13 @@ namespace Helicopter.Core
             HelicopterManager.PropertyChanged += OnHelicopterManagerPropertyChanged;
             HelicopterManager.Connect();
 
-            var text = String.Format("Connected to {0}", helicopterController.ControllerIdentity);
-            UpdateOutputTextbox(text);
+            var text = $"Connected to {helicopterController.ControllerIdentity}";
         }
 
         public void Disconnect()
         {
             HelicopterManager.Disconnect();
             HelicopterManager.PropertyChanged -= OnHelicopterManagerPropertyChanged;
-            UpdateOutputTextbox(String.Format("Disconnected from helicopter controller"));
         }
 
         public void Dispose()
@@ -325,11 +292,10 @@ namespace Helicopter.Core
 
         public void InitializeDatabase()
         {
-            if (IsDatabaseConnected)
-            {
-                SelectedDate = DateTime.Now;
-                DisplayedRecords = DatabaseManager.GetQueriedRecords(IsSearchingById, SelectedRecordId, SelectedDate);
-            }
+            if (!IsDatabaseConnected) return;
+
+            SelectedDate = DateTime.Now;
+            DisplayedRecords = DatabaseManager.GetQueriedRecords(IsSearchingById, SelectedRecordId, SelectedDate);
         }
 
         private void InitializeRelayCommands()
@@ -345,11 +311,9 @@ namespace Helicopter.Core
             GetControllerInfoCommand = new RelayCommand(
                    x =>
                    {
-                       var text = String.Format("Controller: {0}{1}Firmware Version: {2}{3}Changelog: {4}{5}",
-                            helicopterController.ControllerIdentity, Environment.NewLine, helicopterController.FirmwareVersion,
-                            Environment.NewLine, helicopterController.Changelog, Environment.NewLine);
-
-                       UpdateOutputTextbox(text);
+                       var text = $"Controller: {helicopterController.ControllerIdentity}{Environment.NewLine}" +
+                           $"Firmware Version: {helicopterController.FirmwareVersion}{Environment.NewLine}" +
+                           $"Changelog: {helicopterController.Changelog}{Environment.NewLine}";
                    },
                    x => IsConnected);
 
@@ -358,76 +322,40 @@ namespace Helicopter.Core
                 x => IsDatabaseConnected);
 
             StartTuningSessionCommand = new RelayCommand(
-                   x =>
-                   {
-                       HelicopterManager.StartSession();
-                       UpdateOutputTextbox(String.Format("PID session has started"));
-                   },
+                   x => HelicopterManager.StartSession(),
                    x => IsConnected && !IsPidEnabled && !IsPidSessionRunning);
 
             StartDemoSessionCommand = new RelayCommand(
-                   x =>
-                   {
-                       HelicopterManager.StartDemo();
-                       UpdateOutputTextbox(String.Format("PID session has started"));
-                   },
+                   x => HelicopterManager.StartDemo(),
                    x => IsConnected && !IsPidEnabled && !IsPidSessionRunning);
 
             StopSessionCommand = new RelayCommand(
-                   x =>
-                   {
-                       HelicopterManager.StopSession();
-                       UpdateOutputTextbox(String.Format("PID session has stopped"));
-                   },
+                   x => HelicopterManager.StopSession(),
                    x => IsConnected && IsPidEnabled && IsPidSessionRunning);
 
             EnablePidCommand = new RelayCommand(
-                   x =>
-                   {
-                       helicopterController.EnablePid();
-                       UpdateOutputTextbox(String.Format("PID has been enabled"));
-                   },
+                   x => helicopterController.EnablePid(),
                    x => IsConnected && !IsPidEnabled);
 
             DisablePidCommand = new RelayCommand(
-                   x =>
-                   {
-                       helicopterController.DisablePid();
-                       UpdateOutputTextbox(String.Format("PID has been disabled"));
-                   },
+                   x => helicopterController.DisablePid(),
                    x => IsConnected && IsPidEnabled);
 
             EnableSafetyCommand = new RelayCommand(
-                   x =>
-                   {
-                       helicopterController.EnableSafety();
-                       UpdateOutputTextbox(String.Format("Safety has been enabled"));
-                   },
+                   x => helicopterController.EnableSafety(),
                    x => IsConnected && !IsSafetyEnabled);
 
             DisableSafetyCommand = new RelayCommand(
-                   x =>
-                   {
-                       helicopterController.DisableSafety();
-                       UpdateOutputTextbox(String.Format("Safety has been disabled"));
-                   },
+                   x => helicopterController.DisableSafety(),
                    x => IsConnected && IsSafetyEnabled);
 
             RefreshValuesCommand = new RelayCommand(
-                   x =>
-                   {
-                       helicopterController.RefreshValues();
-                       UpdateOutputTextbox(String.Format("Refreshed all controller values"));
-                   },
-                   x => IsConnected);
+                    x => helicopterController.RefreshValues(),
+                    x => IsConnected);
 
             DisableMotorsCommand = new RelayCommand(
-                   x =>
-                   {
-                       HelicopterManager.DisableMotors();
-                       UpdateOutputTextbox(String.Format("Disabled motors"));
-                   },
-                   x => IsConnected);
+                    x => HelicopterManager.DisableMotors(),
+                    x => IsConnected);
 
             GetYawAngleCommand = new RelayCommand(
                    x => yaw.RefreshCurrentAngle(),
@@ -578,12 +506,6 @@ namespace Helicopter.Core
                    x => IsConnected);
         }
 
-        private void UpdateOutputTextbox(string text)
-        {
-            OutputText += String.Format("{0}{1}", text, Environment.NewLine);
-            RaisePropertyChanged("OutputText");
-        }
-
         private void OnHelicopterManagerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsSessionRequestingStop")
@@ -598,10 +520,7 @@ namespace Helicopter.Core
 
         private void RaisePropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -3,13 +3,8 @@ using Libs.Utilities;
 using log4net;
 using log4net.Config;
 using SciChart.Charting.Visuals;
-using SciChart.Examples.ExternalDependencies.Controls.ExceptionView;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,9 +14,9 @@ namespace Helicopter.GUI
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private StartupOptions startupOptions;
 
         private void Application_Startup(object sender, StartupEventArgs startupEventArgs)
@@ -29,7 +24,7 @@ namespace Helicopter.GUI
             try
             {
                 // Creates folders for log files (log4net)
-                var commonApplicationData = new CommonApplicationData(allUsers: true);
+                var commonApplicationData = new CommonApplicationData(true);
             }
             catch (Exception ex)
             {
@@ -56,24 +51,24 @@ namespace Helicopter.GUI
                 LogUnhandledException(ex.Exception, "TaskScheduler.UnobservedTaskException");
 
             XmlConfigurator.Configure();
-            var entryAssembly = String.Format("{0} {1}", Assembly.GetEntryAssembly().GetName().Name, Assembly.GetEntryAssembly().GetName().Version);
-            log.Debug(entryAssembly + " starting up.");
+            var entryAssembly = $"{Assembly.GetEntryAssembly().GetName().Name} {Assembly.GetEntryAssembly().GetName().Version}";
+            Log.Debug(entryAssembly + " starting up.");
 
             startupOptions = new StartupOptions(startupEventArgs.Args);
             var window = new HelicopterControllerWindow(startupOptions);
             window.Show();
         }
 
-        private void DisplayUnhandledException(System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e, string @event)
+        private static void DisplayUnhandledException(System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e, string @event)
         {
-            log.Fatal("Unhandled exception: " + @event, e.Exception);
+            Log.Fatal("Unhandled exception: " + @event, e.Exception);
             MessageBox.Show(e.Exception.Message, @event, MessageBoxButton.OK, MessageBoxImage.Error);
             e.Handled = true;
         }
 
-        private void LogUnhandledException(Exception exception, string @event)
+        private static void LogUnhandledException(Exception exception, string @event)
         {
-            log.Fatal("Unhandled exception: " + @event, exception);
+            Log.Fatal("Unhandled exception: " + @event, exception);
             MessageBox.Show(exception.Message, @event, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }

@@ -14,11 +14,10 @@ namespace Libs.Utilities
     /// </summary>
     public class CommonApplicationData
     {
-        private static readonly string directory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+        private static readonly string Directory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
 
-        private string applicationFolder;
-        private string companyFolder;
-
+        private readonly string applicationFolder;
+        private readonly string companyFolder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommonApplicationData"/> class.
@@ -28,8 +27,8 @@ namespace Libs.Utilities
         {
             var entryAssembly = Assembly.GetEntryAssembly();
 
-            var productName = ((AssemblyProductAttribute)AssemblyProductAttribute.GetCustomAttribute(entryAssembly, typeof(AssemblyProductAttribute))).Product;
-            var companyName = ((AssemblyCompanyAttribute)AssemblyCompanyAttribute.GetCustomAttribute(entryAssembly, typeof(AssemblyCompanyAttribute))).Company;
+            var productName = ((AssemblyProductAttribute)Attribute.GetCustomAttribute(entryAssembly, typeof(AssemblyProductAttribute))).Product;
+            var companyName = ((AssemblyCompanyAttribute)Attribute.GetCustomAttribute(entryAssembly, typeof(AssemblyCompanyAttribute))).Company;
 
             if (String.IsNullOrEmpty(productName))
             {
@@ -77,18 +76,12 @@ namespace Libs.Utilities
         /// <summary>
         /// Gets the path of the application's data folder.
         /// </summary>
-        public string ApplicationFolderPath
-        {
-            get { return Path.Combine(CompanyFolderPath, applicationFolder); }
-        }
+        public string ApplicationFolderPath => Path.Combine(CompanyFolderPath, applicationFolder);
 
         /// <summary>
         /// Gets the path of the company's data folder.
         /// </summary>
-        public string CompanyFolderPath
-        {
-            get { return Path.Combine(directory, companyFolder); }
-        }
+        public string CompanyFolderPath => Path.Combine(Directory, companyFolder);
 
         /// <summary>
         /// Returns the path of the application's data folder.
@@ -128,15 +121,15 @@ namespace Libs.Utilities
 
         private void CreateFoldersAndSetAccess(bool allUsers)
         {
-            if (!Directory.Exists(CompanyFolderPath))
+            if (!System.IO.Directory.Exists(CompanyFolderPath))
             {
-                Directory.CreateDirectory(CompanyFolderPath);
+                System.IO.Directory.CreateDirectory(CompanyFolderPath);
                 SetReadWriteAccessToAllUsersCompanyFolderPath();
             }
 
-            if (!Directory.Exists(ApplicationFolderPath))
+            if (!System.IO.Directory.Exists(ApplicationFolderPath))
             {
-                Directory.CreateDirectory(ApplicationFolderPath);
+                System.IO.Directory.CreateDirectory(ApplicationFolderPath);
 
                 if (allUsers)
                 {
@@ -147,15 +140,15 @@ namespace Libs.Utilities
 
         private void SetReadWriteAccessToAllUsersApplicationFolderPath()
         {
-            var fileSystemRights = FileSystemRights.Write | FileSystemRights.ReadAndExecute | FileSystemRights.Modify;
-            var inheritenceFlags = InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit;
+            const FileSystemRights fileSystemRights = FileSystemRights.Write | FileSystemRights.ReadAndExecute | FileSystemRights.Modify;
+            const InheritanceFlags inheritenceFlags = InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit;
 
             SetAccess(ApplicationFolderPath, fileSystemRights, inheritenceFlags, PropagationFlags.InheritOnly, AccessControlType.Allow);
         }
 
         private void SetReadWriteAccessToAllUsersCompanyFolderPath()
         {
-            var fileSystemRights = FileSystemRights.Write | FileSystemRights.ReadAndExecute | FileSystemRights.Modify;
+            const FileSystemRights fileSystemRights = FileSystemRights.Write | FileSystemRights.ReadAndExecute | FileSystemRights.Modify;
             SetAccess(CompanyFolderPath, fileSystemRights, InheritanceFlags.None, PropagationFlags.None, AccessControlType.Allow);
         }
     }

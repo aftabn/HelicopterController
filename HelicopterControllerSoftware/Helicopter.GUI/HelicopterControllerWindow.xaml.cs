@@ -20,42 +20,26 @@ namespace Helicopter.GUI
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly StartupOptions startupOptions;
-        private HelicopterViewModel helicopterViewModel;
+        private readonly HelicopterViewModel helicopterViewModel;
         private SessionPidChartWindow sessionPidChartWindow;
 
         public HelicopterControllerWindow(StartupOptions startupOptions)
         {
             this.startupOptions = startupOptions;
-            helicopterViewModel = new HelicopterViewModel(startupOptions.IsDeveloperMode);
+            helicopterViewModel = new HelicopterViewModel();
             helicopterViewModel.PropertyChanged += OnViewModelPropertyChanged;
 
             InitializeComponent();
             SetBindingForControls();
             InitializeDatabaseDataGrid();
-            SetVisibilty();
+            SetVisibility(startupOptions.IsDeveloperMode);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void SetVisibilty()
-        {
-            ControllerOutputPanel.Visibility = Visibility.Collapsed;
-        }
-
         private void UpdateStatusBar()
         {
             SolidColorBrush statusBarColor;
-
-            //if (helicopterViewModel.IsConnected)
-            //{
-            //    helicopterControllerStatusTextbox.Text = "Helicopter Controller Connected";
-            //    statusBarColor = new SolidColorBrush(Color.FromRgb(0x00, 0x7A, 0xCC)); // Visual Studio Blue
-            //}
-            //else
-            //{
-            //    helicopterControllerStatusTextbox.Text = "Helicopter Controller Not Connected";
-            //    statusBarColor = Brushes.Firebrick;
-            //}
 
             if (helicopterViewModel.IsConnected)
             {
@@ -91,22 +75,26 @@ namespace Helicopter.GUI
             MenuHeader.DataContext = helicopterViewModel;
             OptionsToolbar.DataContext = helicopterViewModel;
             ControllerTabs.DataContext = helicopterViewModel;
-            ControllerOutputPanel.DataContext = helicopterViewModel;
             DatabaseDataGrid.DataContext = helicopterViewModel;
         }
 
         private void InitializeDatabaseDataGrid()
         {
-            Style rowStyle = new Style(typeof(DataGridRow));
+            var rowStyle = new Style(typeof(DataGridRow));
             rowStyle.Setters.Add(new EventSetter(DataGridRow.MouseDoubleClickEvent, new MouseButtonEventHandler(OnRowDoubleClick)));
             DatabaseDataGrid.RowStyle = rowStyle;
 
             helicopterViewModel.InitializeDatabase();
         }
 
+        private void SetVisibility(bool isDeveloperMode)
+        {
+            DeveloperTab.Visibility = isDeveloperMode ? Visibility.Visible : Visibility.Collapsed;
+        }
+
         private void OnRowDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var recordId = helicopterViewModel.SelectedRecord != null ? helicopterViewModel.SelectedRecord.Id : -1;
+            var recordId = helicopterViewModel.SelectedRecord.Id;
 
             using (var context = new HelicopterModelEntities())
             {
@@ -128,7 +116,7 @@ namespace Helicopter.GUI
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
-            System.Windows.Data.CollectionViewSource helicopterViewModelSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("helicopterViewModelSource")));
+            var helicopterViewModelSource = FindResource("helicopterViewModelSource") as System.Windows.Data.CollectionViewSource;
         }
 
         private void OnWindowClosing(object sender, CancelEventArgs e)
@@ -148,10 +136,7 @@ namespace Helicopter.GUI
                         helicopterViewModel.Disconnect();
                     }
 
-                    if (sessionPidChartWindow != null)
-                    {
-                        sessionPidChartWindow.Close();
-                    }
+                    sessionPidChartWindow?.Close();
 
                     break;
             }
@@ -182,10 +167,6 @@ namespace Helicopter.GUI
                     sessionPidChartWindow = new SessionPidChartWindow(sessionRecord);
                     sessionPidChartWindow.Show();
                 }
-            }
-            else if (e.PropertyName == "OutputText")
-            {
-                ControllerOutputTextbox.ScrollToEnd();
             }
         }
 

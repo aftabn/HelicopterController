@@ -30,16 +30,10 @@ namespace Helicopter.Core.Controller
         private const string STR_OnArg = "ON";
         private const string STR_OffArg = "OFF";
 
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static CommunicationsManager communicationsManager;
 
-        public static bool IsConnected
-        {
-            get
-            {
-                return communicationsManager != null ? communicationsManager.IsConnected : false;
-            }
-        }
+        public static bool IsConnected => communicationsManager?.IsConnected ?? false;
 
         public static void Initialize(ConnectionType connectionType)
         {
@@ -72,30 +66,30 @@ namespace Helicopter.Core.Controller
 
         public static CommunicationsManager GetInstanceOfCommunicationManager()
         {
-            return communicationsManager != null ? communicationsManager : null;
+            return communicationsManager;
         }
 
         public static void EnableSafety()
         {
-            string command = String.Format("{0} {1}", STR_SafetyCommand, STR_OnArg);
+            string command = $"{STR_SafetyCommand} {STR_OnArg}";
             communicationsManager.Write(command);
         }
 
         public static void DisableSafety()
         {
-            string command = String.Format("{0} {1}", STR_SafetyCommand, STR_OffArg);
+            string command = $"{STR_SafetyCommand} {STR_OffArg}";
             communicationsManager.Write(command);
         }
 
         public static void EnablePid()
         {
-            string command = String.Format("{0} {1}", STR_PidControlCommand, STR_OnArg);
+            string command = $"{STR_PidControlCommand} {STR_OnArg}";
             communicationsManager.Write(command);
         }
 
         public static void DisablePid()
         {
-            string command = String.Format("{0} {1}", STR_PidControlCommand, STR_OffArg);
+            string command = $"{STR_PidControlCommand} {STR_OffArg}";
             communicationsManager.Write(command);
         }
 
@@ -116,14 +110,13 @@ namespace Helicopter.Core.Controller
 
         public static double GetCurrentAngle(int channel)
         {
-            string command = String.Format("{0} {1}", STR_AngleCommand, channel);
+            string command = $"{STR_AngleCommand} {channel}";
             return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
         }
 
-        // TODO: Add this to the GUI
         public static void ZeroEncoderAngle()
         {
-            string command = String.Format("{0}", STR_ZeroEncoderAngleCommand);
+            string command = $"{STR_ZeroEncoderAngleCommand}";
             communicationsManager.Write(command);
         }
 
@@ -134,159 +127,157 @@ namespace Helicopter.Core.Controller
 
         public static void SetPidLoopInterval(int interval)
         {
-            string command = String.Format("{0} {1}", STR_PidLoopIntervalCommand, interval);
+            string command = $"{STR_PidLoopIntervalCommand} {interval}";
             communicationsManager.Write(command);
         }
 
         public static double GetAngleSetPoint(int channel)
         {
-            string command = String.Format("{0} {1}", STR_AngleSetPointCommand, channel);
+            string command = $"{STR_AngleSetPointCommand} {channel}";
             return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
         }
 
         public static void SetAngleSetPoint(int channel, double setPoint)
         {
-            string command = String.Format("{0} {1} {2}", STR_AngleSetPointCommand, channel, setPoint);
+            string command = $"{STR_AngleSetPointCommand} {channel} {setPoint}";
             communicationsManager.Write(command);
         }
 
         public static int GetMotorOutput(int channel)
         {
-            string command = String.Format("{0} {1}", STR_MotorOutputCommand, channel);
+            string command = $"{STR_MotorOutputCommand} {channel}";
             return Convert.ToInt32(communicationsManager.Write(command).ReturnValue);
         }
 
         public static void SetMotorOutput(int channel, int output)
         {
-            string command = String.Format("{0} {1} {2}", STR_MotorOutputCommand, channel, output);
+            string command = $"{STR_MotorOutputCommand} {channel} {output}";
             communicationsManager.Write(command);
         }
 
         public static double GetProportionalGain(int channel, int profile)
         {
-            string command = String.Format("{0} {1} {2}", STR_ProportionalGainCommand, channel, profile);
+            string command = $"{STR_ProportionalGainCommand} {channel} {profile}";
             return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
         }
 
         public static void SetProportionalGain(int channel, int profile, double pGain)
         {
-            string command = String.Format("{0} {1} {2} {3}", STR_ProportionalGainCommand, channel, profile, pGain);
+            string command = $"{STR_ProportionalGainCommand} {channel} {profile} {pGain}";
             communicationsManager.Write(command);
         }
 
         public static double GetIntegralGain(int channel, int profile)
         {
-            string command = String.Format("{0} {1} {2}", STR_IntegralGainCommand, channel, profile);
+            string command = $"{STR_IntegralGainCommand} {channel} {profile}";
             return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
         }
 
         public static void SetIntegralGain(int channel, int profile, double iGain)
         {
-            string command = String.Format("{0} {1} {2} {3}", STR_IntegralGainCommand, channel, profile, iGain);
+            string command = $"{STR_IntegralGainCommand} {channel} {profile} {iGain}";
             communicationsManager.Write(command);
         }
 
         public static double GetDerivativeGain(int channel, int profile)
         {
-            string command = String.Format("{0} {1} {2}", STR_DerivativeGainCommand, channel, profile);
+            string command = $"{STR_DerivativeGainCommand} {channel} {profile}";
             return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
         }
 
         public static void SetDerivativeGain(int channel, int profile, double dGain)
         {
-            string command = String.Format("{0} {1} {2} {3}", STR_DerivativeGainCommand, channel, profile, dGain);
+            string command = $"{STR_DerivativeGainCommand} {channel} {profile} {dGain}";
             communicationsManager.Write(command);
         }
 
         public static double GetIntegralWindupThreshold(int channel)
         {
-            string command = String.Format("{0} {1}", STR_IntegralWindupCommand, channel);
+            string command = $"{STR_IntegralWindupCommand} {channel}";
             return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
         }
 
         public static void SetIntegralWindupThreshold(int channel, double windup)
         {
-            string command = String.Format("{0} {1} {2}", STR_IntegralWindupCommand, channel, windup);
+            string command = $"{STR_IntegralWindupCommand} {channel} {windup}";
             communicationsManager.Write(command);
         }
 
         public static int GetOutputRateLimit(int channel)
         {
-            string command = String.Format("{0} {1}", STR_OutputRateLimitCommand, channel);
+            string command = $"{STR_OutputRateLimitCommand} {channel}";
             return Convert.ToInt32(communicationsManager.Write(command).ReturnValue);
         }
 
         public static void SetOutputRateLimit(int channel, int outputRateLimit)
         {
-            string command = String.Format("{0} {1} {2}", STR_OutputRateLimitCommand, channel, outputRateLimit);
+            string command = $"{STR_OutputRateLimitCommand} {channel} {outputRateLimit}";
             communicationsManager.Write(command);
         }
 
         public static Direction GetMotorDirection(int channel)
         {
-            string command = String.Format("{0} {1}", STR_DirectionCommand, channel);
-            string direction = communicationsManager.Write(command).ReturnValue;
+            string command = $"{STR_DirectionCommand} {channel}";
+            var direction = communicationsManager.Write(command).ReturnValue;
 
-            if (direction == "CW")
+            switch (direction)
             {
-                return Direction.Clockwise;
-            }
-            else if (direction == "CCW")
-            {
-                return Direction.CounterClockwise;
-            }
-            else
-            {
-                throw new Exception(String.Format("Returned direction [{0}] is not valid", direction));
+                case "CW":
+                    return Direction.Clockwise;
+
+                case "CCW":
+                    return Direction.CounterClockwise;
+
+                default:
+                    throw new Exception($"Returned direction [{direction}] is not valid");
             }
         }
 
         public static void SetMotorDirection(int channel, Direction direction)
         {
-            string command = String.Format("{0} {1} {2}", STR_DirectionCommand, channel, direction);
+            string command = $"{STR_DirectionCommand} {channel} {direction}";
             communicationsManager.Write(command);
         }
 
         public static MotorDriver GetMotorDriver(int channel)
         {
-            string command = String.Format("{0} {1}", STR_MotorDriverCommand, channel);
-            string motorDriver = communicationsManager.Write(command).ReturnValue;
+            string command = $"{STR_MotorDriverCommand} {channel}";
+            var motorDriver = communicationsManager.Write(command).ReturnValue;
 
-            if (motorDriver == "AV")
+            switch (motorDriver)
             {
-                return MotorDriver.AnalogVoltage;
-            }
-            else if (motorDriver == "F")
-            {
-                return MotorDriver.Frequency;
-            }
-            else
-            {
-                throw new Exception(String.Format("Returned motor driver type [{0}] is not valid", motorDriver));
+                case "AV":
+                    return MotorDriver.AnalogVoltage;
+
+                case "F":
+                    return MotorDriver.Frequency;
+
+                default:
+                    throw new Exception($"Returned motor driver type [{motorDriver}] is not valid");
             }
         }
 
         public static void SetMotorDriver(int channel, MotorDriver motorDriver)
         {
-            string command = String.Format("{0} {1} {2}", STR_MotorDriverCommand, channel, motorDriver);
+            string command = $"{STR_MotorDriverCommand} {channel} {motorDriver}";
             communicationsManager.Write(command);
         }
 
         public static double GetDacVoltage(int channel)
         {
-            string command = String.Format("{0} {1}", STR_DacVoltageCommand, channel);
+            string command = $"{STR_DacVoltageCommand} {channel}";
             return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
         }
 
         public static void SetDacVoltage(int channel, double voltage)
         {
-            string command = String.Format("{0} {1} {2}", STR_DacVoltageCommand, channel, voltage);
+            string command = $"{STR_DacVoltageCommand} {channel} {voltage}";
             communicationsManager.Write(command);
         }
 
         public static double GetAdcVoltage(int channel)
         {
-            string command = String.Format("{0} {1}", STR_AdcReadCommand, channel);
+            string command = $"{STR_AdcReadCommand} {channel}";
             return Convert.ToDouble(communicationsManager.Write(command).ReturnValue);
         }
 
@@ -297,13 +288,13 @@ namespace Helicopter.Core.Controller
 
         public static void SetFrequency(int frequency)
         {
-            string command = String.Format("{0} {1}", STR_FrequencyOutputCommand, frequency);
+            string command = $"{STR_FrequencyOutputCommand} {frequency}";
             communicationsManager.Write(command);
         }
 
         public static void DisableVerboseMode()
         {
-            string command = String.Format("{0} {1}", STR_VerboseCommand, STR_OffArg);
+            string command = $"{STR_VerboseCommand} {STR_OffArg}";
             communicationsManager.Write(command);
         }
     }

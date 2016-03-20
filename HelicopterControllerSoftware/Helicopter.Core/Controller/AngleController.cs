@@ -3,7 +3,6 @@ using Helicopter.Core.Settings;
 using log4net;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
@@ -12,7 +11,7 @@ namespace Helicopter.Core.Controller
     public abstract class AngleController : INotifyPropertyChanged, IDisposable
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private int controllerChannel;
+        private readonly int controllerChannel;
         private MotorType motorType;
         private Direction direction;
         private MotorDriver motorDriver;
@@ -23,7 +22,7 @@ namespace Helicopter.Core.Controller
         private double currentAngle;
         private int outputPercentage;
 
-        public AngleController(int controllerChannel)
+        protected AngleController(int controllerChannel)
         {
             this.controllerChannel = controllerChannel;
             this.motorType = (MotorType)controllerChannel;
@@ -48,11 +47,10 @@ namespace Helicopter.Core.Controller
 
             set
             {
-                if (value != integralWindupThreshold)
-                {
-                    integralWindupThreshold = value;
-                    RaisePropertyChanged("IntegralWindupThreshold");
-                }
+                if (value == integralWindupThreshold) return;
+
+                integralWindupThreshold = value;
+                RaisePropertyChanged("IntegralWindupThreshold");
             }
         }
 
@@ -65,11 +63,10 @@ namespace Helicopter.Core.Controller
 
             set
             {
-                if (value != outputRateLimit)
-                {
-                    outputRateLimit = value;
-                    RaisePropertyChanged("OutputRateLimit");
-                }
+                if (value == outputRateLimit) return;
+
+                outputRateLimit = value;
+                RaisePropertyChanged("OutputRateLimit");
             }
         }
 
@@ -82,11 +79,10 @@ namespace Helicopter.Core.Controller
 
             set
             {
-                if (value != setPoint)
-                {
-                    setPoint = value;
-                    RaisePropertyChanged("SetPoint");
-                }
+                if (value == setPoint) return;
+
+                setPoint = value;
+                RaisePropertyChanged("SetPoint");
             }
         }
 
@@ -99,11 +95,10 @@ namespace Helicopter.Core.Controller
 
             private set
             {
-                if (value != currentAngle)
-                {
-                    currentAngle = value;
-                    RaisePropertyChanged("CurrentAngle");
-                }
+                if (value == currentAngle) return;
+
+                currentAngle = value;
+                RaisePropertyChanged("CurrentAngle");
             }
         }
 
@@ -116,11 +111,10 @@ namespace Helicopter.Core.Controller
 
             set
             {
-                if (value != outputPercentage)
-                {
-                    outputPercentage = value;
-                    RaisePropertyChanged("OutputPercentage");
-                }
+                if (value == outputPercentage) return;
+
+                outputPercentage = value;
+                RaisePropertyChanged("OutputPercentage");
             }
         }
 
@@ -133,11 +127,10 @@ namespace Helicopter.Core.Controller
 
             set
             {
-                if (value != direction)
-                {
-                    direction = value;
-                    RaisePropertyChanged("Direction");
-                }
+                if (value == direction) return;
+
+                direction = value;
+                RaisePropertyChanged("Direction");
             }
         }
 
@@ -150,11 +143,10 @@ namespace Helicopter.Core.Controller
 
             set
             {
-                if (value != motorDriver)
-                {
-                    motorDriver = value;
-                    RaisePropertyChanged("MotorDriver");
-                }
+                if (value == motorDriver) return;
+
+                motorDriver = value;
+                RaisePropertyChanged("MotorDriver");
             }
         }
 
@@ -167,11 +159,10 @@ namespace Helicopter.Core.Controller
 
             set
             {
-                if (value != isEnabled)
-                {
-                    isEnabled = value;
-                    RaisePropertyChanged("IsEnabled");
-                }
+                if (value == isEnabled) return;
+
+                isEnabled = value;
+                RaisePropertyChanged("IsEnabled");
             }
         }
 
@@ -182,7 +173,7 @@ namespace Helicopter.Core.Controller
             SetIntegralWindupThreshold(settings.IntegralWindupThreshold);
             SetOutputRateLimit(settings.OutputRateLimit);
 
-            settings.PidProfiles.Values.ToList().ForEach(profile => SetPidValuesFromProfile(profile));
+            settings.PidProfiles.Values.ToList().ForEach(SetPidValuesFromProfile);
         }
 
         public void Dispose()
@@ -277,7 +268,6 @@ namespace Helicopter.Core.Controller
         public void SetProportionalGain(DirectionProfile profile, double pGain)
         {
             Microcontroller.SetProportionalGain(controllerChannel, (int)profile, pGain);
-            // PidProfiles.Single(x => x.Key == profile).Value.ProportionalGain = pGain;
             PidProfiles[profile].ProportionalGain = pGain;
         }
 
@@ -355,10 +345,8 @@ namespace Helicopter.Core.Controller
 
         private void RaisePropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(String.Format("{0}{1}", MotorType, propertyName)));
-            }
+            // Appending the motor type is needed to differentiate between Yaw and Tilt
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs($"{MotorType}{propertyName}"));
         }
     }
 }

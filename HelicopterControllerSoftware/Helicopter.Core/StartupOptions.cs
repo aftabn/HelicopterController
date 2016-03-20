@@ -8,7 +8,7 @@ namespace Helicopter.Core
 {
     public class StartupOptions
     {
-        public StartupOptions(String[] args)
+        public StartupOptions(IEnumerable<string> args)
         {
             IsDeveloperMode = args.Contains("-devmode", StringComparer.InvariantCultureIgnoreCase);
         }

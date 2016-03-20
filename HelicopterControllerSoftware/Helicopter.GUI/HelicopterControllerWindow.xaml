@@ -7,7 +7,7 @@
         xmlns:util="clr-namespace:Libs.Utilities;assembly=Libs.Utilities"
         xmlns:core="clr-namespace:Helicopter.Core;assembly=Helicopter.Core"
         xmlns:controller="clr-namespace:Helicopter.Core.Controller;assembly=Helicopter.Core"
-        xmlns:pidCharts="clr-namespace:Helicopter.GUI.PidCharts;assembly=Helicopter.GUI"
+        xmlns:pidCharts="clr-namespace:Helicopter.GUI.PidCharts"
         mc:Ignorable="d"
         Title="Helicopter Controller Software"
         Height="750" Width="1500"
@@ -286,9 +286,6 @@
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
-                    <Border x:Name="ControllerOutputPanel" BorderBrush="Gray" BorderThickness="1" Margin="5,0" Width="295" DockPanel.Dock="Left">
-                        <TextBox x:Name="ControllerOutputTextbox" TextWrapping="WrapWithOverflow" Background="LightGray" Padding="5" IsReadOnly="True" Text="{Binding OutputText}" />
-                    </Border>
                 </DockPanel>
             </TabItem>
             <TabItem x:Name="HistoryTab" Header="History" GotFocus="OnHistoryTabGotFocus" LostFocus="OnHistoryTabLostFocus">
@@ -343,6 +340,6 @@
                 </DockPanel>
             </TabItem>
         </TabControl>
-        <local:RealTimePidChart x:Name="PidChart" />
+        <pidCharts:RealTimePidChart x:Name="PidChart" />
     </DockPanel>
 </Window>

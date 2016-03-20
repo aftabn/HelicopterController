@@ -8,11 +8,11 @@ namespace Helicopter.Core.Sessions
     public class ControllerDataSeries : INotifyPropertyChanged, IDisposable
     {
         private AngleController angleController;
-        private string controllerDataString;
+        private readonly string controllerDataString;
 
         public ControllerDataSeries(AngleController angleController)
         {
-            controllerDataString = String.Format("{0}ControllerData", angleController.MotorType);
+            controllerDataString = $"{angleController.MotorType}ControllerData";
 
             this.angleController = angleController;
             angleController.PropertyChanged += OnAngleControllerPropertyChanged;
@@ -82,10 +82,7 @@ namespace Helicopter.Core.Sessions
 
         private void RaisePropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

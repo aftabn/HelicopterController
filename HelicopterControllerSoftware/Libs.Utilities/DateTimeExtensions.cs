@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 
 namespace Libs.Utilities
 {
@@ -32,49 +31,49 @@ namespace Libs.Utilities
         {
             var totalSeconds = timeSpan.TotalSeconds;
 
-            const int SECOND = 1;
-            const int MINUTE = 60 * SECOND;
-            const int HOUR = 60 * MINUTE;
-            const int DAY = 24 * HOUR;
-            const int MONTH = 30 * DAY;
+            const int second = 1;
+            const int minute = 60 * second;
+            const int hour = 60 * minute;
+            const int day = 24 * hour;
+            const int month = 30 * day;
 
             if (totalSeconds < 0)
             {
                 return "not yet";
             }
-            if (totalSeconds < 1 * MINUTE)
+            if (totalSeconds < 1 * minute)
             {
                 return timeSpan.Seconds == 1 ? "one second ago" : timeSpan.Seconds + " seconds ago";
             }
-            if (totalSeconds < 2 * MINUTE)
+            if (totalSeconds < 2 * minute)
             {
                 return "a minute ago";
             }
-            if (totalSeconds < 45 * MINUTE)
+            if (totalSeconds < 45 * minute)
             {
                 return timeSpan.Minutes + " minutes ago";
             }
-            if (totalSeconds < 90 * MINUTE)
+            if (totalSeconds < 90 * minute)
             {
                 return "an hour ago";
             }
-            if (totalSeconds < 24 * HOUR)
+            if (totalSeconds < 24 * hour)
             {
                 return timeSpan.Hours + " hours ago";
             }
-            if (totalSeconds < 30 * DAY)
+            if (totalSeconds < 30 * day)
             {
                 return (timeSpan.Days + 1) + " days ago";
             }
 
-            if (totalSeconds < 12 * MONTH)
+            if (totalSeconds < 12 * month)
             {
-                int months = Convert.ToInt32(System.Math.Floor((double)timeSpan.Days / 30));
+                var months = Convert.ToInt32(Math.Floor((double)timeSpan.Days / 30));
                 return months <= 1 ? "one month ago" : months + " months ago";
             }
             else
             {
-                int years = Convert.ToInt32(System.Math.Floor((double)timeSpan.Days / 365));
+                var years = Convert.ToInt32(Math.Floor((double)timeSpan.Days / 365));
                 return years <= 1 ? "one year ago" : years + " years ago";
             }
         }
@@ -87,7 +86,7 @@ namespace Libs.Utilities
         // http://stackoverflow.com/questions/38039/how-can-i-get-the-datetime-for-the-start-of-the-week
         public static DateTime StartOfWeek(this DateTime dateTime, DayOfWeek startOfWeek = DayOfWeek.Sunday)
         {
-            int daysDifference = dateTime.DayOfWeek - startOfWeek;
+            var daysDifference = dateTime.DayOfWeek - startOfWeek;
 
             if (daysDifference < 0)
             {
@@ -95,13 +94,6 @@ namespace Libs.Utilities
             }
 
             return dateTime.AddDays(-1 * daysDifference).Date.StartOfDay();
-        }
-
-        // http://stackoverflow.com/questions/1497586/how-can-i-calculate-find-the-week-number-of-a-given-date
-        public static int WeekOfYearISO8601(this DateTime date)
-        {
-            var day = (int)CultureInfo.CurrentCulture.Calendar.GetDayOfWeek(date);
-            return CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(date.AddDays(4 - (day == 0 ? 7 : day)), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
         }
 
         public static DateTime StartOfMonth(this DateTime date)

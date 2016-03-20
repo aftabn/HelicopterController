@@ -1,10 +1,6 @@
 ﻿using Libs.Utilities;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Helicopter.Core.Controller
 {
@@ -13,11 +9,6 @@ namespace Helicopter.Core.Controller
         private double proportionalGain;
         private double integralGain;
         private double derivativeGain;
-        private DirectionProfile directionProfile;
-
-        public PidProfile()
-        {
-        }
 
         public static PidProfile FromXmlElement(System.Xml.Linq.XElement pidProfileElement)
         {
@@ -34,18 +25,7 @@ namespace Helicopter.Core.Controller
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public DirectionProfile DirectionProfile
-        {
-            get
-            {
-                return directionProfile;
-            }
-
-            set
-            {
-                directionProfile = value;
-            }
-        }
+        public DirectionProfile DirectionProfile { get; set; }
 
         public double ProportionalGain
 
@@ -57,11 +37,10 @@ namespace Helicopter.Core.Controller
 
             set
             {
-                if (value != proportionalGain)
-                {
-                    proportionalGain = value;
-                    RaisePropertyChanged("ProportionalGain");
-                }
+                if (value == proportionalGain) return;
+
+                proportionalGain = value;
+                RaisePropertyChanged("ProportionalGain");
             }
         }
 
@@ -74,11 +53,10 @@ namespace Helicopter.Core.Controller
 
             set
             {
-                if (value != integralGain)
-                {
-                    integralGain = value;
-                    RaisePropertyChanged("IntegralGain");
-                }
+                if (value == integralGain) return;
+
+                integralGain = value;
+                RaisePropertyChanged("IntegralGain");
             }
         }
 
@@ -91,20 +69,16 @@ namespace Helicopter.Core.Controller
 
             set
             {
-                if (value != derivativeGain)
-                {
-                    derivativeGain = value;
-                    RaisePropertyChanged("DerivativeGain");
-                }
+                if (value == derivativeGain) return;
+
+                derivativeGain = value;
+                RaisePropertyChanged("DerivativeGain");
             }
         }
 
         private void RaisePropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(String.Format("{0}{1}", DirectionProfile, propertyName)));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs($"{DirectionProfile}{propertyName}"));
         }
     }
 }

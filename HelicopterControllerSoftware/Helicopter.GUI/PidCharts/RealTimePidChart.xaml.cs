@@ -20,7 +20,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
 
-namespace Helicopter.GUI
+namespace Helicopter.GUI.PidCharts
 {
     /// <summary>
     /// Interaction logic for RealTimeChart.xaml
@@ -75,49 +75,54 @@ namespace Helicopter.GUI
         {
             using (SciChartSurface.SuspendUpdates())
             {
-                if (yawAngles != null)
-                {
-                    yawAngles.Clear();
-                    yawSetPoints.Clear();
-                    tiltAngles.Clear();
-                    tiltSetPoints.Clear();
-                }
+                if (yawAngles == null) return;
+
+                yawAngles.Clear();
+                yawSetPoints.Clear();
+                tiltAngles.Clear();
+                tiltSetPoints.Clear();
             }
         }
 
         private void OnNewControllerDataReceived(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "YawControllerData")
+            switch (e.PropertyName)
             {
-                var startTime = session.StartTime;
-                var newDataPoint = yawDataSeries.ControllerData.Last();
+                case "YawControllerData":
+                    {
+                        var startTime = session.StartTime;
+                        var newDataPoint = yawDataSeries.ControllerData.Last();
 
-                double time = (newDataPoint.TimeStamp - startTime).TotalSeconds;
-                double angle = newDataPoint.CurrentAngle;
-                double setPoint = newDataPoint.SetPoint;
+                        var time = (newDataPoint.TimeStamp - startTime).TotalSeconds;
+                        var angle = newDataPoint.CurrentAngle;
+                        var setPoint = newDataPoint.SetPoint;
 
-                // Suspending updates ensures we only get one redraw after both series have been appended to
-                using (SciChartSurface.SuspendUpdates())
-                {
-                    yawAngles.Append(time, angle);
-                    yawSetPoints.Append(time, setPoint);
-                }
-            }
-            else if (e.PropertyName == "TiltControllerData")
-            {
-                var startTime = session.StartTime;
-                var newDataPoint = tiltDataSeries.ControllerData.Last();
+                        // Suspending updates ensures we only get one redraw after both series have been appended to
+                        using (SciChartSurface.SuspendUpdates())
+                        {
+                            yawAngles.Append(time, angle);
+                            yawSetPoints.Append(time, setPoint);
+                        }
+                    }
+                    break;
 
-                double time = (newDataPoint.TimeStamp - startTime).TotalSeconds;
-                double angle = newDataPoint.CurrentAngle;
-                double setPoint = newDataPoint.SetPoint;
+                case "TiltControllerData":
+                    {
+                        var startTime = session.StartTime;
+                        var newDataPoint = tiltDataSeries.ControllerData.Last();
 
-                // Suspending updates ensures we only get one redraw after both series have been appended to
-                using (SciChartSurface.SuspendUpdates())
-                {
-                    tiltAngles.Append(time, angle);
-                    tiltSetPoints.Append(time, setPoint);
-                }
+                        var time = (newDataPoint.TimeStamp - startTime).TotalSeconds;
+                        var angle = newDataPoint.CurrentAngle;
+                        var setPoint = newDataPoint.SetPoint;
+
+                        // Suspending updates ensures we only get one redraw after both series have been appended to
+                        using (SciChartSurface.SuspendUpdates())
+                        {
+                            tiltAngles.Append(time, angle);
+                            tiltSetPoints.Append(time, setPoint);
+                        }
+                    }
+                    break;
             }
         }
     }

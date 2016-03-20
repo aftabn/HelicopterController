@@ -47,7 +47,7 @@ namespace Libs.Utilities
         [DebuggerStepThrough]
         public bool CanExecute(object parameters)
         {
-            return canExecute == null ? true : canExecute(parameters);
+            return canExecute?.Invoke(parameters) ?? true;
         }
 
         public void Execute(object parameters)

@@ -29,62 +29,32 @@ namespace Libs.Utilities
 
         public static double? ParseNullableDouble(this XAttribute xAttribute)
         {
-            if (xAttribute == null)
-            {
-                return null;
-            }
-
-            return Double.Parse(xAttribute.Value);
+            return xAttribute == null ? (double?)null : Double.Parse(xAttribute.Value);
         }
 
         public static bool ParseOptionalBoolean(this XAttribute xAttribute, bool defaultValue = false)
         {
-            if (xAttribute == null)
-            {
-                return defaultValue;
-            }
-
-            return Boolean.Parse(xAttribute.Value);
+            return xAttribute == null ? defaultValue : Boolean.Parse(xAttribute.Value);
         }
 
         public static double ParseOptionalDouble(this XAttribute xAttribute, double defaultValue = 0.0d)
         {
-            if (xAttribute == null)
-            {
-                return defaultValue;
-            }
-
-            return Double.Parse(xAttribute.Value);
+            return xAttribute == null ? defaultValue : Double.Parse(xAttribute.Value);
         }
 
         public static int ParseOptionalInt(this XAttribute xAttribute, int defaultValue = 0)
         {
-            if (xAttribute == null)
-            {
-                return defaultValue;
-            }
-
-            return Int32.Parse(xAttribute.Value);
+            return xAttribute == null ? defaultValue : Int32.Parse(xAttribute.Value);
         }
 
         public static string ParseString(this XAttribute xAttribute)
         {
-            if (xAttribute == null)
-            {
-                return null;
-            }
-
-            return xAttribute.Value;
+            return xAttribute?.Value;
         }
 
         public static string ParseOptionalString(this XAttribute xAttribute, string defaultValue)
         {
-            if (xAttribute == null)
-            {
-                return defaultValue;
-            }
-
-            return xAttribute.Value;
+            return xAttribute?.Value ?? defaultValue;
         }
 
         public static string ToStringWithXmlDeclaration(this XDocument xDocument)

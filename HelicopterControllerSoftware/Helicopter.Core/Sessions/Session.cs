@@ -1,14 +1,13 @@
 ﻿using Helicopter.Core.Controller;
 using System;
 using System.ComponentModel;
-using System.Threading;
 
 namespace Helicopter.Core.Sessions
 {
     public class Session : INotifyPropertyChanged, IDisposable
     {
-        private YawController yaw;
-        private TiltController tilt;
+        private readonly YawController yaw;
+        private readonly TiltController tilt;
 
         public Session(HelicopterController helicopterController, int refreshIntervalMilliseconds)
         {
@@ -66,10 +65,7 @@ namespace Helicopter.Core.Sessions
 
         private void RaisePropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

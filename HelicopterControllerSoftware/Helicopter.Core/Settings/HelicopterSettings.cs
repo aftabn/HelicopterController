@@ -2,18 +2,14 @@
 using Libs.Utilities;
 using log4net;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Helicopter.Core.Settings
 {
     public class HelicopterSettings
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public HelicopterControllerSettings ControllerSettings { get; private set; }
 
@@ -38,9 +34,9 @@ namespace Helicopter.Core.Settings
             var helicopterSettings = new HelicopterSettings
             {
                 FilePath = settingsFile,
+                XmlText = File.ReadAllText(settingsFile),
             };
 
-            helicopterSettings.XmlText = File.ReadAllText(settingsFile);
             helicopterSettings.XDocument = XDocument.Parse(helicopterSettings.XmlText);
 
             var settingsElement = helicopterSettings.XDocument.Element("Settings");
@@ -56,8 +52,8 @@ namespace Helicopter.Core.Settings
         private static string GetSettingsFile()
         {
             var executingAssemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var settingsFile = String.Format("{0}\\{1}", executingAssemblyPath, "HelicopterSettings.xml");
-            log.DebugFormat("Loading settings file: {0}", settingsFile);
+            var settingsFile = $"{executingAssemblyPath}\\{"HelicopterSettings.xml"}";
+            Log.DebugFormat("Loading settings file: {0}", settingsFile);
 
             if (!File.Exists(settingsFile))
             {

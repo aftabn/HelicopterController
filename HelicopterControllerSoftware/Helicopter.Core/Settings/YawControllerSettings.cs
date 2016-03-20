@@ -12,8 +12,8 @@ namespace Helicopter.Core.Settings
     {
         public static YawControllerSettings FromXmlElement(System.Xml.Linq.XElement angleControllerElement)
         {
-            var cwProfileElement = angleControllerElement.Elements("PidProfile").Where(x => x.Attribute("Direction").Value == DirectionProfile.CW.ToString()).Single();
-            var ccwProfileElement = angleControllerElement.Elements("PidProfile").Where(x => x.Attribute("Direction").Value == DirectionProfile.CCW.ToString()).Single();
+            var cwProfileElement = angleControllerElement.Elements("PidProfile").Single(x => x.Attribute("Direction").Value == DirectionProfile.CW.ToString());
+            var ccwProfileElement = angleControllerElement.Elements("PidProfile").Single(x => x.Attribute("Direction").Value == DirectionProfile.CCW.ToString());
 
             var settings = new YawControllerSettings()
             {

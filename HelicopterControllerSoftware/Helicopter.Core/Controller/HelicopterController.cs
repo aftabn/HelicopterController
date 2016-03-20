@@ -7,8 +7,8 @@ namespace Helicopter.Core.Controller
 {
     public class HelicopterController : INotifyPropertyChanged, IDisposable
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private CommunicationsManager communicationsManager;
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly CommunicationsManager communicationsManager;
         private bool isSafetyEnabled;
         private bool isPidEnabled;
         private string controllerIdentity;
@@ -31,13 +31,7 @@ namespace Helicopter.Core.Controller
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public bool IsConnected
-        {
-            get
-            {
-                return Microcontroller.IsConnected;
-            }
-        }
+        public bool IsConnected => Microcontroller.IsConnected;
 
         public ConnectionType ConnectionType
         {
@@ -54,11 +48,10 @@ namespace Helicopter.Core.Controller
 
             private set
             {
-                if (value != controllerIdentity)
-                {
-                    controllerIdentity = value;
-                    RaisePropertyChanged("ControllerIdentity");
-                }
+                if (value == controllerIdentity) return;
+
+                controllerIdentity = value;
+                RaisePropertyChanged("ControllerIdentity");
             }
         }
 
@@ -71,11 +64,10 @@ namespace Helicopter.Core.Controller
 
             private set
             {
-                if (value != firmwareVersion)
-                {
-                    firmwareVersion = value;
-                    RaisePropertyChanged("FirmwareVersion");
-                }
+                if (value == firmwareVersion) return;
+
+                firmwareVersion = value;
+                RaisePropertyChanged("FirmwareVersion");
             }
         }
 
@@ -88,11 +80,10 @@ namespace Helicopter.Core.Controller
 
             private set
             {
-                if (value != changelog)
-                {
-                    changelog = value;
-                    RaisePropertyChanged("Changelog");
-                }
+                if (value == changelog) return;
+
+                changelog = value;
+                RaisePropertyChanged("Changelog");
             }
         }
 
@@ -105,11 +96,10 @@ namespace Helicopter.Core.Controller
 
             set
             {
-                if (value != isPidEnabled)
-                {
-                    isPidEnabled = value;
-                    RaisePropertyChanged("IsPidEnabled");
-                }
+                if (value == isPidEnabled) return;
+
+                isPidEnabled = value;
+                RaisePropertyChanged("IsPidEnabled");
             }
         }
 
@@ -122,11 +112,10 @@ namespace Helicopter.Core.Controller
 
             set
             {
-                if (value != isSafetyEnabled)
-                {
-                    isSafetyEnabled = value;
-                    RaisePropertyChanged("IsSafetyEnabled");
-                }
+                if (value == isSafetyEnabled) return;
+
+                isSafetyEnabled = value;
+                RaisePropertyChanged("IsSafetyEnabled");
             }
         }
 
@@ -139,17 +128,16 @@ namespace Helicopter.Core.Controller
 
             set
             {
-                if (value != pidLoopInterval)
-                {
-                    pidLoopInterval = value;
-                    RaisePropertyChanged("PidLoopInterval");
-                }
+                if (value == pidLoopInterval) return;
+
+                pidLoopInterval = value;
+                RaisePropertyChanged("PidLoopInterval");
             }
         }
 
-        public YawController Yaw { get; private set; }
+        public YawController Yaw { get; }
 
-        public TiltController Tilt { get; private set; }
+        public TiltController Tilt { get; }
 
         public void Connect(HelicopterControllerSettings settings)
         {
@@ -285,10 +273,7 @@ namespace Helicopter.Core.Controller
 
         private void RaisePropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
