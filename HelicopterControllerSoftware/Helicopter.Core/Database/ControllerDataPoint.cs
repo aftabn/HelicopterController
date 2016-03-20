@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Helicopter.Core.Sessions
+namespace Helicopter.Core.Database
 {
     public class ControllerDataPoint
     {

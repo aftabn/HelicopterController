@@ -14,7 +14,7 @@
 // expressed or implied.
 // *************************************************************************************
 
-using Helicopter.Core.Sessions;
+using Helicopter.Core.Database;
 using SciChart.Charting.Model.DataSeries;
 using System.ComponentModel;
 using System.Linq;

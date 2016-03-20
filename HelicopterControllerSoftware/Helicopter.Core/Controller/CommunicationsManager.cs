@@ -17,6 +17,8 @@ namespace Helicopter.Core.Controller
         private const double DBL_DefaultBluetoothTimeoutSeconds = 3;
         private const string STR_SerialDeviceName = "Arduino";
         private const string STR_BluetoothDeviceName = "Bluetooth";
+        private const int INT_SerialBaudRate = 19200;
+        private const int INT_BluetoothBaudRate = 115200;
 
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly List<string> receivedPackets = new List<string>();
@@ -64,11 +66,10 @@ namespace Helicopter.Core.Controller
 
             set
             {
-                if (value != connectionType)
-                {
-                    connectionType = value;
-                    RaisePropertyChanged("ConnectionType");
-                }
+                if (value == connectionType) return;
+
+                connectionType = value;
+                RaisePropertyChanged("ConnectionType");
             }
         }
 
@@ -128,7 +129,9 @@ namespace Helicopter.Core.Controller
             }
             if (comPort != String.Empty)
             {
-                serialPort = new SerialPort(comPort, 19200, Parity.None, 8, StopBits.One);
+                var baudRate = ConnectionType == ConnectionType.Serial ? INT_SerialBaudRate : INT_BluetoothBaudRate;
+
+                serialPort = new SerialPort(comPort, baudRate, Parity.None, 8, StopBits.One);
                 serialPort.DataReceived += OnDataReceived;
                 serialPort.Open();
                 IsConnected = true;

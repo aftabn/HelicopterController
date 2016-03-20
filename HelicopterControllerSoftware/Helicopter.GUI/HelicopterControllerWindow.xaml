@@ -15,7 +15,7 @@
         Loaded="WindowLoaded"
 	    Closing="OnWindowClosing">
     <Window.Resources>
-        <CollectionViewSource x:Key="helicopterViewModelSource" d:DesignSource="{d:DesignInstance {x:Type core:HelicopterViewModel}, CreateList=True}" />
+        <CollectionViewSource x:Key="Vm" d:DesignSource="{d:DesignInstance {x:Type core:HelicopterViewModel}, CreateList=True}" />
     </Window.Resources>
     <DockPanel>
         <Menu x:Name="MenuHeader" DockPanel.Dock="Top" Height="30" IsMainMenu="True">
@@ -70,11 +70,9 @@
                         <Button Margin="5,0,5,5" Content="Disable Motors" Command="{Binding DisableMotorsCommand}" />
                         <Button Margin="5,0,5,5" Content="Refresh Values" Command="{Binding RefreshValuesCommand}" />
                         <Separator Margin="5,5,5,10" />
-                        <Button Margin="5,0,5,5" Content="Start Demo Session" Command="{Binding StartDemoSessionCommand}" />
-                        <Button Margin="5,0,5,5" Content="Stop Demo Session" Command="{Binding StopSessionCommand}" />
-                        <Separator Margin="5,5,5,10" />
                         <Button Margin="5,0,5,5" Content="Start Tuning Session" Command="{Binding StartTuningSessionCommand}" />
-                        <Button Margin="5,0,5,5" Content="Stop Tuning Session" Command="{Binding StopSessionCommand}" />
+                        <Button Margin="5,0,5,5" Content="Start Demo Session" Command="{Binding StartDemoSessionCommand}" />
+                        <Button Margin="5,0,5,5" Content="Stop Session" Command="{Binding StopSessionCommand}" />
                         <Separator Margin="5,5,5,10" />
                         <Button Margin="5,0,5,5" Content="Enable PID" Command="{Binding EnablePidCommand}" />
                         <Button Margin="5,0,5,5" Content="Disable PID" Command="{Binding DisablePidCommand}" />

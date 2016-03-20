@@ -1,5 +1,6 @@
 ﻿using Helicopter.Core;
 using Helicopter.Core.Controller;
+using Helicopter.Core.Database;
 using Helicopter.Model;
 using System.Linq;
 using System.Windows.Input;

@@ -58,8 +58,8 @@
     <Compile Include="Controller\ConnectionType.cs" />
     <Compile Include="Controller\DirectionProfile.cs" />
     <Compile Include="Controller\PidProfile.cs" />
-    <Compile Include="DatabaseManager.cs" />
-    <Compile Include="Sessions\ControllerDataPoint.cs" />
+    <Compile Include="Database\DatabaseManager.cs" />
+    <Compile Include="Database\ControllerDataPoint.cs" />
     <Compile Include="Controller\Direction.cs" />
     <Compile Include="Controller\HelicopterController.cs" />
     <Compile Include="HelicopterManager.cs" />
@@ -72,8 +72,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controller\TiltController.cs" />
     <Compile Include="Controller\YawController.cs" />
-    <Compile Include="Sessions\ControllerDataSeries.cs" />
-    <Compile Include="Sessions\Session.cs" />
+    <Compile Include="Database\ControllerDataSeries.cs" />
+    <Compile Include="Database\Session.cs" />
     <Compile Include="Settings\AngleControllerSettings.cs" />
     <Compile Include="Settings\HelicopterControllerSettings.cs" />
     <Compile Include="Settings\HelicopterSettings.cs" />
@@ -85,9 +85,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Database\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Helicopter.Model\Helicopter.Model.csproj">
       <Project>{1703bb16-f73e-4727-8caf-cc4892f70904}</Project>

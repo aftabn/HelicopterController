@@ -1,14 +1,10 @@
 ﻿using Helicopter.Core.Controller;
-using Helicopter.Core.Sessions;
+using Helicopter.Core.Database;
 using Helicopter.Model;
 using Libs.Utilities;
-using log4net.Config;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading;
 using System.Windows.Input;
 
 namespace Helicopter.Core

@@ -1,11 +1,9 @@
 ﻿using Helicopter.Core;
-using Helicopter.Core.Sessions;
+using Helicopter.Core.Database;
 using Helicopter.GUI.PidCharts;
 using Helicopter.Model;
 using log4net;
-using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel;
 
-namespace Helicopter.Core.Sessions
+namespace Helicopter.Core.Database
 {
     public class Session : INotifyPropertyChanged, IDisposable
     {
