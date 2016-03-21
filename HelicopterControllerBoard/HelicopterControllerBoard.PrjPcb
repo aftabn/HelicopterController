@@ -51,7 +51,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=XNTWWEUF
+DocumentUniqueId=HWIFKDHP
 
 [Document2]
 DocumentPath=Top.SchDoc
@@ -154,6 +154,10 @@ ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=PGBYBHTP
+
+[GeneratedDocument1]
+DocumentPath=Project Outputs for HelicopterControllerBoard\Design Rule Check - HelicopterControllerPCB.html
+DItemRevisionGUID=
 
 [Configuration1]
 Name=Default Configuration
