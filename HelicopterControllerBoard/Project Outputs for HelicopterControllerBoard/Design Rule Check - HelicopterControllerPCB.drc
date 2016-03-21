@@ -1,18 +1,18 @@
 Protel Design System Design Rule Check
 PCB File : C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterControllerBoard\HelicopterControllerPCB.PcbDoc
 Date     : 3/21/2016
-Time     : 12:25:25 AM
+Time     : 1:06:15 PM
 
-Processing Rule : Hole Size Constraint (Min=0.025mm) (Max=2.54mm) (All)
+Processing Rule : Hole Size Constraint (Min=1mil) (Max=100mil) (All)
 Rule Violations :0
 
-Processing Rule : Width Constraint (Min=0.254mm) (Max=0.254mm) (Preferred=0.254mm) (All)
+Processing Rule : Width Constraint (Min=10mil) (Max=10mil) (Preferred=10mil) (All)
 Rule Violations :0
 
-Processing Rule : Power Plane Connect Rule(Relief Connect )(Expansion=0.508mm) (Conductor Width=0.254mm) (Air Gap=0.254mm) (Entries=4) (All)
+Processing Rule : Power Plane Connect Rule(Relief Connect )(Expansion=20mil) (Conductor Width=10mil) (Air Gap=10mil) (Entries=4) (All)
 Rule Violations :0
 
-Processing Rule : Clearance Constraint (Gap=0.178mm) (All),(All)
+Processing Rule : Clearance Constraint (Gap=7mil) (All),(All)
 Rule Violations :0
 
 Processing Rule : Un-Routed Net Constraint ( (All) )
@@ -23,4 +23,4 @@ Rule Violations :0
 
 
 Violations Detected : 0
-Time Elapsed        : 00:00:00
+Time Elapsed        : 00:00:01
