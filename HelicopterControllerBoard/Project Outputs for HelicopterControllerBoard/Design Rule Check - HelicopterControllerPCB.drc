@@ -1,18 +1,105 @@
 Protel Design System Design Rule Check
 PCB File : C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterControllerBoard\HelicopterControllerPCB.PcbDoc
 Date     : 3/21/2016
-Time     : 1:06:15 PM
+Time     : 7:40:51 PM
 
-Processing Rule : Hole Size Constraint (Min=1mil) (Max=100mil) (All)
+Processing Rule : Hole Size Constraint (Min=0mil) (Max=0mil) (HoleSize <> ((17 OR 25 OR 32 OR 35 OR 39 OR 49 OR 57 OR 83 OR 122 OR 149) AND PadIsPlated))
 Rule Violations :0
 
-Processing Rule : Width Constraint (Min=10mil) (Max=10mil) (Preferred=10mil) (All)
+Processing Rule : Hole Size Constraint (Min=0mil) (Max=0mil) (HoleSize <> ((20 OR 28 OR 35 OR 38 OR 42 OR 52 OR 60 OR 86 OR 125 OR 152) AND NOT(PadIsPlated)))
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-15(1834.882mil,562.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-16(1834.882mil,662.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-17(1834.882mil,762.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-18(1834.882mil,862.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-19(1834.882mil,962.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-20(1834.882mil,1062.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-21(1834.882mil,1162.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-22(1834.882mil,1262.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-23(1834.882mil,1362.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-24(1834.882mil,1462.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-25(1834.882mil,1562.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-26(1834.882mil,1662.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-27(1834.882mil,1762.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-28(1834.882mil,1862.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-14(1534.882mil,562.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-13(1534.882mil,662.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-12(1534.882mil,762.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-11(1534.882mil,862.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-10(1534.882mil,962.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-9(1534.882mil,1062.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-8(1534.882mil,1162.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-7(1534.882mil,1262.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-6(1534.882mil,1362.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-5(1534.882mil,1462.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-4(1534.882mil,1562.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-3(1534.882mil,1662.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-2(1534.882mil,1762.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (35.433mil > 0mil) : Pad U1-1(1534.882mil,1862.44mil)  Multi-Layer
+   Violation between Hole Size Constraint (31.496mil > 0mil) : Pad Y1-2(1004.882mil,1328.504mil)  Multi-Layer
+   Violation between Hole Size Constraint (31.496mil > 0mil) : Pad Y1-1(1004.882mil,1136.378mil)  Multi-Layer
+Rule Violations :30
+
+Processing Rule : Hole Size Constraint (Min=149mil) (Max=149mil) (HoleSize = 149 AND PadIsPlated)
 Rule Violations :0
 
-Processing Rule : Power Plane Connect Rule(Relief Connect )(Expansion=20mil) (Conductor Width=10mil) (Air Gap=10mil) (Entries=4) (All)
+Processing Rule : Hole Size Constraint (Min=152mil) (Max=152mil) (HoleSize = 152 AND NOT(PadIsPlated))
 Rule Violations :0
 
-Processing Rule : Clearance Constraint (Gap=7mil) (All),(All)
+Processing Rule : Hole Size Constraint (Min=122mil) (Max=122mil) (HoleSize = 122 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=125mil) (Max=125mil) (HoleSize = 125 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=83mil) (Max=83mil) (HoleSize = 83 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=86mil) (Max=86mil) (HoleSize = 86 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=57mil) (Max=57mil) (HoleSize = 57 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=60mil) (Max=60mil) (HoleSize = 60 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=49mil) (Max=49mil) (HoleSize = 49 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=52mil) (Max=52mil) (HoleSize = 52 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=39mil) (Max=39mil) (HoleSize = 39 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=42mil) (Max=42mil) (HoleSize = 42 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=35mil) (Max=35mil) (HoleSize = 35 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=38mil) (Max=38mil) (HoleSize = 38 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=32mil) (Max=32mil) (HoleSize = 32 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=35mil) (Max=35mil) (HoleSize = 35 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=25mil) (Max=25mil) (HoleSize = 25 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=28mil) (Max=28mil) (HoleSize = 28 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=17mil) (Max=17mil) (HoleSize = 17 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=20mil) (Max=20mil) (HoleSize = 20 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Minimum Annular Ring (Minimum=8mil) (All)
 Rule Violations :0
 
 Processing Rule : Un-Routed Net Constraint ( (All) )
@@ -21,6 +108,18 @@ Rule Violations :0
 Processing Rule : Short-Circuit Constraint (Allowed=No) (All),(All)
 Rule Violations :0
 
+Processing Rule : Power Plane Connect Rule(Relief Connect )(Expansion=20mil) (Conductor Width=10mil) (Air Gap=10mil) (Entries=4) (All)
+Rule Violations :0
 
-Violations Detected : 0
+Processing Rule : Width Constraint (Min=7mil) (Max=200mil) (Preferred=10mil) (All)
+Rule Violations :0
+
+Processing Rule : Clearance Constraint (Gap=7mil) (All),(All)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=1mil) (Max=100mil) (All)
+Rule Violations :0
+
+
+Violations Detected : 30
 Time Elapsed        : 00:00:01
