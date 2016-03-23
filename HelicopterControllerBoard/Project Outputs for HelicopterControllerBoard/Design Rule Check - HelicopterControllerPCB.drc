@@ -1,235 +1,95 @@
 Protel Design System Design Rule Check
 PCB File : C:\Users\Aftab\Documents\GitHub\ELEC391\HelicopterControllerBoard\HelicopterControllerPCB.PcbDoc
-Date     : 3/21/2016
-Time     : 11:24:56 PM
+Date     : 3/22/2016
+Time     : 10:22:52 AM
 
-Processing Rule : Hole Size Constraint (Min=0mil) (Max=0mil) (HoleSize <> ((17 OR 25 OR 32 OR 35 OR 39 OR 49 OR 57 OR 83 OR 122 OR 149) AND PadIsPlated))
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=0mil) (Max=0mil) (HoleSize <> ((20 OR 28 OR 35 OR 38 OR 42 OR 52 OR 60 OR 86 OR 125 OR 152) AND NOT(PadIsPlated)))
-   Violation between Hole Size Constraint (125mil > 0mil) : Pad Free-MNT(2736.22mil,2342.52mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-1(2094.882mil,2202.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-2(2094.882mil,2102.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-3(2094.882mil,2002.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-4(2094.882mil,1902.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-5(2094.882mil,1802.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-6(2094.882mil,1702.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-7(2094.882mil,1602.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-8(2094.882mil,1502.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-16(2394.882mil,2202.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-15(2394.882mil,2102.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-14(2394.882mil,2002.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-13(2394.882mil,1902.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-12(2394.882mil,1802.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-11(2394.882mil,1702.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-10(2394.882mil,1602.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U4-9(2394.882mil,1502.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U5-8(2394.882mil,612.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U5-9(2394.882mil,712.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U5-10(2394.882mil,812.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U5-11(2394.882mil,912.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U5-12(2394.882mil,1012.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U5-13(2394.882mil,1112.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U5-14(2394.882mil,1212.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U5-7(2094.882mil,612.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U5-6(2094.882mil,712.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U5-5(2094.882mil,812.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U5-4(2094.882mil,912.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U5-3(2094.882mil,1012.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U5-2(2094.882mil,1112.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U5-1(2094.882mil,1212.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad R7-1(1027.558mil,345.67mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad R7-2(1027.558mil,445.67mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P6-1(1544.882mil,192.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P6-2(1644.882mil,192.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P6-3(1744.882mil,192.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (31.496mil > 0mil) : Pad Y1-1(1004.882mil,1136.378mil)  Multi-Layer
-   Violation between Hole Size Constraint (31.496mil > 0mil) : Pad Y1-2(1004.882mil,1328.504mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad C5-2(1264.882mil,1442.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad C5-1(1264.882mil,1342.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad C6-2(1264.882mil,1122.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad C6-1(1264.882mil,1022.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U3-1(434.882mil,1172.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U3-2(434.882mil,1072.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U3-3(434.882mil,972.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U3-4(434.882mil,872.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U3-5(434.882mil,772.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U3-6(434.882mil,672.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U3-7(434.882mil,572.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U3-14(734.882mil,1172.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U3-13(734.882mil,1072.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U3-12(734.882mil,972.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U3-11(734.882mil,872.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U3-10(734.882mil,772.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U3-9(734.882mil,672.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U3-8(734.882mil,572.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U2-1(334.882mil,2152.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U2-2(334.882mil,2052.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U2-3(334.882mil,1952.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U2-4(334.882mil,1852.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U2-5(334.882mil,1752.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U2-6(334.882mil,1652.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U2-7(334.882mil,1552.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U2-14(634.882mil,2152.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U2-13(634.882mil,2052.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U2-12(634.882mil,1952.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U2-11(634.882mil,1852.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U2-10(634.882mil,1752.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U2-9(634.882mil,1652.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U2-8(634.882mil,1552.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad R8-1(1554.882mil,2192.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad R8-2(1654.882mil,2192.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad R6-1(1004.882mil,1782.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad R6-2(1004.882mil,1682.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad R5-1(1254.882mil,1682.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad R5-2(1254.882mil,1782.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad R3-1(234.882mil,1272.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad R3-2(134.882mil,1272.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad R2-1(234.882mil,792.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad R2-2(134.882mil,792.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad R1-1(1024.882mil,662.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad R1-2(1024.882mil,762.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P5-1(2394.882mil,192.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P5-2(2494.882mil,192.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P4-1(2644.882mil,862.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P4-2(2644.882mil,762.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P3-1(308.268mil,188.976mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P3-2(408.268mil,188.976mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P2-3(979.842mil,2200.314mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P2-2(1079.842mil,2200.314mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P2-1(1179.842mil,2200.314mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P1-1(659.448mil,188.976mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P1-2(759.448mil,188.976mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P1-3(859.448mil,188.976mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P1-4(959.448mil,188.976mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P1-5(1059.448mil,188.976mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad P1-6(1159.448mil,188.976mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad D2-2(1263.78mil,430.984mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad D2-1(1263.78mil,320.984mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad D1-2(1209.882mil,712.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad D1-1(1319.882mil,712.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad C4-1(2644.41mil,1602.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad C4-2(2644.41mil,1502.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad C3-1(2644.882mil,1222.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad C3-2(2644.882mil,1122.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad C2-1(234.882mil,552.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad C2-2(134.882mil,552.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad C1-1(234.882mil,1032.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad C1-2(134.882mil,1032.44mil)  Multi-Layer
-   Violation between Hole Size Constraint (125mil > 0mil) : Pad Free-MNT(98.426mil,2342.52mil)  Multi-Layer
-   Violation between Hole Size Constraint (125mil > 0mil) : Pad Free-MNT(98.426mil,98.426mil)  Multi-Layer
-   Violation between Hole Size Constraint (125mil > 0mil) : Pad Free-MNT(2736.22mil,98.426mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-20(1835.001mil,1062.001mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-19(1835mil,962mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-18(1835mil,862mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-17(1835mil,762mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-16(1835mil,662mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-15(1835mil,562mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-14(1535mil,562mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-13(1535mil,662mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-12(1535mil,762mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-11(1535mil,862mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-10(1535mil,962mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-9(1535.001mil,1062.001mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-1(1535mil,1862mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-2(1535mil,1762mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-3(1535mil,1662mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-4(1535mil,1562mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-5(1535mil,1462mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-6(1535mil,1362mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-7(1535mil,1262mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-8(1535mil,1162mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-28(1835mil,1862mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-27(1835mil,1762mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-26(1835mil,1662mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-25(1835mil,1562mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-24(1835mil,1462mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-23(1835mil,1362mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-22(1835mil,1262mil)  Multi-Layer
-   Violation between Hole Size Constraint (39mil > 0mil) : Pad U1-21(1835mil,1162mil)  Multi-Layer
-Rule Violations :140
-
-Processing Rule : Hole Size Constraint (Min=149mil) (Max=149mil) (HoleSize = 149 AND PadIsPlated)
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=152mil) (Max=152mil) (HoleSize = 152 AND NOT(PadIsPlated))
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=122mil) (Max=122mil) (HoleSize = 122 AND PadIsPlated)
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=125mil) (Max=125mil) (HoleSize = 125 AND NOT(PadIsPlated))
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=83mil) (Max=83mil) (HoleSize = 83 AND PadIsPlated)
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=86mil) (Max=86mil) (HoleSize = 86 AND NOT(PadIsPlated))
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=57mil) (Max=57mil) (HoleSize = 57 AND PadIsPlated)
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=60mil) (Max=60mil) (HoleSize = 60 AND NOT(PadIsPlated))
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=49mil) (Max=49mil) (HoleSize = 49 AND PadIsPlated)
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=52mil) (Max=52mil) (HoleSize = 52 AND NOT(PadIsPlated))
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=39mil) (Max=39mil) (HoleSize = 39 AND PadIsPlated)
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=42mil) (Max=42mil) (HoleSize = 42 AND NOT(PadIsPlated))
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=35mil) (Max=35mil) (HoleSize = 35 AND PadIsPlated)
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=38mil) (Max=38mil) (HoleSize = 38 AND NOT(PadIsPlated))
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=32mil) (Max=32mil) (HoleSize = 32 AND PadIsPlated)
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=35mil) (Max=35mil) (HoleSize = 35 AND NOT(PadIsPlated))
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=25mil) (Max=25mil) (HoleSize = 25 AND PadIsPlated)
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=28mil) (Max=28mil) (HoleSize = 28 AND NOT(PadIsPlated))
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=17mil) (Max=17mil) (HoleSize = 17 AND PadIsPlated)
-Rule Violations :0
-
-Processing Rule : Hole Size Constraint (Min=20mil) (Max=20mil) (HoleSize = 20 AND NOT(PadIsPlated))
-Rule Violations :0
-
-Processing Rule : Minimum Annular Ring (Minimum=8mil) (All)
-Rule Violations :0
-
-Processing Rule : Un-Routed Net Constraint ( (All) )
-Rule Violations :0
-
-Processing Rule : Short-Circuit Constraint (Allowed=No) (All),(All)
-Rule Violations :0
-
-Processing Rule : Power Plane Connect Rule(Relief Connect )(Expansion=20mil) (Conductor Width=10mil) (Air Gap=10mil) (Entries=4) (All)
-Rule Violations :0
-
-Processing Rule : Width Constraint (Min=7mil) (Max=200mil) (Preferred=10mil) (All)
+Processing Rule : Hole Size Constraint (Min=1mil) (Max=100mil) (All)
 Rule Violations :0
 
 Processing Rule : Clearance Constraint (Gap=7mil) (All),(All)
 Rule Violations :0
 
-Processing Rule : Hole Size Constraint (Min=1mil) (Max=100mil) (All)
+Processing Rule : Width Constraint (Min=7mil) (Max=200mil) (Preferred=10mil) (All)
+Rule Violations :0
+
+Processing Rule : Power Plane Connect Rule(Relief Connect )(Expansion=20mil) (Conductor Width=10mil) (Air Gap=10mil) (Entries=4) (All)
+Rule Violations :0
+
+Processing Rule : Short-Circuit Constraint (Allowed=No) (All),(All)
+Rule Violations :0
+
+Processing Rule : Un-Routed Net Constraint ( (All) )
+Rule Violations :0
+
+Processing Rule : Minimum Annular Ring (Minimum=8mil) (All)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=20mil) (Max=20mil) (HoleSize = 20 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=17mil) (Max=17mil) (HoleSize = 17 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=28mil) (Max=28mil) (HoleSize = 28 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=25mil) (Max=25mil) (HoleSize = 25 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=35mil) (Max=35mil) (HoleSize = 35 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=32mil) (Max=32mil) (HoleSize = 32 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=38mil) (Max=38mil) (HoleSize = 38 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=35mil) (Max=35mil) (HoleSize = 35 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=42mil) (Max=42mil) (HoleSize = 42 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=39mil) (Max=39mil) (HoleSize = 39 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=52mil) (Max=52mil) (HoleSize = 52 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=49mil) (Max=49mil) (HoleSize = 49 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=60mil) (Max=60mil) (HoleSize = 60 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=57mil) (Max=57mil) (HoleSize = 57 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=86mil) (Max=86mil) (HoleSize = 86 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=83mil) (Max=83mil) (HoleSize = 83 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=125mil) (Max=125mil) (HoleSize = 125 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=122mil) (Max=122mil) (HoleSize = 122 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=152mil) (Max=152mil) (HoleSize = 152 AND NOT(PadIsPlated))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=149mil) (Max=149mil) (HoleSize = 149 AND PadIsPlated)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=0mil) (Max=0mil) (HoleSize <> ((20 OR 28 OR 35 OR 38 OR 42 OR 52 OR 60 OR 86 OR 125 OR 152) AND NOT(PadIsPlated)))
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=0mil) (Max=0mil) (HoleSize <> ((17 OR 25 OR 32 OR 35 OR 39 OR 49 OR 57 OR 83 OR 122 OR 149) AND PadIsPlated))
 Rule Violations :0
 
 
-Violations Detected : 140
+Violations Detected : 0
 Time Elapsed        : 00:00:01
