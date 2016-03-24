@@ -15,6 +15,7 @@
 // *************************************************************************************
 
 using Helicopter.Core.Database;
+using log4net;
 using SciChart.Charting.Model.DataSeries;
 using System.ComponentModel;
 using System.Linq;
@@ -27,6 +28,7 @@ namespace Helicopter.GUI.PidCharts
     /// </summary>
     public partial class RealTimePidChart : UserControl
     {
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private const int FifoSampleSize = 100;
         private Session session;
         private ControllerDataSeries yawDataSeries;
@@ -42,9 +44,9 @@ namespace Helicopter.GUI.PidCharts
             InitializeComponent();
         }
 
-        public void StartNewSession(Session session)
+        public void StartNewSession(Session newSession)
         {
-            this.session = session;
+            session = newSession;
             yawDataSeries = session.YawDataSeries;
             tiltDataSeries = session.TiltDataSeries;
 
@@ -61,6 +63,8 @@ namespace Helicopter.GUI.PidCharts
             YawSetPointSeries.DataSeries = yawSetPoints;
             TiltAngleSeries.DataSeries = tiltAngles;
             TiltSetPointSeries.DataSeries = tiltSetPoints;
+
+            Log.Debug("Starting PID Charting");
         }
 
         public void EndSession()
@@ -69,6 +73,8 @@ namespace Helicopter.GUI.PidCharts
             session = null;
             yawDataSeries = null;
             tiltDataSeries = null;
+
+            Log.Debug("Stopping PID Charting");
         }
 
         private void ClearDataSeries()

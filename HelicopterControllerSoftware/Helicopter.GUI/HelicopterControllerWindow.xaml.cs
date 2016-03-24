@@ -16,7 +16,7 @@ namespace Helicopter.GUI
     /// </summary>
     public partial class HelicopterControllerWindow : Window, INotifyPropertyChanged
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly HelicopterViewModel helicopterViewModel;
         private SessionPidChartWindow sessionPidChartWindow;
 
@@ -64,6 +64,7 @@ namespace Helicopter.GUI
             }
 
             StatusBar.Background = statusBarColor;
+            Log.Debug("Updated the status bar");
         }
 
         private void SetBindingForControls()
@@ -97,6 +98,7 @@ namespace Helicopter.GUI
                 var sessionRecord = DatabaseManager.GetSessionRecord(recordId, context);
                 sessionPidChartWindow = new SessionPidChartWindow(sessionRecord);
                 sessionPidChartWindow.Show();
+                Log.DebugFormat("Loaded an old session with ID: {0}", recordId);
             }
         }
 
@@ -124,7 +126,7 @@ namespace Helicopter.GUI
                     break;
 
                 default:
-                    log.DebugFormat("Closing the application from messagebox");
+                    Log.DebugFormat("Closing the application from messagebox");
 
                     if (helicopterViewModel.IsConnected)
                     {
