@@ -146,6 +146,7 @@ namespace Helicopter.Core.Controller
                 Microcontroller.Connect();
                 LoadSettings(settings);
                 InitializeController();
+                Log.DebugFormat("Connected to {0}", ControllerIdentity);
             }
             else
             {
@@ -160,6 +161,7 @@ namespace Helicopter.Core.Controller
             if (IsConnected)
             {
                 Microcontroller.Disconnect();
+                Log.DebugFormat("Disconnected from {0}", ControllerIdentity);
             }
             else
             {
@@ -187,6 +189,8 @@ namespace Helicopter.Core.Controller
             {
                 PidLoopInterval = Microcontroller.GetPidLoopInterval();
             }
+
+            Log.Debug("Intialized Helicopter Controller");
         }
 
         public void LoadSettings(HelicopterControllerSettings settings)
@@ -206,6 +210,7 @@ namespace Helicopter.Core.Controller
 
             Yaw.RefreshAllValues();
             Tilt.RefreshAllValues();
+            Log.Debug("Loaded settings for Helicopter Controller");
         }
 
         public void EnablePid()

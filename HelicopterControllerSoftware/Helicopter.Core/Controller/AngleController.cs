@@ -10,9 +10,9 @@ namespace Helicopter.Core.Controller
 {
     public abstract class AngleController : INotifyPropertyChanged, IDisposable
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly int controllerChannel;
-        private MotorType motorType;
+        private readonly MotorType motorType;
         private Direction direction;
         private MotorDriver motorDriver;
         private bool isEnabled;
@@ -28,6 +28,8 @@ namespace Helicopter.Core.Controller
             this.motorType = (MotorType)controllerChannel;
 
             ControllerData = new List<ControllerDataPoint>();
+
+            Log.DebugFormat("Created new {0} motor", motorType);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -174,6 +176,8 @@ namespace Helicopter.Core.Controller
             SetOutputRateLimit(settings.OutputRateLimit);
 
             settings.PidProfiles.Values.ToList().ForEach(SetPidValuesFromProfile);
+
+            Log.DebugFormat("Loaded settings for {0} motor", motorType);
         }
 
         public void Dispose()
@@ -183,6 +187,7 @@ namespace Helicopter.Core.Controller
         public void Disable()
         {
             SetOutputPercentage(0);
+            Log.DebugFormat("Disabling {0} motor", motorType);
         }
 
         public void RefreshAllValues()
@@ -194,6 +199,7 @@ namespace Helicopter.Core.Controller
             RefreshIntegralWindupThreshold();
             RefreshMotorDriver();
             RefreshPidValues();
+            Log.DebugFormat("Refreshing all values for {0} motor", motorType);
         }
 
         public void RefreshProcessValues()
@@ -201,6 +207,7 @@ namespace Helicopter.Core.Controller
             RefreshCurrentAngle();
             RefreshOutputPercentage();
             RefreshDirection();
+            Log.DebugFormat("Refreshing process values for {0} motor", motorType);
         }
 
         public void RefreshCurrentAngle()

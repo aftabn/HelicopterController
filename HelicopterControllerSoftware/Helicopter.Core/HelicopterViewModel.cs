@@ -2,6 +2,7 @@
 using Helicopter.Core.Database;
 using Helicopter.Model;
 using Libs.Utilities;
+using log4net;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -11,6 +12,7 @@ namespace Helicopter.Core
 {
     public class HelicopterViewModel : INotifyPropertyChanged, IDisposable
     {
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly HelicopterController helicopterController;
         private readonly YawController yaw;
         private readonly TiltController tilt;
@@ -255,6 +257,7 @@ namespace Helicopter.Core
         public ICommand SetYawIntegralWindupThresholdCommand { get; private set; }
         public ICommand SetYawOutputRateLimitCommand { get; private set; }
         public ICommand SetYawOutputPercentageCommand { get; private set; }
+
         public ICommand GetTiltAngleCommand { get; private set; }
         public ICommand SetTiltSetPointCommand { get; private set; }
         public ICommand SetTiltCWProportionalGainCommand { get; private set; }
@@ -264,6 +267,8 @@ namespace Helicopter.Core
         public ICommand SetTiltOutputRateLimitCommand { get; private set; }
         public ICommand SetTiltOutputPercentageCommand { get; private set; }
 
+        // TODO: Implement these on the GUI
+
         public ICommand SetYawDacVoltageCommand { get; private set; }
         public ICommand SetTiltDacVoltageCommand { get; private set; }
         public ICommand SetFrequencyCommand { get; private set; }
@@ -272,8 +277,6 @@ namespace Helicopter.Core
         {
             HelicopterManager.PropertyChanged += OnHelicopterManagerPropertyChanged;
             HelicopterManager.Connect();
-
-            var text = $"Connected to {helicopterController.ControllerIdentity}";
         }
 
         public void Disconnect()
@@ -310,6 +313,7 @@ namespace Helicopter.Core
                        var text = $"Controller: {helicopterController.ControllerIdentity}{Environment.NewLine}" +
                            $"Firmware Version: {helicopterController.FirmwareVersion}{Environment.NewLine}" +
                            $"Changelog: {helicopterController.Changelog}{Environment.NewLine}";
+                       Log.Debug(text);
                    },
                    x => IsConnected);
 
@@ -318,11 +322,11 @@ namespace Helicopter.Core
                 x => IsDatabaseConnected);
 
             StartTuningSessionCommand = new RelayCommand(
-                   x => HelicopterManager.StartSession(),
+                   x => HelicopterManager.StartTuningSession(),
                    x => IsConnected && !IsPidEnabled && !IsPidSessionRunning);
 
             StartDemoSessionCommand = new RelayCommand(
-                   x => HelicopterManager.StartDemo(),
+                   x => HelicopterManager.StartDemoSession(),
                    x => IsConnected && !IsPidEnabled && !IsPidSessionRunning);
 
             StopSessionCommand = new RelayCommand(
@@ -362,83 +366,43 @@ namespace Helicopter.Core
                    x => IsConnected && !IsPidEnabled);
 
             SetYawSetPointCommand = new RelayCommand(
-                   x =>
-                   {
-                       var setPoint = Convert.ToDouble(x);
-                       YawSetPoint = setPoint;
-                   },
-                   x => IsConnected);
+                    x => YawSetPoint = Convert.ToDouble(x),
+                    x => IsConnected);
 
             SetYawOutputPercentageCommand = new RelayCommand(
-                   x =>
-                   {
-                       var output = Convert.ToInt32(x);
-                       YawOutputPercentage = output;
-                   },
+                   x => YawOutputPercentage = Convert.ToInt32(x),
                    x => IsConnected && !IsPidEnabled);
 
             SetYawCWProportionalGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var pGain = Convert.ToDouble(x);
-                       YawCWProportionalGain = pGain;
-                   },
+                   x => YawCWProportionalGain = Convert.ToDouble(x),
                    x => IsConnected);
 
             SetYawCWIntegralGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var iGain = Convert.ToDouble(x);
-                       YawCWIntegralGain = iGain;
-                   },
+                   x => YawCWIntegralGain = Convert.ToDouble(x),
                    x => IsConnected);
 
             SetYawCWDerivativeGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var dGain = Convert.ToDouble(x);
-                       YawCWDerivativeGain = dGain;
-                   },
+                   x => YawCWDerivativeGain = Convert.ToDouble(x),
                    x => IsConnected);
 
             SetYawCCWProportionalGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var pGain = Convert.ToDouble(x);
-                       YawCCWProportionalGain = pGain;
-                   },
+                   x => YawCCWProportionalGain = Convert.ToDouble(x),
                    x => IsConnected);
 
             SetYawCCWIntegralGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var iGain = Convert.ToDouble(x);
-                       YawCCWIntegralGain = iGain;
-                   },
+                   x => YawCCWIntegralGain = Convert.ToDouble(x),
                    x => IsConnected);
 
             SetYawCCWDerivativeGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var dGain = Convert.ToDouble(x);
-                       YawCCWDerivativeGain = dGain;
-                   },
+                   x => YawCCWDerivativeGain = Convert.ToDouble(x),
                    x => IsConnected);
 
             SetYawIntegralWindupThresholdCommand = new RelayCommand(
-                   x =>
-                   {
-                       var iWindupThreshold = Convert.ToDouble(x);
-                       YawIntegralWindupThreshold = iWindupThreshold;
-                   },
+                   x => YawIntegralWindupThreshold = Convert.ToDouble(x),
                    x => IsConnected);
 
             SetYawOutputRateLimitCommand = new RelayCommand(
-                   x =>
-                   {
-                       var outputRateLimit = Convert.ToInt32(x);
-                       YawOutputRateLimit = outputRateLimit;
-                   },
+                   x => YawOutputRateLimit = Convert.ToInt32(x),
                    x => IsConnected);
 
             GetTiltAngleCommand = new RelayCommand(
@@ -446,60 +410,34 @@ namespace Helicopter.Core
                    x => IsConnected);
 
             SetTiltSetPointCommand = new RelayCommand(
-                   x =>
-                   {
-                       var setPoint = Convert.ToDouble(x);
-                       TiltSetPoint = setPoint;
-                   },
+                   x => TiltSetPoint = Convert.ToDouble(x),
                    x => IsConnected);
 
             SetTiltOutputPercentageCommand = new RelayCommand(
-                   x =>
-                   {
-                       var output = Convert.ToInt32(x);
-                       TiltOutputPercentage = output;
-                   },
+                   x => TiltOutputPercentage = Convert.ToInt32(x),
                    x => IsConnected && !IsPidEnabled);
 
             SetTiltCWProportionalGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var pGain = Convert.ToDouble(x);
-                       TiltCWProportionalGain = pGain;
-                   },
+                   x => TiltCWProportionalGain = Convert.ToDouble(x),
                    x => IsConnected);
 
             SetTiltCWIntegralGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var iGain = Convert.ToDouble(x);
-                       TiltCWIntegralGain = iGain;
-                   },
+                   x => TiltCWIntegralGain = Convert.ToDouble(x),
                    x => IsConnected);
 
             SetTiltCWDerivativeGainCommand = new RelayCommand(
-                   x =>
-                   {
-                       var dGain = Convert.ToDouble(x);
-                       TiltCWDerivativeGain = dGain;
-                   },
+                   x => TiltCWDerivativeGain = Convert.ToDouble(x),
                    x => IsConnected);
 
             SetTiltIntegralWindupThresholdCommand = new RelayCommand(
-                   x =>
-                   {
-                       var iWindupThreshold = Convert.ToDouble(x);
-                       TiltIntegralWindupThreshold = iWindupThreshold;
-                   },
+                   x => TiltIntegralWindupThreshold = Convert.ToDouble(x),
                    x => IsConnected);
 
             SetTiltOutputRateLimitCommand = new RelayCommand(
-                   x =>
-                   {
-                       var outputRateLimit = Convert.ToInt32(x);
-                       TiltOutputRateLimit = outputRateLimit;
-                   },
+                   x => TiltOutputRateLimit = Convert.ToInt32(x),
                    x => IsConnected);
+
+            Log.Debug("Finished intializing relay commands");
         }
 
         private void OnHelicopterManagerPropertyChanged(object sender, PropertyChangedEventArgs e)

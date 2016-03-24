@@ -88,6 +88,7 @@ namespace Helicopter.Core.Database
                 var sessionRecord = context.SessionRecords.Single(x => x.Id == recordId);
                 sessionRecord.Comment = comment;
                 context.SaveChanges();
+                Log.DebugFormat("Updated comment for session with ID: {0}", recordId);
             }
         }
 
@@ -156,6 +157,7 @@ namespace Helicopter.Core.Database
 
                 context.SessionRecords.Add(sessionRecord);
                 context.SaveChanges();
+                Log.Debug("Created and saved new session with ID");
             }
 
             return sessionRecord;
@@ -163,7 +165,7 @@ namespace Helicopter.Core.Database
 
         private static int UpdateSettingsRecord(HelicopterSettings settings, HelicopterModelEntities context)
         {
-            var hash = DatabaseManager.GetSHA1Hash(settings.XmlText);
+            var hash = GetSHA1Hash(settings.XmlText);
             var settingsRecord = context.SettingsRecords.SingleOrDefault(x => x.Hash == hash);
 
             if (settingsRecord != null) return settingsRecord.Id;

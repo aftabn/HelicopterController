@@ -17,13 +17,11 @@ namespace Helicopter.GUI
     public partial class HelicopterControllerWindow : Window, INotifyPropertyChanged
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly StartupOptions startupOptions;
         private readonly HelicopterViewModel helicopterViewModel;
         private SessionPidChartWindow sessionPidChartWindow;
 
         public HelicopterControllerWindow(StartupOptions startupOptions)
         {
-            this.startupOptions = startupOptions;
             helicopterViewModel = new HelicopterViewModel();
             helicopterViewModel.PropertyChanged += OnViewModelPropertyChanged;
 

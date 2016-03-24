@@ -37,6 +37,7 @@ namespace Helicopter.Core.Controller
         public CommunicationsManager(ConnectionType defaultConnectionType)
         {
             ConnectionType = defaultConnectionType;
+            Log.Debug("Created new CommunicationsManager");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -140,6 +141,8 @@ namespace Helicopter.Core.Controller
                 {
                     InitializeArduino();
                 }
+
+                Log.DebugFormat("Connected to controller through {0} on {1}", ConnectionType, comPort);
             }
             else
             {
@@ -180,13 +183,18 @@ namespace Helicopter.Core.Controller
 
         private void SetDeviceName()
         {
-            if (ConnectionType == ConnectionType.Serial)
+            switch (ConnectionType)
             {
-                deviceName = STR_SerialDeviceName;
-            }
-            else if (ConnectionType == ConnectionType.Bluetooth)
-            {
-                deviceName = STR_BluetoothDeviceName;
+                case ConnectionType.Serial:
+                    deviceName = STR_SerialDeviceName;
+                    break;
+
+                case ConnectionType.Bluetooth:
+                    deviceName = STR_BluetoothDeviceName;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -205,12 +213,11 @@ namespace Helicopter.Core.Controller
                 try
                 {
                     serialPort.Write(input + "\r\n");
-                    Log.DebugFormat("Sending <{0}>\r\n", input);
+                    Log.DebugFormat("Sending <{0}>", input);
                 }
                 catch (IOException e)
                 {
-                    var message = $"Command {input} failed to send - could not communicate with the microcontroller.{Environment.NewLine}" +
-                                  $"The program will now terminate.";
+                    var message = $"Command {input} failed to send - could not communicate with the microcontroller.{Environment.NewLine}" + $"The program will now terminate.";
                     Log.Debug(e.Message);
                     Log.Debug(message);
                     throw new Exception(message);
@@ -299,9 +306,9 @@ namespace Helicopter.Core.Controller
                     if (serialPortBuffer.EndsWith("OK\r\n") || serialPortBuffer.EndsWith("ERROR\r\n"))
                     {
                         AddNewPacket(serialPortBuffer);
-                        var stringReceived = serialPortBuffer;
 
-                        // Uncommenting the line below will log every packet received from the microcontroller
+                        // Uncommenting the lines below will log every packet received from the microcontroller
+                        //var stringReceived = serialPortBuffer;
                         // log.DebugFormat("{0} <<< {1}", ((SerialPort)sender).PortName, stringReceived.Replace("\r\n", "<CRLF>"));
                         ClearBuffer();
                         return;

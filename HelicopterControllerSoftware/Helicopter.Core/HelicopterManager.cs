@@ -111,10 +111,16 @@ namespace Helicopter.Core
             HelicopterController.DisableMotors();
         }
 
-        public void StartSession()
+        public void StartTuningSession()
         {
             InitializeSession();
             tuningWorker.RunWorkerAsync();
+        }
+
+        public void StartDemoSession()
+        {
+            InitializeSession();
+            demoWorker.RunWorkerAsync();
         }
 
         public void StopSession()
@@ -129,12 +135,6 @@ namespace Helicopter.Core
             }
         }
 
-        public void StartDemo()
-        {
-            InitializeSession();
-            demoWorker.RunWorkerAsync();
-        }
-
         private void InitializeSession()
         {
             if (IsSessionRunning)
@@ -147,6 +147,7 @@ namespace Helicopter.Core
             }
 
             ResetSession();
+            Log.Debug("Initialized new session");
         }
 
         private void InitializeTuningSessionWorker()
@@ -173,11 +174,14 @@ namespace Helicopter.Core
             Session.ClearControllerData();
 
             IsSessionComplete = false;
-            IsSessionRunning = true;
         }
 
         private void SessionWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            IsSessionRunning = true;
+
+            Log.Debug("Started PID Tuning Session");
+
             var tilt = HelicopterController.Tilt;
             var worker = sender as BackgroundWorker;
 
@@ -224,6 +228,10 @@ namespace Helicopter.Core
         // TODO: Refactor this
         private void SessionWorker_DoDemoWork(object sender, DoWorkEventArgs e)
         {
+            IsSessionRunning = true;
+
+            Log.Debug("Started Demo Session");
+
             var worker = sender as BackgroundWorker;
             var yaw = HelicopterController.Yaw;
             var tilt = HelicopterController.Tilt;
@@ -256,6 +264,7 @@ namespace Helicopter.Core
                 if (steadyStateCount >= 4)
                 {
                     steadyStateCount = 0;
+                    Log.Debug("Finished raising tilt motor");
                     break;
                 }
 
@@ -287,6 +296,7 @@ namespace Helicopter.Core
                 if (steadyStateCount >= 4)
                 {
                     steadyStateCount = 0;
+                    Log.Debug("Finished rotating yaw motor");
                     break;
                 }
 
@@ -319,7 +329,7 @@ namespace Helicopter.Core
 
                 if (steadyStateCount >= 2)
                 {
-                    steadyStateCount = 0;
+                    Log.Debug("Finished lowering tilt motor");
                     break;
                 }
 
@@ -343,12 +353,12 @@ namespace Helicopter.Core
 
             if (e.Error != null)
             {
+                Log.DebugFormat("Background worker stopped. {0}", e.Error.Message);
                 throw new Exception($"Background worker stopped. {e.Error.Message}", e.Error.InnerException);
             }
-            else
-            {
-                IsSessionComplete = true;
-            }
+
+            IsSessionComplete = true;
+            Log.Debug("Finished session");
         }
 
         private void OnControllerPropertyChanged(object sender, PropertyChangedEventArgs e)

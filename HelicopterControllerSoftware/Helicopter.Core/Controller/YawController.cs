@@ -1,4 +1,6 @@
-﻿using System;
+﻿using log4net;
+using log4net.Config;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,7 @@ namespace Helicopter.Core.Controller
 {
     public class YawController : AngleController
     {
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private const MotorType motorType = MotorType.Yaw;
 
         public YawController() : base((int)motorType)
@@ -28,6 +31,7 @@ namespace Helicopter.Core.Controller
         {
             Microcontroller.ZeroEncoderAngle();
             RefreshCurrentAngle();
+            Log.DebugFormat("Zeroing angle for Yaw motor");
         }
     }
 }
