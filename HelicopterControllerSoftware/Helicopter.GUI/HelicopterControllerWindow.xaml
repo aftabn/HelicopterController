@@ -15,7 +15,7 @@
         Loaded="WindowLoaded"
 	    Closing="OnWindowClosing">
     <Window.Resources>
-        <CollectionViewSource x:Key="Vm" d:DesignSource="{d:DesignInstance {x:Type core:HelicopterViewModel}, CreateList=True}" />
+        <CollectionViewSource x:Key="helicopterViewModelSource" d:DesignSource="{d:DesignInstance {x:Type core:HelicopterViewModel}, CreateList=True}" />
     </Window.Resources>
     <DockPanel>
         <Menu x:Name="MenuHeader" DockPanel.Dock="Top" Height="30" IsMainMenu="True">
