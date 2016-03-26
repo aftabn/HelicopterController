@@ -32,7 +32,7 @@ import java.io.OutputStream;
 
 public class DeviceConnector {
     private static final String TAG = "DeviceConnector";
-    private static final boolean D = false;
+    private static final boolean debug = false;
 
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
@@ -57,18 +57,18 @@ public class DeviceConnector {
     }
 
     public synchronized void connect() {
-        if (D) Log.d(TAG, "connect to: " + connectedDevice);
+        if (debug) Log.d(TAG, "connect to: " + connectedDevice);
 
         if (mState == STATE_CONNECTING) {
             if (mConnectThread != null) {
-                if (D) Log.d(TAG, "cancel mConnectThread");
+                if (debug) Log.d(TAG, "cancel mConnectThread");
                 mConnectThread.cancel();
                 mConnectThread = null;
             }
         }
 
         if (mConnectedThread != null) {
-            if (D) Log.d(TAG, "cancel mConnectedThread");
+            if (debug) Log.d(TAG, "cancel mConnectedThread");
             mConnectedThread.cancel();
             mConnectedThread = null;
         }
@@ -80,16 +80,16 @@ public class DeviceConnector {
     }
 
     public synchronized void stop() {
-        if (D) Log.d(TAG, "stop");
+        if (debug) Log.d(TAG, "stop");
 
         if (mConnectThread != null) {
-            if (D) Log.d(TAG, "cancel mConnectThread");
+            if (debug) Log.d(TAG, "cancel mConnectThread");
             mConnectThread.cancel();
             mConnectThread = null;
         }
 
         if (mConnectedThread != null) {
-            if (D) Log.d(TAG, "cancel mConnectedThread");
+            if (debug) Log.d(TAG, "cancel mConnectedThread");
             mConnectedThread.cancel();
             mConnectedThread = null;
         }
@@ -98,7 +98,7 @@ public class DeviceConnector {
     }
 
     private synchronized void setState(int state) {
-        if (D) Log.d(TAG, "setState() " + mState + " -> " + state);
+        if (debug) Log.d(TAG, "setState() " + mState + " -> " + state);
         mState = state;
         mHandler.obtainMessage(MainActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
@@ -108,17 +108,17 @@ public class DeviceConnector {
     }
 
     public synchronized void connected(BluetoothSocket socket) {
-        if (D) Log.d(TAG, "connected");
+        if (debug) Log.d(TAG, "connected");
 
         // Cancel the thread that completed the connection
         if (mConnectThread != null) {
-            if (D) Log.d(TAG, "cancel mConnectThread");
+            if (debug) Log.d(TAG, "cancel mConnectThread");
             mConnectThread.cancel();
             mConnectThread = null;
         }
 
         if (mConnectedThread != null) {
-            if (D) Log.d(TAG, "cancel mConnectedThread");
+            if (debug) Log.d(TAG, "cancel mConnectedThread");
             mConnectedThread.cancel();
             mConnectedThread = null;
         }
@@ -148,7 +148,7 @@ public class DeviceConnector {
     }
 
     private void connectionFailed() {
-        if (D) Log.d(TAG, "connectionFailed");
+        if (debug) Log.d(TAG, "connectionFailed");
 
         // Send a failure message back to the Activity
         Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_TOAST);
