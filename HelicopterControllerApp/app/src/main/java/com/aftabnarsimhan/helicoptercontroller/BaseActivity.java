@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.aftabnarsimhan.helicoptercontroller.bluetooth.Utils;
 
-public abstract class MainActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
 
     // Intent request codes
     static final int REQUEST_CONNECT_DEVICE = 1;

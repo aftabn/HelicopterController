@@ -24,7 +24,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.aftabnarsimhan.helicoptercontroller.MainActivity;
+import com.aftabnarsimhan.helicoptercontroller.BaseActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,7 +100,7 @@ public class DeviceConnector {
     private synchronized void setState(int state) {
         if (debug) Log.d(TAG, "setState() " + mState + " -> " + state);
         mState = state;
-        mHandler.obtainMessage(MainActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+        mHandler.obtainMessage(BaseActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
 
     public synchronized int getState() {
@@ -126,7 +126,7 @@ public class DeviceConnector {
         setState(STATE_CONNECTED);
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_DEVICE_NAME, deviceName);
+        Message msg = mHandler.obtainMessage(BaseActivity.MESSAGE_DEVICE_NAME, deviceName);
         mHandler.sendMessage(msg);
 
         // Start the thread to manage the connection and perform transmissions
@@ -151,7 +151,7 @@ public class DeviceConnector {
         if (debug) Log.d(TAG, "connectionFailed");
 
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(BaseActivity.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
         msg.setData(bundle);
         mHandler.sendMessage(msg);
@@ -160,7 +160,7 @@ public class DeviceConnector {
 
     private void connectionLost() {
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(BaseActivity.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
         msg.setData(bundle);
         mHandler.sendMessage(msg);
@@ -269,7 +269,7 @@ public class DeviceConnector {
                     readMessage.append(incoming);
 
                     if (incoming.contains("\n")) {
-                        mHandler.obtainMessage(MainActivity.MESSAGE_READ, bytes, -1, readMessage.toString()).sendToTarget();
+                        mHandler.obtainMessage(BaseActivity.MESSAGE_READ, bytes, -1, readMessage.toString()).sendToTarget();
                         readMessage.setLength(0);
                     }
 
@@ -288,7 +288,7 @@ public class DeviceConnector {
                 mmOutStream.flush();
 
                 // Share the sent message back to the UI Activity
-                mHandler.obtainMessage(MainActivity.MESSAGE_WRITE, -1, -1, data).sendToTarget();
+                mHandler.obtainMessage(BaseActivity.MESSAGE_WRITE, -1, -1, data).sendToTarget();
             } catch (IOException e) {
                 if (D) Log.e(TAG, "Exception during write", e);
             }
@@ -302,7 +302,7 @@ public class DeviceConnector {
                 mmOutStream.write(buffer);
 
                 // Share the sent message back to the UI Activity
-                mHandler.obtainMessage(MainActivity.MESSAGE_WRITE, -1, -1, buffer).sendToTarget();
+                mHandler.obtainMessage(BaseActivity.MESSAGE_WRITE, -1, -1, buffer).sendToTarget();
             } catch (IOException e) {
                 if (D) Log.e(TAG, "Exception during write", e);
             }

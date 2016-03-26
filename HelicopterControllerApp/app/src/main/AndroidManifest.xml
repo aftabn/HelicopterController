@@ -27,7 +27,7 @@
             android:screenOrientation="landscape" />
 
         <activity
-            android:name=".bluetooth.DeviceListActivity"
+            android:name=".DeviceListActivity"
             android:label="@string/select_device"
             android:theme="@style/DialogTheme" />
 

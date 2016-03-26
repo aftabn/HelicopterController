@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.aftabnarsimhan.helicoptercontroller.bluetooth;
+package com.aftabnarsimhan.helicoptercontroller;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -33,8 +33,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.aftabnarsimhan.helicoptercontroller.R;
 
 import java.util.HashSet;
 import java.util.Set;

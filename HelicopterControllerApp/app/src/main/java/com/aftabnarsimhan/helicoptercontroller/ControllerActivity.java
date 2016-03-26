@@ -10,15 +10,19 @@ import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.aftabnarsimhan.helicoptercontroller.bluetooth.DeviceConnector;
 import com.aftabnarsimhan.helicoptercontroller.bluetooth.DeviceData;
-import com.aftabnarsimhan.helicoptercontroller.bluetooth.DeviceListActivity;
 import com.aftabnarsimhan.helicoptercontroller.bluetooth.Utils;
 
 import java.lang.ref.WeakReference;
 
-public class ControllerActivity extends MainActivity {
+public class ControllerActivity extends BaseActivity {
     private static final String DEVICE_NAME = "DEVICE_NAME";
 
     private static String MSG_NOT_CONNECTED;
@@ -31,11 +35,18 @@ public class ControllerActivity extends MainActivity {
     private String commandEnding;
     private String deviceName;
 
+    private RelativeLayout layout_joystick;
+    private ImageView image_joystick, image_border;
+    private TextView textView1, textView2, textView3, textView4, textView5;
+
+    private JoyStick js;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //PreferenceManager.setDefaultValues(this, R.xml.settings_activity, false);
         setContentView(R.layout.activity_main);
+
+        initializeJoystickView();
 
         if (mHandler == null) mHandler = new BluetoothResponseHandler(this);
         else mHandler.setTarget(this);
@@ -51,27 +62,16 @@ public class ControllerActivity extends MainActivity {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        this.commandEnding = getCommandEnding();
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(DEVICE_NAME, deviceName);
-    }
-
-    private boolean isConnected() {
-        return (connector != null) && (connector.getState() == DeviceConnector.STATE_CONNECTED);
-    }
-
-    private void stopConnection() {
-        if (connector != null) {
-            connector.stop();
-            connector = null;
-            deviceName = null;
-        }
-    }
-
-    private void startDeviceListActivity() {
-        stopConnection();
-        Intent serverIntent = new Intent(this, DeviceListActivity.class);
-        startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
     }
 
     @Override
@@ -111,22 +111,6 @@ public class ControllerActivity extends MainActivity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        this.commandEnding = getCommandEnding();
-    }
-
-    private String getCommandEnding() {
-        String result = Utils.getPreference(this, getString(R.string.pref_commands_ending));
-        if (result.equals("\\r\\n")) result = "\r\n";
-        else if (result.equals("\\n")) result = "\n";
-        else if (result.equals("\\r")) result = "\r";
-        else result = "";
-        return result;
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
@@ -148,9 +132,93 @@ public class ControllerActivity extends MainActivity {
         }
     }
 
-    /**
-     * Establishing a connection with the device
-     */
+    private void initializeJoystickView() {
+        textView1 = (TextView)findViewById(R.id.textView1);
+        textView2 = (TextView)findViewById(R.id.textView2);
+        textView3 = (TextView)findViewById(R.id.textView3);
+        textView4 = (TextView)findViewById(R.id.textView4);
+        textView5 = (TextView)findViewById(R.id.textView5);
+
+        layout_joystick = (RelativeLayout)findViewById(R.id.layout_joystick);
+
+        js = new JoyStick(getApplicationContext()
+                , layout_joystick, R.drawable.image_button);
+        js.setStickSize(150, 150);
+        js.setLayoutSize(500, 500);
+        js.setLayoutAlpha(150);
+        js.setStickAlpha(100);
+        js.setOffset(90);
+        js.setMinimumDistance(50);
+
+        layout_joystick.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View arg0, MotionEvent arg1) {
+                js.drawStick(arg1);
+                if(arg1.getAction() == MotionEvent.ACTION_DOWN
+                        || arg1.getAction() == MotionEvent.ACTION_MOVE) {
+                    textView1.setText("X : " + String.valueOf(js.getX()));
+                    textView2.setText("Y : " + String.valueOf(js.getY()));
+                    textView3.setText("Angle : " + String.valueOf(js.getAngle()));
+                    textView4.setText("Distance : " + String.valueOf(js.getDistance()));
+
+                    int direction = js.get8Direction();
+                    if(direction == JoyStick.STICK_UP) {
+                        textView5.setText("Direction : Up");
+                    } else if(direction == JoyStick.STICK_UPRIGHT) {
+                        textView5.setText("Direction : Up Right");
+                    } else if(direction == JoyStick.STICK_RIGHT) {
+                        textView5.setText("Direction : Right");
+                    } else if(direction == JoyStick.STICK_DOWNRIGHT) {
+                        textView5.setText("Direction : Down Right");
+                    } else if(direction == JoyStick.STICK_DOWN) {
+                        textView5.setText("Direction : Down");
+                    } else if(direction == JoyStick.STICK_DOWNLEFT) {
+                        textView5.setText("Direction : Down Left");
+                    } else if(direction == JoyStick.STICK_LEFT) {
+                        textView5.setText("Direction : Left");
+                    } else if(direction == JoyStick.STICK_UPLEFT) {
+                        textView5.setText("Direction : Up Left");
+                    } else if(direction == JoyStick.STICK_NONE) {
+                        textView5.setText("Direction : Center");
+                    }
+                } else if(arg1.getAction() == MotionEvent.ACTION_UP) {
+                    textView1.setText("X :");
+                    textView2.setText("Y :");
+                    textView3.setText("Angle :");
+                    textView4.setText("Distance :");
+                    textView5.setText("Direction :");
+                }
+                return true;
+            }
+        });
+    }
+
+    private boolean isConnected() {
+        return (connector != null) && (connector.getState() == DeviceConnector.STATE_CONNECTED);
+    }
+
+    private void stopConnection() {
+        if (connector != null) {
+            connector.stop();
+            connector = null;
+            deviceName = null;
+        }
+    }
+
+    private void startDeviceListActivity() {
+        stopConnection();
+        Intent serverIntent = new Intent(this, DeviceListActivity.class);
+        startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+    }
+
+    private String getCommandEnding() {
+        String result = Utils.getPreference(this, getString(R.string.pref_commands_ending));
+        if (result.equals("\\r\\n")) result = "\r\n";
+        else if (result.equals("\\n")) result = "\n";
+        else if (result.equals("\\r")) result = "\r";
+        else result = "";
+        return result;
+    }
+
     private void setupConnector(BluetoothDevice connectedDevice) {
         stopConnection();
         try {
@@ -184,9 +252,6 @@ public class ControllerActivity extends MainActivity {
         getSupportActionBar().setSubtitle(deviceName);
     }
 
-    /**
-     * Processor for receiving data from the bluetooth-stream
-     */
     private static class BluetoothResponseHandler extends Handler {
         private WeakReference<ControllerActivity> mActivity;
 
