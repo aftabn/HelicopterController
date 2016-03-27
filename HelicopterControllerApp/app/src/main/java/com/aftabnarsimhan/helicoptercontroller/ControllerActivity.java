@@ -12,9 +12,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.aftabnarsimhan.helicoptercontroller.bluetooth.DeviceConnector;
 import com.aftabnarsimhan.helicoptercontroller.bluetooth.DeviceData;
@@ -37,34 +39,23 @@ public class ControllerActivity extends BaseActivity {
 
     private RelativeLayout layout_joystick;
     private ImageView image_joystick, image_border;
-    private TextView textView1, textView2, textView3, textView4, textView5;
+    private TextView yawSpTextView, yawAngleTextView, tiltSpTextView, tiltAngleTextView;
 
-    private JoyStick js;
+    private JoyStick joyStick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initializeJoystickView();
-
-        if (mHandler == null) mHandler = new BluetoothResponseHandler(this);
-        else mHandler.setTarget(this);
-
-        MSG_NOT_CONNECTED = getString(R.string.msg_not_connected);
-        MSG_CONNECTING = getString(R.string.msg_connecting);
-        MSG_CONNECTED = getString(R.string.msg_connected);
-
-        if (isConnected() && (savedInstanceState != null)) {
-            setDeviceName(savedInstanceState.getString(DEVICE_NAME));
-        } else getSupportActionBar().setSubtitle(MSG_NOT_CONNECTED);
-
+        initializeJoystick();
+        initializePidToggleButton();
+        initializeBluetooth(savedInstanceState);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
         this.commandEnding = getCommandEnding();
     }
 
@@ -132,64 +123,63 @@ public class ControllerActivity extends BaseActivity {
         }
     }
 
-    private void initializeJoystickView() {
-        textView1 = (TextView)findViewById(R.id.textView1);
-        textView2 = (TextView)findViewById(R.id.textView2);
-        textView3 = (TextView)findViewById(R.id.textView3);
-        textView4 = (TextView)findViewById(R.id.textView4);
-        textView5 = (TextView)findViewById(R.id.textView5);
+    private void initializeJoystick() {
+        yawSpTextView = (TextView)findViewById(R.id.yawSetPointTextView);
+        yawAngleTextView = (TextView)findViewById(R.id.yawAngleTextView);
+        tiltSpTextView = (TextView)findViewById(R.id.tiltSetPointTextView);
+        tiltAngleTextView = (TextView)findViewById(R.id.tiltAngleTextView);
 
         layout_joystick = (RelativeLayout)findViewById(R.id.layout_joystick);
 
-        js = new JoyStick(getApplicationContext()
+        joyStick = new JoyStick(getApplicationContext()
                 , layout_joystick, R.drawable.image_button);
-        js.setStickSize(150, 150);
-        js.setLayoutSize(500, 500);
-        js.setLayoutAlpha(150);
-        js.setStickAlpha(100);
-        js.setOffset(90);
-        js.setMinimumDistance(50);
+        joyStick.setStickSize(150, 150);
+        joyStick.setLayoutSize(500, 500);
+        joyStick.setLayoutAlpha(150);
+        joyStick.setStickAlpha(100);
+        joyStick.setOffset(90);
+        joyStick.setMinimumDistance(50);
 
         layout_joystick.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View arg0, MotionEvent arg1) {
-                js.drawStick(arg1);
-                if(arg1.getAction() == MotionEvent.ACTION_DOWN
-                        || arg1.getAction() == MotionEvent.ACTION_MOVE) {
-                    textView1.setText("X : " + String.valueOf(js.getX()));
-                    textView2.setText("Y : " + String.valueOf(js.getY()));
-                    textView3.setText("Angle : " + String.valueOf(js.getAngle()));
-                    textView4.setText("Distance : " + String.valueOf(js.getDistance()));
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                joyStick.drawStick(motionEvent);
 
-                    int direction = js.get8Direction();
-                    if(direction == JoyStick.STICK_UP) {
-                        textView5.setText("Direction : Up");
-                    } else if(direction == JoyStick.STICK_UPRIGHT) {
-                        textView5.setText("Direction : Up Right");
-                    } else if(direction == JoyStick.STICK_RIGHT) {
-                        textView5.setText("Direction : Right");
-                    } else if(direction == JoyStick.STICK_DOWNRIGHT) {
-                        textView5.setText("Direction : Down Right");
-                    } else if(direction == JoyStick.STICK_DOWN) {
-                        textView5.setText("Direction : Down");
-                    } else if(direction == JoyStick.STICK_DOWNLEFT) {
-                        textView5.setText("Direction : Down Left");
-                    } else if(direction == JoyStick.STICK_LEFT) {
-                        textView5.setText("Direction : Left");
-                    } else if(direction == JoyStick.STICK_UPLEFT) {
-                        textView5.setText("Direction : Up Left");
-                    } else if(direction == JoyStick.STICK_NONE) {
-                        textView5.setText("Direction : Center");
-                    }
-                } else if(arg1.getAction() == MotionEvent.ACTION_UP) {
-                    textView1.setText("X :");
-                    textView2.setText("Y :");
-                    textView3.setText("Angle :");
-                    textView4.setText("Distance :");
-                    textView5.setText("Direction :");
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN
+                        || motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                    yawSpTextView.setText("SP : " + String.valueOf(joyStick.getX()));
+                    tiltSpTextView.setText("SP : " + String.valueOf(joyStick.getY()));
                 }
+
                 return true;
             }
         });
+    }
+
+    //TODO: Finish this once the microcontroller class is setup
+    private void initializePidToggleButton() {
+        ToggleButton toggle = (ToggleButton) findViewById(R.id.pidToggleButton);
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // The toggle is enabled
+                } else {
+                    // The toggle is disabled
+                }
+            }
+        });
+    }
+
+    private void initializeBluetooth(Bundle savedInstanceState) {
+        if (mHandler == null) mHandler = new BluetoothResponseHandler(this);
+        else mHandler.setTarget(this);
+
+        MSG_NOT_CONNECTED = getString(R.string.msg_not_connected);
+        MSG_CONNECTING = getString(R.string.msg_connecting);
+        MSG_CONNECTED = getString(R.string.msg_connected);
+
+        if (isConnected() && (savedInstanceState != null)) {
+            setDeviceName(savedInstanceState.getString(DEVICE_NAME));
+        } else getSupportActionBar().setSubtitle(MSG_NOT_CONNECTED);
     }
 
     private boolean isConnected() {
@@ -210,6 +200,7 @@ public class ControllerActivity extends BaseActivity {
         startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
     }
 
+    // TODO: Move this into the microcontroller class
     private String getCommandEnding() {
         String result = Utils.getPreference(this, getString(R.string.pref_commands_ending));
         if (result.equals("\\r\\n")) result = "\r\n";
