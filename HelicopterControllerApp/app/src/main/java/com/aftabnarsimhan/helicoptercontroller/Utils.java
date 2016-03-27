@@ -1,4 +1,4 @@
-package com.aftabnarsimhan.helicoptercontroller.bluetooth;
+package com.aftabnarsimhan.helicoptercontroller;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,12 +17,4 @@ public class Utils {
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getString(item, TAG);
     }
-
-    public static byte[] concat(byte[] A, byte[] B) {
-        byte[] C = new byte[A.length + B.length];
-        System.arraycopy(A, 0, C, 0, A.length);
-        System.arraycopy(B, 0, C, A.length, B.length);
-        return C;
-    }
-
 }
