@@ -29,6 +29,7 @@ public class ControllerActivity extends AppCompatActivity {
 
     private static final String TAG = "ControllerActivity";
     private static final String deviceName = "HC-06";
+    private static final int INT_UpdateInterval = 500;
 
     BluetoothAdapter mBluetoothAdapter;
     BluetoothSocket mmSocket;
@@ -60,7 +61,6 @@ public class ControllerActivity extends AppCompatActivity {
 
         helicopterManager = new HelicopterManager();
         updateTimer = new Timer();
-
     }
 
     @Override
@@ -68,21 +68,18 @@ public class ControllerActivity extends AppCompatActivity {
         super.onResume();
         //final Handler handler = new Handler();
 
-        updateTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (mmSocket != null && mmSocket.isConnected() && helicopterManager.isPidEnabled) {
-                    helicopterManager.updateValues(yawSetPointRate, tiltSetPointRate);
-                }
-            }
-        }, 0, 200);
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        updateTimer.cancel();
+        try
+        {
+            disconnect();
+        }
+        catch (IOException ex) {}
     }
 
     @Override
@@ -97,18 +94,15 @@ public class ControllerActivity extends AppCompatActivity {
             case R.id.menu_search:
                 if (mmSocket == null || !mmSocket.isConnected()) {
                     try {
-                        connectToBluetoothDevice(deviceName);
-                        helicopterManager.connect(mmSocket, mmOutputStream);
-                    }
-                    catch (IOException ex) {
+                        connect(deviceName);
+                    } catch (IOException ex) {
                         Toast.makeText(this, "Error connecting to " + deviceName,
                                 Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     try {
-                        closeBluetoothConnection();
-                    }
-                    catch (IOException ex) {
+                        disconnect();
+                    } catch (IOException ex) {
                         Toast.makeText(this, "Error disconnecting from " + deviceName,
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -140,7 +134,7 @@ public class ControllerActivity extends AppCompatActivity {
         joyStick.setLayoutAlpha(150);
         joyStick.setStickAlpha(100);
         joyStick.setOffset(90);
-        joyStick.setMinimumDistance(10);
+        joyStick.setMinimumDistance(30);
 
         layout_joystick.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -187,9 +181,34 @@ public class ControllerActivity extends AppCompatActivity {
         }
     }
 
-    private void connectToBluetoothDevice(String deviceName) throws IOException {
-        findBluetoothDevice(deviceName);
-        openBluetoothConnection();
+    private void initializeHelicopterUpdateTimer(int intervalMs) {
+        updateTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (mmSocket != null && mmSocket.isConnected() && helicopterManager.isPidEnabled) {
+                    helicopterManager.updateValues(yawSetPointRate, tiltSetPointRate);
+                }
+            }
+        }, 0, intervalMs);
+    }
+
+    private void connect(String deviceName) throws IOException {
+        Log.d(TAG, "Connecting to helicopter");
+        if (mmSocket == null || !mmSocket.isConnected()) {
+            findBluetoothDevice(deviceName);
+            openBluetoothConnection();
+        }
+        initializeHelicopterUpdateTimer(INT_UpdateInterval);
+        helicopterManager.connect(mmSocket, mmOutputStream);
+    }
+
+    private void disconnect() throws IOException {
+        Log.d(TAG, "Disconnecting from helicopter");
+        if (mmSocket != null && mmSocket.isConnected()) {
+            updateTimer.cancel();
+            helicopterManager.disconnect();
+            closeBluetoothConnection();
+        }
     }
 
     private void findBluetoothDevice(String deviceName) {
@@ -251,7 +270,7 @@ public class ControllerActivity extends AppCompatActivity {
 
                         String response = responseBuffer.toString();
 
-                        if (response.contains("OK\r\n") || response.contains("ERROR\r\n")) {
+                        if (response.contains(HelicopterManager.STR_Ack) || response.contains(HelicopterManager.STR_Nack)) {
                             helicopterManager.receivedPackets.add(response);
                             responseBuffer.setLength(0);
                         }
