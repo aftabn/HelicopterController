@@ -1,14 +1,12 @@
 package com.aftabnarsimhan.helicoptercontroller;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.ActionBar;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -18,26 +16,31 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.aftabnarsimhan.helicoptercontroller.bluetooth.DeviceConnector;
-import com.aftabnarsimhan.helicoptercontroller.bluetooth.DeviceData;
-import com.aftabnarsimhan.helicoptercontroller.hardware.Packet;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.UUID;
 
-import java.lang.ref.WeakReference;
-
-public class ControllerActivity extends BaseActivity {
+public class ControllerActivity extends AppCompatActivity {
 
     private static final String TAG = "ControllerActivity";
-
     private static final String DEVICE_NAME = "DEVICE_NAME";
-    private static BluetoothResponseHandler mHandler;
-    private static String MSG_NOT_CONNECTED;
-    private static String MSG_CONNECTING;
-    private static String MSG_CONNECTED;
-    private static String receivedDataBuffer = "";
-    private String deviceName;
+
+    BluetoothAdapter mBluetoothAdapter;
+    BluetoothSocket mmSocket;
+    BluetoothDevice mmDevice;
+    OutputStream mmOutputStream;
+    InputStream mmInputStream;
+    Thread workerThread;
+    byte[] readBuffer;
+    int readBufferPosition;
+    volatile boolean stopWorker;
 
     private static HelicopterManager helicopterManager;
-    private Runnable mCommunicationTimer;
+    private Thread helicopterUpdateThread;
 
     private double yawSetPointRate = 0;
     private double tiltSetPointRate = 0;
@@ -51,50 +54,28 @@ public class ControllerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        helicopterManager = new HelicopterManager();
-
         initializeJoystick();
         initializePidToggleButton();
         initializeBluetooth(savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
+        helicopterManager = new HelicopterManager(mmSocket, mmOutputStream);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mCommunicationTimer = new Runnable() {
+        //final Handler handler = new Handler();
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask()
+        {
             @Override
-            public void run() {
-                //mSeries1.resetData(generateData());
+            public void run()
+            {
                 if (HelicopterManager.isConnected()) {
                     helicopterManager.updateValues(yawSetPointRate, tiltSetPointRate);
                 }
-                mHandler.postDelayed(this, 300);
             }
-        };
-        mHandler.postDelayed(mCommunicationTimer, 300);
-    }
-
-    @Override
-    public void onPause() {
-        mHandler.removeCallbacks(mCommunicationTimer);
-        super.onPause();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(DEVICE_NAME, deviceName);
-    }
-
-    @Override
-    public boolean onSearchRequested() {
-        if (super.isAdapterReady()) startDeviceListActivity();
-        return false;
+        }, 0, 200);
     }
 
     @Override
@@ -106,17 +87,6 @@ public class ControllerActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
-            case R.id.menu_search:
-                if (super.isAdapterReady()) {
-                    if (HelicopterManager.isConnected()) HelicopterManager.stopConnection();
-                    else startDeviceListActivity();
-                } else {
-                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-                }
-                return true;
-
             case R.id.menu_settings:
                 final Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
@@ -124,28 +94,6 @@ public class ControllerActivity extends BaseActivity {
 
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_CONNECT_DEVICE:
-                // When DeviceListActivity returns with a device to connect
-                if (resultCode == Activity.RESULT_OK) {
-                    String address = data.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-                    BluetoothDevice device = btAdapter.getRemoteDevice(address);
-                    if (super.isAdapterReady() && (HelicopterManager.connector == null)) setupConnector(device);
-                }
-                break;
-            case REQUEST_ENABLE_BT:
-                // When the request to enable Bluetooth returns
-                super.pendingRequestEnableBt = false;
-                if (resultCode != Activity.RESULT_OK) {
-                    Utils.log("BT not enabled");
-                }
-                break;
         }
     }
 
@@ -203,103 +151,131 @@ public class ControllerActivity extends BaseActivity {
     }
 
     private void initializeBluetooth(Bundle savedInstanceState) {
-        if (mHandler == null) mHandler = new BluetoothResponseHandler(this);
-        else mHandler.setTarget(this);
-
-        MSG_NOT_CONNECTED = getString(R.string.msg_not_connected);
-        MSG_CONNECTING = getString(R.string.msg_connecting);
-        MSG_CONNECTED = getString(R.string.msg_connected);
-
-        if (HelicopterManager.isConnected() && (savedInstanceState != null)) {
-            setDeviceName(savedInstanceState.getString(DEVICE_NAME));
-        } else getSupportActionBar().setSubtitle(MSG_NOT_CONNECTED);
-    }
-
-    private void startDeviceListActivity() {
-        HelicopterManager.stopConnection();
-        Intent serverIntent = new Intent(this, DeviceListActivity.class);
-        startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
-    }
-
-    private void setupConnector(BluetoothDevice connectedDevice) {
-        HelicopterManager.stopConnection();
         try {
-            String emptyName = getString(R.string.empty_device_name);
-            DeviceData data = new DeviceData(connectedDevice, emptyName);
-            HelicopterManager.connector = new DeviceConnector(data, mHandler);
-            HelicopterManager.connector.connect();
-        } catch (IllegalArgumentException e) {
-            Utils.log("setupConnector failed: " + e.getMessage());
+            findBT();
+            openBT();
         }
+        catch (IOException ex) { }
     }
 
-    void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
-        getSupportActionBar().setSubtitle(deviceName);
-    }
-
-    private static class BluetoothResponseHandler extends Handler {
-        private WeakReference<ControllerActivity> mActivity;
-
-        public BluetoothResponseHandler(ControllerActivity activity) {
-            mActivity = new WeakReference<ControllerActivity>(activity);
+    private void findBT()
+    {
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(mBluetoothAdapter == null)
+        {
+            //myLabel.setText("No bluetooth adapter available");
         }
 
-        public void setTarget(ControllerActivity target) {
-            mActivity.clear();
-            mActivity = new WeakReference<ControllerActivity>(target);
+        if(!mBluetoothAdapter.isEnabled())
+        {
+            Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBluetooth, 0);
         }
 
-        @Override
-        public void handleMessage(Message msg) {
-            ControllerActivity activity = mActivity.get();
-            if (activity != null) {
-                switch (msg.what) {
-                    case MESSAGE_STATE_CHANGE:
-
-                        Log.d(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-                        final ActionBar bar = activity.getSupportActionBar();
-                        switch (msg.arg1) {
-                            case DeviceConnector.STATE_CONNECTED:
-                                bar.setSubtitle(MSG_CONNECTED);
-                                break;
-                            case DeviceConnector.STATE_CONNECTING:
-                                bar.setSubtitle(MSG_CONNECTING);
-                                break;
-                            case DeviceConnector.STATE_NONE:
-                                bar.setSubtitle(MSG_NOT_CONNECTED);
-                                break;
-                        }
-                        break;
-
-                    case MESSAGE_READ:
-                        final String incoming = (String) msg.obj;
-                        if (incoming != null) {
-                            receivedDataBuffer += incoming;
-                            Log.d(TAG, "Received: " + incoming);
-
-                            if (receivedDataBuffer.contains(HelicopterManager.STR_Ack) ||
-                                    receivedDataBuffer.contains(HelicopterManager.STR_Nack)) {
-                                helicopterManager.receivedPackets.add(Packet.FromString(receivedDataBuffer));
-                                Log.d(TAG, "Packet: " + receivedDataBuffer);
-                                receivedDataBuffer = "";
-                            }
-                        }
-                        break;
-
-                    case MESSAGE_DEVICE_NAME:
-                        activity.setDeviceName((String) msg.obj);
-                        break;
-
-                    case MESSAGE_WRITE:
-                        // stub
-                        break;
-
-                    case MESSAGE_TOAST:
-                        // stub
-                        break;
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+        if(pairedDevices.size() > 0)
+        {
+            for(BluetoothDevice device : pairedDevices)
+            {
+                if(device.getName().equals("HC-06"))
+                {
+                    mmDevice = device;
+                    break;
                 }
             }
         }
+        //myLabel.setText("Bluetooth Device Found");
+    }
+
+    void openBT() throws IOException {
+        UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"); //Standard SerialPortService ID
+        mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
+        mmSocket.connect();
+        mmOutputStream = mmSocket.getOutputStream();
+        mmInputStream = mmSocket.getInputStream();
+
+        beginListenForData();
+
+        // TODO: Set the actionbar to connected
+        getSupportActionBar().setSubtitle("Connected");
+    }
+
+    void beginListenForData() {
+        final Handler handler = new Handler();
+        final byte delimiter = 10; //This is the ASCII code for a newline character
+
+        stopWorker = false;
+        readBufferPosition = 0;
+        readBuffer = new byte[1024];
+        final StringBuilder responseBuffer = new StringBuilder();
+        workerThread = new Thread(new Runnable()
+        {
+            public void run()
+            {
+                while(!Thread.currentThread().isInterrupted() && !stopWorker)
+                {
+                    try
+                    {
+                        int bytes = mmInputStream.read(readBuffer);
+                        String incoming = new String(readBuffer, 0, bytes);
+                        //Log.d(TAG, incoming);
+
+                        responseBuffer.append(incoming);
+
+                        String response = responseBuffer.toString();
+
+                        if (response.contains("OK\r\n") || response.contains("ERROR\r\n")) {
+                            helicopterManager.receivedPackets.add(response);
+                            responseBuffer.setLength(0);
+                        }
+
+//                        int bytesAvailable = mmInputStream.available();
+//                        if(bytesAvailable > 0)
+//                        {
+//                            byte[] packetBytes = new byte[bytesAvailable];
+//                            mmInputStream.read(packetBytes);
+//                            for(int i=0;i<bytesAvailable;i++)
+//                            {
+//                                byte b = packetBytes[i];
+//                                if(b == delimiter)
+//                                {
+//                                    byte[] encodedBytes = new byte[readBufferPosition];
+//                                    System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
+//                                    final String data = new String(encodedBytes, "US-ASCII");
+//                                    readBufferPosition = 0;
+//
+//                                    handler.post(new Runnable()
+//                                    {
+//                                        public void run()
+//                                        {
+//                                            myLabel.setText(data);
+//                                        }
+//                                    });
+//                                }
+//                                else
+//                                {
+//                                    readBuffer[readBufferPosition++] = b;
+//                                }
+//                            }
+//                        }
+                    }
+                    catch (IOException ex)
+                    {
+                        stopWorker = true;
+                    }
+                }
+            }
+        });
+
+        workerThread.start();
+    }
+
+    void closeBT() throws IOException
+    {
+        stopWorker = true;
+        mmOutputStream.close();
+        mmInputStream.close();
+        mmSocket.close();
+        getSupportActionBar().setSubtitle("Disconnected");
     }
 }

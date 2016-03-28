@@ -1,10 +1,12 @@
 package com.aftabnarsimhan.helicoptercontroller;
 
+import android.bluetooth.BluetoothSocket;
 import android.os.SystemClock;
 
-import com.aftabnarsimhan.helicoptercontroller.bluetooth.DeviceConnector;
 import com.aftabnarsimhan.helicoptercontroller.hardware.Packet;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,12 +47,12 @@ public class HelicopterManager {
     public static final int YAW_CHANNEL = 0;
     public static final int TILT_CHANNEL = 1;
 
-    public static DeviceConnector connector;
-    public static String deviceName;
+    private static BluetoothSocket mmSocket;
+    private static OutputStream mmOutputStream;
 
     public boolean isPidEnabled =  false;
 
-    public List<Packet> receivedPackets;
+    public List<String> receivedPackets;
     public double currentYawSetPoint;
     public double currentYawAngle;
     public double currentTiltSetPoint;
@@ -61,7 +63,10 @@ public class HelicopterManager {
     public List<Double> tiltSetPointsData;
     public List<Double> tiltAnglesData;
 
-    public HelicopterManager() {
+    public HelicopterManager(BluetoothSocket socket, OutputStream outputStream) {
+        mmSocket = socket;
+        mmOutputStream = outputStream;
+
         receivedPackets = new ArrayList<>();
 
         yawSetPointsData = new ArrayList<>();
@@ -71,15 +76,7 @@ public class HelicopterManager {
     }
 
     public static boolean isConnected() {
-        return (connector != null) && (connector.getState() == DeviceConnector.STATE_CONNECTED);
-    }
-
-    public static void stopConnection() {
-        if (connector != null) {
-            connector.stop();
-            connector = null;
-            deviceName = null;
-        }
+        return mmSocket.isConnected();
     }
 
     public void updateValues(double yawSetPointRate, double tiltSetPointRate) {
@@ -93,15 +90,26 @@ public class HelicopterManager {
         currentTiltAngle = getCurrentAngle(TILT_CHANNEL);
     }
 
-    public void sendCommand(String commandString) {
-        if (commandString.isEmpty()) return;
+    public void test() {
+        Packet packet = sendCommand(STR_IdentityCommand);
+    }
 
-        byte[] command = (commandString + "\r\n").getBytes();
+    public Packet sendCommand(String command) {
+        receivedPackets.clear();
 
-        if (isConnected()) {
-            connector.write(command);
-            Utils.log("Sending command: <" + commandString + ">");
+        command += "\r\n";
+
+        try {
+            mmOutputStream.write(command.getBytes());
+            Utils.log("Sending command: <" + command + ">");
         }
+        catch (IOException ex) {}
+
+        waitForResponsePacket();
+
+        Packet packet = Packet.FromString(receivedPackets.get(0));
+
+        return packet;
     }
 
     public void enablePid() {
@@ -109,7 +117,6 @@ public class HelicopterManager {
         {
             String command = STR_PidControlCommand + " " + STR_OnArg;
             sendCommand(command);
-            //waitForResponsePacket();
             isPidEnabled = true;
         }
     }
@@ -119,29 +126,27 @@ public class HelicopterManager {
         {
             String command = STR_PidControlCommand + " " + STR_OffArg;
             sendCommand(command);
-            //waitForResponsePacket();
             isPidEnabled = false;
         }
     }
 
     public double getCurrentAngle(int channel) {
         String command = STR_AngleCommand + " " + channel;
-        sendCommand(command);
-        waitForResponsePacket();
-        return Double.parseDouble(receivedPackets.get(0).ReturnValue);
+        String response = sendCommand(command).ReturnValue;
+
+        return Double.parseDouble(response);
     }
 
     public double getAngleSetPoint(int channel) {
         String command = STR_AngleSetPointCommand + " " + channel;
-        sendCommand(command);
-        waitForResponsePacket();
-        return Double.parseDouble(receivedPackets.get(0).ReturnValue);
+        String response = sendCommand(command).ReturnValue;
+
+        return Double.parseDouble(response);
     }
 
     public void setAngleSetPoint(int channel, double setPoint) {
         String command = STR_AngleSetPointCommand + " " + channel + " " + setPoint;
         sendCommand(command);
-        waitForResponsePacket();
     }
 
     private void waitForResponsePacket() {

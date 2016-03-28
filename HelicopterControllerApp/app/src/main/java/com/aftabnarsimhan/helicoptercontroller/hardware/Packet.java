@@ -19,21 +19,27 @@ public class Packet {
         Packet packet = new Packet();
 
         Log.d(TAG, "Processing packet: " + text);
+        System.out.println("Processing packet: " + text);
 
         String lines[] = text.split("\\r?\\n");
 
         lines = PreProcessPacket(lines);
-        ValidatePacket(lines);
+        boolean isValid = ValidatePacket(lines);
 
         int linesCount = lines.length;
-
         packet.RawString = text;
-        packet.Command = lines[0].substring(STR_Prompt.length());
-        packet.Terminator = lines[linesCount - 1];
 
-        if (linesCount == 3)
-        {
-            packet.ReturnValue = lines[1];
+        if (isValid) {
+            packet.Command = lines[0].substring(STR_Prompt.length());
+            packet.Terminator = lines[linesCount - 1];
+
+            if (linesCount == 3)
+            {
+                packet.ReturnValue = lines[1];
+            }
+        } else {
+            packet.Command = "<Invalid packet>";
+            packet.ReturnValue = "-1";
         }
 
         return packet;
@@ -47,25 +53,30 @@ public class Packet {
         return lines;
     }
 
-    public static void ValidatePacket(String lines[]) {
+    public static boolean ValidatePacket(String lines[]) {
         int linesCount = lines.length;
         if (linesCount < 2)
         {
             Log.d(TAG, "Not enough lines received in packet. Expected 2 or more and received " + linesCount);
+            return false;
             //throw new RuntimeException("Not enough lines received in packet. Expected 2 or more and received " + linesCount);
         }
 
         if (!(lines[linesCount - 1].equals("OK") || lines[linesCount - 1].equals("ERROR")))
         {
             Log.d(TAG, "Received packet did not contain an OK or ERROR");
+            return false;
             //throw new RuntimeException("Received packet did not contain an OK or ERROR");
         }
 
         if (linesCount > 3)
         {
             Log.d(TAG, "Unsupported number of lines received. Expected 2 or 3 and received " + linesCount);
+            return false;
             //throw new RuntimeException("Unsupported number of lines received. Expected 2 or 3 and received " + linesCount);
         }
+
+        return true;
     }
 
 }
