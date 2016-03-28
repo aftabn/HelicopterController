@@ -124,10 +124,10 @@ public class ControllerActivity extends AppCompatActivity {
         viewport.setScalable(true);
         //viewport.setScrollable(true);
 
-        mYawAngleSeries = new LineGraphSeries<DataPoint>();
-        mYawSetPointSeries = new LineGraphSeries<DataPoint>();
-        mTiltAngleSeries = new LineGraphSeries<DataPoint>();
-        mTiltSetPointSeries = new LineGraphSeries<DataPoint>();
+        mYawAngleSeries = new LineGraphSeries<>();
+        mYawSetPointSeries = new LineGraphSeries<>();
+        mTiltAngleSeries = new LineGraphSeries<>();
+        mTiltSetPointSeries = new LineGraphSeries<>();
 
         mYawAngleSeries.setColor(Color.parseColor("#FF8C00"));
         mYawSetPointSeries.setColor(Color.parseColor("#FFA500"));
@@ -159,7 +159,7 @@ public class ControllerActivity extends AppCompatActivity {
                 if(motionEvent.getAction() == MotionEvent.ACTION_DOWN
                         || motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
                     yawSetPointRate = Math.min(Math.max(-3, joyStick.getX()), 3);
-                    tiltSetPointRate = Math.min(Math.max(-1, joyStick.getY()), 1);
+                    tiltSetPointRate = Math.min(Math.max(-1, -1 * joyStick.getY()), 1);
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     yawSetPointRate = 0;
                     tiltSetPointRate = 0;
@@ -230,7 +230,7 @@ public class ControllerActivity extends AppCompatActivity {
                 openBluetoothConnection();
             }
             catch (IOException ex) {
-                Toast.makeText(this, "Error connecting to " + deviceName,
+                Toast.makeText(getBaseContext(), "Error connecting to " + deviceName,
                         Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Error trying to open bluetooth connection.", ex);
             }
@@ -248,7 +248,7 @@ public class ControllerActivity extends AppCompatActivity {
                 closeBluetoothConnection();
             }
             catch (IOException ex) {
-                Toast.makeText(this, "Error disconnecting from " + deviceName,
+                Toast.makeText(getBaseContext(), "Error disconnecting from " + deviceName,
                         Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Error trying to close bluetooth connection.", ex);
             }
@@ -259,7 +259,7 @@ public class ControllerActivity extends AppCompatActivity {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mBluetoothAdapter == null)
         {
-            //myLabel.setText("No bluetooth adapter available");
+            Log.d(TAG, "No bluetooth adapter available");
         }
 
         if(!mBluetoothAdapter.isEnabled())
