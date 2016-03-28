@@ -35,7 +35,7 @@ public class ControllerActivity extends AppCompatActivity {
 
     private static final String TAG = "ControllerActivity";
     private static final String deviceName = "HC-06";
-    private static final int INT_UpdateInterval = 300;
+    private static final int INT_UpdateInterval = 250;
 
     // Variables for the PID Chart
     private final Handler mChartHandler = new Handler();
@@ -122,7 +122,7 @@ public class ControllerActivity extends AppCompatActivity {
 
         Viewport viewport = graph.getViewport();
         viewport.setScalable(true);
-        viewport.setScrollable(true);
+        //viewport.setScrollable(true);
 
         mYawAngleSeries = new LineGraphSeries<DataPoint>();
         mYawSetPointSeries = new LineGraphSeries<DataPoint>();
@@ -158,8 +158,8 @@ public class ControllerActivity extends AppCompatActivity {
 
                 if(motionEvent.getAction() == MotionEvent.ACTION_DOWN
                         || motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-                    yawSetPointRate = Math.min(Math.max(-5, joyStick.getX()), 5);
-                    tiltSetPointRate = Math.min(Math.max(-2, joyStick.getX()), 2);
+                    yawSetPointRate = Math.min(Math.max(-3, joyStick.getX()), 3);
+                    tiltSetPointRate = Math.min(Math.max(-1, joyStick.getY()), 1);
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     yawSetPointRate = 0;
                     tiltSetPointRate = 0;
