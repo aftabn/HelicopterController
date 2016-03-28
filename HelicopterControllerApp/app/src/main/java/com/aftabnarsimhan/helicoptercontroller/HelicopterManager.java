@@ -3,8 +3,6 @@ package com.aftabnarsimhan.helicoptercontroller;
 import android.bluetooth.BluetoothSocket;
 import android.os.SystemClock;
 
-import com.aftabnarsimhan.helicoptercontroller.hardware.Packet;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -63,7 +61,6 @@ public class HelicopterManager {
 
         currentYawSetPoint = getAngleSetPoint(YAW_CHANNEL);
         currentYawAngle = getCurrentAngle(YAW_CHANNEL);
-
         currentTiltSetPoint = getAngleSetPoint(TILT_CHANNEL);
         currentTiltAngle = getCurrentAngle(TILT_CHANNEL);
 
@@ -107,7 +104,6 @@ public class HelicopterManager {
         try
         {
             mmOutputStream.write(command.getBytes());
-            Utils.log("Sending command: <" + command + ">");
         }
         catch (IOException ex) {}
 
@@ -172,7 +168,6 @@ public class HelicopterManager {
         }
 
         if (receivedPackets.size() < 1) {
-            Utils.log("Timeout waiting for response packet");
             throw new TimeoutException("Timeout waiting for response packet");
         }
     }

@@ -1,4 +1,4 @@
-package com.aftabnarsimhan.helicoptercontroller.hardware;
+package com.aftabnarsimhan.helicoptercontroller;
 
 import android.util.Log;
 
@@ -18,12 +18,12 @@ public class Packet {
     public static Packet FromString(String text) {
         Packet packet = new Packet();
 
-        Log.d(TAG, "Processing packet: " + text);
-        System.out.println("Processing packet: " + text);
-
+        // Separate the lines of the packet
         String lines[] = text.split("\\r?\\n");
 
-        lines = PreProcessPacket(lines);
+        // Trim excess whitespace
+        for (String line : lines) { line.trim(); }
+
         boolean isValid = ValidatePacket(lines);
 
         int linesCount = lines.length;
@@ -45,35 +45,24 @@ public class Packet {
         return packet;
     }
 
-    public static String[] PreProcessPacket(String lines[]) {
-        for (String line : lines) {
-            line.trim();
-        }
-
-        return lines;
-    }
-
     public static boolean ValidatePacket(String lines[]) {
         int linesCount = lines.length;
         if (linesCount < 2)
         {
             Log.d(TAG, "Not enough lines received in packet. Expected 2 or more and received " + linesCount);
             return false;
-            //throw new RuntimeException("Not enough lines received in packet. Expected 2 or more and received " + linesCount);
         }
 
         if (!(lines[linesCount - 1].equals("OK") || lines[linesCount - 1].equals("ERROR")))
         {
             Log.d(TAG, "Received packet did not contain an OK or ERROR");
             return false;
-            //throw new RuntimeException("Received packet did not contain an OK or ERROR");
         }
 
         if (linesCount > 3)
         {
             Log.d(TAG, "Unsupported number of lines received. Expected 2 or 3 and received " + linesCount);
             return false;
-            //throw new RuntimeException("Unsupported number of lines received. Expected 2 or 3 and received " + linesCount);
         }
 
         return true;
