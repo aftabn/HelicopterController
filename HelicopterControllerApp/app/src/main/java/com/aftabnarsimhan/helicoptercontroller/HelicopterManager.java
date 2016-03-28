@@ -73,10 +73,6 @@ public class HelicopterManager {
         tiltAnglesData.clear();
     }
 
-    public void disconnect() {
-        disablePid();
-    }
-
     public void updateValues(double yawSetPointRate, double tiltSetPointRate) {
         setAngleSetPoint(YAW_CHANNEL, currentYawSetPoint + yawSetPointRate);
         setAngleSetPoint(TILT_CHANNEL, currentTiltSetPoint + tiltSetPointRate);

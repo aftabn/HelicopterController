@@ -60,7 +60,6 @@ public class ControllerActivity extends AppCompatActivity {
         initializePidToggleButton();
 
         helicopterManager = new HelicopterManager();
-        updateTimer = new Timer();
     }
 
     @Override
@@ -75,11 +74,7 @@ public class ControllerActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
 
-        try
-        {
-            disconnect();
-        }
-        catch (IOException ex) {}
+        disconnect();
     }
 
     @Override
@@ -93,19 +88,9 @@ public class ControllerActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_search:
                 if (mmSocket == null || !mmSocket.isConnected()) {
-                    try {
-                        connect(deviceName);
-                    } catch (IOException ex) {
-                        Toast.makeText(this, "Error connecting to " + deviceName,
-                                Toast.LENGTH_SHORT).show();
-                    }
+                    connect(deviceName);
                 } else {
-                    try {
-                        disconnect();
-                    } catch (IOException ex) {
-                        Toast.makeText(this, "Error disconnecting from " + deviceName,
-                                Toast.LENGTH_SHORT).show();
-                    }
+                    disconnect();
                 }
                 return true;
 
@@ -182,6 +167,8 @@ public class ControllerActivity extends AppCompatActivity {
     }
 
     private void initializeHelicopterUpdateTimer(int intervalMs) {
+        updateTimer = new Timer();
+
         updateTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -192,22 +179,36 @@ public class ControllerActivity extends AppCompatActivity {
         }, 0, intervalMs);
     }
 
-    private void connect(String deviceName) throws IOException {
+    private void connect(String deviceName) {
         Log.d(TAG, "Connecting to helicopter");
         if (mmSocket == null || !mmSocket.isConnected()) {
             findBluetoothDevice(deviceName);
-            openBluetoothConnection();
+            try {
+                openBluetoothConnection();
+            }
+            catch (IOException ex) {
+                Toast.makeText(this, "Error connecting to " + deviceName,
+                        Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Error trying to open bluetooth connection.", ex);
+            }
         }
         initializeHelicopterUpdateTimer(INT_UpdateInterval);
         helicopterManager.connect(mmSocket, mmOutputStream);
     }
 
-    private void disconnect() throws IOException {
+    private void disconnect() {
         Log.d(TAG, "Disconnecting from helicopter");
         if (mmSocket != null && mmSocket.isConnected()) {
+            helicopterManager.disablePid();
             updateTimer.cancel();
-            helicopterManager.disconnect();
-            closeBluetoothConnection();
+            try {
+                closeBluetoothConnection();
+            }
+            catch (IOException ex) {
+                Toast.makeText(this, "Error disconnecting from " + deviceName,
+                        Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Error trying to close bluetooth connection.", ex);
+            }
         }
     }
 
