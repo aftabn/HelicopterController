@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Aftab on 3/26/2016.
@@ -63,10 +64,7 @@ public class HelicopterManager {
     public List<Double> tiltSetPointsData;
     public List<Double> tiltAnglesData;
 
-    public HelicopterManager(BluetoothSocket socket, OutputStream outputStream) {
-        mmSocket = socket;
-        mmOutputStream = outputStream;
-
+    public HelicopterManager() {
         receivedPackets = new ArrayList<>();
 
         yawSetPointsData = new ArrayList<>();
@@ -75,8 +73,15 @@ public class HelicopterManager {
         tiltAnglesData = new ArrayList<>();
     }
 
-    public static boolean isConnected() {
-        return mmSocket.isConnected();
+    public void connect(BluetoothSocket socket, OutputStream outputStream) {
+        mmSocket = socket;
+        mmOutputStream = outputStream;
+
+        currentYawSetPoint = getAngleSetPoint(YAW_CHANNEL);
+        currentYawAngle = getCurrentAngle(YAW_CHANNEL);
+
+        currentTiltSetPoint = getAngleSetPoint(TILT_CHANNEL);
+        currentTiltAngle = getCurrentAngle(TILT_CHANNEL);
     }
 
     public void updateValues(double yawSetPointRate, double tiltSetPointRate) {
@@ -90,24 +95,29 @@ public class HelicopterManager {
         currentTiltAngle = getCurrentAngle(TILT_CHANNEL);
     }
 
-    public void test() {
-        Packet packet = sendCommand(STR_IdentityCommand);
-    }
-
     public Packet sendCommand(String command) {
         receivedPackets.clear();
 
         command += "\r\n";
 
-        try {
+        try
+        {
             mmOutputStream.write(command.getBytes());
             Utils.log("Sending command: <" + command + ">");
         }
         catch (IOException ex) {}
 
-        waitForResponsePacket();
 
-        Packet packet = Packet.FromString(receivedPackets.get(0));
+        Packet packet;
+
+        try
+        {
+            waitForResponsePacket();
+            packet = Packet.FromString(receivedPackets.get(0));
+        }
+        catch (TimeoutException ex) {
+            packet = null;
+        }
 
         return packet;
     }
@@ -132,16 +142,16 @@ public class HelicopterManager {
 
     public double getCurrentAngle(int channel) {
         String command = STR_AngleCommand + " " + channel;
-        String response = sendCommand(command).ReturnValue;
+        Packet response = sendCommand(command);
 
-        return Double.parseDouble(response);
+        return response != null ? Double.parseDouble(response.ReturnValue) : Double.NaN;
     }
 
     public double getAngleSetPoint(int channel) {
         String command = STR_AngleSetPointCommand + " " + channel;
-        String response = sendCommand(command).ReturnValue;
+        Packet response = sendCommand(command);
 
-        return Double.parseDouble(response);
+        return response != null ? Double.parseDouble(response.ReturnValue) : Double.NaN;
     }
 
     public void setAngleSetPoint(int channel, double setPoint) {
@@ -149,7 +159,7 @@ public class HelicopterManager {
         sendCommand(command);
     }
 
-    private void waitForResponsePacket() {
+    private void waitForResponsePacket() throws TimeoutException {
         long startTime = System.currentTimeMillis();
         while(receivedPackets.size() < 1 && (System.currentTimeMillis() - startTime) < defaultTimeout)
         {
@@ -158,7 +168,7 @@ public class HelicopterManager {
 
         if (receivedPackets.size() < 1) {
             Utils.log("Timeout waiting for response packet");
-            //throw new RuntimeException("Timeout waiting for response packet");
+            throw new TimeoutException("Timeout waiting for response packet");
         }
     }
 }

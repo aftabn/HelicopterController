@@ -5,8 +5,8 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ import java.util.UUID;
 public class ControllerActivity extends AppCompatActivity {
 
     private static final String TAG = "ControllerActivity";
-    private static final String DEVICE_NAME = "DEVICE_NAME";
+    private static final String deviceName = "HC-06";
 
     BluetoothAdapter mBluetoothAdapter;
     BluetoothSocket mmSocket;
@@ -36,11 +37,11 @@ public class ControllerActivity extends AppCompatActivity {
     InputStream mmInputStream;
     Thread workerThread;
     byte[] readBuffer;
-    int readBufferPosition;
+    StringBuilder responseBuffer;
     volatile boolean stopWorker;
 
     private static HelicopterManager helicopterManager;
-    private Thread helicopterUpdateThread;
+    private Timer updateTimer;
 
     private double yawSetPointRate = 0;
     private double tiltSetPointRate = 0;
@@ -56,8 +57,10 @@ public class ControllerActivity extends AppCompatActivity {
 
         initializeJoystick();
         initializePidToggleButton();
-        initializeBluetooth(savedInstanceState);
-        helicopterManager = new HelicopterManager(mmSocket, mmOutputStream);
+
+        helicopterManager = new HelicopterManager();
+        updateTimer = new Timer();
+
     }
 
     @Override
@@ -65,17 +68,21 @@ public class ControllerActivity extends AppCompatActivity {
         super.onResume();
         //final Handler handler = new Handler();
 
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask()
-        {
+        updateTimer.schedule(new TimerTask() {
             @Override
-            public void run()
-            {
-                if (HelicopterManager.isConnected()) {
+            public void run() {
+                if (mmSocket != null && mmSocket.isConnected() && helicopterManager.isPidEnabled) {
                     helicopterManager.updateValues(yawSetPointRate, tiltSetPointRate);
                 }
             }
         }, 0, 200);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        updateTimer.cancel();
     }
 
     @Override
@@ -87,6 +94,27 @@ public class ControllerActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_search:
+                if (mmSocket == null || !mmSocket.isConnected()) {
+                    try {
+                        connectToBluetoothDevice(deviceName);
+                        helicopterManager.connect(mmSocket, mmOutputStream);
+                    }
+                    catch (IOException ex) {
+                        Toast.makeText(this, "Error connecting to " + deviceName,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    try {
+                        closeBluetoothConnection();
+                    }
+                    catch (IOException ex) {
+                        Toast.makeText(this, "Error disconnecting from " + deviceName,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return true;
+
             case R.id.menu_settings:
                 final Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
@@ -139,27 +167,32 @@ public class ControllerActivity extends AppCompatActivity {
     //TODO: Finish this once the microcontroller class is setup
     private void initializePidToggleButton() {
         ToggleButton toggle = (ToggleButton) findViewById(R.id.pidToggleButton);
-        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    if (HelicopterManager.isConnected()) helicopterManager.enablePid();
-                } else {
-                    if (HelicopterManager.isConnected()) helicopterManager.disablePid();
+
+        if (toggle != null) {
+            toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (mmSocket != null) {
+                        if (isChecked) {
+                            if (mmSocket.isConnected() && !helicopterManager.isPidEnabled) {
+                                helicopterManager.enablePid();
+                            }
+                        } else {
+                            if (mmSocket.isConnected() && helicopterManager.isPidEnabled) {
+                                helicopterManager.disablePid();
+                            }
+                        }
+                    }
                 }
-            }
-        });
-    }
-
-    private void initializeBluetooth(Bundle savedInstanceState) {
-        try {
-            findBT();
-            openBT();
+            });
         }
-        catch (IOException ex) { }
     }
 
-    private void findBT()
-    {
+    private void connectToBluetoothDevice(String deviceName) throws IOException {
+        findBluetoothDevice(deviceName);
+        openBluetoothConnection();
+    }
+
+    private void findBluetoothDevice(String deviceName) {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mBluetoothAdapter == null)
         {
@@ -177,17 +210,17 @@ public class ControllerActivity extends AppCompatActivity {
         {
             for(BluetoothDevice device : pairedDevices)
             {
-                if(device.getName().equals("HC-06"))
+                if(device.getName().equals(deviceName))
                 {
                     mmDevice = device;
                     break;
                 }
             }
         }
-        //myLabel.setText("Bluetooth Device Found");
+        Log.d(TAG, "Found device" + deviceName);
     }
 
-    void openBT() throws IOException {
+    private void openBluetoothConnection() throws IOException {
         UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"); //Standard SerialPortService ID
         mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
         mmSocket.connect();
@@ -196,18 +229,13 @@ public class ControllerActivity extends AppCompatActivity {
 
         beginListenForData();
 
-        // TODO: Set the actionbar to connected
         getSupportActionBar().setSubtitle("Connected");
     }
 
     void beginListenForData() {
-        final Handler handler = new Handler();
-        final byte delimiter = 10; //This is the ASCII code for a newline character
-
         stopWorker = false;
-        readBufferPosition = 0;
         readBuffer = new byte[1024];
-        final StringBuilder responseBuffer = new StringBuilder();
+        responseBuffer = new StringBuilder();
         workerThread = new Thread(new Runnable()
         {
             public void run()
@@ -218,7 +246,6 @@ public class ControllerActivity extends AppCompatActivity {
                     {
                         int bytes = mmInputStream.read(readBuffer);
                         String incoming = new String(readBuffer, 0, bytes);
-                        //Log.d(TAG, incoming);
 
                         responseBuffer.append(incoming);
 
@@ -228,36 +255,6 @@ public class ControllerActivity extends AppCompatActivity {
                             helicopterManager.receivedPackets.add(response);
                             responseBuffer.setLength(0);
                         }
-
-//                        int bytesAvailable = mmInputStream.available();
-//                        if(bytesAvailable > 0)
-//                        {
-//                            byte[] packetBytes = new byte[bytesAvailable];
-//                            mmInputStream.read(packetBytes);
-//                            for(int i=0;i<bytesAvailable;i++)
-//                            {
-//                                byte b = packetBytes[i];
-//                                if(b == delimiter)
-//                                {
-//                                    byte[] encodedBytes = new byte[readBufferPosition];
-//                                    System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
-//                                    final String data = new String(encodedBytes, "US-ASCII");
-//                                    readBufferPosition = 0;
-//
-//                                    handler.post(new Runnable()
-//                                    {
-//                                        public void run()
-//                                        {
-//                                            myLabel.setText(data);
-//                                        }
-//                                    });
-//                                }
-//                                else
-//                                {
-//                                    readBuffer[readBufferPosition++] = b;
-//                                }
-//                            }
-//                        }
                     }
                     catch (IOException ex)
                     {
@@ -270,8 +267,7 @@ public class ControllerActivity extends AppCompatActivity {
         workerThread.start();
     }
 
-    void closeBT() throws IOException
-    {
+    void closeBluetoothConnection() throws IOException {
         stopWorker = true;
         mmOutputStream.close();
         mmInputStream.close();
