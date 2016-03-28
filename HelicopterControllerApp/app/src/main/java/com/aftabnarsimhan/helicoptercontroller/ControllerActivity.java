@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -14,11 +15,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -34,7 +35,7 @@ public class ControllerActivity extends AppCompatActivity {
 
     private static final String TAG = "ControllerActivity";
     private static final String deviceName = "HC-06";
-    private static final int INT_UpdateInterval = 500;
+    private static final int INT_UpdateInterval = 300;
 
     // Variables for the PID Chart
     private final Handler mChartHandler = new Handler();
@@ -62,7 +63,6 @@ public class ControllerActivity extends AppCompatActivity {
     private double tiltSetPointRate = 0;
 
     private RelativeLayout layout_joystick;
-    private TextView yawSpTextView, yawAngleTextView, tiltSpTextView, tiltAngleTextView;
     private JoyStick joyStick;
 
     @Override
@@ -70,7 +70,7 @@ public class ControllerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        intializePidChart();
+        initializePidChart();
         initializeJoystick();
         initializePidToggleButton();
 
@@ -116,21 +116,28 @@ public class ControllerActivity extends AppCompatActivity {
         }
     }
 
-    private void intializePidChart() {
+    private void initializePidChart() {
         GraphView graph = (GraphView) findViewById(R.id.graph);
+        graph.setTitle("PID Graph");
+
+        Viewport viewport = graph.getViewport();
+        viewport.setScalable(true);
+        viewport.setScrollable(true);
+
         mYawAngleSeries = new LineGraphSeries<DataPoint>();
         mYawSetPointSeries = new LineGraphSeries<DataPoint>();
         mTiltAngleSeries = new LineGraphSeries<DataPoint>();
         mTiltSetPointSeries = new LineGraphSeries<DataPoint>();
 
+        mYawAngleSeries.setColor(Color.parseColor("#FF8C00"));
+        mYawSetPointSeries.setColor(Color.parseColor("#FFA500"));
+        mTiltAngleSeries.setColor(Color.parseColor("#4682B4"));
+        mTiltSetPointSeries.setColor(Color.parseColor("#ADD8E6"));
+
         graph.addSeries(mYawAngleSeries);
         graph.addSeries(mYawSetPointSeries);
         graph.addSeries(mTiltAngleSeries);
         graph.addSeries(mTiltSetPointSeries);
-
-//        graph.getViewport().setXAxisBoundsManual(true);
-//        graph.getViewport().setMinX(0);
-//        graph.getViewport().setMaxX(40);
     }
 
     private void initializeJoystick() {
