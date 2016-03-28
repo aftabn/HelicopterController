@@ -1,59 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_margin="30dp"
-        android:orientation="vertical" >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Yaw"
-            android:textStyle="bold"
-            android:textSize="20dp" />
-        <TextView
-            android:id="@+id/yawSetPointTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SP"
-            android:textSize="20dp" />
-        <TextView
-            android:id="@+id/yawAngleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Angle"
-            android:textSize="20dp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tilt"
-            android:textStyle="bold"
-            android:textSize="20dp"
-            android:layout_marginTop="30dp"/>
-        <TextView
-            android:id="@+id/tiltSetPointTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SP"
-            android:textSize="20dp" />
-        <TextView
-            android:id="@+id/tiltAngleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Angle"
-            android:textSize="20dp" />
-    </LinearLayout>
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_weight="1"
+        android:id="@+id/graph" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true" >
+        android:orientation="vertical" >
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="wrap_content"
@@ -70,6 +30,8 @@
 
             <ToggleButton
                 android:id="@+id/pidToggleButton"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -81,4 +43,4 @@
             android:orientation="vertical"
             android:background="@drawable/image_button_bg" />
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

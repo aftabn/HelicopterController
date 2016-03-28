@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -16,6 +17,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +36,15 @@ public class ControllerActivity extends AppCompatActivity {
     private static final String deviceName = "HC-06";
     private static final int INT_UpdateInterval = 500;
 
+    // Variables for the PID Chart
+    private final Handler mChartHandler = new Handler();
+    private Runnable mChartTimer;
+    private LineGraphSeries<DataPoint> mYawAngleSeries;
+    private LineGraphSeries<DataPoint> mYawSetPointSeries;
+    private LineGraphSeries<DataPoint> mTiltAngleSeries;
+    private LineGraphSeries<DataPoint> mTiltSetPointSeries;
+
+    // Bluetooth communication
     BluetoothAdapter mBluetoothAdapter;
     BluetoothSocket mmSocket;
     BluetoothDevice mmDevice;
@@ -56,6 +70,7 @@ public class ControllerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        intializePidChart();
         initializeJoystick();
         initializePidToggleButton();
 
@@ -65,9 +80,6 @@ public class ControllerActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        //final Handler handler = new Handler();
-
-
     }
 
     @Override
@@ -104,12 +116,24 @@ public class ControllerActivity extends AppCompatActivity {
         }
     }
 
-    private void initializeJoystick() {
-        yawSpTextView = (TextView)findViewById(R.id.yawSetPointTextView);
-        yawAngleTextView = (TextView)findViewById(R.id.yawAngleTextView);
-        tiltSpTextView = (TextView)findViewById(R.id.tiltSetPointTextView);
-        tiltAngleTextView = (TextView)findViewById(R.id.tiltAngleTextView);
+    private void intializePidChart() {
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        mYawAngleSeries = new LineGraphSeries<DataPoint>();
+        mYawSetPointSeries = new LineGraphSeries<DataPoint>();
+        mTiltAngleSeries = new LineGraphSeries<DataPoint>();
+        mTiltSetPointSeries = new LineGraphSeries<DataPoint>();
 
+        graph.addSeries(mYawAngleSeries);
+        graph.addSeries(mYawSetPointSeries);
+        graph.addSeries(mTiltAngleSeries);
+        graph.addSeries(mTiltSetPointSeries);
+
+//        graph.getViewport().setXAxisBoundsManual(true);
+//        graph.getViewport().setMinX(0);
+//        graph.getViewport().setMaxX(40);
+    }
+
+    private void initializeJoystick() {
         layout_joystick = (RelativeLayout)findViewById(R.id.layout_joystick);
 
         joyStick = new JoyStick(getApplicationContext()
@@ -129,10 +153,6 @@ public class ControllerActivity extends AppCompatActivity {
                         || motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
                     yawSetPointRate = Math.min(Math.max(-5, joyStick.getX()), 5);
                     tiltSetPointRate = Math.min(Math.max(-2, joyStick.getX()), 2);
-                    yawSpTextView.setText("SP : " + String.valueOf(helicopterManager.currentYawSetPoint));
-                    yawAngleTextView.setText("Angle : " + String.valueOf(helicopterManager.currentYawAngle));
-                    tiltSpTextView.setText("SP : " + String.valueOf(helicopterManager.currentTiltSetPoint));
-                    tiltAngleTextView.setText("Angle : " + String.valueOf(helicopterManager.currentTiltAngle));
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     yawSetPointRate = 0;
                     tiltSetPointRate = 0;
@@ -174,6 +194,22 @@ public class ControllerActivity extends AppCompatActivity {
             public void run() {
                 if (mmSocket != null && mmSocket.isConnected() && helicopterManager.isPidEnabled) {
                     helicopterManager.updateValues(yawSetPointRate, tiltSetPointRate);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            int count = helicopterManager.dataCount;
+                            double yawAngle = helicopterManager.yawAnglesData.get(count - 1);
+                            double yawSetPoint = helicopterManager.yawSetPointsData.get(count - 1);
+                            double tiltAngle = helicopterManager.tiltAnglesData.get(count - 1);
+                            double tiltSetPoint = helicopterManager.tiltSetPointsData.get(count - 1);
+
+                            mYawAngleSeries.appendData(new DataPoint(count, yawAngle), true, 40);
+                            mYawSetPointSeries.appendData(new DataPoint(count, yawSetPoint), true, 40);
+                            mTiltAngleSeries.appendData(new DataPoint(count, tiltAngle), true, 40);
+                            mTiltSetPointSeries.appendData(new DataPoint(count, tiltSetPoint), true, 40);
+                        }
+                    });
                 }
             }
         }, 0, intervalMs);

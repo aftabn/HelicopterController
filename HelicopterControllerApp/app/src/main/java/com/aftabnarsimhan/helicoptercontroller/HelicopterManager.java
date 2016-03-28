@@ -41,6 +41,8 @@ public class HelicopterManager {
     public double currentTiltSetPoint;
     public double currentTiltAngle;
 
+
+    public int dataCount = 0;
     public List<Double> yawSetPointsData;
     public List<Double> yawAnglesData;
     public List<Double> tiltSetPointsData;
@@ -79,9 +81,22 @@ public class HelicopterManager {
 
         currentYawSetPoint = getAngleSetPoint(YAW_CHANNEL);
         currentYawAngle = getCurrentAngle(YAW_CHANNEL);
-
         currentTiltSetPoint = getAngleSetPoint(TILT_CHANNEL);
         currentTiltAngle = getCurrentAngle(TILT_CHANNEL);
+
+        yawSetPointsData.add(currentYawSetPoint);
+        yawAnglesData.add(currentYawAngle);
+        tiltSetPointsData.add(currentTiltSetPoint);
+        tiltAnglesData.add(currentTiltAngle);
+        dataCount++;
+    }
+
+    private void resetChartData() {
+        yawSetPointsData.clear();
+        yawAnglesData.clear();
+        tiltSetPointsData.clear();
+        tiltAnglesData.clear();
+        dataCount = 0;
     }
 
     private Packet sendCommand(String command) {
@@ -117,6 +132,7 @@ public class HelicopterManager {
             String command = STR_PidControlCommand + " " + STR_OnArg;
             sendCommand(command);
             isPidEnabled = true;
+            resetChartData();
         }
     }
 
