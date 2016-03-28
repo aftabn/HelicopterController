@@ -14,6 +14,7 @@ Author:	Aftab
 #define DEGREES_UNIT		"degs"
 #define VOLTAGE_UNIT		"V"
 
+void onCommandPing(void);
 void onCommandIdentity(void);
 void onCommandVersion(void);
 void onCommandChangelog(void);

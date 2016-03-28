@@ -7,7 +7,7 @@ Author:	Aftab
 #ifndef _GLOBALS_h
 #define _GLOBALS_h
 
-#define FIRMWARE_VERSION			1.1
+#define FIRMWARE_VERSION			1.2
 
 #define MAX_NUM_CHANNELS			2
 

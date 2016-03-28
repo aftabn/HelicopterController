@@ -11,6 +11,11 @@ Author:	Aftab
 #include "commandHandlers.h"
 #include "pidControl.h"
 
+void onCommandPing()
+{
+	sendAck();
+}
+
 void onCommandIdentity()
 {
 	Serial.println(F("Arduino Helicopter Controller"));
@@ -34,7 +39,7 @@ void onCommandChangelog()
 {
 	if (isReadCommand(gParameters[0]))
 	{
-		Serial.println(F("Fixed frequency being int instead of uint"));
+		Serial.println(F("Added PING command"));
 		sendAck();
 	}
 	else

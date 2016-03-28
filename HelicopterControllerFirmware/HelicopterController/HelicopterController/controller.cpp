@@ -17,7 +17,7 @@ char lineBuffer[INT_LINE_SIZE_MAX + 1];
 void initializeController()
 {
 	// The baud rate had to be dropped from 115200 to 19200 as going any higher resulted in data loss
-	// due to the firing of the external interrupt for the decode
+	// due to the firing of the external interrupt for the decoder
 	Serial.begin(19200);
 	Serial.println();
 	Serial.flush();
@@ -27,35 +27,7 @@ void initializeController()
 
 void processCommand(char *command)
 {
-	if (0 == strcmp(command, "*IDN?"))
-	{
-		onCommandIdentity();
-	}
-	else if (0 == strcmp(command, "ECHO"))
-	{
-		onCommandEcho();
-	}
-	else if (0 == strcmp(command, "CHANGELOG"))
-	{
-		onCommandChangelog();
-	}
-	else if (0 == strcmp(command, "VER"))
-	{
-		onCommandVersion();
-	}
-	else if (0 == strcmp(command, "PID"))
-	{
-		onCommandPidControl();
-	}
-	else if (0 == strcmp(command, "VERBOSE"))
-	{
-		onCommandVerbose();
-	}
-	else if (0 == strcmp(command, "SAFETY"))
-	{
-		onCommandSafety();
-	}
-	else if (0 == strcmp(command, "O"))
+	if (0 == strcmp(command, "O"))
 	{
 		onCommandOutput();
 	}
@@ -66,6 +38,10 @@ void processCommand(char *command)
 	else if (0 == strcmp(command, "DV"))
 	{
 		onCommandMotorDriver();
+	}
+	else if (0 == strcmp(command, "PID"))
+	{
+		onCommandPidControl();
 	}
 	else if (0 == strcmp(command, "P"))
 	{
@@ -114,6 +90,34 @@ void processCommand(char *command)
 	else if (0 == strcmp(command, "F"))
 	{
 		onCommandFrequencyOutput();
+	}
+	else if (0 == strcmp(command, "*IDN?"))
+	{
+		onCommandIdentity();
+	}
+	else if (0 == strcmp(command, "PING"))
+	{
+		onCommandPing();
+	}
+	else if (0 == strcmp(command, "ECHO"))
+	{
+		onCommandEcho();
+	}
+	else if (0 == strcmp(command, "CHANGELOG"))
+	{
+		onCommandChangelog();
+	}
+	else if (0 == strcmp(command, "VER"))
+	{
+		onCommandVersion();
+	}
+	else if (0 == strcmp(command, "VERBOSE"))
+	{
+		onCommandVerbose();
+	}
+	else if (0 == strcmp(command, "SAFETY"))
+	{
+		onCommandSafety();
 	}
 	else if (0 == strcmp(command, "TEST"))
 	{
