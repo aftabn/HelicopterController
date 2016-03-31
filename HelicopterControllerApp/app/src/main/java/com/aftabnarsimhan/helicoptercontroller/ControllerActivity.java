@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -34,12 +33,13 @@ import java.util.UUID;
 public class ControllerActivity extends AppCompatActivity {
 
     private static final String TAG = "ControllerActivity";
-    private static final String deviceName = "HC-06";
+    private static final String STR_DeviceName = "HC-06";
     private static final int INT_UpdateInterval = 250;
+    private static final int INT_MaxDataPoints = 100;
 
     // Variables for the PID Chart
-    private final Handler mChartHandler = new Handler();
-    private Runnable mChartTimer;
+    private boolean isFirstGraphWrite = false;
+    private GraphView mPidGraphView;
     private LineGraphSeries<DataPoint> mYawAngleSeries;
     private LineGraphSeries<DataPoint> mYawSetPointSeries;
     private LineGraphSeries<DataPoint> mTiltAngleSeries;
@@ -70,11 +70,12 @@ public class ControllerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initializePidChart();
+        initializePidGraph();
         initializeJoystick();
         initializePidToggleButton();
 
         helicopterManager = new HelicopterManager();
+        connect(STR_DeviceName);
     }
 
     @Override
@@ -100,7 +101,7 @@ public class ControllerActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_search:
                 if (mmSocket == null || !mmSocket.isConnected()) {
-                    connect(deviceName);
+                    connect(STR_DeviceName);
                 } else {
                     disconnect();
                 }
@@ -116,11 +117,11 @@ public class ControllerActivity extends AppCompatActivity {
         }
     }
 
-    private void initializePidChart() {
-        GraphView graph = (GraphView) findViewById(R.id.graph);
-        graph.setTitle("PID Graph");
+    private void initializePidGraph() {
+        mPidGraphView = (GraphView) findViewById(R.id.graph);
+        mPidGraphView.setTitle("PID Graph");
 
-        Viewport viewport = graph.getViewport();
+        Viewport viewport = mPidGraphView.getViewport();
         viewport.setScalable(true);
         //viewport.setScrollable(true);
 
@@ -134,10 +135,10 @@ public class ControllerActivity extends AppCompatActivity {
         mTiltAngleSeries.setColor(Color.parseColor("#4682B4"));
         mTiltSetPointSeries.setColor(Color.parseColor("#ADD8E6"));
 
-        graph.addSeries(mYawAngleSeries);
-        graph.addSeries(mYawSetPointSeries);
-        graph.addSeries(mTiltAngleSeries);
-        graph.addSeries(mTiltSetPointSeries);
+        mPidGraphView.addSeries(mYawAngleSeries);
+        mPidGraphView.addSeries(mYawSetPointSeries);
+        mPidGraphView.addSeries(mTiltAngleSeries);
+        mPidGraphView.addSeries(mTiltSetPointSeries);
     }
 
     private void initializeJoystick() {
@@ -156,7 +157,7 @@ public class ControllerActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 joyStick.drawStick(motionEvent);
 
-                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
                         || motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
                     yawSetPointRate = Math.min(Math.max(-3, joyStick.getX()), 3);
                     tiltSetPointRate = Math.min(Math.max(-1, -1 * joyStick.getY()), 1);
@@ -180,6 +181,8 @@ public class ControllerActivity extends AppCompatActivity {
                     if (mmSocket != null) {
                         if (isChecked) {
                             if (mmSocket.isConnected() && !helicopterManager.isPidEnabled) {
+                                //resetPidGraph();
+                                isFirstGraphWrite = true;
                                 helicopterManager.enablePid();
                             }
                         } else {
@@ -211,10 +214,19 @@ public class ControllerActivity extends AppCompatActivity {
                             double tiltAngle = helicopterManager.tiltAnglesData.get(count - 1);
                             double tiltSetPoint = helicopterManager.tiltSetPointsData.get(count - 1);
 
-                            mYawAngleSeries.appendData(new DataPoint(count, yawAngle), true, 40);
-                            mYawSetPointSeries.appendData(new DataPoint(count, yawSetPoint), true, 40);
-                            mTiltAngleSeries.appendData(new DataPoint(count, tiltAngle), true, 40);
-                            mTiltSetPointSeries.appendData(new DataPoint(count, tiltSetPoint), true, 40);
+                            if (isFirstGraphWrite) {
+                                mYawAngleSeries.resetData(new DataPoint[]{new DataPoint(count, yawAngle)});
+                                mYawSetPointSeries.resetData(new DataPoint[]{new DataPoint(count, yawSetPoint)});
+                                mTiltAngleSeries.resetData(new DataPoint[]{new DataPoint(count, tiltAngle)});
+                                mTiltSetPointSeries.resetData(new DataPoint[]{new DataPoint(count, tiltSetPoint)});
+                                isFirstGraphWrite = false;
+                            }
+                            else {
+                                mYawAngleSeries.appendData(new DataPoint(count, yawAngle), true, INT_MaxDataPoints);
+                                mYawSetPointSeries.appendData(new DataPoint(count, yawSetPoint), true, INT_MaxDataPoints);
+                                mTiltAngleSeries.appendData(new DataPoint(count, tiltAngle), true, INT_MaxDataPoints);
+                                mTiltSetPointSeries.appendData(new DataPoint(count, tiltSetPoint), true, INT_MaxDataPoints);
+                            }
                         }
                     });
                 }
@@ -230,7 +242,7 @@ public class ControllerActivity extends AppCompatActivity {
                 openBluetoothConnection();
             }
             catch (IOException ex) {
-                Toast.makeText(getBaseContext(), "Error connecting to " + deviceName,
+                Toast.makeText(this, "Error connecting to " + deviceName,
                         Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Error trying to open bluetooth connection.", ex);
             }
@@ -248,7 +260,7 @@ public class ControllerActivity extends AppCompatActivity {
                 closeBluetoothConnection();
             }
             catch (IOException ex) {
-                Toast.makeText(getBaseContext(), "Error disconnecting from " + deviceName,
+                Toast.makeText(this, "Error disconnecting from " + STR_DeviceName,
                         Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Error trying to close bluetooth connection.", ex);
             }
