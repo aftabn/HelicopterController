@@ -123,7 +123,9 @@ public class ControllerActivity extends AppCompatActivity {
 
         Viewport viewport = mPidGraphView.getViewport();
         viewport.setScalable(true);
-        viewport.setScrollable(true);
+        viewport.setXAxisBoundsManual(true);
+        viewport.setMinX(0);
+        viewport.setMaxX(100);
 
         mYawAngleSeries = new LineGraphSeries<>();
         mYawSetPointSeries = new LineGraphSeries<>();
@@ -134,6 +136,16 @@ public class ControllerActivity extends AppCompatActivity {
         mYawSetPointSeries.setColor(Color.parseColor("#FFA500"));
         mTiltAngleSeries.setColor(Color.parseColor("#4682B4"));
         mTiltSetPointSeries.setColor(Color.parseColor("#ADD8E6"));
+
+        mYawAngleSeries.setDrawDataPoints(true);
+        mYawSetPointSeries.setDrawDataPoints(true);
+        mTiltAngleSeries.setDrawDataPoints(true);
+        mTiltSetPointSeries.setDrawDataPoints(true);
+
+        mYawAngleSeries.setDataPointsRadius(3f);
+        mYawSetPointSeries.setDataPointsRadius(3f);
+        mTiltAngleSeries.setDataPointsRadius(3f);
+        mTiltSetPointSeries.setDataPointsRadius(3f);
 
         mPidGraphView.addSeries(mYawAngleSeries);
         mPidGraphView.addSeries(mYawSetPointSeries);
