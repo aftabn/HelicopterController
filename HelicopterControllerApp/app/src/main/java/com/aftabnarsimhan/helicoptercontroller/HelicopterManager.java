@@ -8,6 +8,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by Aftab on 3/26/2016.
@@ -30,6 +32,9 @@ public class HelicopterManager {
 
     private static BluetoothSocket mmSocket;
     private static OutputStream mmOutputStream;
+
+    private final Lock sendDataLock = new ReentrantLock();
+    private final Lock receivedPacketsLock = new ReentrantLock();
 
     public boolean isPidEnabled =  false;
 
@@ -64,7 +69,7 @@ public class HelicopterManager {
         currentTiltSetPoint = getAngleSetPoint(TILT_CHANNEL);
         currentTiltAngle = getCurrentAngle(TILT_CHANNEL);
 
-        receivedPackets.clear();
+        clearReceivedPacketsBuffer();
 
         yawSetPointsData.clear();
         yawAnglesData.clear();
@@ -97,26 +102,26 @@ public class HelicopterManager {
     }
 
     private Packet sendCommand(String command) {
-        receivedPackets.clear();
-
-        command += "\r\n";
-
-        try
-        {
-            mmOutputStream.write(command.getBytes());
-        }
-        catch (IOException ex) {}
-
-
+        sendDataLock.lock();
         Packet packet;
 
-        try
-        {
-            waitForResponsePacket();
-            packet = Packet.FromString(receivedPackets.get(0));
-        }
-        catch (TimeoutException ex) {
-            packet = null;
+        try {
+            clearReceivedPacketsBuffer();
+            command += "\r\n";
+
+            try {
+                mmOutputStream.write(command.getBytes());
+            } catch (IOException ex) {}
+
+
+            try {
+                waitForResponsePacket();
+                packet = Packet.FromString(receivedPackets.get(0));
+            } catch (TimeoutException ex) {
+                packet = null;
+            }
+        } finally {
+            sendDataLock.unlock();
         }
 
         return packet;
@@ -169,6 +174,24 @@ public class HelicopterManager {
 
         if (receivedPackets.size() < 1) {
             throw new TimeoutException("Timeout waiting for response packet");
+        }
+    }
+
+    private void clearReceivedPacketsBuffer() {
+        receivedPacketsLock.lock();
+        try {
+            receivedPackets.clear();
+        } finally {
+            receivedPacketsLock.unlock();
+        }
+    }
+
+    public void addReceivedPacket(String packetString) {
+        receivedPacketsLock.lock();
+        try {
+            receivedPackets.add(packetString);
+        } finally {
+            receivedPacketsLock.unlock();
         }
     }
 }

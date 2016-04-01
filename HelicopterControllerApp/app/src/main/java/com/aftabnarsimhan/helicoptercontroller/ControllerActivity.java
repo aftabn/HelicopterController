@@ -220,8 +220,7 @@ public class ControllerActivity extends AppCompatActivity {
                                 mTiltAngleSeries.resetData(new DataPoint[]{new DataPoint(count, tiltAngle)});
                                 mTiltSetPointSeries.resetData(new DataPoint[]{new DataPoint(count, tiltSetPoint)});
                                 isFirstGraphWrite = false;
-                            }
-                            else {
+                            } else {
                                 mYawAngleSeries.appendData(new DataPoint(count, yawAngle), true, INT_MaxDataPoints);
                                 mYawSetPointSeries.appendData(new DataPoint(count, yawSetPoint), true, INT_MaxDataPoints);
                                 mTiltAngleSeries.appendData(new DataPoint(count, tiltAngle), true, INT_MaxDataPoints);
@@ -327,8 +326,9 @@ public class ControllerActivity extends AppCompatActivity {
                         String response = responseBuffer.toString();
 
                         if (response.contains(HelicopterManager.STR_Ack) || response.contains(HelicopterManager.STR_Nack)) {
-                            helicopterManager.receivedPackets.add(response);
+                            helicopterManager.addReceivedPacket(response);
                             responseBuffer.setLength(0);
+                            Log.d(TAG, response.replace("\r\n", "<CRLF>"));
                         }
                     }
                     catch (IOException ex)
