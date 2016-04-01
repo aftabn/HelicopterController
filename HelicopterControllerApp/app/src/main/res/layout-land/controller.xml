@@ -7,7 +7,6 @@
     <com.jjoe64.graphview.GraphView
         android:layout_width="0dp"
         android:layout_height="fill_parent"
-        android:layout_margin="@dimen/activity_vertical_margin"
         android:layout_weight="1"
         android:id="@+id/graph" />
     <LinearLayout
@@ -16,30 +15,24 @@
         android:orientation="vertical" >
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PID Status"
-                android:textStyle="bold"
-                android:textSize="25dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="30dp"/>
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" >
 
             <ToggleButton
                 android:id="@+id/pidToggleButton"
-                android:layout_marginTop="2dp"
-                android:layout_marginRight="2dp"
+                android:layout_marginTop="10dp"
+                android:textOn="PID On "
+                android:textOff="PID Off"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
         <RelativeLayout
             android:id="@+id/layout_joystick"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:orientation="vertical"
             android:background="@drawable/image_button_bg" />
     </LinearLayout>
