@@ -1,5 +1,6 @@
 package com.aftabnarsimhan.helicoptercontroller;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -14,7 +15,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.jjoe64.graphview.GraphView;
@@ -75,7 +75,7 @@ public class ControllerActivity extends AppCompatActivity {
         initializePidToggleButton();
 
         helicopterManager = new HelicopterManager();
-        connect(STR_DeviceName);
+        connect();
     }
 
     @Override
@@ -101,7 +101,7 @@ public class ControllerActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_search:
                 if (mmSocket == null || !mmSocket.isConnected()) {
-                    connect(STR_DeviceName);
+                    connect();
                 } else {
                     disconnect();
                 }
@@ -123,7 +123,7 @@ public class ControllerActivity extends AppCompatActivity {
 
         Viewport viewport = mPidGraphView.getViewport();
         viewport.setScalable(true);
-        //viewport.setScrollable(true);
+        viewport.setScrollable(true);
 
         mYawAngleSeries = new LineGraphSeries<>();
         mYawSetPointSeries = new LineGraphSeries<>();
@@ -233,21 +233,20 @@ public class ControllerActivity extends AppCompatActivity {
         }, 0, intervalMs);
     }
 
-    private void connect(String deviceName) {
+    private void connect() {
         Log.d(TAG, "Connecting to helicopter");
         if (mmSocket == null || !mmSocket.isConnected()) {
-            findBluetoothDevice(deviceName);
+            findBluetoothDevice(STR_DeviceName);
             try {
                 openBluetoothConnection();
+                initializeHelicopterUpdateTimer(INT_UpdateInterval);
+                helicopterManager.connect(mmSocket, mmOutputStream);
             }
             catch (IOException ex) {
-                Toast.makeText(this, "Error connecting to " + deviceName,
-                        Toast.LENGTH_SHORT).show();
+                showAlertDialog("Error connecting to " + STR_DeviceName);
                 Log.e(TAG, "Error trying to open bluetooth connection.", ex);
             }
         }
-        initializeHelicopterUpdateTimer(INT_UpdateInterval);
-        helicopterManager.connect(mmSocket, mmOutputStream);
     }
 
     private void disconnect() {
@@ -259,8 +258,7 @@ public class ControllerActivity extends AppCompatActivity {
                 closeBluetoothConnection();
             }
             catch (IOException ex) {
-                Toast.makeText(this, "Error disconnecting from " + STR_DeviceName,
-                        Toast.LENGTH_SHORT).show();
+                showAlertDialog("Error disconnecting from " + STR_DeviceName);
                 Log.e(TAG, "Error trying to close bluetooth connection.", ex);
             }
         }
@@ -328,7 +326,9 @@ public class ControllerActivity extends AppCompatActivity {
                         if (response.contains(HelicopterManager.STR_Ack) || response.contains(HelicopterManager.STR_Nack)) {
                             helicopterManager.addReceivedPacket(response);
                             responseBuffer.setLength(0);
-                            Log.d(TAG, response.replace("\r\n", "<CRLF>"));
+
+                            // Uncommenting this line will print out the incoming packet
+                            //Log.d(TAG, response.replace("\r\n", "<CRLF>"));
                         }
                     }
                     catch (IOException ex)
@@ -348,5 +348,13 @@ public class ControllerActivity extends AppCompatActivity {
         mmInputStream.close();
         mmSocket.close();
         getSupportActionBar().setSubtitle("Disconnected");
+    }
+
+    void showAlertDialog(String message) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(getString(R.string.app_name));
+        alertDialogBuilder.setMessage(message);
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }
