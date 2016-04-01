@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -125,12 +126,24 @@ public class ControllerActivity extends AppCompatActivity {
         viewport.setScalable(true);
         viewport.setXAxisBoundsManual(true);
         viewport.setMinX(0);
-        viewport.setMaxX(100);
+        viewport.setMaxX(50);
+
+        LegendRenderer legend = mPidGraphView.getLegendRenderer();
+        legend.setVisible(true);
+        legend.setAlign(LegendRenderer.LegendAlign.TOP);
+
+        // This is to prevent the vertical labels from being cut off
+        mPidGraphView.getGridLabelRenderer().setLabelVerticalWidth(100);
 
         mYawAngleSeries = new LineGraphSeries<>();
         mYawSetPointSeries = new LineGraphSeries<>();
         mTiltAngleSeries = new LineGraphSeries<>();
         mTiltSetPointSeries = new LineGraphSeries<>();
+
+        mYawAngleSeries.setTitle("Yaw Angle");
+        mYawSetPointSeries.setTitle("Yaw SP");
+        mTiltAngleSeries.setTitle("Tilt Angle");
+        mTiltSetPointSeries.setTitle("Tilt SP");
 
         mYawAngleSeries.setColor(Color.parseColor("#FF8C00"));
         mYawSetPointSeries.setColor(Color.parseColor("#FFA500"));
