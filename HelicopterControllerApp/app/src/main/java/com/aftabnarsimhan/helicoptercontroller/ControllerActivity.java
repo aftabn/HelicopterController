@@ -38,6 +38,10 @@ public class ControllerActivity extends AppCompatActivity {
     private static final int INT_UpdateInterval = 250;
     private static final int INT_MaxDataPoints = 100;
 
+    private static final int INT_MaxYawSetPointChange = 7;
+    private static final int INT_MaxTiltSetPointChange = 4;
+    private static final int INT_JoystickSize = 250;
+
     // Variables for the PID Chart
     private boolean isFirstGraphWrite = false;
     private GraphView mPidGraphView;
@@ -171,7 +175,7 @@ public class ControllerActivity extends AppCompatActivity {
 
         joyStick = new JoyStick(getApplicationContext()
                 , layout_joystick, R.drawable.image_button);
-        joyStick.setStickSize(250, 250);
+        joyStick.setStickSize(INT_JoystickSize, INT_JoystickSize);
         joyStick.setLayoutSize(800, 800);
         joyStick.setLayoutAlpha(150);
         joyStick.setStickAlpha(100);
@@ -184,8 +188,10 @@ public class ControllerActivity extends AppCompatActivity {
 
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
                         || motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-                    yawSetPointRate = Math.min(Math.max(-3, joyStick.getX()), 3);
-                    tiltSetPointRate = Math.min(Math.max(-1, -1 * joyStick.getY()), 1);
+                    double yawSPRUnscaled = (double)joyStick.getX() / INT_JoystickSize * INT_MaxYawSetPointChange;
+                    double tiltSPRUnscaled = (double)joyStick.getY() / INT_JoystickSize * INT_MaxTiltSetPointChange;
+                    yawSetPointRate = Math.min(Math.max(-1 * INT_MaxYawSetPointChange, yawSPRUnscaled), INT_MaxYawSetPointChange);
+                    tiltSetPointRate = Math.min(Math.max(-1 * INT_MaxTiltSetPointChange, -1 * tiltSPRUnscaled), INT_MaxTiltSetPointChange);
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     yawSetPointRate = 0;
                     tiltSetPointRate = 0;
