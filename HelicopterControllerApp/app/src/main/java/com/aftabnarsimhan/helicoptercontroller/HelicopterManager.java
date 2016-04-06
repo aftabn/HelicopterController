@@ -78,8 +78,11 @@ public class HelicopterManager {
     }
 
     public void updateValues(double yawSetPointRate, double tiltSetPointRate) {
+        double tiltSetPoint = currentTiltSetPoint + tiltSetPointRate;
+        double constrainedTiltSetPoint = Math.min(23, tiltSetPoint);
+
         setAngleSetPoint(YAW_CHANNEL, currentYawSetPoint + yawSetPointRate);
-        setAngleSetPoint(TILT_CHANNEL, currentTiltSetPoint + tiltSetPointRate);
+        setAngleSetPoint(TILT_CHANNEL, constrainedTiltSetPoint);
 
         currentYawSetPoint = getAngleSetPoint(YAW_CHANNEL);
         currentYawAngle = getCurrentAngle(YAW_CHANNEL);
