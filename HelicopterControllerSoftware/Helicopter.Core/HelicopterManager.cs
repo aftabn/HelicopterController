@@ -16,6 +16,7 @@ namespace Helicopter.Core
         private bool isSessionRunning;
         private bool isSessionComplete;
         private bool isSessionRequestingStop;
+        private int yawDemoSetPoint;
 
         public HelicopterManager()
         {
@@ -26,6 +27,9 @@ namespace Helicopter.Core
 
             InitializeTuningSessionWorker();
             InitializeDemoSessionWorker();
+
+            // TODO: Refactor
+            YawDemoSetPoint = -180;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -89,6 +93,22 @@ namespace Helicopter.Core
 
                 isSessionRequestingStop = value;
                 RaisePropertyChanged("IsSessionRequestingStop");
+            }
+        }
+
+        public int YawDemoSetPoint
+        {
+            get
+            {
+                return yawDemoSetPoint;
+            }
+
+            set
+            {
+                if (value == yawDemoSetPoint) return;
+
+                yawDemoSetPoint = value;
+                RaisePropertyChanged("YawDemoSetPoint");
             }
         }
 
@@ -199,8 +219,8 @@ namespace Helicopter.Core
             }
 
             HelicopterController.DisablePid();
-            tilt.SetOutputPercentage(41);
-            tilt.SetSetPoint(-21);
+            tilt.SetOutputPercentage(45);
+            tilt.SetSetPoint(-24);
 
             var steadyStateCount = 0;
             var startDropTime = DateTime.Now;
@@ -238,7 +258,7 @@ namespace Helicopter.Core
 
             HelicopterController.ZeroYawAngle();
             yaw.SetSetPoint(0);
-            tilt.SetSetPoint(18);
+            tilt.SetSetPoint(10);
 
             Session.StartTime = DateTime.Now;
 
@@ -277,7 +297,7 @@ namespace Helicopter.Core
                 e.Cancel = true;
             }
 
-            yaw.SetSetPoint(-180);
+            yaw.SetSetPoint(YawDemoSetPoint);
 
             while (!worker.CancellationPending)
             {
@@ -310,31 +330,33 @@ namespace Helicopter.Core
             }
 
             HelicopterController.DisablePid();
-            tilt.SetOutputPercentage(41);
-            tilt.SetSetPoint(-21);
+            tilt.SetOutputPercentage(45);
+            tilt.SetSetPoint(-24);
 
-            while (!worker.CancellationPending)
-            {
-                var timeStamp = DateTime.Now;
-                Session.TakeNewDataSamples(timeStamp);
+            Thread.Sleep(1500);
 
-                if (Math.Abs(tilt.CurrentAngle - tilt.SetPoint) < 2)
-                {
-                    steadyStateCount++;
-                }
-                else
-                {
-                    steadyStateCount = 0;
-                }
+            //while (!worker.CancellationPending)
+            //{
+            //    var timeStamp = DateTime.Now;
+            //    Session.TakeNewDataSamples(timeStamp);
 
-                if (steadyStateCount >= 2)
-                {
-                    Log.Debug("Finished lowering tilt motor");
-                    break;
-                }
+            //    if (Math.Abs(tilt.CurrentAngle - tilt.SetPoint) < 2)
+            //    {
+            //        steadyStateCount++;
+            //    }
+            //    else
+            //    {
+            //        steadyStateCount = 0;
+            //    }
 
-                Thread.Sleep(Session.RefreshIntervalMilliseconds);
-            }
+            //    if (steadyStateCount >= 2)
+            //    {
+            //        Log.Debug("Finished lowering tilt motor");
+            //        break;
+            //    }
+
+            //    Thread.Sleep(Session.RefreshIntervalMilliseconds);
+            //}
 
             if (worker.CancellationPending)
             {

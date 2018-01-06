@@ -71,6 +71,14 @@
                         <Button Margin="5,0,5,5" Content="Refresh Values" Command="{Binding RefreshValuesCommand}" />
                         <Separator Margin="5,5,5,10" />
                         <Button Margin="5,0,5,5" Content="Start Tuning Session" Command="{Binding StartTuningSessionCommand}" />
+                        <StackPanel Margin="5,5,5,10">
+                            <TextBlock VerticalAlignment="Center" Height="20"><Run Text="Yaw Demo Set Point" /></TextBlock>
+                            <StackPanel Orientation="Horizontal">
+                                <Button VerticalAlignment="Center" Width="40" Content="Set" Command="{Binding SetYawDemoSetPointCommand}" CommandParameter="{Binding ElementName=SetYawDemoSetPoint, Path=Text}" />
+                                <TextBox VerticalAlignment="Center" Height="20" Margin="5,0,5,0" Width="45" x:Name="SetYawDemoSetPoint" />
+                                <TextBox VerticalAlignment="Center" Height="20" Width="45" IsReadOnly="True" Background="LightGray" Text="{Binding Path=YawDemoSetPoint}" />
+                            </StackPanel>
+                        </StackPanel>
                         <Button Margin="5,0,5,5" Content="Start Demo Session" Command="{Binding StartDemoSessionCommand}" />
                         <Button Margin="5,0,5,5" Content="Stop Session" Command="{Binding StopSessionCommand}" />
                         <Separator Margin="5,5,5,10" />

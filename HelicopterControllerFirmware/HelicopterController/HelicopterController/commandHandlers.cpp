@@ -39,7 +39,7 @@ void onCommandChangelog()
 {
 	if (isReadCommand(gParameters[0]))
 	{
-		Serial.println(F("Added PING command"));
+		Serial.println(F("Added Zero Potetiometer command"));
 		sendAck();
 	}
 	else
@@ -173,6 +173,62 @@ void onCommandOutput()
 	else
 	{
 		sendChannelError();
+	}
+}
+
+void onCommandTiltOutputOffset()
+{
+	int outputOffset = convertToInt(gParameters[0]);
+
+	if (isReadCommand(gParameters[0]))
+	{
+		sendInt(tiltOutputOffset);
+		sendAck();
+	}
+	else if (!isPidEnabled)
+	{
+		if (isIntWithinRange(tiltOutputOffset, TILT_OUTPUT_OFFSET_MIN, TILT_OUTPUT_OFFSET_MAX))
+		{
+			tiltOutputOffset = outputOffset;
+			sendAck();
+		}
+		else
+		{
+			sendIntRangeError(TILT_OUTPUT_OFFSET_MIN, TILT_OUTPUT_OFFSET_MAX, PERCENTAGE_UNIT);
+		}
+	}
+	else
+	{
+		Serial.println(F("Cannot change tilt output offset while PID control is on."));
+		sendNack();
+	}
+}
+
+void onCommandSetMaxFrequency()
+{
+	int frequency = convertToInt(gParameters[0]);
+
+	if (isReadCommand(gParameters[0]))
+	{
+		sendInt(maxFrequency);
+		sendAck();
+	}
+	else if (!isPidEnabled)
+	{
+		if (isIntWithinRange(frequency, MIN_FREQUENCY, MAX_FREQUENCY))
+		{
+			maxFrequency = frequency;
+			sendAck();
+		}
+		else
+		{
+			sendIntRangeError(MIN_FREQUENCY, MAX_FREQUENCY, HERTZ_UNIT);
+		}
+	}
+	else
+	{
+		Serial.println(F("Cannot change max frequency while PID control is on."));
+		sendNack();
 	}
 }
 
@@ -528,6 +584,34 @@ void onCommandAngle()
 	}
 }
 
+void onCommandZeroPotentiometer()
+{
+	double potVoltage = atof(gParameters[0]);
+
+	if (isReadCommand(gParameters[0]))
+	{
+		sendDouble(potIdleVoltage);
+		sendAck();
+	}
+	else if (!isPidEnabled)
+	{
+		if (isDoubleWithinRange(potVoltage, POT_MIN_IDLE_VOLTAGE, POT_MAX_IDLE_VOLTAGE))
+		{
+			potIdleVoltage = potVoltage;
+			sendAck();
+		}
+		else
+		{
+			sendDoubleRangeError(POT_MIN_IDLE_VOLTAGE, POT_MAX_IDLE_VOLTAGE, VOLTAGE_UNIT);
+		}
+	}
+	else
+	{
+		Serial.println(F("Cannot change percentage output while PID control is on."));
+		sendNack();
+	}
+}
+
 void onCommandZeroEncoderAngle()
 {
 	if (isReadCommand(gParameters[1]))
@@ -616,14 +700,14 @@ void onCommandFrequencyOutput()
 			{
 				if (!isSafetyOn)
 				{
-					if (isIntWithinRange(frequency, MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY))
+					if (isIntWithinRange(frequency, MIN_FREQUENCY, maxFrequency))
 					{
 						setFrequency(frequency);
 						sendAck();
 					}
 					else
 					{
-						sendIntRangeError(MOTOR_MIN_FREQUENCY, MOTOR_MAX_FREQUENCY, HERTZ_UNIT);
+						sendIntRangeError(MIN_FREQUENCY, maxFrequency, HERTZ_UNIT);
 					}
 				}
 				else
@@ -666,12 +750,14 @@ void onCommandHelp()
 	Serial.println(F("Command: O \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value in percent\r\nDescription: Gets or sets the percentage motor output for the selected channel\r\n"));
 	Serial.println(F("Command: SP \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value in degrees\r\nDescription: Gets or sets the set point angle for the designated motor\r\n"));
 	Serial.println(F("Command: A \r\nArg: Channel (0 or 1) \r\nDescription: Gets the angle for the selected channel\r\n"));
-	Serial.println(F("Command: Z \r\nDescription: Zeroes the encoder angle on channel 0 (yaw)\r\n"));
+	Serial.println(F("Command: ZE \r\nDescription: Zeroes the encoder angle on channel 0 (yaw)\r\n"));
+	Serial.println(F("Command: ZP \r\nArg: None or voltage value\r\nDescription: Zeroes the potentiometer angle (on yaw)\r\n"));
 	Serial.println(F("Command: DC \r\nArg1: Channel (0 or 1) \r\nArg2: None, or Value (CW, CCW)\r\nDescription: Gets or sets the motor direction for the selected channel\r\n"));
 	Serial.println(F("Command: DV \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value (Analog, Frequency)\r\nDescription: Gets or sets the motor driver type for the selected channel\r\n"));
 	Serial.println(F("Command: DAC \r\nArg1: Channel (0 or 1) \r\nArg2: None or Value in volts\r\nDescription: Gets or sets the DAC voltage for selected channel\r\n"));
 	Serial.println(F("Command: F \r\nArg: None or Value in Hertz\r\nDescription: Gets or sets the frequency output\r\n"));
 	Serial.println(F("Command: ADC \r\nArg: Channel (0 to 7) \r\nDescription: Reads the voltage from the selected ADC channel\r\n"));
+	Serial.println(F("Command: TOO \r\nArg: Value from 0 to 50 percent \r\nDescription: Sets the tilt output offset voltage\r\n"));
 
 	Serial.println(F("Command: PID \r\nArg: ON or OFF \r\nDescription: Enables or disables PID loop control\r\n"));
 	Serial.println(F("Command: SAFETY \r\nArg: ON, OFF \r\nDescription: Enables or disables direct changing of motor control outputs\r\n"));

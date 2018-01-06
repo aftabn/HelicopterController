@@ -19,9 +19,10 @@ namespace Helicopter.GUI
     public partial class App : ISingleInstanceApp
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly string applicationGuid = "{8AWBB3IT-A3F4-HU79-7GY5-4AJY99YTCXB0}";
+        private static readonly string applicationGuid = "{8AWBB3IT-A3F4-HU79-7GY5-4AJY99YTCXB0}"; // Random GUID
         private static StartupOptions startupOptions;
 
+        // Single instance from: http://codereview.stackexchange.com/questions/20871/single-instance-wpf-application
         [STAThread]
         public static void Main(string[] argc)
         {
@@ -115,12 +116,13 @@ namespace Helicopter.GUI
         private static void InitializeSciChartLicense()
         {
             SciChartSurface.SetRuntimeLicenseKey(@"<LicenseContract>
-                <Customer>aftab@narsimhan.com</Customer>
-                <OrderId>University Scheme</OrderId>
-                <LicenseCount>1</LicenseCount>
-                <IsTrialLicense>true</IsTrialLicense>
-                <SupportExpires>04/26/2016 00:00:00</SupportExpires>
-                <KeyCode>tgIAAA0jQpSob9EBAEBrk06f0QE9AGMAQ3VzdG9tZXI9YWZ0YWJAbmFyc2ltaGFuLmNvbTtPcmRlcklkPVVuaXZlcnNpdHkgU2NoZW1lO1N1YnNjcmlwdGlvblZhbGlkVG89MjYtQXByLTIwMTY7UHJvZHVjdENvZGU9aUveVZfOqg7TtoBg2HGP1db8TupiPw4sxKI4YoiJ/W+BH1kLdOsXwOp5vMarlGBC</KeyCode>
+              <Customer>University of British Columbia</Customer>
+              <OrderId>EDU-UBC-001</OrderId>
+              <LicenseCount>1</LicenseCount>
+              <IsTrialLicense>false</IsTrialLicense>
+              <SupportExpires>04/19/2017 00:00:00</SupportExpires>
+              <ProductCode>SC-WPF-SDK-PRO</ProductCode>
+              <KeyCode>lwAAAAEAAADZIEr+JJrRAXYAQ3VzdG9tZXI9VW5pdmVyc2l0eSBvZiBCcml0aXNoIENvbHVtYmlhO09yZGVySWQ9RURVLVVCQy0wMDE7U3Vic2NyaXB0aW9uVmFsaWRUbz0xOS1BcHItMjAxNztQcm9kdWN0Q29kZT1TQy1XUEYtU0RLLVBST35t4JULJmi37YVDUku120oMpF+A3eK3IQ0SDZbwEQ17fJRdTWcBuW2M+cT3oTEKgw==</KeyCode>
             </LicenseContract>");
         }
     }

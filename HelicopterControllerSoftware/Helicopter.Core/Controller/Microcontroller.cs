@@ -17,13 +17,15 @@ namespace Helicopter.Core.Controller
         private const string STR_MotorOutputCommand = "O";
         private const string STR_AngleSetPointCommand = "SP";
         private const string STR_AngleCommand = "A";
-        private const string STR_ZeroEncoderAngleCommand = "Z";
+        private const string STR_ZeroEncoderAngleCommand = "ZE";
         private const string STR_DirectionCommand = "DC";
         private const string STR_MotorDriverCommand = "DV";
         private const string STR_DacVoltageCommand = "DAC";
         private const string STR_FrequencyOutputCommand = "F";
         private const string STR_AdcReadCommand = "ADC";
         private const string STR_PidControlCommand = "PID";
+        private const string STR_TiltOutputOffsetCommand = "TOO";
+        private const string STR_MaxFrequencyCommand = "MF";
         private const string STR_SafetyCommand = "SAFETY";
         private const string STR_VerboseCommand = "VERBOSE";
 
@@ -90,6 +92,28 @@ namespace Helicopter.Core.Controller
         public static void DisablePid()
         {
             string command = $"{STR_PidControlCommand} {STR_OffArg}";
+            communicationsManager.Write(command);
+        }
+
+        public static int GetMaxFrequency()
+        {
+            return Convert.ToInt32(communicationsManager.Write(STR_MaxFrequencyCommand).ReturnValue);
+        }
+
+        public static void SetMaxFrequency(int frequency)
+        {
+            string command = $"{STR_MaxFrequencyCommand} {frequency}";
+            communicationsManager.Write(command);
+        }
+
+        public static int GetTiltOutputOffset()
+        {
+            return Convert.ToInt32(communicationsManager.Write(STR_TiltOutputOffsetCommand).ReturnValue);
+        }
+
+        public static void SetTiltOutputOffset(int tiltOutputOffset)
+        {
+            string command = $"{STR_TiltOutputOffsetCommand} {tiltOutputOffset}";
             communicationsManager.Write(command);
         }
 

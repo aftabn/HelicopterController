@@ -95,6 +95,12 @@ namespace Helicopter.Core
 
         public double YawCurrentAngle => yaw.CurrentAngle;
 
+        public int YawDemoSetPoint
+        {
+            get { return HelicopterManager.YawDemoSetPoint; }
+            set { HelicopterManager.YawDemoSetPoint = value; }
+        }
+
         public double YawSetPoint
         {
             get { return yaw.SetPoint; }
@@ -235,6 +241,7 @@ namespace Helicopter.Core
 
         public ICommand SearchForRecordsCommand { get; private set; }
 
+        public ICommand SetYawDemoSetPointCommand { get; private set; }
         public ICommand StartTuningSessionCommand { get; private set; }
         public ICommand StartDemoSessionCommand { get; private set; }
         public ICommand StopSessionCommand { get; private set; }
@@ -316,6 +323,10 @@ namespace Helicopter.Core
                        Log.Debug(text);
                    },
                    x => IsConnected);
+
+            SetYawDemoSetPointCommand = new RelayCommand(
+                x => YawDemoSetPoint = Convert.ToInt32(x),
+                x => IsConnected);
 
             SearchForRecordsCommand = new RelayCommand(
                 x => DisplayedRecords = DatabaseManager.GetQueriedRecords(IsSearchingById, SelectedRecordId, SelectedDate),

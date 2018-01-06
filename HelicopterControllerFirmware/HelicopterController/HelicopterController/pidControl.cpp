@@ -23,9 +23,13 @@ volatile bool isSafetyOn;
 
 volatile int pidLoopInterval;
 volatile uint16_t currentFrequency;
+volatile uint16_t maxFrequency;
 
 const signed int encoderLookup[] = { 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 };
 uint8_t encoderValues;
+
+volatile int tiltOutputOffset;
+volatile double potIdleVoltage;
 
 volatile double pGains[MAX_NUM_CHANNELS][NUM_DIRECTION_PROFILES];
 volatile double iGains[MAX_NUM_CHANNELS][NUM_DIRECTION_PROFILES];
@@ -88,13 +92,16 @@ void initializePid(void)
 		currentAngles[channel] = 0;
 		directions[channel] = (Direction)DEFAULT_DIRECTION;
 		motorDriverTypes[channel] = (MotorDriverType)DEFAULT_MOTOR_DRIVER_TYPE;
+		tiltOutputOffset = DEFAULT_TILT_OUTPUT_OFFSET;
+		potIdleVoltage = DEFAULT_POT_IDLE_VOLTAGE;
+		maxFrequency = DEFAULT_MAX_FREQUENCY;
 	}
 }
 
 void initializeFrequencyOutput(void)
 {
 	pinModeFast(FREQUENCY_OUTPUT_PIN, OUTPUT);
-	setFrequency(MOTOR_MIN_FREQUENCY);
+	setFrequency(MIN_FREQUENCY);
 }
 
 void initializeQuadratureDecoder(void)
@@ -184,7 +191,7 @@ void updatePidMotorOutputs(int channel, Direction *direction, int *percentageOut
 	{
 		if (setPoints[channel] > -17) // TODO: Move this value to a #define
 		{
-			newOutput += TILT_OUTPUT_OFFSET; // Any value above this results in upwards motion. This makes PID linear for tilt
+			newOutput += tiltOutputOffset; // Any value above this results in upwards motion. This makes PID linear for tilt
 		}
 	}
 
@@ -270,7 +277,7 @@ void applyMotorOutputs(int channel, Direction direction, int percentageOutput)
 	{
 		if (percentageOutput != 0)
 		{
-			int frequency = adjustOutputToFrequency(percentageOutput);
+			uint16_t frequency = adjustOutputToFrequency(percentageOutput);
 			setFrequency(frequency);
 		}
 		else
@@ -294,7 +301,7 @@ double adjustOutputToVoltage(Direction direction, int percentageOutput)
 
 uint16_t adjustOutputToFrequency(int percentageOutput)
 {
-	uint16_t frequency = (MOTOR_MAX_FREQUENCY - MOTOR_MIN_FREQUENCY) * percentageOutput / 100.0;
+	uint16_t frequency = maxFrequency * percentageOutput / 100.0;
 	return frequency;
 }
 
@@ -339,7 +346,7 @@ void setDacVoltage(int channel, double voltage)
 void setFrequency(uint16_t frequency)
 {
 	tone(FREQUENCY_OUTPUT_PIN, frequency);
-	digitalWriteFast(FREQUENCY_DIRECTION_PIN, directions[TILT_CHANNEL] == Clockwise ? HIGH : LOW);
+	//digitalWriteFast(FREQUENCY_DIRECTION_PIN, directions[TILT_CHANNEL] == Clockwise ? HIGH : LOW);
 
 	currentFrequency = frequency;
 }
@@ -405,7 +412,7 @@ double convertAdcValueToVoltage(int adcValue)
 
 double convertPotentiometerVoltageToAngle(double voltage)
 {
-	double angle = (voltage - POT_IDLE_VOLTAGE) * POT_DEGREES_PER_VOLT;
+	double angle = (voltage - potIdleVoltage) * POT_DEGREES_PER_VOLT;
 	return angle;
 }
 

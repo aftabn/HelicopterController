@@ -184,6 +184,8 @@ namespace Helicopter.Core.Controller
             ControllerIdentity = Microcontroller.GetControllerIdentity();
             FirmwareVersion = Microcontroller.GetFirmwareVersion();
             Changelog = Microcontroller.GetChangelog();
+            Microcontroller.SetTiltOutputOffset(40);
+            Microcontroller.SetMaxFrequency(100);
 
             if (PidLoopInterval != 0)
             {

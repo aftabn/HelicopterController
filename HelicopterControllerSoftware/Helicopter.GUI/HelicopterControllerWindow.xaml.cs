@@ -78,7 +78,7 @@ namespace Helicopter.GUI
         private void InitializeDatabaseDataGrid()
         {
             var rowStyle = new Style(typeof(DataGridRow));
-            rowStyle.Setters.Add(new EventSetter(DataGridRow.MouseDoubleClickEvent, new MouseButtonEventHandler(OnRowDoubleClick)));
+            rowStyle.Setters.Add(new EventSetter(MouseDoubleClickEvent, new MouseButtonEventHandler(OnRowDoubleClick)));
             DatabaseDataGrid.RowStyle = rowStyle;
 
             helicopterViewModel.InitializeDatabase();

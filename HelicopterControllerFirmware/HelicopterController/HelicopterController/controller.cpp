@@ -75,7 +75,7 @@ void processCommand(char *command)
 	{
 		onCommandAngle();
 	}
-	else if (0 == strcmp(command, "Z"))
+	else if (0 == strcmp(command, "ZE"))
 	{
 		onCommandZeroEncoderAngle();
 	}
@@ -90,6 +90,18 @@ void processCommand(char *command)
 	else if (0 == strcmp(command, "F"))
 	{
 		onCommandFrequencyOutput();
+	}
+	else if (0 == strcmp(command, "TOO"))
+	{
+		onCommandTiltOutputOffset();
+	}
+	else if (0 == strcmp(command, "ZP"))
+	{
+		onCommandZeroPotentiometer();
+	}
+	else if (0 == strcmp(command, "MF")) // Max frequency
+	{
+		onCommandSetMaxFrequency();
 	}
 	else if (0 == strcmp(command, "*IDN?"))
 	{
@@ -239,7 +251,7 @@ void scanSerialPort()
 
 		if (incomingChar)
 		{
-			if (incomingChar == '\n') // End of input
+			if (incomingChar == '\r') // End of input
 			{
 				lineBuffer[linePointer] = 0;
 				linePointer = 0;
@@ -248,7 +260,7 @@ void scanSerialPort()
 				Serial.println(tmpstr);
 				processLine(lineBuffer);
 			}
-			else if (incomingChar == '\r') // Discard the carriage return
+			else if (incomingChar == '\n') // Discard the linefeed
 			{
 			}
 			else // Store any other characters in the buffer

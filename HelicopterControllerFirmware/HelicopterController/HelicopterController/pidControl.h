@@ -32,7 +32,9 @@ Author:	Aftab
 
 #define POT_TOTAL_RANGE_DEGREES			290.0
 #define POT_DEGREES_PER_VOLT			POT_TOTAL_RANGE_DEGREES / ARDUINO_VSS
-#define POT_IDLE_VOLTAGE				3.09		// Voltage when the helicopter is balanced
+#define POT_MIN_IDLE_VOLTAGE			0.00
+#define POT_MAX_IDLE_VOLTAGE			5.00
+#define DEFAULT_POT_IDLE_VOLTAGE		2.05		// Voltage when the helicopter is balanced
 
 #define ADC_REFERENCE_VOLTAGE			ARDUINO_VSS
 #define ADC_RESOLUTION					1023
@@ -48,11 +50,12 @@ Author:	Aftab
 // For the current driver:
 #define MOTOR_VOLTAGE_RANGE				2.5		// Voltage range for each direction (i.e. 2.5V range for each direction)
 #define MOTOR_IDLE_VOLTAGE				2.5		// Idle voltage
-#define MOTOR_MAX_VOLTAGE				5.0		// Full CW rotation
 #define MOTOR_MIN_VOLTAGE				0.0		// Full CCW rotation
+#define MOTOR_MAX_VOLTAGE				5.0		// Full CW rotation
 
-#define MOTOR_MAX_FREQUENCY				30000	// Corresponds to 30000 RPM
-#define MOTOR_MIN_FREQUENCY				0		// Corresponds to 0 RPM
+#define MIN_FREQUENCY					0		// Corresponds to 0 RPM
+#define MAX_FREQUENCY					10000	// Corresponds to 10000 RPM
+#define DEFAULT_MAX_FREQUENCY			1000	// Corresponds to 5000 RPM
 
 #define P_GAIN_MIN						0.0
 #define P_GAIN_MAX						10.0
@@ -84,7 +87,8 @@ Author:	Aftab
 #define TILT_OUTPUT_MIN					0
 #define TILT_OUTPUT_MAX					100
 
-#define TILT_OUTPUT_OFFSET				40
+#define TILT_OUTPUT_OFFSET_MIN			0
+#define TILT_OUTPUT_OFFSET_MAX			50
 
 #define PID_INTERVAL_MS_MIN				1		// Minimum timer 1 overflow is 1 ms
 #define PID_INTERVAL_MS_MAX				260		// Maximum timer 1 overflow is ~260 ms
@@ -98,6 +102,7 @@ Author:	Aftab
 #define DEFAULT_I_WINDUP_THRESH			30.0
 #define DEFAULT_OUTPUT_RATE_LIMIT		10
 #define DEFAULT_PID_INTERVAL_MS			250
+#define DEFAULT_TILT_OUTPUT_OFFSET		40
 
 enum Direction { Clockwise, CounterClockwise };
 enum MotorDriverType { AnalogVoltage, Frequency };
@@ -107,6 +112,9 @@ extern const int maxMotorOutput[MAX_NUM_CHANNELS];
 extern const double minSetPoint[MAX_NUM_CHANNELS];
 extern const double maxSetPoint[MAX_NUM_CHANNELS];
 
+extern volatile int tiltOutputOffset;	// This is the minimum output needed for the motor to lift
+extern volatile double potIdleVoltage;
+
 extern volatile bool isPidCalculationNeeded;
 extern volatile bool isPidEnabled;
 extern volatile bool isVerboseMode;
@@ -114,6 +122,7 @@ extern volatile bool isSafetyOn;
 
 extern volatile int pidLoopInterval;
 extern volatile uint16_t currentFrequency;
+extern volatile uint16_t maxFrequency;
 
 extern volatile double pGains[MAX_NUM_CHANNELS][NUM_DIRECTION_PROFILES];
 extern volatile double iGains[MAX_NUM_CHANNELS][NUM_DIRECTION_PROFILES];
